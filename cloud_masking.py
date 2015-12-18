@@ -20,13 +20,15 @@
  *                                                                         *
  ***************************************************************************/
 """
+
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QObject, SIGNAL
 from PyQt4.QtGui import QAction, QIcon, QMenu
-# Initialize Qt resources from file resources.py
+
+import os.path
 import resources
+
 # Import the code for the dialog
 from cloud_masking_dialog import CloudMaskingDialog
-import os.path
 
 
 class CloudMasking:
@@ -69,13 +71,12 @@ class CloudMasking:
         # Check if the menu exists and get it
         for menu_item in self.iface.mainWindow().menuBar().children(): 
             if isinstance(menu_item, QMenu) and menu_item.title() == u"SMBYC":
-                self.menu = child
+                self.menu = menu_item
         # If the menu does not exist, create it!
         if not self.menu:
             self.menu = QMenu(self.iface.mainWindow().menuBar())
             self.menu.setObjectName(u'Plugins for the project SMBYC')
             self.menu.setTitle(u"SMBYC")
-            
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -92,7 +93,6 @@ class CloudMasking:
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('CloudMasking', message)
 
-
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
@@ -107,13 +107,11 @@ class CloudMasking:
         self.menuBar = self.iface.mainWindow().menuBar()
         self.menuBar.insertMenu(self.iface.firstRightStandardMenu().menuAction(), self.menu)
 
-
     def unload(self):
         for menu_item in self.iface.mainWindow().menuBar().children(): 
             if isinstance(menu_item, QMenu) and menu_item.title() == u"SMBYC":
                 menu_item.removeAction(self.action)
                 # TODO: remove menu_item "SMBYC" if this is empty (actions)
-
 
     def run(self):
         """Run method that performs all the real work"""
