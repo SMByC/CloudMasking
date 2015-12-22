@@ -33,6 +33,7 @@ class CloudMaskingDialog(QtGui.QDialog, FORM_CLASS):
 
     # Fmask parameters
     cloud_prob = 22.5
+    bb_threshold = 10
 
     def __init__(self, parent=None):
         """Constructor."""
@@ -47,12 +48,29 @@ class CloudMaskingDialog(QtGui.QDialog, FORM_CLASS):
         self.setup_gui()
 
     def setup_gui(self):
+
+        # Cloud probability #########
         self.update_cloud_prob(self.cloud_prob)
         self.horizontalSlider_CP.valueChanged.connect(self.update_cloud_prob)
         self.doubleSpinBox_CP.valueChanged.connect(self.update_cloud_prob)
 
+        # Cloud probability #########
+        self.update_bb_threshold(self.bb_threshold)
+        self.horizontalSlider_BB.valueChanged.connect(self.update_bb_threshold)
+        self.doubleSpinBox_BB.valueChanged.connect(self.update_bb_threshold)
+
     @QtCore.pyqtSlot(int)
     def update_cloud_prob(self, value):
+        """Save value and connect the slider and spinbox
+        """
         self.cloud_prob = value
         self.horizontalSlider_CP.setValue(value)
         self.doubleSpinBox_CP.setValue(value)
+
+    @QtCore.pyqtSlot(int)
+    def update_bb_threshold(self, value):
+        """Save value and connect the slider and spinbox
+        """
+        self.bb_threshold = value
+        self.horizontalSlider_BB.setValue(value)
+        self.doubleSpinBox_BB.setValue(value)
