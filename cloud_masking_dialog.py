@@ -47,18 +47,12 @@ class CloudMaskingDialog(QtGui.QDialog, FORM_CLASS):
         self.setup_gui()
 
     def setup_gui(self):
-        self.update_cloud_prob_to_slider(self.cloud_prob)
-        self.update_cloud_prob_to_spinbox(self.cloud_prob*10)
-        self.horizontalSlider_CP.valueChanged.connect(self.update_cloud_prob_to_spinbox)
-        self.doubleSpinBox_CP.valueChanged.connect(self.update_cloud_prob_to_slider)
+        self.update_cloud_prob(self.cloud_prob)
+        self.horizontalSlider_CP.valueChanged.connect(self.update_cloud_prob)
+        self.doubleSpinBox_CP.valueChanged.connect(self.update_cloud_prob)
 
     @QtCore.pyqtSlot(int)
-    def update_cloud_prob_to_slider(self, value):
+    def update_cloud_prob(self, value):
         self.cloud_prob = value
-        self.horizontalSlider_CP.setValue(int(value*10))
-
-    @QtCore.pyqtSlot(int)
-    def update_cloud_prob_to_spinbox(self, value):
-        self.cloud_prob = value / 10.0
-        self.doubleSpinBox_CP.setValue(self.cloud_prob)
-
+        self.horizontalSlider_CP.setValue(value)
+        self.doubleSpinBox_CP.setValue(value)
