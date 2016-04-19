@@ -5,9 +5,7 @@
                                  A QGIS plugin
  Cloud masking using different process suck as fmask
                              -------------------
-        begin                : 2015-12-17
-        git sha              : $Format:%H$
-        copyright            : (C) 2015 by Xavier Corredor Llano, SMBYC
+        copyright            : (C) 2016 by Xavier Corredor Llano, SMBYC
         email                : xcorredorl@ideam.gov.co
  ***************************************************************************/
 
@@ -54,7 +52,7 @@ class CloudMaskingDialog(QtGui.QDialog, FORM_CLASS):
         self.horizontalSlider_CP.valueChanged.connect(self.update_cloud_prob)
         self.doubleSpinBox_CP.valueChanged.connect(self.update_cloud_prob)
 
-        # Cloud probability #########
+        # Blue band threshold #########
         self.update_bb_threshold(self.bb_threshold)
         self.horizontalSlider_BB.valueChanged.connect(self.update_bb_threshold)
         self.doubleSpinBox_BB.valueChanged.connect(self.update_bb_threshold)

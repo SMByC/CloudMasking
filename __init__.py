@@ -4,11 +4,9 @@
  CloudMasking
                                  A QGIS plugin
  Cloud masking using different process suck as fmask
-                             -------------------
-        begin                : 2015-12-17
-        copyright            : (C) 2015 by Xavier Corredor Llano, SMBYC
+                              -------------------
+        copyright            : (C) 2016 by Xavier Corredor Llano, SMBYC
         email                : xcorredorl@ideam.gov.co
-        git sha              : $Format:%H$
  ***************************************************************************/
 
 /***************************************************************************
