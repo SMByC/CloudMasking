@@ -1,0 +1,10 @@
+site_name: Cloud Masking - Qgis-plugin
+site_description: Cloud Masking is a Qgis-plugin for Landsat images, part of deforestations project in SMBYC-IDEAM
+site_author: Xavier Corredor Llano, SMBYC-IDEAM
+#site_favicon: favicon_whale.png
+site_url: http://smbyc.bitbucket.org/qgisplugin-cloudmasking
+repo_url: https://bitbucket.org/SMBYC/qgisplugin-cloudmasking
+theme: readthedocs
+pages:
+- Home: index.md
+- Test: test.md
