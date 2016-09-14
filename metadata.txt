@@ -7,7 +7,7 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=Cloud masking
+name=Cloud Masking
 qgisMinimumVersion=2.0
 description=Cloud masking using different process suck as fmask
 version=0.1
@@ -16,8 +16,8 @@ email=xcorredorl@ideam.gov.co
 
 about=Cloud masking using different process suck as fmask
 
-tracker=bug.tracker.link
-repository=repository.link
+tracker=https://bitbucket.org/SMBYC/qgisplugin-cloudmasking/issues
+repository=https://bitbucket.org/SMBYC/qgisplugin-cloudmasking
 # End of mandatory metadata
 
 # Recommended items:
@@ -28,7 +28,7 @@ repository=repository.link
 # Tags are comma separated with spaces allowed
 tags=mask,satellital,cloud
 
-homepage=home.page.link
+homepage=https://bitbucket.org/SMBYC/qgisplugin-cloudmasking
 category=Plugins
 icon=icon.png
 # experimental flag

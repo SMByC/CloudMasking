@@ -3,9 +3,7 @@
 #
 # Cloud masking using different process suck as fmask
 #							 -------------------
-#		begin				: 2015-12-17
-#		git sha				: $Format:%H$
-#		copyright			: (C) 2015 by Xavier Corredor Llano, SMBYC
+#		copyright			: (C) 2016 by Xavier Corredor Llano, SMBYC
 #		email				: xcorredorl@ideam.gov.co
 # ***************************************************************************/
 #
@@ -38,15 +36,15 @@ LOCALES =
 # translation
 SOURCES = \
 	__init__.py \
-	cloud_masking.py cloud_masking_dialog.py
+	cloud_masking.py cloud_masking_dockwidget.py
 
 PLUGINNAME = CloudMasking
 
 PY_FILES = \
 	__init__.py \
-	cloud_masking.py cloud_masking_dialog.py
+	cloud_masking.py cloud_masking_dockwidget.py
 
-UI_FILES = cloud_masking_dialog_base.ui
+UI_FILES = cloud_masking_dockwidget_base.ui
 
 EXTRAS = metadata.txt icon.png
 

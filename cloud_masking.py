@@ -5,6 +5,8 @@
                                  A QGIS plugin
  Cloud masking using different process suck as fmask
                               -------------------
+        begin                : 2016-09-13
+        git sha              : $Format:%H$
         copyright            : (C) 2016 by Xavier Corredor Llano, SMBYC
         email                : xcorredorl@ideam.gov.co
  ***************************************************************************/
@@ -18,15 +20,14 @@
  *                                                                         *
  ***************************************************************************/
 """
-
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QObject, SIGNAL
-from PyQt4.QtGui import QAction, QIcon, QMenu
-
-import os.path
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
+from PyQt4.QtGui import QAction, QIcon
+# Initialize Qt resources from file resources.py
 import resources
 
-# Import the code for the dialog
-from cloud_masking_dialog import CloudMaskingDialog
+# Import the code for the DockWidget
+from cloud_masking_dockwidget import CloudMaskingDockWidget
+import os.path
 
 
 class CloudMasking:
@@ -42,8 +43,10 @@ class CloudMasking:
         """
         # Save reference to the QGIS interface
         self.iface = iface
+
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
+
         # initialize locale
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
@@ -58,23 +61,18 @@ class CloudMasking:
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-        # Create the dialog (after translation) and keep reference
-        self.dlg = CloudMaskingDialog()
-
         # Declare instance attributes
         self.actions = []
-        
-        # menu
-        self.menu = None
-        # Check if the menu exists and get it
-        for menu_item in self.iface.mainWindow().menuBar().children(): 
-            if isinstance(menu_item, QMenu) and menu_item.title() == u"SMBYC":
-                self.menu = menu_item
-        # If the menu does not exist, create it!
-        if not self.menu:
-            self.menu = QMenu(self.iface.mainWindow().menuBar())
-            self.menu.setObjectName(u'Plugins for the project SMBYC')
-            self.menu.setTitle(u"SMBYC")
+        self.menu = self.tr(u'&Cloud Masking')
+        # TODO: We are going to let the user set this up in a future iteration
+        self.toolbar = self.iface.addToolBar(u'CloudMasking')
+        self.toolbar.setObjectName(u'CloudMasking')
+
+        #print "** INITIALIZING CloudMasking"
+
+        self.pluginIsActive = False
+        self.dockwidget = None
+
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -91,34 +89,145 @@ class CloudMasking:
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('CloudMasking', message)
 
+
+    def add_action(
+        self,
+        icon_path,
+        text,
+        callback,
+        enabled_flag=True,
+        add_to_menu=True,
+        add_to_toolbar=True,
+        status_tip=None,
+        whats_this=None,
+        parent=None):
+        """Add a toolbar icon to the toolbar.
+
+        :param icon_path: Path to the icon for this action. Can be a resource
+            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
+        :type icon_path: str
+
+        :param text: Text that should be shown in menu items for this action.
+        :type text: str
+
+        :param callback: Function to be called when the action is triggered.
+        :type callback: function
+
+        :param enabled_flag: A flag indicating if the action should be enabled
+            by default. Defaults to True.
+        :type enabled_flag: bool
+
+        :param add_to_menu: Flag indicating whether the action should also
+            be added to the menu. Defaults to True.
+        :type add_to_menu: bool
+
+        :param add_to_toolbar: Flag indicating whether the action should also
+            be added to the toolbar. Defaults to True.
+        :type add_to_toolbar: bool
+
+        :param status_tip: Optional text to show in a popup when mouse pointer
+            hovers over the action.
+        :type status_tip: str
+
+        :param parent: Parent widget for the new action. Defaults None.
+        :type parent: QWidget
+
+        :param whats_this: Optional text to show in the status bar when the
+            mouse pointer hovers over the action.
+
+        :returns: The action that was created. Note that the action is also
+            added to self.actions list.
+        :rtype: QAction
+        """
+
+        icon = QIcon(icon_path)
+        action = QAction(icon, text, parent)
+        action.triggered.connect(callback)
+        action.setEnabled(enabled_flag)
+
+        if status_tip is not None:
+            action.setStatusTip(status_tip)
+
+        if whats_this is not None:
+            action.setWhatsThis(whats_this)
+
+        if add_to_toolbar:
+            self.toolbar.addAction(action)
+
+        if add_to_menu:
+            self.iface.addPluginToMenu(
+                self.menu,
+                action)
+
+        self.actions.append(action)
+
+        return action
+
+
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
         icon_path = ':/plugins/CloudMasking/icon.png'
-        self.action = QAction(QIcon(icon_path), self.tr(u'&Cloud masking'), self.iface.mainWindow())
-        self.action.setObjectName(u'CloudMasking')
-        self.action.setWhatsThis(self.tr(u'Cloud masking ...'))
-        self.action.setStatusTip(self.tr(u'This is status tip'))
-        QObject.connect(self.action, SIGNAL("triggered()"), self.run)
-        self.menu.addAction(self.action)
-        
-        self.menuBar = self.iface.mainWindow().menuBar()
-        self.menuBar.insertMenu(self.iface.firstRightStandardMenu().menuAction(), self.menu)
+        self.add_action(
+            icon_path,
+            text=self.tr(u'Cloud Masking'),
+            callback=self.run,
+            parent=self.iface.mainWindow())
+
+    #--------------------------------------------------------------------------
+
+    def onClosePlugin(self):
+        """Cleanup necessary items here when plugin dockwidget is closed"""
+
+        #print "** CLOSING CloudMasking"
+
+        # disconnects
+        self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
+
+        # remove this statement if dockwidget is to remain
+        # for reuse if plugin is reopened
+        # Commented next statement since it causes QGIS crashe
+        # when closing the docked window:
+        # self.dockwidget = None
+
+        self.pluginIsActive = False
+
 
     def unload(self):
-        for menu_item in self.iface.mainWindow().menuBar().children(): 
-            if isinstance(menu_item, QMenu) and menu_item.title() == u"SMBYC":
-                menu_item.removeAction(self.action)
-                # TODO: remove menu_item "SMBYC" if this is empty (actions)
+        """Removes the plugin menu item and icon from QGIS GUI."""
+
+        #print "** UNLOAD CloudMasking"
+
+        for action in self.actions:
+            self.iface.removePluginMenu(
+                self.tr(u'&Cloud Masking'),
+                action)
+            self.iface.removeToolBarIcon(action)
+        # remove the toolbar
+        del self.toolbar
+
+    #--------------------------------------------------------------------------
 
     def run(self):
-        """Run method that performs all the real work"""
-        # show the dialog
-        self.dlg.show()
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
+        """Run method that loads and starts the plugin"""
+
+        if not self.pluginIsActive:
+            self.pluginIsActive = True
+
+            #print "** STARTING CloudMasking"
+
+            # dockwidget may not exist if:
+            #    first run of plugin
+            #    removed on close (see self.onClosePlugin method)
+            if self.dockwidget == None:
+                # Create the dockwidget (after translation) and keep reference
+                self.dockwidget = CloudMaskingDockWidget()
+
+            # connect to provide cleanup on closing of dockwidget
+            self.dockwidget.closingPlugin.connect(self.onClosePlugin)
+
+            # show the dockwidget
+            # TODO: fix to allow choice of dock location
+            self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockwidget)
+            self.dockwidget.show()
+
