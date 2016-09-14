@@ -21,7 +21,7 @@
 
 import os
 
-from PyQt4 import QtGui, uic
+from PyQt4 import QtGui, uic, QtCore
 from PyQt4.QtCore import pyqtSignal
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -29,6 +29,10 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 
 
 class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
+
+    # Fmask parameters by default
+    cloud_prob = 22.5
+    bb_threshold = 10
 
     closingPlugin = pyqtSignal()
 
@@ -41,8 +45,36 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+        self.setup_gui()
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
         event.accept()
 
+    def setup_gui(self):
+        # Cloud probability #########
+        self.update_cloud_prob(self.cloud_prob)
+        self.horizontalSlider_CP.valueChanged.connect(self.update_cloud_prob)
+        self.doubleSpinBox_CP.valueChanged.connect(self.update_cloud_prob)
+
+        # Blue band threshold #########
+        self.update_bb_threshold(self.bb_threshold)
+        self.horizontalSlider_BB.valueChanged.connect(self.update_bb_threshold)
+        self.doubleSpinBox_BB.valueChanged.connect(self.update_bb_threshold)
+
+    @QtCore.pyqtSlot(int)
+    def update_cloud_prob(self, value):
+        """Save value and connect the slider and spinbox
+        """
+        self.cloud_prob = value
+        self.horizontalSlider_CP.setValue(value)
+        self.doubleSpinBox_CP.setValue(value)
+
+
+    @QtCore.pyqtSlot(int)
+    def update_bb_threshold(self, value):
+        """Save value and connect the slider and spinbox
+        """
+        self.bb_threshold = value
+        self.horizontalSlider_BB.setValue(value)
+        self.doubleSpinBox_BB.setValue(value)
