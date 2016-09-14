@@ -5,8 +5,6 @@
                                  A QGIS plugin
  Cloud masking using different process suck as fmask
                               -------------------
-        begin                : 2016-09-13
-        git sha              : $Format:%H$
         copyright            : (C) 2016 by Xavier Corredor Llano, SMBYC
         email                : xcorredorl@ideam.gov.co
  ***************************************************************************/
@@ -20,8 +18,8 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
-from PyQt4.QtGui import QAction, QIcon
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
+from PyQt4.QtGui import QAction, QIcon, QMenu
 # Initialize Qt resources from file resources.py
 import resources
 
@@ -155,9 +153,28 @@ class CloudMasking:
             self.toolbar.addAction(action)
 
         if add_to_menu:
-            self.iface.addPluginToMenu(
-                self.menu,
-                action)
+            ## set the smbyc menu
+            self.smbyc_menu = None
+            # Check if the menu exists and get it
+            for menu_item in self.iface.mainWindow().menuBar().children():
+                if isinstance(menu_item, QMenu) and menu_item.title() == u"SMBYC":
+                    self.smbyc_menu = menu_item
+            # If the menu does not exist, create it!
+            if not self.smbyc_menu:
+                self.smbyc_menu = QMenu(self.iface.mainWindow().menuBar())
+                self.smbyc_menu.setObjectName(u'Plugins for the project SMBYC')
+                self.smbyc_menu.setTitle(u"SMBYC")
+
+            ## set the item plugin in smbyc menu
+            self.action = QAction(QIcon(icon_path), self.menu, self.iface.mainWindow())
+            self.action.setObjectName(u'CloudMasking')
+            self.action.setWhatsThis(self.tr(u'Cloud masking ...'))
+            self.action.setStatusTip(self.tr(u'This is status tip'))
+            QObject.connect(self.action, SIGNAL("triggered()"), self.run)
+            self.smbyc_menu.addAction(self.action)
+
+            self.menuBar = self.iface.mainWindow().menuBar()
+            self.menuBar.insertMenu(self.iface.firstRightStandardMenu().menuAction(), self.smbyc_menu)
 
         self.actions.append(action)
 
@@ -199,9 +216,10 @@ class CloudMasking:
         #print "** UNLOAD CloudMasking"
 
         for action in self.actions:
-            self.iface.removePluginMenu(
-                self.tr(u'&Cloud Masking'),
-                action)
+            for menu_item in self.iface.mainWindow().menuBar().children():
+                if isinstance(menu_item, QMenu) and menu_item.title() == u"SMBYC":
+                    menu_item.removeAction(self.action)
+                    # TODO: remove menu_item "SMBYC" if this is empty (actions)
             self.iface.removeToolBarIcon(action)
         # remove the toolbar
         del self.toolbar
