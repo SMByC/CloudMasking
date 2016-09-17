@@ -37,13 +37,13 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QGroupBox" name="InputImage">
+         <widget class="QGroupBox" name="groupBox_InputImage">
           <property name="title">
            <string>Image to masking</string>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QComboBox" name="combo">
+            <widget class="QComboBox" name="selectList_InputImage">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -59,7 +59,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="selectBtn">
+            <widget class="QPushButton" name="selectBtn_InputImage">
              <property name="text">
               <string>Select...</string>
              </property>
@@ -84,7 +84,7 @@
            <item row="3" column="1">
             <widget class="QFrame" name="frame_BlueBand">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -122,7 +122,7 @@
               <string>FMask</string>
              </property>
              <property name="checked">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -173,6 +173,9 @@
            </item>
            <item row="1" column="1">
             <widget class="QFrame" name="frame_FMask">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
              </property>
@@ -332,5 +335,38 @@
   </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>checkBox_FMask</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>frame_FMask</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>86</x>
+     <y>203</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>108</x>
+     <y>227</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_BlueBand</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>frame_BlueBand</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>365</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>60</x>
+     <y>390</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
