@@ -68,6 +68,10 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.horizontalSlider_BB.valueChanged.connect(self.update_bb_threshold)
         self.doubleSpinBox_BB.valueChanged.connect(self.update_bb_threshold)
 
+        # Quality control flags #########
+        # start hidden
+        self.frame_QCflags.setHidden(True)
+
     @QtCore.pyqtSlot(int)
     def update_cloud_prob(self, value):
         """Save value and connect the slider and spinbox
