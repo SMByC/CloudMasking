@@ -63,11 +63,8 @@ class CloudMasking:
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&Cloud Masking')
-        # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar(u'CloudMasking')
-        self.toolbar.setObjectName(u'CloudMasking')
-
-        #print "** INITIALIZING CloudMasking"
+        #self.toolbar = self.iface.addToolBar(u'CloudMasking')
+        #self.toolbar.setObjectName(u'CloudMasking')
 
         self.pluginIsActive = False
         self.dockwidget = None
@@ -96,7 +93,7 @@ class CloudMasking:
         callback,
         enabled_flag=True,
         add_to_menu=True,
-        add_to_toolbar=True,
+        add_to_toolbar=False,
         status_tip=None,
         whats_this=None,
         parent=None):
@@ -226,7 +223,7 @@ class CloudMasking:
                     # TODO: remove menu_item "SMBYC" if this is empty (actions)
             self.iface.removeToolBarIcon(action)
         # remove the toolbar
-        del self.toolbar
+        #del self.toolbar
 
     #--------------------------------------------------------------------------
 
