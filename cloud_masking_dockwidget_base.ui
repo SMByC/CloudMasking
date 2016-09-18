@@ -95,6 +95,9 @@
              <layout class="QGridLayout" name="gridLayout_4">
               <item row="0" column="1">
                <widget class="QSlider" name="horizontalSlider_BB">
+                <property name="maximum">
+                 <number>100</number>
+                </property>
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -108,7 +111,17 @@
                </widget>
               </item>
               <item row="0" column="2">
-               <widget class="QDoubleSpinBox" name="doubleSpinBox_BB"/>
+               <widget class="QDoubleSpinBox" name="doubleSpinBox_BB">
+                <property name="decimals">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <double>100.000000000000000</double>
+                </property>
+                <property name="singleStep">
+                 <double>0.100000000000000</double>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
