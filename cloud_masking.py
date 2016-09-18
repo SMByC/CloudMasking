@@ -41,6 +41,7 @@ class CloudMasking:
         """
         # Save reference to the QGIS interface
         self.iface = iface
+        self.canvas = self.iface.mapCanvas()
 
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
@@ -191,6 +192,9 @@ class CloudMasking:
             callback=self.run,
             parent=self.iface.mainWindow())
 
+        # handle connect when the layers changed
+        QObject.connect(self.canvas, SIGNAL("layersChanged ()"), self.updateLayersList)
+
     #--------------------------------------------------------------------------
 
     def onClosePlugin(self):
@@ -248,4 +252,13 @@ class CloudMasking:
             # TODO: fix to allow choice of dock location
             self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockwidget)
             self.dockwidget.show()
+
+        # set initial input layers list
+        self.updateLayersList()
+
+    def updateLayersList(self):
+        self.dockwidget.selectList_InputImage.clear()
+        for layer in self.canvas.layers():
+            self.dockwidget.selectList_InputImage.addItem(layer.name())
+
 
