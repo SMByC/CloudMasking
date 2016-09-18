@@ -152,7 +152,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_3">
+               <widget class="QPushButton" name="Btn_processMask">
                 <property name="text">
                  <string>Process mask</string>
                 </property>

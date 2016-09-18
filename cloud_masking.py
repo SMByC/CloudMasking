@@ -19,7 +19,8 @@
  ***************************************************************************/
 """
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
-from PyQt4.QtGui import QAction, QIcon, QMenu
+from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox
+from qgis.core import QgsMapLayer, QgsMessageLog
 # Initialize Qt resources from file resources.py
 import resources
 
@@ -252,10 +253,27 @@ class CloudMasking:
 
         # set initial input layers list
         self.updateLayersList()
+        # call to process mask
+        QObject.connect(self.dockwidget.Btn_processMask, SIGNAL("clicked()"), self.processMask)
 
     def updateLayersList(self):
-        self.dockwidget.selectList_InputImage.clear()
+        if self.dockwidget is not None:
+            self.dockwidget.selectList_InputImage.clear()
+            for layer in self.canvas.layers():
+                self.dockwidget.selectList_InputImage.addItem(layer.name())
+
+    def getLayerByName(self, layer_name):
         for layer in self.canvas.layers():
-            self.dockwidget.selectList_InputImage.addItem(layer.name())
+            if layer.name() == layer_name:
+                return layer
 
+    def processMask(self):
+        current_layer = self.getLayerByName(self.dockwidget.selectList_InputImage.currentText())
 
+        if current_layer is not None:
+            if current_layer.type() == QgsMapLayer.VectorLayer:
+                QMessageBox.information(self.iface.mainWindow(), "Information",
+                                        u"Selected Layer is not Raster Layer...")
+            elif current_layer.type() == QgsMapLayer.RasterLayer:
+                layerDataProvider = current_layer.dataProvider()
+                QgsMessageLog.logMessage(unicode(layerDataProvider.dataSourceUri()))
