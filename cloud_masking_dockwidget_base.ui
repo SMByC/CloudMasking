@@ -123,8 +123,17 @@
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_Filters">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="title">
            <string>Filters to apply</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
            <item row="5" column="1" rowspan="3">
@@ -244,9 +253,6 @@
              <layout class="QGridLayout" name="gridLayout_8">
               <item row="0" column="0">
                <widget class="QCheckBox" name="checkBox_FMask">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
                 <property name="text">
                  <string>FMask</string>
                 </property>
@@ -413,6 +419,9 @@
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_SaveApply">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="title">
            <string>Save and apply</string>
           </property>
