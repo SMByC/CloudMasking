@@ -37,31 +37,25 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QGroupBox" name="groupBox_InputImage">
+         <widget class="QGroupBox" name="groupBox_MTL">
           <property name="title">
-           <string>Image to masking</string>
+           <string>Landsat Metadata File (MTL)</string>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QComboBox" name="selectList_InputImage">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-             <property name="frame">
-              <bool>true</bool>
+            <widget class="QLineEdit" name="lineEdit_PathMTL"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="Btn_FindMTL">
+             <property name="text">
+              <string>Browse</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="selectBtn_InputImage">
+            <widget class="QPushButton" name="Btn_LoadMTL">
              <property name="text">
-              <string>Select...</string>
+              <string>Load</string>
              </property>
             </widget>
            </item>
@@ -376,6 +370,22 @@
               </size>
              </property>
             </spacer>
+           </item>
+           <item>
+            <widget class="QComboBox" name="select_MaskLayer">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="editable">
+              <bool>true</bool>
+             </property>
+             <property name="frame">
+              <bool>true</bool>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QPushButton" name="pushButton_4">

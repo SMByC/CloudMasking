@@ -46,12 +46,17 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
         self.setup_gui()
+        # Setup default MTL file
+        self.mtl_file = os.getcwd()
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
         event.accept()
 
     def setup_gui(self):
+        # find MTL file #########
+        self.Btn_FindMTL.clicked.connect(self.fileDialog_findMTL)
+
         # FMask Cloud probability #########
         # start hidden
         self.widget_FMask.setHidden(True)
@@ -80,7 +85,6 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.horizontalSlider_CP.setValue(value)
         self.doubleSpinBox_CP.setValue(value)
 
-
     @QtCore.pyqtSlot(int)
     def update_bb_threshold(self, value):
         """Save value and connect the slider and spinbox
@@ -88,3 +92,15 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.bb_threshold = value
         self.horizontalSlider_BB.setValue(value)
         self.doubleSpinBox_BB.setValue(value)
+
+    @QtCore.pyqtSlot()
+    def fileDialog_findMTL(self):
+        """Open QFileDialog to find a MTL file
+        """
+        mtl = str(QtGui.QFileDialog.
+                  getOpenFileName(self, self.tr('Select the MTL file'),
+                                  self.mtl_file if os.path.isdir(self.mtl_file)
+                                  else os.path.dirname(self.mtl_file),
+                                  self.tr("MTL file (*MTL.txt);;All files (*.*)")))
+        #if mtl != '':
+        #    self.edit_MTL.setText(mtl)
