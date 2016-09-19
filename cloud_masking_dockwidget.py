@@ -113,6 +113,11 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         """ Load MTL file currently specified in QLineEdit """
         self.mtl_path = str(self.lineEdit_PathMTL.text())
 
+        if not os.path.isfile(self.mtl_path):
+            self.label_LoadedMTL.setText('Error - file not exist')
+            return
+
+        # load the MTL file
         try:
             mtl = cloud_masking_utils.mtl2dict(self.mtl_path)
             # get the landsat version
