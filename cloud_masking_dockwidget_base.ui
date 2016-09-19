@@ -120,7 +120,7 @@
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QFrame" name="frame_3">
+            <widget class="QFrame" name="frame__BlueBand">
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
              </property>
@@ -136,45 +136,42 @@
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QFrame" name="frame_BlueBand">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_4">
-                 <item row="0" column="1">
-                  <widget class="QSlider" name="horizontalSlider_BB">
-                   <property name="maximum">
-                    <number>100</number>
-                   </property>
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_2">
-                   <property name="text">
-                    <string>Threshold</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QDoubleSpinBox" name="doubleSpinBox_BB">
-                   <property name="decimals">
-                    <number>1</number>
-                   </property>
-                   <property name="maximum">
-                    <double>100.000000000000000</double>
-                   </property>
-                   <property name="singleStep">
-                    <double>0.100000000000000</double>
-                   </property>
+               <widget class="QWidget" name="widget_BlueBand" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_4">
+                 <item>
+                  <widget class="QWidget" name="widget_BlueBand_01" native="true">
+                   <layout class="QHBoxLayout" name="horizontalLayout_5">
+                    <item>
+                     <widget class="QLabel" name="label_2">
+                      <property name="text">
+                       <string>Threshold</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QSlider" name="horizontalSlider_BB">
+                      <property name="maximum">
+                       <number>100</number>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QDoubleSpinBox" name="doubleSpinBox_BB">
+                      <property name="decimals">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <double>100.000000000000000</double>
+                      </property>
+                      <property name="singleStep">
+                       <double>0.100000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </widget>
                  </item>
                 </layout>
@@ -184,7 +181,7 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QFrame" name="frame_2">
+            <widget class="QFrame" name="frame_FMask">
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
              </property>
@@ -206,19 +203,52 @@
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QFrame" name="frame_FMask">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_3">
-                 <item row="3" column="1">
-                  <widget class="QWidget" name="widget_2" native="true">
+               <widget class="QWidget" name="widget_FMask" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_2">
+                 <item>
+                  <widget class="QWidget" name="widget_FMask_01" native="true">
+                   <layout class="QGridLayout" name="gridLayout_5">
+                    <item row="1" column="1">
+                     <widget class="QSlider" name="horizontalSlider_CP">
+                      <property name="minimum">
+                       <number>-50</number>
+                      </property>
+                      <property name="maximum">
+                       <number>100</number>
+                      </property>
+                      <property name="singleStep">
+                       <number>1</number>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="2">
+                     <widget class="QDoubleSpinBox" name="doubleSpinBox_CP">
+                      <property name="decimals">
+                       <number>1</number>
+                      </property>
+                      <property name="minimum">
+                       <double>-50.000000000000000</double>
+                      </property>
+                      <property name="singleStep">
+                       <double>0.100000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label">
+                      <property name="text">
+                       <string>Cloud probability</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="widget_FMask_02" native="true">
                    <layout class="QHBoxLayout" name="horizontalLayout_2">
                     <item>
                      <widget class="QLabel" name="label_3">
@@ -264,56 +294,17 @@
                    </layout>
                   </widget>
                  </item>
-                 <item row="2" column="1">
-                  <widget class="QWidget" name="widget" native="true">
-                   <layout class="QGridLayout" name="gridLayout_5">
-                    <item row="1" column="2">
-                     <widget class="QDoubleSpinBox" name="doubleSpinBox_CP">
-                      <property name="decimals">
-                       <number>1</number>
-                      </property>
-                      <property name="minimum">
-                       <double>-50.000000000000000</double>
-                      </property>
-                      <property name="singleStep">
-                       <double>0.100000000000000</double>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QLabel" name="label">
-                      <property name="text">
-                       <string>Cloud probability</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
-                     <widget class="QSlider" name="horizontalSlider_CP">
-                      <property name="minimum">
-                       <number>-50</number>
-                      </property>
-                      <property name="maximum">
-                       <number>100</number>
-                      </property>
-                      <property name="singleStep">
-                       <number>1</number>
-                      </property>
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </widget>
-                 </item>
                 </layout>
+                <zorder>label</zorder>
+                <zorder>widget_FMask_01</zorder>
+                <zorder>widget_FMask_02</zorder>
                </widget>
               </item>
              </layout>
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="QFrame" name="frame_4">
+            <widget class="QFrame" name="frame_QCflags">
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
              </property>
@@ -329,22 +320,16 @@
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QFrame" name="frame_QCflags">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_6">
-                 <item row="1" column="0">
+               <widget class="QWidget" name="widget_QCflags" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_3">
+                 <item>
                   <widget class="QCheckBox" name="checkBox_4">
                    <property name="text">
                     <string>QC 01</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="0">
+                 <item>
                   <widget class="QCheckBox" name="checkBox_5">
                    <property name="text">
                     <string>QC 02</string>
@@ -421,48 +406,48 @@
   <connection>
    <sender>checkBox_FMask</sender>
    <signal>clicked(bool)</signal>
-   <receiver>frame_FMask</receiver>
+   <receiver>widget_FMask</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>86</x>
-     <y>203</y>
+     <x>97</x>
+     <y>211</y>
     </hint>
     <hint type="destinationlabel">
-     <x>108</x>
-     <y>227</y>
+     <x>107</x>
+     <y>235</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>checkBox_BlueBand</sender>
    <signal>clicked(bool)</signal>
-   <receiver>frame_BlueBand</receiver>
+   <receiver>widget_BlueBand</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>68</x>
-     <y>365</y>
+     <x>132</x>
+     <y>381</y>
     </hint>
     <hint type="destinationlabel">
-     <x>60</x>
-     <y>390</y>
+     <x>132</x>
+     <y>411</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>checkBox_QCflags</sender>
    <signal>clicked(bool)</signal>
-   <receiver>frame_QCflags</receiver>
+   <receiver>widget_QCflags</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>156</x>
-     <y>464</y>
+     <x>174</x>
+     <y>493</y>
     </hint>
     <hint type="destinationlabel">
-     <x>154</x>
-     <y>487</y>
+     <x>171</x>
+     <y>531</y>
     </hint>
    </hints>
   </connection>

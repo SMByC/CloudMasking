@@ -54,7 +54,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def setup_gui(self):
         # FMask Cloud probability #########
         # start hidden
-        self.frame_FMask.setHidden(True)
+        self.widget_FMask.setHidden(True)
         # Synchronize the slider with the spin box
         self.update_cloud_prob(self.cloud_prob)
         self.horizontalSlider_CP.valueChanged.connect(self.update_cloud_prob)
@@ -62,7 +62,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         # Blue band threshold #########
         # start hidden
-        self.frame_BlueBand.setHidden(True)
+        self.widget_BlueBand.setHidden(True)
         # Synchronize the slider with the spin box
         self.update_bb_threshold(self.bb_threshold)
         self.horizontalSlider_BB.valueChanged.connect(self.update_bb_threshold)
@@ -70,7 +70,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         # Quality control flags #########
         # start hidden
-        self.frame_QCflags.setHidden(True)
+        self.widget_QCflags.setHidden(True)
 
     @QtCore.pyqtSlot(int)
     def update_cloud_prob(self, value):
