@@ -70,7 +70,6 @@ class CloudMasking:
         self.pluginIsActive = False
         self.dockwidget = None
 
-
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
@@ -85,7 +84,6 @@ class CloudMasking:
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('CloudMasking', message)
-
 
     def add_action(
         self,
@@ -190,9 +188,6 @@ class CloudMasking:
             callback=self.run,
             parent=self.iface.mainWindow())
 
-        # handle connect when the layers changed
-        QObject.connect(self.canvas, SIGNAL("layersChanged ()"), self.updateLayersList)
-
     #--------------------------------------------------------------------------
 
     def onClosePlugin(self):
@@ -252,15 +247,17 @@ class CloudMasking:
             self.dockwidget.show()
 
         # set initial input layers list
-        self.updateLayersList()
+        self.updateLayersList_MaskLayer()
+        # handle connect when the list of layers changed
+        QObject.connect(self.canvas, SIGNAL("layersChanged()"), self.updateLayersList_MaskLayer)
         # call to process mask
         QObject.connect(self.dockwidget.Btn_processMask, SIGNAL("clicked()"), self.processMask)
 
-    def updateLayersList(self):
+    def updateLayersList_MaskLayer(self):
         if self.dockwidget is not None:
-            self.dockwidget.selectList_InputImage.clear()
+            self.dockwidget.select_MaskLayer.clear()
             for layer in self.canvas.layers():
-                self.dockwidget.selectList_InputImage.addItem(layer.name())
+                self.dockwidget.select_MaskLayer.addItem(layer.name())
 
     def getLayerByName(self, layer_name):
         for layer in self.canvas.layers():
@@ -268,7 +265,7 @@ class CloudMasking:
                 return layer
 
     def processMask(self):
-        current_layer = self.getLayerByName(self.dockwidget.selectList_InputImage.currentText())
+        current_layer = self.getLayerByName(self.dockwidget.lineEdit_PathMTL.currentText())
 
         if current_layer is not None:
             if current_layer.type() == QgsMapLayer.VectorLayer:
