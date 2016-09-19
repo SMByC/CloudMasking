@@ -24,6 +24,8 @@ import os
 from PyQt4 import QtGui, uic, QtCore
 from PyQt4.QtCore import pyqtSignal
 
+import cloud_masking_utils
+
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'cloud_masking_dockwidget_base.ui'))
 
@@ -47,7 +49,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.setupUi(self)
         self.setup_gui()
         # Setup default MTL file
-        self.mtl_file = os.getcwd()
+        self.mtl_path = os.getcwd()
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
@@ -56,6 +58,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def setup_gui(self):
         # find MTL file #########
         self.Btn_FindMTL.clicked.connect(self.fileDialog_findMTL)
+        self.Btn_LoadMTL.clicked.connect(self.load_MTL)
 
         # FMask Cloud probability #########
         # start hidden
@@ -97,10 +100,30 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def fileDialog_findMTL(self):
         """Open QFileDialog to find a MTL file
         """
-        mtl = str(QtGui.QFileDialog.
-                  getOpenFileName(self, self.tr('Select the MTL file'),
-                                  self.mtl_file if os.path.isdir(self.mtl_file)
-                                  else os.path.dirname(self.mtl_file),
-                                  self.tr("MTL file (*MTL.txt);;All files (*.*)")))
-        if mtl != '':
-            self.lineEdit_PathMTL.setText(mtl)
+        self.mtl_path = str(QtGui.QFileDialog.
+                            getOpenFileName(self, self.tr('Select the MTL file'),
+                                            self.mtl_path if os.path.isdir(self.mtl_path)
+                                            else os.path.dirname(self.mtl_path),
+                                            self.tr("MTL file (*MTL.txt);;All files (*.*)")))
+        if self.mtl_path != '':
+            self.lineEdit_PathMTL.setText(self.mtl_path)
+
+    @QtCore.pyqtSlot()
+    def load_MTL(self):
+        """ Load MTL file currently specified in QLineEdit """
+        self.mtl_path = str(self.lineEdit_PathMTL.text())
+
+        try:
+            mtl = cloud_masking_utils.mtl2dict(self.mtl_path)
+            # get the landsat version
+            self.landsat_version = int(mtl['SPACECRAFT_ID'].split('_')[-1])
+        except:
+            self.label_LoadedMTL.setText('Error - cannot parse MTL file')
+            return
+
+        # If we load it okay
+        self.mtl_file = mtl
+        self.kled_LoadedMTL.on()
+
+        self.label_LoadedMTL.setText('{} (Landsat {})'.format(self.mtl_file['LANDSAT_SCENE_ID'],
+                                                              self.landsat_version))

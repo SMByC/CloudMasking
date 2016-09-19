@@ -31,8 +31,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>630</width>
-         <height>826</height>
+         <width>610</width>
+         <height>882</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -41,22 +41,81 @@
           <property name="title">
            <string>Landsat Metadata File (MTL)</string>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout">
+          <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
-            <widget class="QLineEdit" name="lineEdit_PathMTL"/>
-           </item>
-           <item>
-            <widget class="QPushButton" name="Btn_FindMTL">
-             <property name="text">
-              <string>Browse</string>
-             </property>
+            <widget class="QWidget" name="widget_3" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QLineEdit" name="lineEdit_PathMTL"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="Btn_FindMTL">
+                <property name="text">
+                 <string>Browse</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="Btn_LoadMTL">
+                <property name="text">
+                 <string>Load</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="Btn_LoadMTL">
-             <property name="text">
-              <string>Load</string>
+            <widget class="QWidget" name="widget_4" native="true">
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
              </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="KLed" name="kled_LoadedMTL">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="state">
+                 <enum>KLed::Off</enum>
+                </property>
+                <property name="look">
+                 <enum>KLed::Raised</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_LoadedMTL">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
@@ -353,52 +412,72 @@
          </spacer>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupBox_2">
+         <widget class="QGroupBox" name="groupBox_SaveApply">
           <property name="title">
            <string>Save and apply</string>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
-            <spacer name="horizontalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QComboBox" name="select_MaskLayer">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-             <property name="frame">
-              <bool>true</bool>
-             </property>
+            <widget class="QWidget" name="widget" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>Select the mask layer</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="select_MaskLayer">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="frame">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_4">
+                <property name="text">
+                 <string>Save mask</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_4">
-             <property name="text">
-              <string>Save mask</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_5">
-             <property name="text">
-              <string>Apply mask to data</string>
-             </property>
+            <widget class="QWidget" name="widget_2" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>Select the data layer</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="select_Data">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_5">
+                <property name="text">
+                 <string>Apply mask to data</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
@@ -411,6 +490,13 @@
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KLed</class>
+   <extends>QWidget</extends>
+   <header>kled.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -421,11 +507,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>97</x>
-     <y>211</y>
+     <y>256</y>
     </hint>
     <hint type="destinationlabel">
      <x>107</x>
-     <y>235</y>
+     <y>280</y>
     </hint>
    </hints>
   </connection>
@@ -437,11 +523,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>132</x>
-     <y>381</y>
+     <y>426</y>
     </hint>
     <hint type="destinationlabel">
      <x>132</x>
-     <y>411</y>
+     <y>456</y>
     </hint>
    </hints>
   </connection>
@@ -453,11 +539,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>174</x>
-     <y>493</y>
+     <y>538</y>
     </hint>
     <hint type="destinationlabel">
      <x>171</x>
-     <y>531</y>
+     <y>576</y>
     </hint>
    </hints>
   </connection>
