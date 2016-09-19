@@ -3,7 +3,7 @@
 /***************************************************************************
  CloudMaskingDockWidget
                                  A QGIS plugin
- Cloud masking using different process suck as fmask
+ Cloud masking for landsat products using different process suck as fmask
                              -------------------
         copyright            : (C) 2016 by Xavier Corredor Llano, SMBYC
         email                : xcorredorl@ideam.gov.co
@@ -102,5 +102,5 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                                   self.mtl_file if os.path.isdir(self.mtl_file)
                                   else os.path.dirname(self.mtl_file),
                                   self.tr("MTL file (*MTL.txt);;All files (*.*)")))
-        #if mtl != '':
-        #    self.edit_MTL.setText(mtl)
+        if mtl != '':
+            self.lineEdit_PathMTL.setText(mtl)

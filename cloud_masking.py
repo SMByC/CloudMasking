@@ -3,7 +3,7 @@
 /***************************************************************************
  CloudMasking
                                  A QGIS plugin
- Cloud masking using different process suck as fmask
+ Cloud masking for landsat products using different process suck as fmask
                               -------------------
         copyright            : (C) 2016 by Xavier Corredor Llano, SMBYC
         email                : xcorredorl@ideam.gov.co
@@ -270,7 +270,7 @@ class CloudMasking:
         if current_layer is not None:
             if current_layer.type() == QgsMapLayer.VectorLayer:
                 QMessageBox.information(self.iface.mainWindow(), "Information",
-                                        u"Selected Layer is not Raster Layer...")
+                                        self.tr(u"Selected Layer is not Raster Layer..."))
             elif current_layer.type() == QgsMapLayer.RasterLayer:
                 layerDataProvider = current_layer.dataProvider()
                 QgsMessageLog.logMessage(unicode(layerDataProvider.dataSourceUri()))
