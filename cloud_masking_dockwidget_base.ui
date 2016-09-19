@@ -30,7 +30,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-56</y>
          <width>610</width>
          <height>882</height>
         </rect>
@@ -425,9 +425,15 @@
           <property name="title">
            <string>Save and apply</string>
           </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
-            <widget class="QWidget" name="widget" native="true">
+            <widget class="QWidget" name="widget_SaveApply_01" native="true">
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
                <widget class="QLabel" name="label_4">
@@ -460,7 +466,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QWidget" name="widget_2" native="true">
+            <widget class="QWidget" name="widget_SaveApply_02" native="true">
              <layout class="QHBoxLayout" name="horizontalLayout_6">
               <item>
                <widget class="QLabel" name="label_5">
@@ -516,7 +522,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>97</x>
-     <y>256</y>
+     <y>200</y>
     </hint>
     <hint type="destinationlabel">
      <x>107</x>
@@ -532,7 +538,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>132</x>
-     <y>426</y>
+     <y>370</y>
     </hint>
     <hint type="destinationlabel">
      <x>132</x>
@@ -548,11 +554,43 @@
    <hints>
     <hint type="sourcelabel">
      <x>174</x>
-     <y>538</y>
+     <y>482</y>
     </hint>
     <hint type="destinationlabel">
      <x>171</x>
      <y>576</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_SaveApply</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_SaveApply_01</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>239</x>
+     <y>714</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>194</x>
+     <y>740</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_SaveApply</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_SaveApply_02</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>294</x>
+     <y>700</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>114</x>
+     <y>796</y>
     </hint>
    </hints>
   </connection>

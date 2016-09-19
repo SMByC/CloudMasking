@@ -80,6 +80,11 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # start hidden
         self.widget_QCflags.setHidden(True)
 
+        # Save and apply #########
+        # start hidden
+        self.widget_SaveApply_01.setHidden(True)
+        self.widget_SaveApply_02.setHidden(True)
+
     @QtCore.pyqtSlot(int)
     def update_cloud_prob(self, value):
         """Save value and connect the slider and spinbox
