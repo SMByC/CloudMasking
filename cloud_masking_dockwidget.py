@@ -20,9 +20,11 @@
 """
 
 import os
+from time import sleep
 
 from PyQt4 import QtGui, uic, QtCore
 from PyQt4.QtCore import pyqtSignal
+from PyQt4.QtGui import QApplication
 
 import cloud_masking_utils
 
@@ -59,6 +61,9 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # find MTL file #########
         self.Btn_FindMTL.clicked.connect(self.fileDialog_findMTL)
         self.Btn_LoadMTL.clicked.connect(self.load_MTL)
+        # MTL info
+        self.kled_LoadedMTL.off()
+        self.label_LoadedMTL.setText('No MTL file loaded yet')
 
         # FMask Cloud probability #########
         # start hidden
@@ -115,7 +120,11 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
     @QtCore.pyqtSlot()
     def load_MTL(self):
-        """ Load MTL file currently specified in QLineEdit """
+        """Load MTL file currently specified in QLineEdit"""
+
+        # first unload old MTL and clean temp files
+        self.unload_MTL()
+
         self.mtl_path = str(self.lineEdit_PathMTL.text())
 
         if not os.path.isfile(self.mtl_path):
@@ -133,10 +142,51 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         #### If we load it okay
         self.mtl_file = mtl
+        # MTL info
         self.kled_LoadedMTL.on()
-
         self.label_LoadedMTL.setText('{} (Landsat {})'.format(self.mtl_file['LANDSAT_SCENE_ID'],
                                                               self.landsat_version))
         # active filters box
         self.groupBox_Filters.setEnabled(True)
         self.groupBox_Filters.setChecked(True)
+
+    def unload_MTL(self):
+        """Disconnect, unload and remove temporal files of old MTL
+        and old process
+        """
+
+        # MTL info
+        self.kled_LoadedMTL.off()
+        # deactivate filters box
+        self.groupBox_Filters.setEnabled(False)
+        self.groupBox_Filters.setChecked(False)
+        # deactivate filters box
+        self.groupBox_SaveApply.setEnabled(False)
+        self.groupBox_SaveApply.setChecked(False)
+
+        #### Clean
+        self.label_LoadedMTL.setText('Cleaning temporal files ...')
+        # repaint
+        self.label_LoadedMTL.repaint()
+        QApplication.processEvents()
+        sleep(1)
+
+        # TODO: Removing temporary files
+        # for _tmp in self.temp_files:
+        #     # Try deleting with GDAL
+        #     try:
+        #         ds = gdal.Open(_tmp.name, gdal.GA_Update)
+        #         driver = ds.GetDriver()
+        #         for f in ds.GetFileList():
+        #             logger.info('Removing file {f}'.format(f=f))
+        #             driver.Delete(f)
+        #     except:
+        #         logger.warning('Could not delete {f} using GDAL'.format(f=f))
+        #
+        #     # Try deleting using tempfile
+        #     try:
+        #         _tmp.close()
+        #     except:
+        #         pass
+
+

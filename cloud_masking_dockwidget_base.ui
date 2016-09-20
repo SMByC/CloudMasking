@@ -91,7 +91,7 @@
                  <enum>KLed::Off</enum>
                 </property>
                 <property name="look">
-                 <enum>KLed::Raised</enum>
+                 <enum>KLed::Flat</enum>
                 </property>
                </widget>
               </item>
