@@ -51,7 +51,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.setupUi(self)
         self.setup_gui()
         # Setup default MTL file
-        self.mtl_path = os.getcwd()
+        self.mtl_path = os.getcwd()  # path to MTL file
+        self.mtl_file = None  # dict with all parameters of MTL file
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
@@ -144,10 +145,9 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             return
 
         #### If we load it okay
-        self.mtl = {'path': self.mtl_path, 'file': self.mtl_file}
         # MTL info
         self.kled_LoadedMTL.on()
-        self.label_LoadedMTL.setText('{} (Landsat {})'.format(self.mtl['file']['LANDSAT_SCENE_ID'],
+        self.label_LoadedMTL.setText('{} (Landsat {})'.format(self.mtl_file['LANDSAT_SCENE_ID'],
                                                               self.landsat_version))
         # active filters box
         self.groupBox_Filters.setEnabled(True)
@@ -191,5 +191,3 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         #         _tmp.close()
         #     except:
         #         pass
-
-
