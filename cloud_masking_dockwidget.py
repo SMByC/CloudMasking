@@ -136,18 +136,18 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         # load the MTL file
         try:
-            mtl = cloud_masking_utils.mtl2dict(self.mtl_path)
+            self.mtl_file = cloud_masking_utils.mtl2dict(self.mtl_path)
             # get the landsat version
-            self.landsat_version = int(mtl['SPACECRAFT_ID'].split('_')[-1])
+            self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
         except:
             self.label_LoadedMTL.setText('Error - cannot parse MTL file')
             return
 
         #### If we load it okay
-        self.mtl_file = mtl
+        self.mtl = {'path': self.mtl_path, 'file': self.mtl_file}
         # MTL info
         self.kled_LoadedMTL.on()
-        self.label_LoadedMTL.setText('{} (Landsat {})'.format(self.mtl_file['LANDSAT_SCENE_ID'],
+        self.label_LoadedMTL.setText('{} (Landsat {})'.format(self.mtl['file']['LANDSAT_SCENE_ID'],
                                                               self.landsat_version))
         # active filters box
         self.groupBox_Filters.setEnabled(True)
