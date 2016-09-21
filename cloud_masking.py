@@ -26,6 +26,7 @@ import resources
 
 # Import the code for the DockWidget
 from cloud_masking_dockwidget import CloudMaskingDockWidget
+import cloud_filters
 import os.path
 
 
@@ -251,7 +252,7 @@ class CloudMasking:
         # handle connect when the list of layers changed
         QObject.connect(self.canvas, SIGNAL("layersChanged()"), self.updateLayersList_MaskLayer)
         # call to process mask
-        QObject.connect(self.dockwidget.Btn_processMask, SIGNAL("clicked()"), self.processMask)
+        QObject.connect(self.dockwidget.Btn_processMask, SIGNAL("clicked()"), self.process_mask)
 
     def updateLayersList_MaskLayer(self):
         if self.dockwidget is not None:
@@ -264,7 +265,13 @@ class CloudMasking:
             if layer.name() == layer_name:
                 return layer
 
-    def processMask(self):
+    def process_mask(self):
+        """Make the process
+        """
+
+        masking_result = cloud_filters.CloudMaskingResult(settings)
+
+    def apply_mask(self):
         current_layer = self.getLayerByName(self.dockwidget.lineEdit_PathMTL.currentText())
 
         if current_layer is not None:
