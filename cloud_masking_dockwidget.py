@@ -122,6 +122,9 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def load_MTL(self):
         """Load MTL file currently specified in QLineEdit"""
 
+        # TODO: first prompt to user if delete the current
+        # process and load a new MTL file
+
         # first unload old MTL and clean temp files
         self.unload_MTL()
 
@@ -160,7 +163,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # deactivate filters box
         self.groupBox_Filters.setEnabled(False)
         self.groupBox_Filters.setChecked(False)
-        # deactivate filters box
+        # deactivate save and apply box
         self.groupBox_SaveApply.setEnabled(False)
         self.groupBox_SaveApply.setChecked(False)
 
