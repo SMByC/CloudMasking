@@ -274,7 +274,7 @@ class CloudMasking:
             not self.dockwidget.checkBox_BlueBand.isChecked() and
             not self.dockwidget.checkBox_QCflags.isChecked()):
             self.dockwidget.label_processMaskStatus.setText(
-                self.tr("Error: any filter enabled")
+                self.tr("Error: no filters enabled for apply")
             )
             return
 
