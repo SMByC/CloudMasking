@@ -294,8 +294,8 @@ class CloudMasking:
 
             # fmask filter
             masking_result.do_fmask(
-                cloudbufferdistance=self.dockwidget.doubleSpinBox_CB.value,
-                shadowbufferdistance=self.dockwidget.doubleSpinBox_SB.value,
+                cloudbufferdistance=float(self.dockwidget.doubleSpinBox_CB.value()),
+                shadowbufferdistance=float(self.dockwidget.doubleSpinBox_SB.value()),
             )
 
         ########################################
