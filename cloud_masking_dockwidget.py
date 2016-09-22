@@ -86,6 +86,10 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # start hidden
         self.widget_QCflags.setHidden(True)
 
+        # Generate the cloud mask #########
+        # selected area start hidden
+        self.widget_SelectedArea.setHidden(True)
+
         # Save and apply #########
         # start hidden
         self.widget_SaveApply_01.setHidden(True)
@@ -152,6 +156,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # active filters box
         self.groupBox_Filters.setEnabled(True)
         self.groupBox_Filters.setChecked(True)
+        # active generate cloud mask box
+        self.groupBox_GenerateMask.setEnabled(True)
 
     def unload_MTL(self):
         """Disconnect, unload and remove temporal files of old MTL
