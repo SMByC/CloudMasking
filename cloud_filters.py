@@ -19,6 +19,11 @@
  ***************************************************************************/
 """
 import os
+import tempfile
+from subprocess import call
+from PyQt4.QtGui import QApplication
+
+from libs import gdal_merge
 
 
 class CloudMaskingResult(object):
@@ -31,7 +36,7 @@ class CloudMaskingResult(object):
         # dir to input landsat files
         self.input_dir = os.path.dirname(mtl_path)
         # tmp dir for process
-        self.tmp_dir = tmp_dir
+        self.tmp_dir = tempfile.mkdtemp(dir=tmp_dir)
 
         # get_metadata
         self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
@@ -45,6 +50,34 @@ class CloudMaskingResult(object):
                 os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_' + str(N)])
                 for N in [10,11]]
 
+    def do_fmask(self, processMaskStatus):
 
-    def do_fmask(self):
-        pass
+        ########################################
+        # reflective bands stack
+
+        # tmp file for reflective bands stack
+        self.reflective_stack = os.path.join(self.tmp_dir, "reflective_stack.tif")
+
+        processMaskStatus.setText("Making reflective bands stack...")
+        QApplication.processEvents()
+
+        gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
+                         self.reflective_stack] + self.reflective_bands)
+
+        ########################################
+        # thermal bands stack
+
+        # tmp file for reflective bands stack
+        self.thermal_stack = os.path.join(self.tmp_dir, "thermal_stack.tif")
+
+        processMaskStatus.setText("Making thermal bands stack...")
+        QApplication.processEvents()
+
+        gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
+                         self.thermal_stack] + self.thermal_bands)
+
+
+
+
+        processMaskStatus.setText("DONE")
+        QApplication.processEvents()

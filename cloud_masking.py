@@ -281,12 +281,13 @@ class CloudMasking:
         masking_result = cloud_filters.CloudMaskingResult(self.dockwidget.mtl_path,
                                                           self.dockwidget.mtl_file)
 
-
         ########################################
         # FMask filter
 
         if self.dockwidget.checkBox_FMask.isChecked():
-            pass
+
+            # fmask filter
+            masking_result.do_fmask(self.dockwidget.label_processMaskStatus)
 
         ########################################
         # Blue Band filter
