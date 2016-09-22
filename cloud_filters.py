@@ -23,6 +23,7 @@ import tempfile
 from PyQt4.QtGui import QApplication
 
 from libs import gdal_merge
+from libs.fmask import fmask
 from libs.fmask import landsatTOA
 from libs.fmask import landsatangles
 from libs.fmask import config
@@ -40,6 +41,8 @@ class CloudMaskingResult(object):
         self.input_dir = os.path.dirname(mtl_path)
         # tmp dir for process
         self.tmp_dir = tempfile.mkdtemp(dir=tmp_dir)
+        # bar and status progress
+        self.process_status = None
 
         # get_metadata
         self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
@@ -53,7 +56,7 @@ class CloudMaskingResult(object):
                 os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_' + str(N)])
                 for N in [10,11]]
 
-    def do_fmask(self, processMaskStatus):
+    def do_fmask(self, mincloudsize=0, cloudbufferdistance=150, shadowbufferdistance=300):
 
         ########################################
         # reflective bands stack
@@ -61,7 +64,7 @@ class CloudMaskingResult(object):
         # tmp file for reflective bands stack
         self.reflective_stack_file = os.path.join(self.tmp_dir, "reflective_stack.tif")
 
-        processMaskStatus.setText("Making reflective bands stack...")
+        self.process_status.setText("Making reflective bands stack...")
         QApplication.processEvents()
 
         gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
@@ -73,7 +76,7 @@ class CloudMaskingResult(object):
         # tmp file for reflective bands stack
         self.thermal_stack_file = os.path.join(self.tmp_dir, "thermal_stack.tif")
 
-        processMaskStatus.setText("Making thermal bands stack...")
+        self.process_status.setText("Making thermal bands stack...")
         QApplication.processEvents()
 
         gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
@@ -88,7 +91,7 @@ class CloudMaskingResult(object):
         # tmp file for angles
         self.angles_file = os.path.join(self.tmp_dir, "angles.tif")
 
-        processMaskStatus.setText("Making fmask angles file...")
+        self.process_status.setText("Making fmask angles file...")
         QApplication.processEvents()
 
         mtlInfo = config.readMTLFile(self.mtl_path)
@@ -111,7 +114,7 @@ class CloudMaskingResult(object):
         # tmp file for angles
         self.saturationmask_file = os.path.join(self.tmp_dir, "saturationmask.tif")
 
-        processMaskStatus.setText("Making saturation mask file...")
+        self.process_status.setText("Making saturation mask file...")
         QApplication.processEvents()
 
         if self.landsat_version == 4:
@@ -135,16 +138,65 @@ class CloudMaskingResult(object):
         #
         # fmask_usgsLandsatTOA.py
 
-        # tmp file for angles
+        # tmp file for toa
         self.toa_file = os.path.join(self.tmp_dir, "toa.tif")
 
-        processMaskStatus.setText("Making top of Atmosphere ref...")
+        self.process_status.setText("Making top of Atmosphere ref...")
         QApplication.processEvents()
 
         landsatTOA.makeTOAReflectance(self.reflective_stack_file, self.mtl_path,
                                       self.angles_file, self.toa_file)
 
+        ########################################
+        # cloud mask
+        #
+        # fmask_usgsLandsatStacked.py
+
+        # tmp file for cloud
+        self.cloud_file = os.path.join(self.tmp_dir, "cloud.tif")
+
+        self.process_status.setText("Making cloud mask with fmask...")
+        QApplication.processEvents()
+
+        # 1040nm thermal band should always be the first (or only) band in a
+        # stack of Landsat thermal bands
+        thermalInfo = config.readThermalInfoFromLandsatMTL(self.mtl_path)
+
+        anglesInfo = config.AnglesFileInfo(self.angles_file, 3, self.angles_file,
+                                           2, self.angles_file, 1, self.angles_file, 0)
+
+        if self.landsat_version == 4:
+            sensor = config.FMASK_LANDSAT47
+        elif self.landsat_version == 5:
+            sensor = config.FMASK_LANDSAT47
+        elif self.landsat_version == 7:
+            sensor = config.FMASK_LANDSAT47
+        elif self.landsat_version == 8:
+            sensor = config.FMASK_LANDSAT8
+
+        fmaskFilenames = config.FmaskFilenames()
+        fmaskFilenames.setTOAReflectanceFile(self.toa_file)
+        fmaskFilenames.setThermalFile(self.thermal_stack_file)
+        fmaskFilenames.setOutputCloudMaskFile(self.cloud_file)
+        fmaskFilenames.setSaturationMask(self.saturationmask_file)  # TODO: optional
+
+        fmaskConfig = config.FmaskConfig(sensor)
+        fmaskConfig.setThermalInfo(thermalInfo)
+        fmaskConfig.setAnglesInfo(anglesInfo)
+        fmaskConfig.setKeepIntermediates(False)
+        fmaskConfig.setVerbose(False)
+        fmaskConfig.setTempDir(self.tmp_dir)
+        fmaskConfig.setMinCloudSize(mincloudsize)
+
+        # Work out a suitable buffer size, in pixels, dependent
+        # on the resolution of the input TOA image
+        toaImgInfo = fileinfo.ImageInfo(self.toa_file)
+        fmaskConfig.setCloudBufferSize(int(cloudbufferdistance / toaImgInfo.xRes))
+        fmaskConfig.setShadowBufferSize(int(shadowbufferdistance / toaImgInfo.xRes))
+
+        fmask.doFmask(fmaskFilenames, fmaskConfig)
 
 
-        processMaskStatus.setText("DONE")
+        ### ending fmask process
+        self.process_status.setText("DONE")
         QApplication.processEvents()
