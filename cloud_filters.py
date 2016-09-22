@@ -20,11 +20,12 @@
 """
 import os
 import tempfile
-from subprocess import call
 from PyQt4.QtGui import QApplication
 
 from libs import gdal_merge
-
+from libs.fmask import landsatangles
+from libs.fmask import config
+from libs.rios import fileinfo
 
 class CloudMaskingResult(object):
     """ Object for process, apply filters, masking and storing results
@@ -56,26 +57,49 @@ class CloudMaskingResult(object):
         # reflective bands stack
 
         # tmp file for reflective bands stack
-        self.reflective_stack = os.path.join(self.tmp_dir, "reflective_stack.tif")
+        self.reflective_stack_file = os.path.join(self.tmp_dir, "reflective_stack.tif")
 
         processMaskStatus.setText("Making reflective bands stack...")
         QApplication.processEvents()
 
         gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
-                         self.reflective_stack] + self.reflective_bands)
+                         self.reflective_stack_file] + self.reflective_bands)
 
         ########################################
         # thermal bands stack
 
         # tmp file for reflective bands stack
-        self.thermal_stack = os.path.join(self.tmp_dir, "thermal_stack.tif")
+        self.thermal_stack_file = os.path.join(self.tmp_dir, "thermal_stack.tif")
 
         processMaskStatus.setText("Making thermal bands stack...")
         QApplication.processEvents()
 
         gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
-                         self.thermal_stack] + self.thermal_bands)
+                         self.thermal_stack_file] + self.thermal_bands)
 
+        ########################################
+        # estimates of per-pixel angles for sun
+        # and satellite azimuth and zenith
+        #
+        # fmask_usgsLandsatMakeAnglesImage.py
+
+        # tmp file for angles
+        self.angles_file = os.path.join(self.tmp_dir, "angles.tif")
+
+        processMaskStatus.setText("Making fmask angles file...")
+        QApplication.processEvents()
+
+        mtlInfo = config.readMTLFile(self.mtl_path)
+
+        imgInfo = fileinfo.ImageInfo(self.reflective_stack_file)
+        corners = landsatangles.findImgCorners(self.reflective_stack_file, imgInfo)
+        nadirLine = landsatangles.findNadirLine(corners)
+
+        extentSunAngles = landsatangles.sunAnglesForExtent(imgInfo, mtlInfo)
+        satAzimuth = landsatangles.satAzLeftRight(nadirLine)
+
+        landsatangles.makeAnglesImage(self.reflective_stack_file, self.angles_file,
+                                      nadirLine, extentSunAngles, satAzimuth, imgInfo)
 
 
 
