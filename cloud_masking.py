@@ -269,14 +269,18 @@ class CloudMasking:
         """Make the process
         """
 
-        # check
+        # check if any filters has been enabled before process
         if (not self.dockwidget.checkBox_FMask.isChecked() and
-            not self.dockwidget.checkBox_BlueBand.isChecked() and
-            not self.dockwidget.checkBox_QCflags.isChecked()):
+                not self.dockwidget.checkBox_BlueBand.isChecked() and
+                not self.dockwidget.checkBox_QCflags.isChecked()):
             self.dockwidget.label_processMaskStatus.setText(
                 self.tr("Error: no filters enabled for apply")
             )
             return
+
+        masking_result = cloud_filters.CloudMaskingResult(self.dockwidget.mtl_path,
+                                                          self.dockwidget.mtl_file)
+
 
         ########################################
         # FMask filter
@@ -296,7 +300,7 @@ class CloudMasking:
         if self.dockwidget.checkBox_QCflags.isChecked():
             pass
 
-        #masking_result = cloud_filters.CloudMaskingResult(settings)
+
 
     def apply_mask(self):
         current_layer = self.getLayerByName(self.dockwidget.lineEdit_PathMTL.currentText())

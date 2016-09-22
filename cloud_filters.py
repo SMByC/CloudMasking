@@ -24,6 +24,9 @@ class CloudMaskingResult(object):
     """ Object for process, apply filters, masking and storing results
     """
 
-    def __init__(self, settings):
-        self.settings = settings
+    def __init__(self, mtl_path, mtl_file, tmp_dir=None):
+        self.mtl_path = mtl_path
+        self.mtl_file = mtl_file
+        # tmp dir for process
+        self.tmp_dir = tmp_dir
 
