@@ -25,6 +25,7 @@ from PyQt4.QtGui import QApplication
 from libs import gdal_merge
 from libs.fmask import landsatangles
 from libs.fmask import config
+from libs.fmask import saturationcheck
 from libs.rios import fileinfo
 
 class CloudMaskingResult(object):
@@ -100,6 +101,33 @@ class CloudMaskingResult(object):
 
         landsatangles.makeAnglesImage(self.reflective_stack_file, self.angles_file,
                                       nadirLine, extentSunAngles, satAzimuth, imgInfo)
+
+        ########################################
+        # saturation mask
+        #
+        # fmask_usgsLandsatSaturationMask.py
+
+        # tmp file for angles
+        self.saturationmask_file = os.path.join(self.tmp_dir, "saturationmask.tif")
+
+        processMaskStatus.setText("Making saturation mask file...")
+        QApplication.processEvents()
+
+        if self.landsat_version == 4:
+            sensor = config.FMASK_LANDSAT47
+        elif self.landsat_version == 5:
+            sensor = config.FMASK_LANDSAT47
+        elif self.landsat_version == 7:
+            sensor = config.FMASK_LANDSAT47
+        elif self.landsat_version == 8:
+            sensor = config.FMASK_LANDSAT8
+
+        # needed so the saturation function knows which
+        # bands are visible etc.
+        fmaskConfig = config.FmaskConfig(sensor)
+
+        saturationcheck.makeSaturationMask(fmaskConfig, self.reflective_stack_file,
+                                           self.saturationmask_file)
 
 
 
