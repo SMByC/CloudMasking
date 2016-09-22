@@ -23,6 +23,7 @@ import tempfile
 from PyQt4.QtGui import QApplication
 
 from libs import gdal_merge
+from libs.fmask import landsatTOA
 from libs.fmask import landsatangles
 from libs.fmask import config
 from libs.fmask import saturationcheck
@@ -128,6 +129,20 @@ class CloudMaskingResult(object):
 
         saturationcheck.makeSaturationMask(fmaskConfig, self.reflective_stack_file,
                                            self.saturationmask_file)
+
+        ########################################
+        # top of Atmosphere reflectance
+        #
+        # fmask_usgsLandsatTOA.py
+
+        # tmp file for angles
+        self.toa_file = os.path.join(self.tmp_dir, "toa.tif")
+
+        processMaskStatus.setText("Making top of Atmosphere ref...")
+        QApplication.processEvents()
+
+        landsatTOA.makeTOAReflectance(self.reflective_stack_file, self.mtl_path,
+                                      self.angles_file, self.toa_file)
 
 
 
