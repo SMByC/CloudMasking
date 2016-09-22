@@ -20,7 +20,7 @@
 """
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
 from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox, QApplication, QCursor
-from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry
+from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer
 # Initialize Qt resources from file resources.py
 import resources
 
@@ -314,10 +314,12 @@ class CloudMasking:
         QApplication.restoreOverrideCursor()
 
         # Add to QGIS the reflectance stack file and cloud file
-        QgsMapLayerRegistry.instance().addMapLayer(masking_result.reflective_stack_file)
-        QgsMapLayerRegistry.instance().addMapLayer(masking_result.cloud_file)
-
-
+        self.reflective_stack_rlayer = QgsRasterLayer(masking_result.reflective_stack_file,
+                                                      "reflective stack")
+        self.cloud_mask_rlayer = QgsRasterLayer(masking_result.cloud_file,
+                                                "cloud mask")
+        QgsMapLayerRegistry.instance().addMapLayer(self.reflective_stack_rlayer)
+        QgsMapLayerRegistry.instance().addMapLayer(self.cloud_mask_rlayer)
 
     def apply_mask(self):
         current_layer = self.getLayerByName(self.dockwidget.lineEdit_PathMTL.currentText())
