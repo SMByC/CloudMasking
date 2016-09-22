@@ -20,7 +20,7 @@
 """
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
 from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox, QApplication, QCursor
-from qgis.core import QgsMapLayer, QgsMessageLog
+from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry
 # Initialize Qt resources from file resources.py
 import resources
 
@@ -309,6 +309,10 @@ class CloudMasking:
 
         # restore mouse
         QApplication.restoreOverrideCursor()
+
+        # Add to QGIS the reflectance stack file and cloud file
+        QgsMapLayerRegistry.instance().addMapLayer(masking_result.reflective_stack_file)
+        QgsMapLayerRegistry.instance().addMapLayer(masking_result.cloud_file)
 
 
 
