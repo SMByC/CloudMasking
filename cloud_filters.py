@@ -43,6 +43,7 @@ class CloudMaskingResult(object):
         self.tmp_dir = tempfile.mkdtemp(dir=tmp_dir)
         # bar and status progress
         self.process_status = None
+        self.process_bar = None
 
         # get_metadata
         self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
@@ -65,6 +66,7 @@ class CloudMaskingResult(object):
         self.reflective_stack_file = os.path.join(self.tmp_dir, "reflective_stack.tif")
 
         self.process_status.setText("Making reflective bands stack...")
+        self.process_bar.setValue(10)
         QApplication.processEvents()
 
         gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
@@ -77,6 +79,7 @@ class CloudMaskingResult(object):
         self.thermal_stack_file = os.path.join(self.tmp_dir, "thermal_stack.tif")
 
         self.process_status.setText("Making thermal bands stack...")
+        self.process_bar.setValue(20)
         QApplication.processEvents()
 
         gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
@@ -92,6 +95,7 @@ class CloudMaskingResult(object):
         self.angles_file = os.path.join(self.tmp_dir, "angles.tif")
 
         self.process_status.setText("Making fmask angles file...")
+        self.process_bar.setValue(30)
         QApplication.processEvents()
 
         mtlInfo = config.readMTLFile(self.mtl_path)
@@ -115,6 +119,7 @@ class CloudMaskingResult(object):
         self.saturationmask_file = os.path.join(self.tmp_dir, "saturationmask.tif")
 
         self.process_status.setText("Making saturation mask file...")
+        self.process_bar.setValue(40)
         QApplication.processEvents()
 
         if self.landsat_version == 4:
@@ -142,6 +147,7 @@ class CloudMaskingResult(object):
         self.toa_file = os.path.join(self.tmp_dir, "toa.tif")
 
         self.process_status.setText("Making top of Atmosphere ref...")
+        self.process_bar.setValue(50)
         QApplication.processEvents()
 
         landsatTOA.makeTOAReflectance(self.reflective_stack_file, self.mtl_path,
@@ -156,6 +162,7 @@ class CloudMaskingResult(object):
         self.cloud_file = os.path.join(self.tmp_dir, "cloud.tif")
 
         self.process_status.setText("Making cloud mask with fmask...")
+        self.process_bar.setValue(70)
         QApplication.processEvents()
 
         # 1040nm thermal band should always be the first (or only) band in a
@@ -199,4 +206,5 @@ class CloudMaskingResult(object):
 
         ### ending fmask process
         self.process_status.setText("DONE")
+        self.process_bar.setValue(100)
         QApplication.processEvents()

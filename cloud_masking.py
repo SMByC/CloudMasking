@@ -19,7 +19,7 @@
  ***************************************************************************/
 """
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
-from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox
+from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox, QApplication, QCursor
 from qgis.core import QgsMapLayer, QgsMessageLog
 # Initialize Qt resources from file resources.py
 import resources
@@ -282,6 +282,10 @@ class CloudMasking:
                                                           self.dockwidget.mtl_file)
 
         masking_result.process_status = self.dockwidget.label_processMaskStatus
+        masking_result.process_bar = self.dockwidget.progressBar
+
+        # mouse wait
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
         ########################################
         # FMask filter
@@ -302,6 +306,9 @@ class CloudMasking:
 
         if self.dockwidget.checkBox_QCflags.isChecked():
             pass
+
+        # restore mouse
+        QApplication.restoreOverrideCursor()
 
 
 
