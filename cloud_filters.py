@@ -23,11 +23,7 @@ import tempfile
 from PyQt4.QtGui import QApplication
 
 from libs import gdal_merge
-from libs.fmask import fmask
-from libs.fmask import landsatTOA
-from libs.fmask import landsatangles
-from libs.fmask import config
-from libs.fmask import saturationcheck
+from libs.fmask import fmask, landsatTOA, landsatangles, config, saturationcheck
 from libs.rios import fileinfo
 
 class CloudMaskingResult(object):
