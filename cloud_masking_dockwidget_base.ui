@@ -30,7 +30,7 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-141</y>
+         <y>-230</y>
          <width>554</width>
          <height>1056</height>
         </rect>
@@ -134,9 +134,6 @@
           </property>
           <property name="title">
            <string>Filters to apply</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
           </property>
           <property name="checked">
            <bool>false</bool>
@@ -566,7 +563,7 @@
            <string>Save and apply</string>
           </property>
           <property name="checkable">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="checked">
            <bool>false</bool>

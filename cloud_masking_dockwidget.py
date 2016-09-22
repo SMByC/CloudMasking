@@ -155,7 +155,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                                                               self.landsat_version))
         # active filters box
         self.groupBox_Filters.setEnabled(True)
-        self.groupBox_Filters.setChecked(True)
+        #self.groupBox_Filters.setChecked(True)
         # active generate cloud mask box
         self.groupBox_GenerateMask.setEnabled(True)
 
