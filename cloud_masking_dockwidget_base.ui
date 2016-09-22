@@ -30,9 +30,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-230</y>
+         <y>0</y>
          <width>554</width>
-         <height>1056</height>
+         <height>1103</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -263,14 +263,21 @@
                 <layout class="QVBoxLayout" name="verticalLayout_2">
                  <item>
                   <widget class="QWidget" name="widget_FMask_01" native="true">
-                   <layout class="QGridLayout" name="gridLayout_5">
-                    <item row="1" column="1">
-                     <widget class="QSlider" name="horizontalSlider_CP">
+                   <layout class="QGridLayout" name="gridLayout_3">
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label">
+                      <property name="text">
+                       <string>Cloud buffer</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QSlider" name="horizontalSlider_CB">
                       <property name="minimum">
-                       <number>-50</number>
+                       <number>0</number>
                       </property>
                       <property name="maximum">
-                       <number>100</number>
+                       <number>400</number>
                       </property>
                       <property name="singleStep">
                        <number>1</number>
@@ -280,13 +287,16 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="1" column="2">
-                     <widget class="QDoubleSpinBox" name="doubleSpinBox_CP">
+                    <item row="0" column="2">
+                     <widget class="QDoubleSpinBox" name="doubleSpinBox_CB">
                       <property name="decimals">
                        <number>1</number>
                       </property>
                       <property name="minimum">
-                       <double>-50.000000000000000</double>
+                       <double>0.000000000000000</double>
+                      </property>
+                      <property name="maximum">
+                       <double>400.000000000000000</double>
                       </property>
                       <property name="singleStep">
                        <double>0.100000000000000</double>
@@ -294,9 +304,29 @@
                      </widget>
                     </item>
                     <item row="1" column="0">
-                     <widget class="QLabel" name="label">
+                     <widget class="QLabel" name="label_10">
                       <property name="text">
-                       <string>Cloud probability</string>
+                       <string>Shadow buffer</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QSlider" name="horizontalSlider_SB">
+                      <property name="maximum">
+                       <number>400</number>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="2">
+                     <widget class="QDoubleSpinBox" name="doubleSpinBox_SB">
+                      <property name="decimals">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <double>400.000000000000000</double>
                       </property>
                      </widget>
                     </item>
@@ -659,11 +689,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>115</x>
-     <y>153</y>
+     <y>270</y>
     </hint>
     <hint type="destinationlabel">
      <x>125</x>
-     <y>273</y>
+     <y>390</y>
     </hint>
    </hints>
   </connection>
@@ -675,11 +705,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>150</x>
-     <y>326</y>
+     <y>490</y>
     </hint>
     <hint type="destinationlabel">
      <x>150</x>
-     <y>397</y>
+     <y>561</y>
     </hint>
    </hints>
   </connection>
@@ -691,11 +721,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>192</x>
-     <y>450</y>
+     <y>614</y>
     </hint>
     <hint type="destinationlabel">
      <x>189</x>
-     <y>536</y>
+     <y>700</y>
     </hint>
    </hints>
   </connection>
@@ -707,11 +737,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>241</x>
-     <y>806</y>
+     <y>970</y>
     </hint>
     <hint type="destinationlabel">
      <x>204</x>
-     <y>875</y>
+     <y>1039</y>
     </hint>
    </hints>
   </connection>
@@ -723,11 +753,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>296</x>
-     <y>805</y>
+     <y>969</y>
     </hint>
     <hint type="destinationlabel">
      <x>124</x>
-     <y>963</y>
+     <y>1127</y>
     </hint>
    </hints>
   </connection>
@@ -739,11 +769,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>41</x>
-     <y>612</y>
+     <y>776</y>
     </hint>
     <hint type="destinationlabel">
      <x>26</x>
-     <y>650</y>
+     <y>814</y>
     </hint>
    </hints>
   </connection>

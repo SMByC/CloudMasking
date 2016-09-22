@@ -35,8 +35,8 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
     # Fmask parameters by default
-    cloud_prob = 22.5
-    bb_threshold = 10
+    cloud_buffer = 150
+    shadow_buffer = 300
 
     closingPlugin = pyqtSignal()
 
@@ -70,17 +70,17 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # start hidden
         self.widget_FMask.setHidden(True)
         # Synchronize the slider with the spin box
-        self.update_cloud_prob(self.cloud_prob)
-        self.horizontalSlider_CP.valueChanged.connect(self.update_cloud_prob)
-        self.doubleSpinBox_CP.valueChanged.connect(self.update_cloud_prob)
+        self.update_cloud_buffer(self.cloud_buffer)
+        self.horizontalSlider_CB.valueChanged.connect(self.update_cloud_buffer)
+        self.doubleSpinBox_CB.valueChanged.connect(self.update_cloud_buffer)
 
         # Blue band threshold #########
         # start hidden
         self.widget_BlueBand.setHidden(True)
         # Synchronize the slider with the spin box
-        self.update_bb_threshold(self.bb_threshold)
-        self.horizontalSlider_BB.valueChanged.connect(self.update_bb_threshold)
-        self.doubleSpinBox_BB.valueChanged.connect(self.update_bb_threshold)
+        self.update_shadow_buffer(self.shadow_buffer)
+        self.horizontalSlider_SB.valueChanged.connect(self.update_shadow_buffer)
+        self.doubleSpinBox_SB.valueChanged.connect(self.update_shadow_buffer)
 
         # Quality control flags #########
         # start hidden
@@ -96,20 +96,20 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.widget_SaveApply_02.setHidden(True)
 
     @QtCore.pyqtSlot(int)
-    def update_cloud_prob(self, value):
+    def update_cloud_buffer(self, value):
         """Save value and connect the slider and spinbox
         """
-        self.cloud_prob = value
-        self.horizontalSlider_CP.setValue(value)
-        self.doubleSpinBox_CP.setValue(value)
+        self.cloud_buffer = value
+        self.horizontalSlider_CB.setValue(value)
+        self.doubleSpinBox_CB.setValue(value)
 
     @QtCore.pyqtSlot(int)
-    def update_bb_threshold(self, value):
+    def update_shadow_buffer(self, value):
         """Save value and connect the slider and spinbox
         """
-        self.bb_threshold = value
-        self.horizontalSlider_BB.setValue(value)
-        self.doubleSpinBox_BB.setValue(value)
+        self.shadow_buffer = value
+        self.horizontalSlider_SB.setValue(value)
+        self.doubleSpinBox_SB.setValue(value)
 
     @QtCore.pyqtSlot()
     def fileDialog_findMTL(self):
