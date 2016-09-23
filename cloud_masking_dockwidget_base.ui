@@ -30,9 +30,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-277</y>
+         <y>0</y>
          <width>554</width>
-         <height>1140</height>
+         <height>1187</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -264,14 +264,21 @@
                  <item>
                   <widget class="QWidget" name="widget_FMask_01" native="true">
                    <layout class="QGridLayout" name="gridLayout_3">
-                    <item row="0" column="0">
-                     <widget class="QLabel" name="label">
+                    <item row="2" column="0">
+                     <widget class="QLabel" name="label_10">
                       <property name="text">
-                       <string>Cloud buffer</string>
+                       <string>ShadowBuffer</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="1">
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label">
+                      <property name="text">
+                       <string>CloudBuffer</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
                      <widget class="QSlider" name="horizontalSlider_CB">
                       <property name="minimum">
                        <number>0</number>
@@ -287,7 +294,30 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="2">
+                    <item row="2" column="2">
+                     <widget class="QDoubleSpinBox" name="doubleSpinBox_SB">
+                      <property name="decimals">
+                       <number>1</number>
+                      </property>
+                      <property name="maximum">
+                       <double>400.000000000000000</double>
+                      </property>
+                      <property name="singleStep">
+                       <double>0.100000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="1">
+                     <widget class="QSlider" name="horizontalSlider_SB">
+                      <property name="maximum">
+                       <number>400</number>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="2">
                      <widget class="QDoubleSpinBox" name="doubleSpinBox_CB">
                       <property name="decimals">
                        <number>1</number>
@@ -303,30 +333,36 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="1" column="0">
-                     <widget class="QLabel" name="label_10">
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_12">
                       <property name="text">
-                       <string>Shadow buffer</string>
+                       <string>CirrusProbRatio</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="1" column="1">
-                     <widget class="QSlider" name="horizontalSlider_SB">
+                    <item row="0" column="1">
+                     <widget class="QSlider" name="horizontalSlider_CPR">
                       <property name="maximum">
-                       <number>400</number>
+                       <number>1000</number>
+                      </property>
+                      <property name="singleStep">
+                       <number>1</number>
                       </property>
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
                      </widget>
                     </item>
-                    <item row="1" column="2">
-                     <widget class="QDoubleSpinBox" name="doubleSpinBox_SB">
+                    <item row="0" column="2">
+                     <widget class="QDoubleSpinBox" name="doubleSpinBox_CPR">
                       <property name="decimals">
-                       <number>1</number>
+                       <number>3</number>
                       </property>
                       <property name="maximum">
-                       <double>400.000000000000000</double>
+                       <double>1.000000000000000</double>
+                      </property>
+                      <property name="singleStep">
+                       <double>0.005000000000000</double>
                       </property>
                      </widget>
                     </item>

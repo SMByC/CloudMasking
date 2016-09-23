@@ -35,8 +35,11 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
     # Fmask parameters by default
+    cirrus_prob_ratio = 0.04
     cloud_buffer = 150
     shadow_buffer = 300
+    # Blue band by default
+    bb_threshold = 10
 
     closingPlugin = pyqtSignal()
 
@@ -66,21 +69,30 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.kled_LoadedMTL.off()
         self.label_LoadedMTL.setText('No MTL file loaded yet')
 
-        # FMask Cloud probability #########
+        # FMask filters #########
         # start hidden
         self.widget_FMask.setHidden(True)
         # Synchronize the slider with the spin box
+        # cirrus_prob_ratio
+        self.update_cirrus_prob_ratio(self.cirrus_prob_ratio)
+        #self.horizontalSlider_CPR.valueChanged.connect(self.update_cirrus_prob_ratio)
+        self.doubleSpinBox_CPR.valueChanged.connect(self.update_cirrus_prob_ratio)
+        # cloud_buffer
         self.update_cloud_buffer(self.cloud_buffer)
         self.horizontalSlider_CB.valueChanged.connect(self.update_cloud_buffer)
         self.doubleSpinBox_CB.valueChanged.connect(self.update_cloud_buffer)
+        # shadow_buffer
+        self.update_shadow_buffer(self.shadow_buffer)
+        self.horizontalSlider_SB.valueChanged.connect(self.update_shadow_buffer)
+        self.doubleSpinBox_SB.valueChanged.connect(self.update_shadow_buffer)
 
         # Blue band threshold #########
         # start hidden
         self.widget_BlueBand.setHidden(True)
         # Synchronize the slider with the spin box
-        self.update_shadow_buffer(self.shadow_buffer)
-        self.horizontalSlider_SB.valueChanged.connect(self.update_shadow_buffer)
-        self.doubleSpinBox_SB.valueChanged.connect(self.update_shadow_buffer)
+        self.update_bb_threshold(self.bb_threshold)
+        self.horizontalSlider_BB.valueChanged.connect(self.update_bb_threshold)
+        self.doubleSpinBox_BB.valueChanged.connect(self.update_bb_threshold)
 
         # Quality control flags #########
         # start hidden
@@ -94,6 +106,14 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # start hidden
         self.widget_SaveApply_01.setHidden(True)
         self.widget_SaveApply_02.setHidden(True)
+
+    @QtCore.pyqtSlot(int)
+    def update_cirrus_prob_ratio(self, value):
+        """Save value and connect the slider and spinbox
+        """
+        self.cirrus_prob_ratio = value
+        self.horizontalSlider_CPR.setValue(value*1000)
+        self.doubleSpinBox_CPR.setValue(value)
 
     @QtCore.pyqtSlot(int)
     def update_cloud_buffer(self, value):
@@ -110,6 +130,14 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.shadow_buffer = value
         self.horizontalSlider_SB.setValue(value)
         self.doubleSpinBox_SB.setValue(value)
+
+    @QtCore.pyqtSlot(int)
+    def update_bb_threshold(self, value):
+        """Save value and connect the slider and spinbox
+        """
+        self.bb_threshold = value
+        self.horizontalSlider_BB.setValue(value)
+        self.doubleSpinBox_BB.setValue(value)
 
     @QtCore.pyqtSlot()
     def fileDialog_findMTL(self):

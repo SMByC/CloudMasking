@@ -53,7 +53,7 @@ class CloudMaskingResult(object):
                 os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_' + str(N)])
                 for N in [10,11]]
 
-    def do_fmask(self, mincloudsize=0, cloudbufferdistance=150, shadowbufferdistance=300):
+    def do_fmask(self, cirrusprobratio=0.04, mincloudsize=0, cloudbufferdistance=150, shadowbufferdistance=300):
 
         ########################################
         # reflective bands stack
@@ -190,6 +190,7 @@ class CloudMaskingResult(object):
         fmaskConfig.setVerbose(False)
         fmaskConfig.setTempDir(self.tmp_dir)
         fmaskConfig.setMinCloudSize(mincloudsize)
+        fmaskConfig.setCirrusProbRatio(cirrusprobratio)
 
         # Work out a suitable buffer size, in pixels, dependent
         # on the resolution of the input TOA image
