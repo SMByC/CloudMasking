@@ -310,6 +310,12 @@ class CloudMasking:
         if self.dockwidget.checkBox_QCflags.isChecked():
             pass
 
+        # delete unused output
+        os.remove(masking_result.thermal_stack_file)
+        os.remove(masking_result.angles_file)
+        os.remove(masking_result.saturationmask_file)
+        os.remove(masking_result.toa_file)
+
         # restore mouse
         QApplication.restoreOverrideCursor()
 
