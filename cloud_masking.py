@@ -314,12 +314,14 @@ class CloudMasking:
         QApplication.restoreOverrideCursor()
 
         # Add to QGIS the reflectance stack file and cloud file
-        self.reflective_stack_rlayer = QgsRasterLayer(masking_result.reflective_stack_file,
-                                                      "reflective stack")
-        self.cloud_mask_rlayer = QgsRasterLayer(masking_result.cloud_file,
-                                                "cloud mask")
-        QgsMapLayerRegistry.instance().addMapLayer(self.reflective_stack_rlayer)
-        QgsMapLayerRegistry.instance().addMapLayer(self.cloud_mask_rlayer)
+        if self.dockwidget.checkBox_LoadReflecStack.isChecked():
+            self.reflective_stack_rlayer = QgsRasterLayer(masking_result.reflective_stack_file,
+                                                          "reflective stack")
+            QgsMapLayerRegistry.instance().addMapLayer(self.reflective_stack_rlayer)
+        if self.dockwidget.checkBox_LoadCloudMask.isChecked():
+            self.cloud_mask_rlayer = QgsRasterLayer(masking_result.cloud_file,
+                                                    "cloud mask")
+            QgsMapLayerRegistry.instance().addMapLayer(self.cloud_mask_rlayer)
 
     def apply_mask(self):
         current_layer = self.getLayerByName(self.dockwidget.lineEdit_PathMTL.currentText())

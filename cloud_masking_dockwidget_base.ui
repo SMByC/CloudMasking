@@ -30,9 +30,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-277</y>
          <width>554</width>
-         <height>1103</height>
+         <height>1140</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -416,6 +416,9 @@
               <property name="rightMargin">
                <number>0</number>
               </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
               <item>
                <widget class="QPushButton" name="Btn_processMask">
                 <property name="text">
@@ -471,6 +474,13 @@
                </widget>
               </item>
              </layout>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QCheckBox" name="checkBox_6">
+             <property name="text">
+              <string>In only selected area</string>
+             </property>
             </widget>
            </item>
            <item row="1" column="0">
@@ -561,11 +571,53 @@
              </layout>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="QCheckBox" name="checkBox_6">
-             <property name="text">
-              <string>In only selected area</string>
-             </property>
+           <item row="3" column="0">
+            <widget class="QWidget" name="widget_2" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_11">
+                <property name="text">
+                 <string>Load when finnish:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="checkBox_LoadReflecStack">
+                <property name="text">
+                 <string>Reflec Stack</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="checkBox_LoadCloudMask">
+                <property name="text">
+                 <string>Cloud Mask</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
