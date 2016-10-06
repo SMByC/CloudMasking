@@ -74,25 +74,25 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.widget_FMask.setHidden(True)
         # Synchronize the slider with the spin box
         # cirrus_prob_ratio
-        #self.update_cirrus_prob_ratio(self.cirrus_prob_ratio)
         self.horizontalSlider_CPR.valueChanged.connect(self.update_cirrus_prob_ratio_slider)
         self.doubleSpinBox_CPR.valueChanged.connect(self.update_cirrus_prob_ratio_box)
+        self.update_cirrus_prob_ratio_box(self.cirrus_prob_ratio)  # initial value
         # cloud_buffer
-        self.update_cloud_buffer(self.cloud_buffer)
-        self.horizontalSlider_CB.valueChanged.connect(self.update_cloud_buffer)
-        self.doubleSpinBox_CB.valueChanged.connect(self.update_cloud_buffer)
+        self.horizontalSlider_CB.sliderMoved.connect(self.doubleSpinBox_CB.setValue)
+        self.doubleSpinBox_CB.valueChanged.connect(self.horizontalSlider_CB.setValue)
+        self.doubleSpinBox_CB.setValue(self.cloud_buffer)  # initial value
         # shadow_buffer
-        self.update_shadow_buffer(self.shadow_buffer)
-        self.horizontalSlider_SB.valueChanged.connect(self.update_shadow_buffer)
-        self.doubleSpinBox_SB.valueChanged.connect(self.update_shadow_buffer)
+        self.horizontalSlider_SB.sliderMoved.connect(self.doubleSpinBox_SB.setValue)
+        self.doubleSpinBox_SB.valueChanged.connect(self.horizontalSlider_SB.setValue)
+        self.doubleSpinBox_SB.setValue(self.shadow_buffer)  # initial value
 
         # Blue band threshold #########
         # start hidden
         self.widget_BlueBand.setHidden(True)
         # Synchronize the slider with the spin box
-        self.update_bb_threshold(self.bb_threshold)
-        self.horizontalSlider_BB.valueChanged.connect(self.update_bb_threshold)
-        self.doubleSpinBox_BB.valueChanged.connect(self.update_bb_threshold)
+        self.horizontalSlider_BB.sliderMoved.connect(self.doubleSpinBox_BB.setValue)
+        self.doubleSpinBox_BB.valueChanged.connect(self.horizontalSlider_BB.setValue)
+        self.doubleSpinBox_BB.setValue(self.bb_threshold)  # initial value
 
         # Quality control flags #########
         # start hidden
@@ -107,37 +107,13 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.widget_SaveApply_01.setHidden(True)
         self.widget_SaveApply_02.setHidden(True)
 
+    ## Cirrus prob ratio - for connect Qslider(int) with QdoubleSpinBox(float)
     @QtCore.pyqtSlot(int)
     def update_cirrus_prob_ratio_slider(self, value):
         self.doubleSpinBox_CPR.setValue(value/1000.0)
-
     @QtCore.pyqtSlot(float)
     def update_cirrus_prob_ratio_box(self, value):
         self.horizontalSlider_CPR.setValue(value*1000)
-
-    @QtCore.pyqtSlot(int)
-    def update_cloud_buffer(self, value):
-        """Save value and connect the slider and spinbox
-        """
-        self.cloud_buffer = value
-        self.horizontalSlider_CB.setValue(value)
-        self.doubleSpinBox_CB.setValue(value)
-
-    @QtCore.pyqtSlot(int)
-    def update_shadow_buffer(self, value):
-        """Save value and connect the slider and spinbox
-        """
-        self.shadow_buffer = value
-        self.horizontalSlider_SB.setValue(value)
-        self.doubleSpinBox_SB.setValue(value)
-
-    @QtCore.pyqtSlot(int)
-    def update_bb_threshold(self, value):
-        """Save value and connect the slider and spinbox
-        """
-        self.bb_threshold = value
-        self.horizontalSlider_BB.setValue(value)
-        self.doubleSpinBox_BB.setValue(value)
 
     @QtCore.pyqtSlot()
     def fileDialog_findMTL(self):
