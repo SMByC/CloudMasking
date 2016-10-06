@@ -74,9 +74,9 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.widget_FMask.setHidden(True)
         # Synchronize the slider with the spin box
         # cirrus_prob_ratio
-        self.update_cirrus_prob_ratio(self.cirrus_prob_ratio)
-        #self.horizontalSlider_CPR.valueChanged.connect(self.update_cirrus_prob_ratio)
-        self.doubleSpinBox_CPR.valueChanged.connect(self.update_cirrus_prob_ratio)
+        #self.update_cirrus_prob_ratio(self.cirrus_prob_ratio)
+        self.horizontalSlider_CPR.valueChanged.connect(self.update_cirrus_prob_ratio_slider)
+        self.doubleSpinBox_CPR.valueChanged.connect(self.update_cirrus_prob_ratio_box)
         # cloud_buffer
         self.update_cloud_buffer(self.cloud_buffer)
         self.horizontalSlider_CB.valueChanged.connect(self.update_cloud_buffer)
@@ -108,12 +108,12 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.widget_SaveApply_02.setHidden(True)
 
     @QtCore.pyqtSlot(int)
-    def update_cirrus_prob_ratio(self, value):
-        """Save value and connect the slider and spinbox
-        """
-        self.cirrus_prob_ratio = value
+    def update_cirrus_prob_ratio_slider(self, value):
+        self.doubleSpinBox_CPR.setValue(value/1000.0)
+
+    @QtCore.pyqtSlot(float)
+    def update_cirrus_prob_ratio_box(self, value):
         self.horizontalSlider_CPR.setValue(value*1000)
-        self.doubleSpinBox_CPR.setValue(value)
 
     @QtCore.pyqtSlot(int)
     def update_cloud_buffer(self, value):
