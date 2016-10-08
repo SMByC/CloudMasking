@@ -14,10 +14,7 @@ __copyright__ = 'Copyright 2016, Xavier Corredor Llano, SMBYC'
 
 import unittest
 
-from PyQt4.QtGui import QDockWidget
-
-from cloud_masking_dockwidget import CloudMaskingDockWidget
-
+from gui.cloud_masking_dockwidget import CloudMaskingDockWidget
 from utilities import get_qgis_app
 
 QGIS_APP = get_qgis_app()

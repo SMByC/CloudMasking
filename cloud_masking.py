@@ -18,16 +18,16 @@
  *                                                                         *
  ***************************************************************************/
 """
+import os.path
+
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
 from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox, QApplication, QCursor
 from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer
 # Initialize Qt resources from file resources.py
 import resources
 
-# Import the code for the DockWidget
-from cloud_masking_dockwidget import CloudMaskingDockWidget
-import cloud_filters
-import os.path
+from core import cloud_filters
+from gui.cloud_masking_dockwidget import CloudMaskingDockWidget
 
 
 class CloudMasking:
@@ -67,6 +67,9 @@ class CloudMasking:
         self.menu = self.tr(u'&Cloud Masking')
         #self.toolbar = self.iface.addToolBar(u'CloudMasking')
         #self.toolbar.setObjectName(u'CloudMasking')
+
+        # set the extent selector
+        #self.extentSelector.setCanvas(self.canvas)
 
         self.pluginIsActive = False
         self.dockwidget = None

@@ -20,16 +20,21 @@
 """
 
 import os
+import sys
 from time import sleep
 
 from PyQt4 import QtGui, uic, QtCore
 from PyQt4.QtCore import pyqtSignal
 from PyQt4.QtGui import QApplication
 
-import cloud_masking_utils
+plugin_folder = os.path.dirname(os.path.dirname(__file__))
+if plugin_folder not in sys.path:
+    sys.path.append(plugin_folder)
+
+from core import cloud_masking_utils
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'cloud_masking_dockwidget_base.ui'))
+    plugin_folder, 'ui', 'cloud_masking_dockwidget_base.ui'))
 
 
 class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):

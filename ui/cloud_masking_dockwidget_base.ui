@@ -30,9 +30,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-377</y>
          <width>554</width>
-         <height>1187</height>
+         <height>1203</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -434,7 +434,7 @@
            <string>Generate the cloud mask</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_6">
-           <item row="2" column="0">
+           <item row="3" column="0">
             <widget class="QFrame" name="frame">
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -607,7 +607,7 @@
              </layout>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="4" column="0">
             <widget class="QWidget" name="widget_2" native="true">
              <layout class="QHBoxLayout" name="horizontalLayout_9">
               <property name="topMargin">
@@ -655,6 +655,9 @@
               </item>
              </layout>
             </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="ExtentSelector" name="widget_ExtentSelector" native="true"/>
            </item>
           </layout>
          </widget>
@@ -765,6 +768,12 @@
    <class>KLed</class>
    <extends>QWidget</extends>
    <header>kled.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ExtentSelector</class>
+   <extends>QWidget</extends>
+   <header>gui.extentSelector</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

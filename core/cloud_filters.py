@@ -18,9 +18,13 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os
+import os, sys
 import tempfile
 from PyQt4.QtGui import QApplication
+
+plugin_folder = os.path.dirname(os.path.dirname(__file__))
+if plugin_folder not in sys.path:
+    sys.path.append(plugin_folder)
 
 from libs import gdal_merge
 from libs.fmask import fmask, landsatTOA, landsatangles, config, saturationcheck
