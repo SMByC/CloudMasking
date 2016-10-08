@@ -513,7 +513,7 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QCheckBox" name="checkBox_6">
+            <widget class="QCheckBox" name="checkBox_ExtentSelector">
              <property name="text">
               <string>In only selected area</string>
              </property>
@@ -859,7 +859,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>checkBox_6</sender>
+   <sender>checkBox_ExtentSelector</sender>
    <signal>clicked(bool)</signal>
    <receiver>widget_SelectedArea</receiver>
    <slot>setVisible(bool)</slot>

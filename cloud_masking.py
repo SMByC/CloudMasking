@@ -68,9 +68,6 @@ class CloudMasking:
         #self.toolbar = self.iface.addToolBar(u'CloudMasking')
         #self.toolbar.setObjectName(u'CloudMasking')
 
-        # set the extent selector
-        #self.extentSelector.setCanvas(self.canvas)
-
         self.pluginIsActive = False
         self.dockwidget = None
 

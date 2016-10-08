@@ -26,6 +26,7 @@ from time import sleep
 from PyQt4 import QtGui, uic, QtCore
 from PyQt4.QtCore import pyqtSignal
 from PyQt4.QtGui import QApplication
+from qgis.utils import iface
 
 plugin_folder = os.path.dirname(os.path.dirname(__file__))
 if plugin_folder not in sys.path:
@@ -56,11 +57,13 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
+        self.canvas = iface.mapCanvas()
         self.setupUi(self)
         self.setup_gui()
         # Setup default MTL file
         self.mtl_path = os.getcwd()  # path to MTL file
         self.mtl_file = None  # dict with all parameters of MTL file
+        self.isExtentAreaSelected = False
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
@@ -107,18 +110,43 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # selected area start hidden
         self.widget_SelectedArea.setHidden(True)
 
+        # Extent selector widget #########
+        # set the extent selector
+        self.widget_ExtentSelector.setCanvas(self.canvas)
+        # connections
+        self.widget_ExtentSelector.newExtentDefined.connect(self.extentChanged)
+        self.widget_ExtentSelector.selectionStarted.connect(self.checkRun)
+        self.checkBox_ExtentSelector.toggled.connect(self.switchClippingMode)
+
         # Save and apply #########
         # start hidden
         self.widget_SaveApply_01.setHidden(True)
         self.widget_SaveApply_02.setHidden(True)
 
-    ## Cirrus prob ratio - for connect Qslider(int) with QdoubleSpinBox(float)
+    ### Cirrus prob ratio - for connect Qslider(int) with QdoubleSpinBox(float)
     @QtCore.pyqtSlot(int)
     def update_cirrus_prob_ratio_slider(self, value):
         self.doubleSpinBox_CPR.setValue(value/1000.0)
     @QtCore.pyqtSlot(float)
     def update_cirrus_prob_ratio_box(self, value):
         self.horizontalSlider_CPR.setValue(value*1000)
+
+    ### Extent selector widget
+    def switchClippingMode(self):
+        if self.checkBox_ExtentSelector.isChecked():
+            self.widget_ExtentSelector.start()
+        else:
+            self.widget_ExtentSelector.stop()
+        self.checkRun()
+    def checkRun(self):
+        if self.checkBox_ExtentSelector.isChecked():
+            self.isExtentAreaSelected = self.widget_ExtentSelector.isCoordsValid()
+        else:
+            self.isExtentAreaSelected = False
+    def extentChanged(self):
+        self.activateWindow()
+        self.raise_()
+        self.checkRun()
 
     @QtCore.pyqtSlot()
     def fileDialog_findMTL(self):
