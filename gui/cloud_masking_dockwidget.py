@@ -76,7 +76,11 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.Btn_LoadMTL.clicked.connect(self.load_MTL)
         # MTL info
         self.kled_LoadedMTL.off()
-        self.label_LoadedMTL.setText('No MTL file loaded yet')
+        self.label_LoadedMTL_1.setText('No MTL file loaded yet')
+        self.label_LoadedMTL_2.setText('Please search and load it')
+
+        # Load stack and clear all #########
+        self.widget_LoadAndClear.setHidden(True)
 
         # FMask filters #########
         # start hidden
@@ -174,7 +178,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.mtl_path = str(self.lineEdit_PathMTL.text())
 
         if not os.path.isfile(self.mtl_path):
-            self.label_LoadedMTL.setText('Error - file not exist')
+            self.label_LoadedMTL_1.setText('Error:')
+            self.label_LoadedMTL_2.setText('File not exist')
             return
 
         # load the MTL file
@@ -183,14 +188,17 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             # get the landsat version
             self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
         except:
-            self.label_LoadedMTL.setText('Error - cannot parse MTL file')
+            self.label_LoadedMTL_1.setText('Error:')
+            self.label_LoadedMTL_2.setText('Cannot parse MTL file')
             return
 
         #### If we load it okay
         # MTL info
         self.kled_LoadedMTL.on()
-        self.label_LoadedMTL.setText('{} (Landsat {})'.format(self.mtl_file['LANDSAT_SCENE_ID'],
-                                                              self.landsat_version))
+        self.label_LoadedMTL_1.setText(self.mtl_file['LANDSAT_SCENE_ID'])
+        self.label_LoadedMTL_2.setText('Landsat {}'.format(self.landsat_version))
+        # Load stack and clear all #########
+        self.widget_LoadAndClear.setVisible(True)
         # active filters box
         self.groupBox_Filters.setEnabled(True)
         #self.groupBox_Filters.setChecked(True)
@@ -212,9 +220,11 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.groupBox_SaveApply.setChecked(False)
 
         #### Clean
-        self.label_LoadedMTL.setText('Cleaning temporal files ...')
+        self.label_LoadedMTL_1.setText('Please wait:')
+        self.label_LoadedMTL_2.setText('Cleaning temporal files ...')
         # repaint
-        self.label_LoadedMTL.repaint()
+        self.label_LoadedMTL_1.repaint()
+        self.label_LoadedMTL_2.repaint()
         QApplication.processEvents()
         sleep(1)
 
