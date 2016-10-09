@@ -51,11 +51,11 @@ class CloudMaskingResult(object):
             # get the reflective file names bands
             self.reflective_bands = [
                 os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
-                for N in [1,2,3,4,5,6,7,9]]
+                for N in [1, 2, 3, 4, 5, 6, 7, 9]]
             # get the thermal file names bands
             self.thermal_bands = [
                 os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_' + str(N)])
-                for N in [10,11]]
+                for N in [10, 11]]
 
     def do_fmask(self, cirrusprobratio=0.04, mincloudsize=0, cloudbufferdistance=150, shadowbufferdistance=300):
 

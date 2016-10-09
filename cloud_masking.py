@@ -19,6 +19,7 @@
  ***************************************************************************/
 """
 import os.path
+import shutil
 
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
 from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox, QApplication, QCursor
@@ -26,7 +27,7 @@ from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRaster
 # Initialize Qt resources from file resources.py
 import resources
 
-from core import cloud_filters
+from core import cloud_filters, rgb_stack
 from gui.cloud_masking_dockwidget import CloudMaskingDockWidget
 
 
@@ -194,7 +195,8 @@ class CloudMasking:
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed"""
 
-        #print "** CLOSING CloudMasking"
+        print "** CLOSING CloudMasking"
+        self.clear_all()
 
         # disconnects
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
@@ -211,7 +213,8 @@ class CloudMasking:
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
 
-        #print "** UNLOAD CloudMasking"
+        print "** UNLOAD CloudMasking"
+        self.clear_all()
 
         for action in self.actions:
             for menu_item in self.iface.mainWindow().menuBar().children():
@@ -251,6 +254,8 @@ class CloudMasking:
         self.updateLayersList_MaskLayer()
         # handle connect when the list of layers changed
         QObject.connect(self.canvas, SIGNAL("layersChanged()"), self.updateLayersList_MaskLayer)
+        # call to load RGB stack
+        QObject.connect(self.dockwidget.pushButton_LoadRGBStack, SIGNAL("clicked()"), self.load_rgb_stack)
         # call to process mask
         QObject.connect(self.dockwidget.Btn_processMask, SIGNAL("clicked()"), self.process_mask)
 
@@ -264,6 +269,14 @@ class CloudMasking:
         for layer in self.canvas.layers():
             if layer.name() == layer_name:
                 return layer
+
+    def load_rgb_stack(self):
+        self.rgb_stack_scene = rgb_stack.RGB_Stack(self.dockwidget.mtl_path,
+                                              self.dockwidget.mtl_file)
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))  # mouse wait
+        self.rgb_stack_scene.do_rgb_stack()
+        self.rgb_stack_scene.load_rgb_stack()
+        QApplication.restoreOverrideCursor()  # restore mouse
 
     def process_mask(self):
         """Make the process
@@ -340,3 +353,13 @@ class CloudMasking:
             elif current_layer.type() == QgsMapLayer.RasterLayer:
                 layerDataProvider = current_layer.dataProvider()
                 QgsMessageLog.logMessage(unicode(layerDataProvider.dataSourceUri()))
+
+    def clear_all(self):
+        # TODO
+
+        # clear RGB stack
+        try:
+            shutil.rmtree(self.rgb_stack_scene.tmp_dir)
+        except:
+            pass
+

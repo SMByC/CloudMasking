@@ -189,12 +189,12 @@
                   </spacer>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton_LoadStack">
+                  <widget class="QPushButton" name="pushButton_LoadRGBStack">
                    <property name="styleSheet">
                     <string notr="true">font-size: 9pt;</string>
                    </property>
                    <property name="text">
-                    <string>Load Stack</string>
+                    <string>Load RGB</string>
                    </property>
                   </widget>
                  </item>
