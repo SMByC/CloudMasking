@@ -363,3 +363,8 @@ class CloudMasking:
         except:
             pass
 
+        # unload MTL file
+        try:
+            self.dockwidget.unload_MTL()
+        except:
+            pass
