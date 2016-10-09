@@ -66,6 +66,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.isExtentAreaSelected = False
 
     def closeEvent(self, event):
+        self.widget_ExtentSelector.stop()
         self.closingPlugin.emit()
         event.accept()
 
@@ -108,7 +109,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         # Generate the cloud mask #########
         # selected area start hidden
-        self.widget_SelectedArea.setHidden(True)
+        self.widget_ExtentSelector.setHidden(True)
 
         # Extent selector widget #########
         # set the extent selector

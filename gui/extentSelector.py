@@ -49,7 +49,6 @@ class ExtentSelector(QWidget, FORM_CLASS):
         self.x2CoordEdit.textChanged.connect(self.coordsChanged)
         self.y1CoordEdit.textChanged.connect(self.coordsChanged)
         self.y2CoordEdit.textChanged.connect(self.coordsChanged)
-        self.btnEnable.clicked.connect(self.start)
 
     def setCanvas(self, canvas):
         self.canvas = canvas
@@ -62,7 +61,6 @@ class ExtentSelector(QWidget, FORM_CLASS):
         if not self.isStarted:
             return
         self.isStarted = False
-        self.btnEnable.setVisible(False)
         self.tool.reset()
         self.canvas.unsetMapTool(self.tool)
         if self.previousMapTool != self.tool:
@@ -76,15 +74,12 @@ class ExtentSelector(QWidget, FORM_CLASS):
             self.previousMapTool = prevMapTool
         self.canvas.setMapTool(self.tool)
         self.isStarted = True
-        self.btnEnable.setVisible(False)
         self.coordsChanged()
         self.selectionStarted.emit()
 
     def pause(self):
         if not self.isStarted:
             return
-
-        self.btnEnable.setVisible(True)
         self.selectionPaused.emit()
 
     def setExtent(self, rect):

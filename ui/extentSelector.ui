@@ -6,95 +6,165 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>449</width>
-    <height>182</height>
+    <width>375</width>
+    <height>89</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="margin">
     <number>0</number>
    </property>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Select the extent by drag on canvas</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QLabel" name="label_7">
-     <property name="text">
-      <string>or change the extent coordinates</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
+   <item row="2" column="0">
     <widget class="QWidget" name="widget" native="true">
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="2">
-       <widget class="QLabel" name="label_11">
-        <property name="text">
-         <string>x</string>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="y1CoordEdit">
+        <property name="styleSheet">
+         <string notr="true">font-size: 9pt</string>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
         </property>
        </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QLineEdit" name="x1CoordEdit"/>
       </item>
       <item row="0" column="7">
-       <widget class="QLabel" name="label_13">
-        <property name="text">
-         <string>x</string>
+       <widget class="QLineEdit" name="x2CoordEdit">
+        <property name="styleSheet">
+         <string notr="true">font-size: 9pt</string>
         </property>
-       </widget>
-      </item>
-      <item row="0" column="8">
-       <widget class="QLineEdit" name="x2CoordEdit"/>
-      </item>
-      <item row="1" column="3">
-       <widget class="QLineEdit" name="y1CoordEdit"/>
-      </item>
-      <item row="1" column="8">
-       <widget class="QLineEdit" name="y2CoordEdit"/>
-      </item>
-      <item row="1" column="7">
-       <widget class="QLabel" name="label_15">
-        <property name="text">
-         <string>y</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="label_14">
-        <property name="text">
-         <string>y</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="6" rowspan="2">
-       <widget class="QLabel" name="label_12">
-        <property name="text">
-         <string>2</string>
-        </property>
-        <property name="indent">
-         <number>20</number>
+        <property name="frame">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
       <item row="0" column="1" rowspan="2">
-       <widget class="QLabel" name="label_10">
+       <widget class="QLabel" name="label_2">
+        <property name="styleSheet">
+         <string notr="true">font-size: 9pt</string>
+        </property>
         <property name="text">
-         <string>1</string>
+         <string>UL</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="7">
+       <widget class="QLineEdit" name="y2CoordEdit">
+        <property name="styleSheet">
+         <string notr="true">font-size: 9pt</string>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5" rowspan="2">
+       <widget class="QLabel" name="label">
+        <property name="styleSheet">
+         <string notr="true">font-size: 9pt</string>
+        </property>
+        <property name="text">
+         <string>LR</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="8">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="point2">
+        <property name="styleSheet">
+         <string notr="true">font-size: 9pt;</string>
+        </property>
+        <property name="text">
+         <string>y</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="x1CoordEdit">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font-size: 9pt</string>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="point1">
+        <property name="styleSheet">
+         <string notr="true">font-size: 9pt</string>
+        </property>
+        <property name="text">
+         <string>x</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLabel" name="label_3">
+        <property name="styleSheet">
+         <string notr="true">font-size: 9pt</string>
+        </property>
+        <property name="text">
+         <string>x</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6">
+       <widget class="QLabel" name="label_4">
+        <property name="styleSheet">
+         <string notr="true">font-size: 9pt</string>
+        </property>
+        <property name="text">
+         <string>y</string>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="btnEnable">
+   <item row="1" column="0">
+    <widget class="QLabel" name="widget_title">
      <property name="text">
-      <string>Re-Enable</string>
+      <string>Select the extent by drag on canvas</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>

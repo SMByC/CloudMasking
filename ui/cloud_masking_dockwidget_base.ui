@@ -30,9 +30,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-377</y>
+         <y>-301</y>
          <width>554</width>
-         <height>1203</height>
+         <height>1127</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -434,7 +434,66 @@
            <string>Generate the cloud mask</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_6">
+           <item row="0" column="0">
+            <widget class="QCheckBox" name="checkBox_ExtentSelector">
+             <property name="text">
+              <string>In only selected area</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="ExtentSelector" name="widget_ExtentSelector" native="true"/>
+           </item>
            <item row="3" column="0">
+            <widget class="QWidget" name="widget_2" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_11">
+                <property name="text">
+                 <string>Load when finnish:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="checkBox_LoadReflecStack">
+                <property name="text">
+                 <string>Reflec Stack</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="checkBox_LoadCloudMask">
+                <property name="text">
+                 <string>Cloud Mask</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="0">
             <widget class="QFrame" name="frame">
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -511,153 +570,6 @@
               </item>
              </layout>
             </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QCheckBox" name="checkBox_ExtentSelector">
-             <property name="text">
-              <string>In only selected area</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QWidget" name="widget_SelectedArea" native="true">
-             <layout class="QVBoxLayout" name="verticalLayout_8">
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QLabel" name="label_8">
-                <property name="text">
-                 <string>Select the extent by drag on canvas</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QWidget" name="widget_5" native="true">
-                <layout class="QHBoxLayout" name="horizontalLayout_8">
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <widget class="QLabel" name="label_7">
-                   <property name="styleSheet">
-                    <string notr="true">font-size: 9pt;</string>
-                   </property>
-                   <property name="text">
-                    <string>P1:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="lineEdit">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>0</height>
-                    </size>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">font-size: 9pt;width: 20px</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="lineEdit_3">
-                   <property name="styleSheet">
-                    <string notr="true">font-size: 9pt;width: 20px</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_6">
-                   <property name="styleSheet">
-                    <string notr="true">font-size: 9pt;</string>
-                   </property>
-                   <property name="text">
-                    <string>P2:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="lineEdit_2">
-                   <property name="styleSheet">
-                    <string notr="true">font-size: 9pt;width: 20px</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="lineEdit_4">
-                   <property name="styleSheet">
-                    <string notr="true">font-size: 9pt;width: 20px</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QWidget" name="widget_2" native="true">
-             <layout class="QHBoxLayout" name="horizontalLayout_9">
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QLabel" name="label_11">
-                <property name="text">
-                 <string>Load when finnish:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_LoadReflecStack">
-                <property name="text">
-                 <string>Reflec Stack</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_LoadCloudMask">
-                <property name="text">
-                 <string>Cloud Mask</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_2">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="ExtentSelector" name="widget_ExtentSelector" native="true"/>
            </item>
           </layout>
          </widget>
@@ -785,12 +697,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>115</x>
-     <y>270</y>
+     <x>133</x>
+     <y>-31</y>
     </hint>
     <hint type="destinationlabel">
-     <x>125</x>
-     <y>390</y>
+     <x>143</x>
+     <y>183</y>
     </hint>
    </hints>
   </connection>
@@ -801,12 +713,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>150</x>
-     <y>490</y>
+     <x>168</x>
+     <y>236</y>
     </hint>
     <hint type="destinationlabel">
-     <x>150</x>
-     <y>561</y>
+     <x>168</x>
+     <y>307</y>
     </hint>
    </hints>
   </connection>
@@ -817,12 +729,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>192</x>
-     <y>614</y>
+     <x>210</x>
+     <y>360</y>
     </hint>
     <hint type="destinationlabel">
-     <x>189</x>
-     <y>700</y>
+     <x>207</x>
+     <y>446</y>
     </hint>
    </hints>
   </connection>
@@ -833,12 +745,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>241</x>
-     <y>970</y>
+     <x>243</x>
+     <y>692</y>
     </hint>
     <hint type="destinationlabel">
-     <x>204</x>
-     <y>1039</y>
+     <x>214</x>
+     <y>736</y>
     </hint>
    </hints>
   </connection>
@@ -849,28 +761,28 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>296</x>
-     <y>969</y>
+     <x>298</x>
+     <y>692</y>
     </hint>
     <hint type="destinationlabel">
-     <x>124</x>
-     <y>1127</y>
+     <x>134</x>
+     <y>850</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>checkBox_ExtentSelector</sender>
    <signal>clicked(bool)</signal>
-   <receiver>widget_SelectedArea</receiver>
+   <receiver>widget_ExtentSelector</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>41</x>
-     <y>776</y>
+     <x>43</x>
+     <y>522</y>
     </hint>
     <hint type="destinationlabel">
-     <x>26</x>
-     <y>814</y>
+     <x>45</x>
+     <y>550</y>
     </hint>
    </hints>
   </connection>
