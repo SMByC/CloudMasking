@@ -291,11 +291,11 @@ class CloudMasking:
             )
             return
 
-        masking_result = cloud_filters.CloudMaskingResult(self.dockwidget.mtl_path,
+        self.masking_result = cloud_filters.CloudMaskingResult(self.dockwidget.mtl_path,
                                                           self.dockwidget.mtl_file)
 
-        masking_result.process_status = self.dockwidget.label_processMaskStatus
-        masking_result.process_bar = self.dockwidget.progressBar
+        self.masking_result.process_status = self.dockwidget.label_processMaskStatus
+        self.masking_result.process_bar = self.dockwidget.progressBar
 
         # mouse wait
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -306,7 +306,7 @@ class CloudMasking:
         if self.dockwidget.checkBox_FMask.isChecked():
 
             # fmask filter
-            masking_result.do_fmask(
+            self.masking_result.do_fmask(
                 cirrusprobratio=float(self.dockwidget.doubleSpinBox_CPR.value()),
                 cloudbufferdistance=float(self.dockwidget.doubleSpinBox_CB.value()),
                 shadowbufferdistance=float(self.dockwidget.doubleSpinBox_SB.value()),
@@ -325,21 +325,21 @@ class CloudMasking:
             pass
 
         # delete unused output
-        os.remove(masking_result.thermal_stack_file)
-        os.remove(masking_result.angles_file)
-        os.remove(masking_result.saturationmask_file)
-        os.remove(masking_result.toa_file)
+        os.remove(self.masking_result.thermal_stack_file)
+        os.remove(self.masking_result.angles_file)
+        os.remove(self.masking_result.saturationmask_file)
+        os.remove(self.masking_result.toa_file)
 
         # restore mouse
         QApplication.restoreOverrideCursor()
 
         # Add to QGIS the reflectance stack file and cloud file
         if self.dockwidget.checkBox_LoadReflecStack.isChecked():
-            self.reflective_stack_rlayer = QgsRasterLayer(masking_result.reflective_stack_file,
+            self.reflective_stack_rlayer = QgsRasterLayer(self.masking_result.reflective_stack_file,
                                                           "reflective stack")
             QgsMapLayerRegistry.instance().addMapLayer(self.reflective_stack_rlayer)
         if self.dockwidget.checkBox_LoadCloudMask.isChecked():
-            self.cloud_mask_rlayer = QgsRasterLayer(masking_result.cloud_file,
+            self.cloud_mask_rlayer = QgsRasterLayer(self.masking_result.cloud_file,
                                                     "cloud mask")
             QgsMapLayerRegistry.instance().addMapLayer(self.cloud_mask_rlayer)
 
