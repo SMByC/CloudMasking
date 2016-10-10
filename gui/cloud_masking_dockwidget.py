@@ -21,7 +21,6 @@
 
 import os
 import sys
-from time import sleep
 
 from PyQt4 import QtGui, uic, QtCore
 from PyQt4.QtCore import pyqtSignal
@@ -73,7 +72,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def setup_gui(self):
         # find MTL file #########
         self.Btn_FindMTL.clicked.connect(self.fileDialog_findMTL)
-        self.Btn_LoadMTL.clicked.connect(self.load_MTL)
+        # load MTL: this is called from cloud_masking
         # MTL info
         self.kled_LoadedMTL.off()
         self.label_LoadedMTL_1.setText('No MTL file loaded yet')
@@ -172,9 +171,6 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # TODO: first prompt to user if delete the current
         # process and load a new MTL file
 
-        # first unload old MTL and clean temp files
-        self.unload_MTL()
-
         self.mtl_path = str(self.lineEdit_PathMTL.text())
 
         if not os.path.isfile(self.mtl_path):
@@ -218,15 +214,6 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # deactivate save and apply box
         self.groupBox_SaveApply.setEnabled(False)
         self.groupBox_SaveApply.setChecked(False)
-
-        #### Clean
-        self.label_LoadedMTL_1.setText('Please wait:')
-        self.label_LoadedMTL_2.setText('Cleaning temporal files ...')
-        # repaint
-        self.label_LoadedMTL_1.repaint()
-        self.label_LoadedMTL_2.repaint()
-        QApplication.processEvents()
-        sleep(1)
 
         # TODO: Removing temporary files
         # for _tmp in self.temp_files:

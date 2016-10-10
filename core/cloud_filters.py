@@ -20,6 +20,7 @@
 """
 import os, sys
 import tempfile
+
 from PyQt4.QtGui import QApplication
 
 plugin_folder = os.path.dirname(os.path.dirname(__file__))

@@ -21,6 +21,7 @@
 import os.path
 import shutil
 from datetime import datetime
+from time import sleep
 
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
 from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox, QApplication, QCursor
@@ -253,10 +254,14 @@ class CloudMasking:
 
         # set initial input layers list
         self.updateLayersList_MaskLayer()
-        # initial masking instance
+        # initial masking and rgb stack instance
         self.masking_result = None
+        self.rgb_stack_scene = None
         # handle connect when the list of layers changed
         QObject.connect(self.canvas, SIGNAL("layersChanged()"), self.updateLayersList_MaskLayer)
+        # call to load MTL file
+        QObject.connect(self.dockwidget.Btn_LoadMTL, SIGNAL("clicked()"), self.clear_all)
+        QObject.connect(self.dockwidget.Btn_LoadMTL, SIGNAL("clicked()"), self.dockwidget.load_MTL)
         # call to load RGB stack
         QObject.connect(self.dockwidget.pushButton_LoadRGBStack, SIGNAL("clicked()"), self.load_rgb_stack)
         # call to process mask
@@ -357,14 +362,39 @@ class CloudMasking:
     def clear_all(self):
         # TODO
 
-        # clear RGB stack
-        try:
-            shutil.rmtree(self.rgb_stack_scene.tmp_dir)
-        except:
-            pass
+        # message
+        if isinstance(self.dockwidget, CloudMaskingDockWidget):
+            self.dockwidget.label_LoadedMTL_1.setText('Please wait:')
+            self.dockwidget.label_LoadedMTL_2.setText('Cleaning temporal files ...')
+            # repaint
+            self.dockwidget.label_LoadedMTL_1.repaint()
+            self.dockwidget.label_LoadedMTL_2.repaint()
+            QApplication.processEvents()
+            sleep(0.5)
 
         # unload MTL file
         try:
             self.dockwidget.unload_MTL()
         except:
             pass
+
+        # clear RGB stack
+        try:
+            shutil.rmtree(self.rgb_stack_scene.tmp_dir)
+            del self.rgb_stack_scene
+        except:
+            pass
+        self.masking_result = None
+
+        # delete cloud masking instance
+        try:
+            shutil.rmtree(self.masking_result.tmp_dir)
+            del self.masking_result
+        except:
+            pass
+        self.masking_result = None
+
+        # restore initial message
+        if isinstance(self.dockwidget, CloudMaskingDockWidget):
+            self.dockwidget.label_LoadedMTL_1.setText('No MTL file loaded yet')
+            self.dockwidget.label_LoadedMTL_2.setText('Please search and load it')
