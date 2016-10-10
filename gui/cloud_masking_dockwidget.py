@@ -71,7 +71,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
     def setup_gui(self):
         # find MTL file #########
-        self.Btn_FindMTL.clicked.connect(self.fileDialog_findMTL)
+        self.button_FindMTL.clicked.connect(self.fileDialog_findMTL)
         # load MTL: this is called from cloud_masking
         # MTL info
         self.kled_LoadedMTL.off()

@@ -260,12 +260,12 @@ class CloudMasking:
         # handle connect when the list of layers changed
         QObject.connect(self.canvas, SIGNAL("layersChanged()"), self.updateLayersList_MaskLayer)
         # call to load MTL file
-        QObject.connect(self.dockwidget.Btn_LoadMTL, SIGNAL("clicked()"), self.clear_all)
-        QObject.connect(self.dockwidget.Btn_LoadMTL, SIGNAL("clicked()"), self.dockwidget.load_MTL)
+        QObject.connect(self.dockwidget.button_LoadMTL, SIGNAL("clicked()"), self.clear_all)
+        QObject.connect(self.dockwidget.button_LoadMTL, SIGNAL("clicked()"), self.dockwidget.load_MTL)
         # call to load RGB stack
-        QObject.connect(self.dockwidget.pushButton_LoadRGBStack, SIGNAL("clicked()"), self.load_rgb_stack)
+        QObject.connect(self.dockwidget.button_LoadRGBStack, SIGNAL("clicked()"), self.load_rgb_stack)
         # call to process mask
-        QObject.connect(self.dockwidget.Btn_processMask, SIGNAL("clicked()"), self.process_mask)
+        QObject.connect(self.dockwidget.button_processMask, SIGNAL("clicked()"), self.process_mask)
 
     def updateLayersList_MaskLayer(self):
         if self.dockwidget is not None:
