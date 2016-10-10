@@ -69,12 +69,13 @@ class CloudMaskingResult(object):
         # tmp file for reflective bands stack
         self.reflective_stack_file = os.path.join(self.tmp_dir, "reflective_stack.tif")
 
-        self.process_status.setText("Making reflective bands stack...")
-        self.process_bar.setValue(10)
-        QApplication.processEvents()
+        if not os.path.isfile(self.reflective_stack_file):
+            self.process_status.setText("Making reflective bands stack...")
+            self.process_bar.setValue(10)
+            QApplication.processEvents()
 
-        gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
-                         self.reflective_stack_file] + self.reflective_bands)
+            gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
+                             self.reflective_stack_file] + self.reflective_bands)
 
         ########################################
         # thermal bands stack
@@ -82,12 +83,13 @@ class CloudMaskingResult(object):
         # tmp file for reflective bands stack
         self.thermal_stack_file = os.path.join(self.tmp_dir, "thermal_stack.tif")
 
-        self.process_status.setText("Making thermal bands stack...")
-        self.process_bar.setValue(20)
-        QApplication.processEvents()
+        if not os.path.isfile(self.thermal_stack_file):
+            self.process_status.setText("Making thermal bands stack...")
+            self.process_bar.setValue(20)
+            QApplication.processEvents()
 
-        gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
-                         self.thermal_stack_file] + self.thermal_bands)
+            gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
+                             self.thermal_stack_file] + self.thermal_bands)
 
         ########################################
         # estimates of per-pixel angles for sun

@@ -335,7 +335,6 @@ class CloudMasking:
             pass
 
         # delete unused output
-        os.remove(self.masking_result.thermal_stack_file)
         os.remove(self.masking_result.angles_file)
         os.remove(self.masking_result.saturationmask_file)
         os.remove(self.masking_result.toa_file)
