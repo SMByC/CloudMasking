@@ -47,6 +47,9 @@ class CloudMaskingResult(object):
 
         # get_metadata
         self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
+        self.landsat_scene = self.mtl_file['LANDSAT_SCENE_ID']
+
+        # set bands for reflective and thermal
         if self.landsat_version == 8:
             # get the reflective file names bands
             self.reflective_bands = [

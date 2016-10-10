@@ -253,6 +253,8 @@ class CloudMasking:
 
         # set initial input layers list
         self.updateLayersList_MaskLayer()
+        # initial masking instance
+        self.masking_result = None
         # handle connect when the list of layers changed
         QObject.connect(self.canvas, SIGNAL("layersChanged()"), self.updateLayersList_MaskLayer)
         # call to load RGB stack
@@ -292,11 +294,13 @@ class CloudMasking:
             )
             return
 
-        self.masking_result = cloud_filters.CloudMaskingResult(self.dockwidget.mtl_path,
-                                                          self.dockwidget.mtl_file)
-
-        self.masking_result.process_status = self.dockwidget.label_processMaskStatus
-        self.masking_result.process_bar = self.dockwidget.progressBar
+        if (not isinstance(self.masking_result, cloud_filters.CloudMaskingResult) or
+            not self.masking_result.landsat_scene == self.dockwidget.mtl_file['LANDSAT_SCENE_ID']):
+            # create a new instance of cloud masking result
+            self.masking_result = cloud_filters.CloudMaskingResult(self.dockwidget.mtl_path,
+                                                                   self.dockwidget.mtl_file)
+            self.masking_result.process_status = self.dockwidget.label_processMaskStatus
+            self.masking_result.process_bar = self.dockwidget.progressBar
 
         # mouse wait
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
