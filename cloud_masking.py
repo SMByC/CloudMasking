@@ -20,6 +20,7 @@
 """
 import os.path
 import shutil
+from datetime import datetime
 
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
 from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox, QApplication, QCursor
@@ -335,7 +336,7 @@ class CloudMasking:
 
         # Add to QGIS the reflectance stack file and cloud file
         self.cloud_mask_rlayer = QgsRasterLayer(self.masking_result.cloud_file,
-                                                "cloud mask")
+                                                "cloud mask ({})".format(datetime.now().strftime('%H:%M')))
         QgsMapLayerRegistry.instance().addMapLayer(self.cloud_mask_rlayer)
 
     def apply_mask(self):
