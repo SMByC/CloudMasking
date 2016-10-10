@@ -311,6 +311,17 @@ class CloudMasking:
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
         ########################################
+        # Set the extent selector
+        if self.dockwidget.isExtentAreaSelected:
+            self.masking_result.clipping_extent = True
+            self.masking_result.extent_x1 = float(self.dockwidget.widget_ExtentSelector.x1CoordEdit.text())
+            self.masking_result.extent_y1 = float(self.dockwidget.widget_ExtentSelector.y1CoordEdit.text())
+            self.masking_result.extent_x2 = float(self.dockwidget.widget_ExtentSelector.x2CoordEdit.text())
+            self.masking_result.extent_y2 = float(self.dockwidget.widget_ExtentSelector.y2CoordEdit.text())
+        else:
+            self.masking_result.clipping_extent = False
+
+        ########################################
         # FMask filter
 
         if self.dockwidget.checkBox_FMask.isChecked():

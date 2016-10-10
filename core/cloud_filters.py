@@ -20,6 +20,7 @@
 """
 import os, sys
 import tempfile
+from subprocess import call
 
 from PyQt4.QtGui import QApplication
 
@@ -45,6 +46,8 @@ class CloudMaskingResult(object):
         # bar and status progress
         self.process_status = None
         self.process_bar = None
+        # set initial clipping status
+        self.clipping_extent = False
 
         # get_metadata
         self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
@@ -92,6 +95,42 @@ class CloudMaskingResult(object):
                              self.thermal_stack_file] + self.thermal_bands)
 
         ########################################
+        # clipping the reflective bands stack
+
+        if self.clipping_extent:
+            self.process_status.setText("Clipping the reflective stack...")
+            self.process_bar.setValue(24)
+            QApplication.processEvents()
+
+            self.reflective_stack_clip_file = os.path.join(self.tmp_dir, "reflective_stack_clip.tif")
+            return_code = call(
+                'gdal_translate -projwin ' +
+                ' '.join([str(x) for x in [self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2]]) +
+                ' -of GTiff ' + self.reflective_stack_file + ' ' + self.reflective_stack_clip_file,
+                shell=True)
+            self.reflective_stack_for_process = self.reflective_stack_clip_file
+        else:
+            self.reflective_stack_for_process = self.reflective_stack_file
+
+        ########################################
+        # clipping the thermal bands stack
+
+        if self.clipping_extent:
+            self.process_status.setText("Clipping the thermal stack...")
+            self.process_bar.setValue(27)
+            QApplication.processEvents()
+
+            self.thermal_stack_clip_file = os.path.join(self.tmp_dir, "thermal_stack_clip.tif")
+            return_code = call(
+                'gdal_translate -projwin ' +
+                ' '.join([str(x) for x in [self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2]]) +
+                ' -of GTiff ' + self.thermal_stack_file + ' ' + self.thermal_stack_clip_file,
+                shell=True)
+            self.thermal_stack_for_process = self.thermal_stack_clip_file
+        else:
+            self.thermal_stack_for_process = self.thermal_stack_file
+
+        ########################################
         # estimates of per-pixel angles for sun
         # and satellite azimuth and zenith
         #
@@ -106,14 +145,14 @@ class CloudMaskingResult(object):
 
         mtlInfo = config.readMTLFile(self.mtl_path)
 
-        imgInfo = fileinfo.ImageInfo(self.reflective_stack_file)
-        corners = landsatangles.findImgCorners(self.reflective_stack_file, imgInfo)
+        imgInfo = fileinfo.ImageInfo(self.reflective_stack_for_process)
+        corners = landsatangles.findImgCorners(self.reflective_stack_for_process, imgInfo)
         nadirLine = landsatangles.findNadirLine(corners)
 
         extentSunAngles = landsatangles.sunAnglesForExtent(imgInfo, mtlInfo)
         satAzimuth = landsatangles.satAzLeftRight(nadirLine)
 
-        landsatangles.makeAnglesImage(self.reflective_stack_file, self.angles_file,
+        landsatangles.makeAnglesImage(self.reflective_stack_for_process, self.angles_file,
                                       nadirLine, extentSunAngles, satAzimuth, imgInfo)
 
         ########################################
@@ -141,7 +180,7 @@ class CloudMaskingResult(object):
         # bands are visible etc.
         fmaskConfig = config.FmaskConfig(sensor)
 
-        saturationcheck.makeSaturationMask(fmaskConfig, self.reflective_stack_file,
+        saturationcheck.makeSaturationMask(fmaskConfig, self.reflective_stack_for_process,
                                            self.saturationmask_file)
 
         ########################################
@@ -156,7 +195,7 @@ class CloudMaskingResult(object):
         self.process_bar.setValue(50)
         QApplication.processEvents()
 
-        landsatTOA.makeTOAReflectance(self.reflective_stack_file, self.mtl_path,
+        landsatTOA.makeTOAReflectance(self.reflective_stack_for_process, self.mtl_path,
                                       self.angles_file, self.toa_file)
 
         ########################################
@@ -189,7 +228,7 @@ class CloudMaskingResult(object):
 
         fmaskFilenames = config.FmaskFilenames()
         fmaskFilenames.setTOAReflectanceFile(self.toa_file)
-        fmaskFilenames.setThermalFile(self.thermal_stack_file)
+        fmaskFilenames.setThermalFile(self.thermal_stack_for_process)
         fmaskFilenames.setOutputCloudMaskFile(self.cloud_file)
         fmaskFilenames.setSaturationMask(self.saturationmask_file)  # TODO: optional
 
