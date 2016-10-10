@@ -388,23 +388,24 @@ class CloudMasking:
             QApplication.processEvents()
             sleep(0.5)
 
-        # unload MTL file
+        # unload MTL file and extent selector
         try:
             self.dockwidget.unload_MTL()
+            self.dockwidget.widget_ExtentSelector.stop()
         except:
             pass
 
         # clear RGB stack
         try:
-            shutil.rmtree(self.rgb_stack_scene.tmp_dir)
+            shutil.rmtree(self.rgb_stack_scene.tmp_dir, ignore_errors=True)
             del self.rgb_stack_scene
         except:
             pass
-        self.masking_result = None
+        self.rgb_stack_scene = None
 
         # delete cloud masking instance
         try:
-            shutil.rmtree(self.masking_result.tmp_dir)
+            shutil.rmtree(self.masking_result.tmp_dir, ignore_errors=True)
             del self.masking_result
         except:
             pass
