@@ -21,6 +21,7 @@
 import os, sys
 import tempfile
 from subprocess import call
+from datetime import datetime
 
 from PyQt4.QtGui import QApplication
 
@@ -204,7 +205,7 @@ class CloudMaskingResult(object):
         # fmask_usgsLandsatStacked.py
 
         # tmp file for cloud
-        self.cloud_file = os.path.join(self.tmp_dir, "cloud.tif")
+        self.cloud_file = os.path.join(self.tmp_dir, "cloud_mask_{}.tif".format(datetime.now().strftime('%H%M%S')))
 
         self.process_status.setText("Making cloud mask with fmask...")
         self.process_bar.setValue(70)
