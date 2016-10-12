@@ -29,7 +29,7 @@ from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRaster
 # Initialize Qt resources from file resources.py
 import resources
 
-from core import cloud_filters, rgb_stack
+from core import cloud_filters, color_stack
 from gui.cloud_masking_dockwidget import CloudMaskingDockWidget
 
 
@@ -254,16 +254,16 @@ class CloudMasking:
 
         # set initial input layers list
         self.updateLayersList_MaskLayer()
-        # initial masking and rgb stack instance
+        # initial masking and color stack instance
         self.masking_result = None
-        self.rgb_stack_scene = None
+        self.color_stack_scene = None
         # handle connect when the list of layers changed
         QObject.connect(self.canvas, SIGNAL("layersChanged()"), self.updateLayersList_MaskLayer)
         # call to load MTL file
         QObject.connect(self.dockwidget.button_LoadMTL, SIGNAL("clicked()"), self.clear_all)
         QObject.connect(self.dockwidget.button_LoadMTL, SIGNAL("clicked()"), self.dockwidget.load_MTL)
-        # call to load RGB stack
-        QObject.connect(self.dockwidget.button_LoadRGBStack, SIGNAL("clicked()"), self.load_rgb_stack)
+        # call to load color stack
+        QObject.connect(self.dockwidget.button_LoadColorStack, SIGNAL("clicked()"), self.load_color_stack)
         # call to process mask
         QObject.connect(self.dockwidget.button_processMask, SIGNAL("clicked()"), self.process_mask)
 
@@ -278,12 +278,12 @@ class CloudMasking:
             if layer.name() == layer_name:
                 return layer
 
-    def load_rgb_stack(self):
-        self.rgb_stack_scene = rgb_stack.RGB_Stack(self.dockwidget.mtl_path,
-                                              self.dockwidget.mtl_file)
+    def load_color_stack(self):
+        self.color_stack_scene = color_stack.ColorStack(self.dockwidget.mtl_path,
+                                                        self.dockwidget.mtl_file)
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))  # mouse wait
-        self.rgb_stack_scene.do_rgb_stack()
-        self.rgb_stack_scene.load_rgb_stack()
+        self.color_stack_scene.do_color_stack()
+        self.color_stack_scene.load_color_stack()
         QApplication.restoreOverrideCursor()  # restore mouse
 
     def process_mask(self):
@@ -398,10 +398,10 @@ class CloudMasking:
         # unload all layers instances from Qgis saved in tmp dir
         layers_loaded = QgsMapLayerRegistry.instance().mapLayers().values()
         try:
-            d = self.rgb_stack_scene.tmp_dir
-            files_in_tmp_rgb = [os.path.join(d, f) for f in os.listdir(d)
+            d = self.color_stack_scene.tmp_dir
+            files_in_tmp_color_stack = [os.path.join(d, f) for f in os.listdir(d)
                                 if os.path.isfile(os.path.join(d, f))]
-        except: files_in_tmp_rgb = []
+        except: files_in_tmp_color_stack = []
         try:
             d = self.masking_result.tmp_dir
             files_in_tmp_mask = [os.path.join(d, f) for f in os.listdir(d)
@@ -409,19 +409,19 @@ class CloudMasking:
         except: files_in_tmp_mask = []
 
         layersToRemove = []
-        for file_tmp in files_in_tmp_rgb + files_in_tmp_mask:
+        for file_tmp in files_in_tmp_color_stack + files_in_tmp_mask:
             for layer_loaded in layers_loaded:
                 if file_tmp == layer_loaded.dataProvider().dataSourceUri():
                     layersToRemove.append(layer_loaded)
         QgsMapLayerRegistry.instance().removeMapLayers(layersToRemove)
 
-        # clear RGB stack
+        # clear Color Stack
         try:
-            shutil.rmtree(self.rgb_stack_scene.tmp_dir, ignore_errors=True)
-            del self.rgb_stack_scene
+            shutil.rmtree(self.color_stack_scene.tmp_dir, ignore_errors=True)
+            del self.color_stack_scene
         except:
             pass
-        self.rgb_stack_scene = None
+        self.color_stack_scene = None
 
         # delete cloud masking instance
         try:

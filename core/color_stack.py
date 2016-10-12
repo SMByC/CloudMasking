@@ -30,7 +30,7 @@ if plugin_folder not in sys.path:
 from libs import gdal_merge
 
 
-class RGB_Stack(object):
+class ColorStack(object):
     """Making the Red-Green-Blue Stack for view the scene
     """
 
@@ -50,25 +50,25 @@ class RGB_Stack(object):
 
         # select the bands for color stack
         if self.landsat_version in [4, 5, 7]:
-            self.rgb_bands = [
+            self.color_bands = [
                 os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
                 for N in [1, 2, 3, 4, 5, 7]]
         if self.landsat_version == 8:
-            self.rgb_bands = [
+            self.color_bands = [
                 os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
                 for N in [2, 3, 4, 5, 6, 7]]
 
-    def do_rgb_stack(self):
+    def do_color_stack(self):
 
-        # tmp file for rgb bands stack
-        self.rgb_stack_file = os.path.join(self.tmp_dir, "rgb_stack.tif")
+        # tmp file for color bands stack
+        self.color_stack_file = os.path.join(self.tmp_dir, "color_stack.tif")
 
         gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
-                         self.rgb_stack_file] + self.rgb_bands)
+                         self.color_stack_file] + self.color_bands)
 
-    def load_rgb_stack(self):
-        """Add to QGIS the RGB stack file
+    def load_color_stack(self):
+        """Add to QGIS the color stack file
         """
-        self.rgb_stack_rlayer = QgsRasterLayer(self.rgb_stack_file, "RGB stack "+self.mtl_file['LANDSAT_SCENE_ID'])
-        QgsMapLayerRegistry.instance().addMapLayer(self.rgb_stack_rlayer)
+        self.color_stack_rlayer = QgsRasterLayer(self.color_stack_file, "Color Stack " + self.mtl_file['LANDSAT_SCENE_ID'])
+        QgsMapLayerRegistry.instance().addMapLayer(self.color_stack_rlayer)
 
