@@ -55,6 +55,28 @@ class CloudMaskingResult(object):
         self.landsat_scene = self.mtl_file['LANDSAT_SCENE_ID']
 
         # set bands for reflective and thermal
+        if self.landsat_version in [4, 5]:
+            # get the reflective file names bands
+            self.reflective_bands = [
+                os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
+                for N in [1, 2, 3, 4, 5, 7]]
+            # get the thermal file names bands
+            self.thermal_bands = [
+                os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_' + str(N)])
+                for N in [6]]
+
+        # set bands for reflective and thermal
+        if self.landsat_version == 7:
+            # get the reflective file names bands
+            self.reflective_bands = [
+                os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
+                for N in [1, 2, 3, 4, 5, 7]]
+            # get the thermal file names bands
+            self.thermal_bands = [
+                os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_6_VCID_' + str(N)])
+                for N in [1, 2]]
+
+        # set bands for reflective and thermal
         if self.landsat_version == 8:
             # get the reflective file names bands
             self.reflective_bands = [
