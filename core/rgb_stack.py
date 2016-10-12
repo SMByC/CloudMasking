@@ -47,12 +47,16 @@ class RGB_Stack(object):
 
         # get_metadata
         self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
-        if self.landsat_version == 8:
-            # select the bands for RGB
+
+        # select the bands for color stack
+        if self.landsat_version in [4, 5, 7]:
             self.rgb_bands = [
                 os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
-                for N in [4, 5, 6]]
-        # TODO: added other landsat version
+                for N in [1, 2, 3, 4, 5, 7]]
+        if self.landsat_version == 8:
+            self.rgb_bands = [
+                os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
+                for N in [2, 3, 4, 5, 6, 7]]
 
     def do_rgb_stack(self):
 
