@@ -395,6 +395,26 @@ class CloudMasking:
         except:
             pass
 
+        # unload all layers instances from Qgis saved in tmp dir
+        layers_loaded = QgsMapLayerRegistry.instance().mapLayers().values()
+        try:
+            d = self.rgb_stack_scene.tmp_dir
+            files_in_tmp_rgb = [os.path.join(d, f) for f in os.listdir(d)
+                                if os.path.isfile(os.path.join(d, f))]
+        except: files_in_tmp_rgb = []
+        try:
+            d = self.masking_result.tmp_dir
+            files_in_tmp_mask = [os.path.join(d, f) for f in os.listdir(d)
+                                 if os.path.isfile(os.path.join(d, f))]
+        except: files_in_tmp_mask = []
+
+        layersToRemove = []
+        for file_tmp in files_in_tmp_rgb + files_in_tmp_mask:
+            for layer_loaded in layers_loaded:
+                if file_tmp == layer_loaded.dataProvider().dataSourceUri():
+                    layersToRemove.append(layer_loaded)
+        QgsMapLayerRegistry.instance().removeMapLayers(layersToRemove)
+
         # clear RGB stack
         try:
             shutil.rmtree(self.rgb_stack_scene.tmp_dir, ignore_errors=True)
