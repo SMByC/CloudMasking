@@ -361,7 +361,7 @@ class CloudMasking:
 
         # Add to QGIS the reflectance stack file and cloud file
         self.cloud_mask_rlayer = QgsRasterLayer(self.masking_result.cloud_file,
-                                                "cloud mask ({})".format(datetime.now().strftime('%H:%M:%S')))
+                                                "Cloud Mask ({})".format(datetime.now().strftime('%H:%M:%S')))
         QgsMapLayerRegistry.instance().addMapLayer(self.cloud_mask_rlayer)
 
     def apply_mask(self):
