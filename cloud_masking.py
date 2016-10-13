@@ -435,3 +435,4 @@ class CloudMasking:
         if isinstance(self.dockwidget, CloudMaskingDockWidget):
             self.dockwidget.label_LoadedMTL_1.setText('No MTL file loaded yet')
             self.dockwidget.label_LoadedMTL_2.setText('Please search and load it')
+
