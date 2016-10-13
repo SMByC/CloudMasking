@@ -380,13 +380,14 @@ class CloudMasking:
 
         # message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):
+            self.dockwidget.tabWidget.setCurrentWidget(self.dockwidget.tab_OL)
             self.dockwidget.label_LoadedMTL_1.setText('Please wait:')
             self.dockwidget.label_LoadedMTL_2.setText('Cleaning temporal files ...')
             # repaint
             self.dockwidget.label_LoadedMTL_1.repaint()
             self.dockwidget.label_LoadedMTL_2.repaint()
             QApplication.processEvents()
-            sleep(0.5)
+            sleep(1)
 
         # unload MTL file and extent selector
         try:
