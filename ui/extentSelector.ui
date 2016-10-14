@@ -17,12 +17,6 @@
    <item row="2" column="0">
     <widget class="QWidget" name="widget" native="true">
      <layout class="QGridLayout" name="gridLayout_2">
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
       <item row="1" column="3">
        <widget class="QLineEdit" name="y1CoordEdit">
         <property name="styleSheet">

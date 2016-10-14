@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>594</width>
-    <height>778</height>
+    <height>849</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -57,7 +57,7 @@
              <x>0</x>
              <y>0</y>
              <width>580</width>
-             <height>688</height>
+             <height>759</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -75,6 +75,9 @@
                   </item>
                   <item>
                    <widget class="QPushButton" name="button_FindMTL">
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
                     <property name="text">
                      <string>Browse</string>
                     </property>
@@ -82,6 +85,9 @@
                   </item>
                   <item>
                    <widget class="QPushButton" name="button_LoadMTL">
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
                     <property name="text">
                      <string>Load</string>
                     </property>
@@ -91,6 +97,9 @@
                    <widget class="QPushButton" name="button_ClearAll">
                     <property name="enabled">
                      <bool>false</bool>
+                    </property>
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
                     </property>
                     <property name="text">
                      <string>Clear All</string>
@@ -128,7 +137,7 @@
                   <item>
                    <widget class="QLabel" name="label_LoadedMTL_1">
                     <property name="styleSheet">
-                     <string notr="true">font-size: 9pt;</string>
+                     <string notr="true"/>
                     </property>
                     <property name="lineWidth">
                      <number>0</number>
@@ -149,7 +158,7 @@
                      </font>
                     </property>
                     <property name="styleSheet">
-                     <string notr="true">font-size: 9pt;</string>
+                     <string notr="true"/>
                     </property>
                     <property name="lineWidth">
                      <number>0</number>
@@ -224,8 +233,11 @@
                   </item>
                   <item>
                    <widget class="QPushButton" name="button_NaturalColorStack">
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
                     <property name="styleSheet">
-                     <string notr="true">font-size: 9pt;</string>
+                     <string notr="true">font-size: 10pt;</string>
                     </property>
                     <property name="text">
                      <string>Natural Color</string>
@@ -234,8 +246,11 @@
                   </item>
                   <item>
                    <widget class="QPushButton" name="button_FalseColorStack">
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
                     <property name="styleSheet">
-                     <string notr="true">font-size: 9pt;</string>
+                     <string notr="true">font-size: 10pt;</string>
                     </property>
                     <property name="text">
                      <string>False Color</string>
@@ -244,8 +259,11 @@
                   </item>
                   <item>
                    <widget class="QPushButton" name="button_InfraredsStack">
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
                     <property name="styleSheet">
-                     <string notr="true">font-size: 9pt;</string>
+                     <string notr="true">font-size: 10pt;</string>
                     </property>
                     <property name="text">
                      <string>Infrareds</string>
@@ -297,7 +315,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-8</y>
              <width>560</width>
              <height>767</height>
             </rect>
@@ -643,6 +661,9 @@
                   </property>
                   <item>
                    <widget class="QPushButton" name="button_processMask">
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
                     <property name="text">
                      <string>Generate mask</string>
                     </property>
@@ -742,7 +763,7 @@
              <x>0</x>
              <y>0</y>
              <width>580</width>
-             <height>688</height>
+             <height>759</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
