@@ -223,7 +223,7 @@
                    </spacer>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="button_LoadColorStack">
+                   <widget class="QPushButton" name="button_NaturalColorStack">
                     <property name="styleSheet">
                      <string notr="true">font-size: 9pt;</string>
                     </property>
@@ -233,7 +233,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="pushButton">
+                   <widget class="QPushButton" name="button_FalseColorStack">
                     <property name="styleSheet">
                      <string notr="true">font-size: 9pt;</string>
                     </property>
@@ -243,7 +243,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="pushButton_2">
+                   <widget class="QPushButton" name="button_InfraredsStack">
                     <property name="styleSheet">
                      <string notr="true">font-size: 9pt;</string>
                     </property>
@@ -902,12 +902,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>181</x>
-     <y>432</y>
+     <x>179</x>
+     <y>431</y>
     </hint>
     <hint type="destinationlabel">
-     <x>181</x>
-     <y>503</y>
+     <x>179</x>
+     <y>502</y>
     </hint>
    </hints>
   </connection>
@@ -918,12 +918,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>223</x>
-     <y>556</y>
+     <x>221</x>
+     <y>555</y>
     </hint>
     <hint type="destinationlabel">
-     <x>220</x>
-     <y>642</y>
+     <x>218</x>
+     <y>641</y>
     </hint>
    </hints>
   </connection>
@@ -934,12 +934,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>240</x>
-     <y>250</y>
+     <x>238</x>
+     <y>249</y>
     </hint>
     <hint type="destinationlabel">
-     <x>219</x>
-     <y>181</y>
+     <x>217</x>
+     <y>180</y>
     </hint>
    </hints>
   </connection>
@@ -950,12 +950,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>295</x>
-     <y>250</y>
+     <x>293</x>
+     <y>249</y>
     </hint>
     <hint type="destinationlabel">
-     <x>139</x>
-     <y>242</y>
+     <x>137</x>
+     <y>241</y>
     </hint>
    </hints>
   </connection>

@@ -262,8 +262,15 @@ class CloudMasking:
         # call to load MTL file
         QObject.connect(self.dockwidget.button_LoadMTL, SIGNAL("clicked()"), self.clear_all)
         QObject.connect(self.dockwidget.button_LoadMTL, SIGNAL("clicked()"), self.dockwidget.load_MTL)
-        # call to load color stack
-        QObject.connect(self.dockwidget.button_LoadColorStack, SIGNAL("clicked()"), self.load_color_stack)
+        # call to load natural color stack
+        QObject.connect(self.dockwidget.button_NaturalColorStack, SIGNAL("clicked()"),
+                        lambda: self.load_color_stack("natural_color"))
+        # call to load false color stack
+        QObject.connect(self.dockwidget.button_FalseColorStack, SIGNAL("clicked()"),
+                        lambda: self.load_color_stack("false_color"))
+        # call to load infrareds stack
+        QObject.connect(self.dockwidget.button_InfraredsStack, SIGNAL("clicked()"),
+                        lambda: self.load_color_stack("infrareds"))
         # call to process mask
         QObject.connect(self.dockwidget.button_processMask, SIGNAL("clicked()"), self.process_mask)
 
@@ -278,10 +285,11 @@ class CloudMasking:
             if layer.name() == layer_name:
                 return layer
 
-    def load_color_stack(self):
-        self.color_stack_scene = color_stack.ColorStack(self.dockwidget.mtl_path,
-                                                        self.dockwidget.mtl_file)
+    def load_color_stack(self, color_type):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))  # mouse wait
+        self.color_stack_scene = color_stack.ColorStack(self.dockwidget.mtl_path,
+                                                        self.dockwidget.mtl_file,
+                                                        color_type)
         self.color_stack_scene.do_color_stack()
         self.color_stack_scene.load_color_stack()
         QApplication.restoreOverrideCursor()  # restore mouse

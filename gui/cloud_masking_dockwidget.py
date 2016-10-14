@@ -191,8 +191,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.label_LoadedMTL_1.setText(self.mtl_file['LANDSAT_SCENE_ID'])
         self.label_LoadedMTL_2.setText('Landsat {}'.format(self.landsat_version))
         # Load stack and clear all #########
-        self.button_ClearAll.setEnable(True)
-        self.groupBox_LoadStacks.setEnable(True)
+        self.button_ClearAll.setEnabled(True)
+        self.groupBox_LoadStacks.setEnabled(True)
         # active filters box
         self.groupBox_Filters.setEnabled(True)
         #self.groupBox_Filters.setChecked(True)
@@ -214,8 +214,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.groupBox_SaveApply.setChecked(False)
 
         # Load stack and clear all #########
-        self.button_ClearAll.setEnable(False)
-        self.groupBox_LoadStacks.setEnable(False)
+        self.button_ClearAll.setEnabled(False)
+        self.groupBox_LoadStacks.setEnabled(False)
 
         # TODO: Removing temporary files
         # for _tmp in self.temp_files:
