@@ -75,8 +75,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # load MTL: this is called from cloud_masking
         # MTL info
         self.kled_LoadedMTL.off()
-        self.label_LoadedMTL_1.setText('No MTL file loaded yet')
-        self.label_LoadedMTL_2.setText('Please search and load it')
+        self.label_LoadedMTL_1.setText('No MTL file loaded yet.')
+        self.label_LoadedMTL_2.setText('')
 
         # FMask filters #########
         # start hidden
