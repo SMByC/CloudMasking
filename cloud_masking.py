@@ -291,7 +291,8 @@ class CloudMasking:
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))  # mouse wait
         self.color_stack_scene = color_stack.ColorStack(self.dockwidget.mtl_path,
                                                         self.dockwidget.mtl_file,
-                                                        color_type)
+                                                        color_type,
+                                                        self.dockwidget.tmp_dir)
         self.color_stack_scene.do_color_stack()
         self.color_stack_scene.load_color_stack()
         QApplication.restoreOverrideCursor()  # restore mouse
@@ -313,7 +314,8 @@ class CloudMasking:
             not self.masking_result.landsat_scene == self.dockwidget.mtl_file['LANDSAT_SCENE_ID']):
             # create a new instance of cloud masking result
             self.masking_result = cloud_filters.CloudMaskingResult(self.dockwidget.mtl_path,
-                                                                   self.dockwidget.mtl_file)
+                                                                   self.dockwidget.mtl_file,
+                                                                   self.dockwidget.tmp_dir)
             self.masking_result.process_status = self.dockwidget.label_processMaskStatus
             self.masking_result.process_bar = self.dockwidget.progressBar
 
@@ -390,7 +392,7 @@ class CloudMasking:
 
         # message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):
-            self.dockwidget.tabWidget.setCurrentWidget(self.dockwidget.tab_OL)
+            self.dockwidget.tabWidget.setCurrentWidget(self.dockwidget.tab_OL)  # focus first tab
             self.dockwidget.label_LoadedMTL_1.setText('Please wait:')
             self.dockwidget.label_LoadedMTL_2.setText('Cleaning temporal files ...')
             # repaint
@@ -409,38 +411,24 @@ class CloudMasking:
         # unload all layers instances from Qgis saved in tmp dir
         layers_loaded = QgsMapLayerRegistry.instance().mapLayers().values()
         try:
-            d = self.color_stack_scene.tmp_dir
-            files_in_tmp_color_stack = [os.path.join(d, f) for f in os.listdir(d)
+            d = self.dockwidget.tmp_dir
+            files_in_tmp_dir = [os.path.join(d, f) for f in os.listdir(d)
                                 if os.path.isfile(os.path.join(d, f))]
-        except: files_in_tmp_color_stack = []
-        try:
-            d = self.masking_result.tmp_dir
-            files_in_tmp_mask = [os.path.join(d, f) for f in os.listdir(d)
-                                 if os.path.isfile(os.path.join(d, f))]
-        except: files_in_tmp_mask = []
+        except: files_in_tmp_dir = []
 
         layersToRemove = []
-        for file_tmp in files_in_tmp_color_stack + files_in_tmp_mask:
+        for file_tmp in files_in_tmp_dir:
             for layer_loaded in layers_loaded:
                 if file_tmp == layer_loaded.dataProvider().dataSourceUri():
                     layersToRemove.append(layer_loaded)
         QgsMapLayerRegistry.instance().removeMapLayers(layersToRemove)
 
-        # clear Color Stack
+        # clear self.dockwidget.tmp_dir
         try:
-            shutil.rmtree(self.color_stack_scene.tmp_dir, ignore_errors=True)
-            del self.color_stack_scene
+            shutil.rmtree(self.dockwidget.tmp_dir, ignore_errors=True)
+            self.dockwidget.tmp_dir = None
         except:
             pass
-        self.color_stack_scene = None
-
-        # delete cloud masking instance
-        try:
-            shutil.rmtree(self.masking_result.tmp_dir, ignore_errors=True)
-            del self.masking_result
-        except:
-            pass
-        self.masking_result = None
 
         # restore initial message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):

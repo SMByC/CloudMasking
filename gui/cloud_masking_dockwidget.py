@@ -21,6 +21,7 @@
 
 import os
 import sys
+import tempfile
 
 from PyQt4 import QtGui, uic, QtCore
 from PyQt4.QtCore import pyqtSignal
@@ -198,6 +199,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         #self.groupBox_Filters.setChecked(True)
         # active generate cloud mask box
         self.groupBox_GenerateMask.setEnabled(True)
+        # tmp dir for process this MTL
+        self.tmp_dir = tempfile.mkdtemp()
 
     def unload_MTL(self):
         """Disconnect, unload and remove temporal files of old MTL

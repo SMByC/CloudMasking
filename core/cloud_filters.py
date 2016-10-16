@@ -44,7 +44,10 @@ class CloudMaskingResult(object):
         # dir to input landsat files
         self.input_dir = os.path.dirname(mtl_path)
         # tmp dir for process
-        self.tmp_dir = tempfile.mkdtemp(dir=tmp_dir)
+        if tmp_dir:
+            self.tmp_dir = tmp_dir
+        else:
+            self.tmp_dir = tempfile.mkdtemp()
         # bar and status progress
         self.process_status = None
         self.process_bar = None
