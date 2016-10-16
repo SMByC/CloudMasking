@@ -27,7 +27,7 @@
 }</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_OL">
        <attribute name="title">
@@ -315,7 +315,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-8</y>
+             <y>0</y>
              <width>560</width>
              <height>767</height>
             </rect>
@@ -478,10 +478,13 @@
                            <number>0</number>
                           </property>
                           <property name="maximum">
-                           <number>400</number>
+                           <number>30</number>
                           </property>
                           <property name="singleStep">
                            <number>1</number>
+                          </property>
+                          <property name="pageStep">
+                           <number>2</number>
                           </property>
                           <property name="orientation">
                            <enum>Qt::Horizontal</enum>
@@ -491,20 +494,23 @@
                         <item row="2" column="2">
                          <widget class="QDoubleSpinBox" name="doubleSpinBox_SB">
                           <property name="decimals">
-                           <number>1</number>
+                           <number>0</number>
                           </property>
                           <property name="maximum">
-                           <double>400.000000000000000</double>
+                           <double>30.000000000000000</double>
                           </property>
                           <property name="singleStep">
-                           <double>0.100000000000000</double>
+                           <double>1.000000000000000</double>
                           </property>
                          </widget>
                         </item>
                         <item row="2" column="1">
                          <widget class="QSlider" name="horizontalSlider_SB">
                           <property name="maximum">
-                           <number>400</number>
+                           <number>30</number>
+                          </property>
+                          <property name="pageStep">
+                           <number>2</number>
                           </property>
                           <property name="orientation">
                            <enum>Qt::Horizontal</enum>
@@ -514,16 +520,16 @@
                         <item row="1" column="2">
                          <widget class="QDoubleSpinBox" name="doubleSpinBox_CB">
                           <property name="decimals">
-                           <number>1</number>
+                           <number>0</number>
                           </property>
                           <property name="minimum">
                            <double>0.000000000000000</double>
                           </property>
                           <property name="maximum">
-                           <double>400.000000000000000</double>
+                           <double>30.000000000000000</double>
                           </property>
                           <property name="singleStep">
-                           <double>0.100000000000000</double>
+                           <double>1.000000000000000</double>
                           </property>
                          </widget>
                         </item>

@@ -92,7 +92,7 @@ class CloudMaskingResult(object):
         self.reflective_bands = [get_prefer_name(file_path) for file_path in self.reflective_bands]
         self.thermal_bands = [get_prefer_name(file_path) for file_path in self.thermal_bands]
 
-    def do_fmask(self, cirrusprobratio=0.04, mincloudsize=0, cloudbufferdistance=150, shadowbufferdistance=300):
+    def do_fmask(self, cirrus_prob_ratio=0.04, min_cloud_size=0, cloud_buffer_size=5, shadow_buffer_size=10):
 
         ########################################
         # reflective bands stack
@@ -266,14 +266,12 @@ class CloudMaskingResult(object):
         fmaskConfig.setKeepIntermediates(False)
         fmaskConfig.setVerbose(False)
         fmaskConfig.setTempDir(self.tmp_dir)
-        fmaskConfig.setMinCloudSize(mincloudsize)
-        fmaskConfig.setCirrusProbRatio(cirrusprobratio)
+        fmaskConfig.setMinCloudSize(min_cloud_size)
+        fmaskConfig.setCirrusProbRatio(cirrus_prob_ratio)
 
-        # Work out a suitable buffer size, in pixels, dependent
-        # on the resolution of the input TOA image
-        toaImgInfo = fileinfo.ImageInfo(self.toa_file)
-        fmaskConfig.setCloudBufferSize(int(cloudbufferdistance / toaImgInfo.xRes))
-        fmaskConfig.setShadowBufferSize(int(shadowbufferdistance / toaImgInfo.xRes))
+        # Work out a suitable buffer and shadow size, in pixels
+        fmaskConfig.setCloudBufferSize(int(cloud_buffer_size))
+        fmaskConfig.setShadowBufferSize(int(shadow_buffer_size))
 
         fmask.doFmask(fmaskFilenames, fmaskConfig)
 

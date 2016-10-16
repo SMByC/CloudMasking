@@ -41,8 +41,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
     # Fmask parameters by default
     cirrus_prob_ratio = 0.04
-    cloud_buffer = 150
-    shadow_buffer = 300
+    cloud_buffer = 5
+    shadow_buffer = 10
     # Blue band by default
     bb_threshold = 10
 

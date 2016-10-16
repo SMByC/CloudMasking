@@ -338,9 +338,9 @@ class CloudMasking:
 
             # fmask filter
             self.masking_result.do_fmask(
-                cirrusprobratio=float(self.dockwidget.doubleSpinBox_CPR.value()),
-                cloudbufferdistance=float(self.dockwidget.doubleSpinBox_CB.value()),
-                shadowbufferdistance=float(self.dockwidget.doubleSpinBox_SB.value()),
+                cirrus_prob_ratio=float(self.dockwidget.doubleSpinBox_CPR.value()),
+                cloud_buffer_size=float(self.dockwidget.doubleSpinBox_CB.value()),
+                shadow_buffer_size=float(self.dockwidget.doubleSpinBox_SB.value()),
             )
 
         ########################################
