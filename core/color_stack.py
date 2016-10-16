@@ -27,6 +27,7 @@ plugin_folder = os.path.dirname(os.path.dirname(__file__))
 if plugin_folder not in sys.path:
     sys.path.append(plugin_folder)
 
+from core.utils import get_prefer_name
 from libs import gdal_merge
 
 
@@ -79,6 +80,9 @@ class ColorStack(object):
                 self.color_bands = [
                     os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
                     for N in [5, 6, 7]]
+
+        # set the prefer file name band for process
+        self.color_bands = [get_prefer_name(file_path) for file_path in self.color_bands]
 
     def do_color_stack(self):
 

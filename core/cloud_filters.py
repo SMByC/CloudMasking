@@ -29,6 +29,7 @@ plugin_folder = os.path.dirname(os.path.dirname(__file__))
 if plugin_folder not in sys.path:
     sys.path.append(plugin_folder)
 
+from core.utils import get_prefer_name
 from libs import gdal_merge
 from libs.fmask import fmask, landsatTOA, landsatangles, config, saturationcheck
 from libs.rios import fileinfo
@@ -86,6 +87,10 @@ class CloudMaskingResult(object):
             self.thermal_bands = [
                 os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_' + str(N)])
                 for N in [10, 11]]
+
+        # set the prefer file name band for process
+        self.reflective_bands = [get_prefer_name(file_path) for file_path in self.reflective_bands]
+        self.thermal_bands = [get_prefer_name(file_path) for file_path in self.thermal_bands]
 
     def do_fmask(self, cirrusprobratio=0.04, mincloudsize=0, cloudbufferdistance=150, shadowbufferdistance=300):
 
