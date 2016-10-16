@@ -201,6 +201,12 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.groupBox_GenerateMask.setEnabled(True)
         # tmp dir for process this MTL
         self.tmp_dir = tempfile.mkdtemp()
+        # set QCflags if this MTL have QC file
+        self.set_QCflags()
+
+    def set_QCflags(self):
+        # TODO
+        self.frame_QCflags.setHidden(True)
 
     def unload_MTL(self):
         """Disconnect, unload and remove temporal files of old MTL
