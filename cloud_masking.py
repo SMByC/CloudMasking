@@ -372,8 +372,11 @@ class CloudMasking:
         QApplication.restoreOverrideCursor()
 
         # Add to QGIS the reflectance stack file and cloud file
-        self.cloud_mask_rlayer = QgsRasterLayer(self.masking_result.cloud_file,
-                                                "Cloud Mask ({})".format(datetime.now().strftime('%H:%M:%S')))
+        if self.masking_result.clipping_extent:
+            masking_result_name = self.tr(u"Cloud Mask in area ({})".format(datetime.now().strftime('%H:%M:%S')))
+        else:
+            masking_result_name = self.tr(u"Cloud Mask ({})".format(datetime.now().strftime('%H:%M:%S')))
+        self.cloud_mask_rlayer = QgsRasterLayer(self.masking_result.cloud_file, masking_result_name)
         QgsMapLayerRegistry.instance().addMapLayer(self.cloud_mask_rlayer)
 
     def apply_mask(self):

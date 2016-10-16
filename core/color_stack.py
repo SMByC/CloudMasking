@@ -50,7 +50,7 @@ class ColorStack(object):
         self.process_status = None
         self.process_bar = None
         # set base name
-        self.base_name = self.color_type.replace("_", " ").capitalize()
+        self.base_name = self.color_type.replace("_", " ").title()
 
         # get_metadata
         self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
