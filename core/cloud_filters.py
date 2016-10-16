@@ -23,6 +23,7 @@ import tempfile
 from subprocess import call
 from datetime import datetime
 
+from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtGui import QApplication
 
 plugin_folder = os.path.dirname(os.path.dirname(__file__))
@@ -95,6 +96,11 @@ class CloudMaskingResult(object):
         self.reflective_bands = [get_prefer_name(file_path) for file_path in self.reflective_bands]
         self.thermal_bands = [get_prefer_name(file_path) for file_path in self.thermal_bands]
 
+    def tr(self, string, context=''):
+        if context == '':
+            context = self.__class__.__name__
+        return QCoreApplication.translate(context, string)
+
     def do_fmask(self, cirrus_prob_ratio=0.04, min_cloud_size=0, cloud_buffer_size=5, shadow_buffer_size=10):
 
         ########################################
@@ -104,7 +110,7 @@ class CloudMaskingResult(object):
         self.reflective_stack_file = os.path.join(self.tmp_dir, "reflective_stack.tif")
 
         if not os.path.isfile(self.reflective_stack_file):
-            self.process_status.setText("Making reflective bands stack...")
+            self.process_status.setText(self.tr(u"Making reflective bands stack..."))
             self.process_bar.setValue(10)
             QApplication.processEvents()
 
@@ -118,7 +124,7 @@ class CloudMaskingResult(object):
         self.thermal_stack_file = os.path.join(self.tmp_dir, "thermal_stack.tif")
 
         if not os.path.isfile(self.thermal_stack_file):
-            self.process_status.setText("Making thermal bands stack...")
+            self.process_status.setText(self.tr(u"Making thermal bands stack..."))
             self.process_bar.setValue(20)
             QApplication.processEvents()
 
@@ -129,7 +135,7 @@ class CloudMaskingResult(object):
         # clipping the reflective bands stack
 
         if self.clipping_extent:
-            self.process_status.setText("Clipping the reflective stack...")
+            self.process_status.setText(self.tr(u"Clipping the reflective stack..."))
             self.process_bar.setValue(24)
             QApplication.processEvents()
 
@@ -147,7 +153,7 @@ class CloudMaskingResult(object):
         # clipping the thermal bands stack
 
         if self.clipping_extent:
-            self.process_status.setText("Clipping the thermal stack...")
+            self.process_status.setText(self.tr(u"Clipping the thermal stack..."))
             self.process_bar.setValue(27)
             QApplication.processEvents()
 
@@ -170,7 +176,7 @@ class CloudMaskingResult(object):
         # tmp file for angles
         self.angles_file = os.path.join(self.tmp_dir, "angles.tif")
 
-        self.process_status.setText("Making fmask angles file...")
+        self.process_status.setText(self.tr(u"Making fmask angles file..."))
         self.process_bar.setValue(30)
         QApplication.processEvents()
 
@@ -194,7 +200,7 @@ class CloudMaskingResult(object):
         # tmp file for angles
         self.saturationmask_file = os.path.join(self.tmp_dir, "saturationmask.tif")
 
-        self.process_status.setText("Making saturation mask file...")
+        self.process_status.setText(self.tr(u"Making saturation mask file..."))
         self.process_bar.setValue(40)
         QApplication.processEvents()
 
@@ -222,7 +228,7 @@ class CloudMaskingResult(object):
         # tmp file for toa
         self.toa_file = os.path.join(self.tmp_dir, "toa.tif")
 
-        self.process_status.setText("Making top of Atmosphere ref...")
+        self.process_status.setText(self.tr(u"Making top of Atmosphere ref..."))
         self.process_bar.setValue(50)
         QApplication.processEvents()
 
@@ -237,7 +243,7 @@ class CloudMaskingResult(object):
         # tmp file for cloud
         self.cloud_file = os.path.join(self.tmp_dir, "cloud_mask_{}.tif".format(datetime.now().strftime('%H%M%S')))
 
-        self.process_status.setText("Making cloud mask with fmask...")
+        self.process_status.setText(self.tr(u"Making cloud mask with fmask..."))
         self.process_bar.setValue(70)
         QApplication.processEvents()
 
@@ -280,6 +286,6 @@ class CloudMaskingResult(object):
 
 
         ### ending fmask process
-        self.process_status.setText("DONE")
+        self.process_status.setText(self.tr(u"DONE"))
         self.process_bar.setValue(100)
         QApplication.processEvents()

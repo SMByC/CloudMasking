@@ -76,7 +76,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # load MTL: this is called from cloud_masking
         # MTL info
         self.kled_LoadedMTL.off()
-        self.label_LoadedMTL_1.setText('No MTL file loaded yet.')
+        self.label_LoadedMTL_1.setText(self.tr(u"No MTL file loaded yet."))
         self.label_LoadedMTL_2.setText('')
 
         # FMask filters #########
@@ -155,10 +155,10 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         """Open QFileDialog to find a MTL file
         """
         self.mtl_path = str(QtGui.QFileDialog.
-                            getOpenFileName(self, self.tr('Select the MTL file'),
+                            getOpenFileName(self, self.tr(u"Select the MTL file"),
                                             self.mtl_path if os.path.isdir(self.mtl_path)
                                             else os.path.dirname(self.mtl_path),
-                                            self.tr("MTL file (*MTL.txt);;All files (*.*)")))
+                                            self.tr(u"MTL file (*MTL.txt);;All files (*.*)")))
         if self.mtl_path != '':
             self.lineEdit_PathMTL.setText(self.mtl_path)
 
@@ -172,8 +172,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.mtl_path = str(self.lineEdit_PathMTL.text())
 
         if not os.path.isfile(self.mtl_path):
-            self.label_LoadedMTL_1.setText('Error:')
-            self.label_LoadedMTL_2.setText('File not exist')
+            self.label_LoadedMTL_1.setText(self.tr(u"Error:"))
+            self.label_LoadedMTL_2.setText(self.tr(u"File not exist"))
             return
 
         # load the MTL file
@@ -182,8 +182,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             # get the landsat version
             self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
         except:
-            self.label_LoadedMTL_1.setText('Error:')
-            self.label_LoadedMTL_2.setText('Cannot parse MTL file')
+            self.label_LoadedMTL_1.setText(self.tr(u"Error:"))
+            self.label_LoadedMTL_2.setText(self.tr(u"Cannot parse MTL file"))
             return
 
         #### If we load it okay

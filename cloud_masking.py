@@ -306,7 +306,7 @@ class CloudMasking:
                 not self.dockwidget.checkBox_BlueBand.isChecked() and
                 not self.dockwidget.checkBox_QCflags.isChecked()):
             self.dockwidget.label_processMaskStatus.setText(
-                self.tr("Error: no filters enabled for apply")
+                self.tr(u"Error: no filters enabled for apply")
             )
             return
 
@@ -396,8 +396,8 @@ class CloudMasking:
         # message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):
             self.dockwidget.tabWidget.setCurrentWidget(self.dockwidget.tab_OL)  # focus first tab
-            self.dockwidget.label_LoadedMTL_1.setText('Please wait:')
-            self.dockwidget.label_LoadedMTL_2.setText('Cleaning temporal files ...')
+            self.dockwidget.label_LoadedMTL_1.setText(self.tr(u"Please wait:"))
+            self.dockwidget.label_LoadedMTL_2.setText(self.tr(u"Cleaning temporal files ..."))
             # repaint
             self.dockwidget.label_LoadedMTL_1.repaint()
             self.dockwidget.label_LoadedMTL_2.repaint()
@@ -435,6 +435,6 @@ class CloudMasking:
 
         # restore initial message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):
-            self.dockwidget.label_LoadedMTL_1.setText('No MTL file loaded yet.')
+            self.dockwidget.label_LoadedMTL_1.setText(self.tr(u"No MTL file loaded yet."))
             self.dockwidget.label_LoadedMTL_2.setText('')
 
