@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    extentSelector.py
+    extent_selector.py
     ---------------------
     Date                 : December 2010
     Copyright            : (C) 2010 by Giuseppe Sucameli
@@ -27,7 +27,7 @@ from qgis.gui import QgsMapTool, QgsMapToolEmitPoint, QgsRubberBand
 
 plugin_folder = os.path.dirname(os.path.dirname(__file__))
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    plugin_folder, 'ui', 'extentSelector.ui'))
+    plugin_folder, 'ui', 'extent_selector.ui'))
 
 
 class ExtentSelector(QWidget, FORM_CLASS):

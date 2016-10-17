@@ -899,7 +899,7 @@
   <customwidget>
    <class>ExtentSelector</class>
    <extends>QWidget</extends>
-   <header>gui.extentSelector</header>
+   <header>gui.extent_selector</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
