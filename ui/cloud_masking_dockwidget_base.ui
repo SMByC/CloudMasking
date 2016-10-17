@@ -365,7 +365,10 @@
                         <item>
                          <widget class="QSlider" name="horizontalSlider_BB">
                           <property name="maximum">
-                           <number>100</number>
+                           <number>255</number>
+                          </property>
+                          <property name="pageStep">
+                           <number>5</number>
                           </property>
                           <property name="orientation">
                            <enum>Qt::Horizontal</enum>
@@ -374,14 +377,23 @@
                         </item>
                         <item>
                          <widget class="QDoubleSpinBox" name="doubleSpinBox_BB">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
                           <property name="decimals">
-                           <number>1</number>
+                           <number>0</number>
+                          </property>
+                          <property name="minimum">
+                           <double>0.000000000000000</double>
                           </property>
                           <property name="maximum">
-                           <double>100.000000000000000</double>
+                           <double>255.000000000000000</double>
                           </property>
                           <property name="singleStep">
-                           <double>0.100000000000000</double>
+                           <double>1.000000000000000</double>
                           </property>
                          </widget>
                         </item>
@@ -952,8 +964,8 @@
      <y>249</y>
     </hint>
     <hint type="destinationlabel">
-     <x>217</x>
-     <y>180</y>
+     <x>112</x>
+     <y>112</y>
     </hint>
    </hints>
   </connection>
@@ -968,8 +980,8 @@
      <y>249</y>
     </hint>
     <hint type="destinationlabel">
-     <x>137</x>
-     <y>241</y>
+     <x>112</x>
+     <y>112</y>
     </hint>
    </hints>
   </connection>

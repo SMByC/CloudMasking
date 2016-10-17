@@ -54,6 +54,8 @@ class CloudMaskingResult(object):
         self.process_bar = None
         # set initial clipping status
         self.clipping_extent = False
+        # save all result files of cloud masking
+        self.cloud_masking_files = []
 
         # get_metadata
         self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
@@ -101,7 +103,14 @@ class CloudMaskingResult(object):
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
 
-    def do_fmask(self, cirrus_prob_ratio=0.04, min_cloud_size=0, cloud_buffer_size=5, shadow_buffer_size=10):
+    def do_clipping_extent(self, in_file, out_file):
+        return_code = call(
+            'gdal_translate -projwin ' +
+            ' '.join([str(x) for x in [self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2]]) +
+            ' -of GTiff ' + in_file + ' ' + out_file,
+            shell=True)
+
+    def do_fmask(self, cirrus_prob_ratio=0.04, min_cloud_size=0, cloud_buffer_size=4, shadow_buffer_size=6):
 
         ########################################
         # reflective bands stack
@@ -140,11 +149,7 @@ class CloudMaskingResult(object):
             QApplication.processEvents()
 
             self.reflective_stack_clip_file = os.path.join(self.tmp_dir, "reflective_stack_clip.tif")
-            return_code = call(
-                'gdal_translate -projwin ' +
-                ' '.join([str(x) for x in [self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2]]) +
-                ' -of GTiff ' + self.reflective_stack_file + ' ' + self.reflective_stack_clip_file,
-                shell=True)
+            self.do_clipping_extent(self.reflective_stack_file, self.reflective_stack_clip_file)
             self.reflective_stack_for_process = self.reflective_stack_clip_file
         else:
             self.reflective_stack_for_process = self.reflective_stack_file
@@ -158,11 +163,7 @@ class CloudMaskingResult(object):
             QApplication.processEvents()
 
             self.thermal_stack_clip_file = os.path.join(self.tmp_dir, "thermal_stack_clip.tif")
-            return_code = call(
-                'gdal_translate -projwin ' +
-                ' '.join([str(x) for x in [self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2]]) +
-                ' -of GTiff ' + self.thermal_stack_file + ' ' + self.thermal_stack_clip_file,
-                shell=True)
+            self.do_clipping_extent(self.thermal_stack_file, self.thermal_stack_clip_file)
             self.thermal_stack_for_process = self.thermal_stack_clip_file
         else:
             self.thermal_stack_for_process = self.thermal_stack_file
@@ -241,7 +242,7 @@ class CloudMaskingResult(object):
         # fmask_usgsLandsatStacked.py
 
         # tmp file for cloud
-        self.cloud_file = os.path.join(self.tmp_dir, "cloud_mask_{}.tif".format(datetime.now().strftime('%H%M%S')))
+        self.cloud_fmask_file = os.path.join(self.tmp_dir, "cloud_fmask_{}.tif".format(datetime.now().strftime('%H%M%S')))
 
         self.process_status.setText(self.tr(u"Making cloud mask with fmask..."))
         self.process_bar.setValue(70)
@@ -266,7 +267,7 @@ class CloudMaskingResult(object):
         fmaskFilenames = config.FmaskFilenames()
         fmaskFilenames.setTOAReflectanceFile(self.toa_file)
         fmaskFilenames.setThermalFile(self.thermal_stack_for_process)
-        fmaskFilenames.setOutputCloudMaskFile(self.cloud_file)
+        fmaskFilenames.setOutputCloudMaskFile(self.cloud_fmask_file)
         fmaskFilenames.setSaturationMask(self.saturationmask_file)  # TODO: optional
 
         fmaskConfig = config.FmaskConfig(sensor)
@@ -284,6 +285,53 @@ class CloudMaskingResult(object):
 
         fmask.doFmask(fmaskFilenames, fmaskConfig)
 
+        # save final result of masking
+        self.cloud_masking_files.append(self.cloud_fmask_file)
+
+        ### ending fmask process
+        self.process_status.setText(self.tr(u"DONE"))
+        self.process_bar.setValue(100)
+        QApplication.processEvents()
+
+    def do_blue_band(self, bb_threshold):
+        # tmp file for cloud
+        self.cloud_bb_file = os.path.join(self.tmp_dir, "cloud_bb_{}.tif".format(datetime.now().strftime('%H%M%S')))
+
+        ########################################
+        # select the Blue Band
+        if self.landsat_version in [4, 5, 7]:
+            # get the reflective file names bands
+            self.blue_band_file = os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_1'])
+        if self.landsat_version in [8]:
+            # get the reflective file names bands
+            self.blue_band_file = os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_2'])
+
+        # fix file name
+        self.blue_band_file = get_prefer_name(self.blue_band_file)
+
+        ########################################
+        # clipping the Blue Band
+        if self.clipping_extent:
+            self.process_status.setText(self.tr(u"Clipping the blue band..."))
+            self.process_bar.setValue(27)
+            QApplication.processEvents()
+
+            self.blue_band_clip_file = os.path.join(self.tmp_dir, "blue_band_clip.tif")
+            self.do_clipping_extent(self.blue_band_file, self.blue_band_clip_file)
+            self.blue_band_for_process = self.blue_band_clip_file
+        else:
+            self.blue_band_for_process = self.blue_band_file
+
+        ########################################
+        # do blue band filter
+        return_code = call(
+            'gdal_calc.py -A ' + self.blue_band_for_process + ' --outfile=' + self.cloud_bb_file +
+            ' --type=UInt16 --calc="1*(A<{threshold})+2*(A>={threshold})" --allBands=A  --overwrite'
+            .format(threshold=bb_threshold),
+            shell=True)
+
+        # save final result of masking
+        self.cloud_masking_files.append(self.cloud_bb_file)
 
         ### ending fmask process
         self.process_status.setText(self.tr(u"DONE"))

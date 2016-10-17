@@ -349,7 +349,7 @@ class CloudMasking:
         # Blue Band filter
 
         if self.dockwidget.checkBox_BlueBand.isChecked():
-            pass
+            self.masking_result.do_blue_band(int(self.dockwidget.doubleSpinBox_BB.value()))
 
         ########################################
         # Quality Control Flags filter
@@ -358,15 +358,21 @@ class CloudMasking:
             pass
 
         ########################################
+        # Blended cloud masking files
+        if len(self.masking_result.cloud_masking_files) == 1:
+            self.final_cloud_mask_file = self.masking_result.cloud_masking_files[0]
+
+        ########################################
         # Post process mask
 
         # delete unused output
-        os.remove(self.masking_result.angles_file)
-        os.remove(self.masking_result.saturationmask_file)
-        os.remove(self.masking_result.toa_file)
-        if self.masking_result.clipping_extent:
-            os.remove(self.masking_result.reflective_stack_clip_file)
-            os.remove(self.masking_result.thermal_stack_clip_file)
+        if self.dockwidget.checkBox_FMask.isChecked():
+            os.remove(self.masking_result.angles_file)
+            os.remove(self.masking_result.saturationmask_file)
+            os.remove(self.masking_result.toa_file)
+            if self.masking_result.clipping_extent:
+                os.remove(self.masking_result.reflective_stack_clip_file)
+                os.remove(self.masking_result.thermal_stack_clip_file)
 
         # restore mouse
         QApplication.restoreOverrideCursor()
@@ -376,7 +382,7 @@ class CloudMasking:
             masking_result_name = self.tr(u"Cloud Mask in area ({})".format(datetime.now().strftime('%H:%M:%S')))
         else:
             masking_result_name = self.tr(u"Cloud Mask ({})".format(datetime.now().strftime('%H:%M:%S')))
-        self.cloud_mask_rlayer = QgsRasterLayer(self.masking_result.cloud_file, masking_result_name)
+        self.cloud_mask_rlayer = QgsRasterLayer(self.final_cloud_mask_file, masking_result_name)
         QgsMapLayerRegistry.instance().addMapLayer(self.cloud_mask_rlayer)
 
     def apply_mask(self):

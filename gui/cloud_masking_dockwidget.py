@@ -45,7 +45,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     cloud_buffer = 4
     shadow_buffer = 6
     # Blue band by default
-    bb_threshold = 10
+    bb_threshold = 110
 
     closingPlugin = pyqtSignal()
 
