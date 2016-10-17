@@ -23,12 +23,19 @@ import tempfile
 
 from qgis.core import QgsMapLayerRegistry, QgsRasterLayer
 
+# adding the plugin path
 plugin_folder = os.path.dirname(os.path.dirname(__file__))
 if plugin_folder not in sys.path:
     sys.path.append(plugin_folder)
+# adding the libs plugin path
+libs_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), "libs")
+if libs_folder not in sys.path:
+    sys.path.append(libs_folder)
 
+# from plugins
 from core.utils import get_prefer_name
-from libs import gdal_merge
+# from libs
+import gdal_merge
 
 
 class ColorStack(object):
