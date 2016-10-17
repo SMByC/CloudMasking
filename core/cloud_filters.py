@@ -334,7 +334,7 @@ class CloudMaskingResult(object):
         # do blue band filter
         return_code = call(
             'gdal_calc.py -A ' + self.blue_band_for_process + ' --outfile=' + self.cloud_bb_file +
-            ' --type=UInt16 --calc="1*(A<{threshold})+2*(A>={threshold})" --allBands=A  --overwrite'
+            ' --type=Byte --calc="1*(A<{threshold})+6*(A>={threshold})" --allBands=A  --overwrite'
             .format(threshold=bb_threshold),
             shell=True)
 

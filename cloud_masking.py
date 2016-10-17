@@ -30,6 +30,7 @@ from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRaster
 import resources
 
 from core import cloud_filters, color_stack
+from core.utils import apply_symbology
 from gui.cloud_masking_dockwidget import CloudMaskingDockWidget
 
 
@@ -300,6 +301,7 @@ class CloudMasking:
     def process_mask(self):
         """Make the process
         """
+        enable_symbology = [False, False, False, False, False, False]
 
         # check if any filters has been enabled before process
         if (not self.dockwidget.checkBox_FMask.isChecked() and
@@ -337,19 +339,21 @@ class CloudMasking:
         # FMask filter
 
         if self.dockwidget.checkBox_FMask.isChecked():
-
             # fmask filter
             self.masking_result.do_fmask(
                 cirrus_prob_ratio=float(self.dockwidget.doubleSpinBox_CPR.value()),
                 cloud_buffer_size=float(self.dockwidget.doubleSpinBox_CB.value()),
                 shadow_buffer_size=float(self.dockwidget.doubleSpinBox_SB.value()),
             )
+            enable_symbology[0:5] = [True, True, True, True, True]
 
         ########################################
         # Blue Band filter
 
         if self.dockwidget.checkBox_BlueBand.isChecked():
             self.masking_result.do_blue_band(int(self.dockwidget.doubleSpinBox_BB.value()))
+            enable_symbology[0] = True
+            enable_symbology[5] = True
 
         ########################################
         # Quality Control Flags filter
@@ -374,9 +378,6 @@ class CloudMasking:
                 os.remove(self.masking_result.reflective_stack_clip_file)
                 os.remove(self.masking_result.thermal_stack_clip_file)
 
-        # restore mouse
-        QApplication.restoreOverrideCursor()
-
         # Add to QGIS the reflectance stack file and cloud file
         if self.masking_result.clipping_extent:
             masking_result_name = self.tr(u"Cloud Mask in area ({})".format(datetime.now().strftime('%H:%M:%S')))
@@ -384,6 +385,26 @@ class CloudMasking:
             masking_result_name = self.tr(u"Cloud Mask ({})".format(datetime.now().strftime('%H:%M:%S')))
         self.cloud_mask_rlayer = QgsRasterLayer(self.final_cloud_mask_file, masking_result_name)
         QgsMapLayerRegistry.instance().addMapLayer(self.cloud_mask_rlayer)
+
+        # Set symbology (thematic color and name) for new raster layer
+        symbology = {
+            'land': (0, 0, 0, 0),
+            'cloud': (255, 0, 255, 255),
+            'shadow': (255, 255, 0, 255),
+            'snow': (85, 255, 255, 255),
+            'water': (0, 0, 200, 255),
+            'blue band': (120, 212, 245, 255)
+        }
+        # apply
+        apply_symbology(self.cloud_mask_rlayer,
+                        symbology,
+                        enable_symbology,
+                        transparent=[255, 0])
+        # Refresh layer symbology
+        self.iface.legendInterface().refreshLayerSymbology(self.cloud_mask_rlayer)
+
+        # restore mouse
+        QApplication.restoreOverrideCursor()
 
     def apply_mask(self):
         current_layer = self.getLayerByName(self.dockwidget.lineEdit_PathMTL.currentText())
