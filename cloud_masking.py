@@ -266,6 +266,8 @@ class CloudMasking:
         QObject.connect(self.dockwidget.button_LoadMTL, SIGNAL("clicked()"), self.dockwidget.load_MTL)
         # call to clear all
         QObject.connect(self.dockwidget.button_ClearAll, SIGNAL("clicked()"), self.clear_all)
+        QObject.connect(self.dockwidget.button_ClearAll, SIGNAL("clicked()"),
+                        lambda: self.dockwidget.lineEdit_PathMTL.setText(''))
         # call to load natural color stack
         QObject.connect(self.dockwidget.button_NaturalColorStack, SIGNAL("clicked()"),
                         lambda: self.load_color_stack("natural_color"))
