@@ -364,9 +364,12 @@ class CloudMasking:
 
         ########################################
         # Blended cloud masking files
+
+        # only one filter is activated
         if len(self.masking_result.cloud_masking_files) == 1:
             self.final_cloud_mask_file = self.masking_result.cloud_masking_files[0]
 
+        # two filters (fmask + blueband) are activated
         if len(self.masking_result.cloud_masking_files) == 2:
             if (self.dockwidget.checkBox_FMask.isChecked() and
                     self.dockwidget.checkBox_BlueBand.isChecked()):
@@ -381,6 +384,7 @@ class CloudMasking:
         # Post process mask
 
         # delete unused output
+        # from fmask
         if self.dockwidget.checkBox_FMask.isChecked():
             os.remove(self.masking_result.angles_file)
             os.remove(self.masking_result.saturationmask_file)
@@ -388,6 +392,14 @@ class CloudMasking:
             if self.masking_result.clipping_extent:
                 os.remove(self.masking_result.reflective_stack_clip_file)
                 os.remove(self.masking_result.thermal_stack_clip_file)
+        # from blue band
+        if self.dockwidget.checkBox_BlueBand.isChecked():
+            if self.masking_result.clipping_extent:
+                os.remove(self.masking_result.blue_band_clip_file)
+        # from original blended files
+        for cloud_masking_file in self.masking_result.cloud_masking_files:
+            if cloud_masking_file != self.final_cloud_mask_file:
+                os.remove(cloud_masking_file)
 
         # Add to QGIS the reflectance stack file and cloud file
         if self.masking_result.clipping_extent:
