@@ -302,6 +302,7 @@ class CloudMasking:
     def process_mask(self):
         """Make the process
         """
+        # initialize the symbology
         enable_symbology = [False, False, False, False, False, False]
 
         # check if any filters has been enabled before process
@@ -313,6 +314,7 @@ class CloudMasking:
             )
             return
 
+        # create the masking result instance if not exist
         if (not isinstance(self.masking_result, cloud_filters.CloudMaskingResult) or
             not self.masking_result.landsat_scene == self.dockwidget.mtl_file['LANDSAT_SCENE_ID']):
             # create a new instance of cloud masking result
@@ -321,6 +323,9 @@ class CloudMasking:
                                                                    self.dockwidget.tmp_dir)
             self.masking_result.process_status = self.dockwidget.label_processMaskStatus
             self.masking_result.process_bar = self.dockwidget.progressBar
+
+        # re-init the result masking files
+        self.masking_result.cloud_masking_files = []
 
         # mouse wait
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
