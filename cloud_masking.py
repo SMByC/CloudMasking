@@ -21,6 +21,7 @@
 import os.path
 import shutil
 from datetime import datetime
+from subprocess import call
 from time import sleep
 
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
@@ -365,6 +366,16 @@ class CloudMasking:
         # Blended cloud masking files
         if len(self.masking_result.cloud_masking_files) == 1:
             self.final_cloud_mask_file = self.masking_result.cloud_masking_files[0]
+
+        if len(self.masking_result.cloud_masking_files) == 2:
+            if (self.dockwidget.checkBox_FMask.isChecked() and
+                    self.dockwidget.checkBox_BlueBand.isChecked()):
+                self.final_cloud_mask_file = \
+                    os.path.join(self.dockwidget.tmp_dir, "cloud_blended_{}.tif".format(datetime.now().strftime('%H%M%S')))
+                call('gdal_calc.py -A ' + self.masking_result.cloud_masking_files[0] +
+                     ' -B ' + self.masking_result.cloud_masking_files[1] + ' --outfile=' +
+                     self.final_cloud_mask_file + ' --type=Byte --calc="A*logical_or(B!=6,A!=1)+B*logical_and(B==6,A==1)"',
+                     shell=True)
 
         ########################################
         # Post process mask
