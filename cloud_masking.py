@@ -453,7 +453,7 @@ class CloudMasking:
         # message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):
             self.dockwidget.tabWidget.setCurrentWidget(self.dockwidget.tab_OL)  # focus first tab
-            self.dockwidget.status_LoadedMTL.setText(self.tr(u"Please wait: Cleaning temporal files ..."))
+            self.dockwidget.status_LoadedMTL.setText(self.tr(u"Cleaning temporal files ..."))
             self.dockwidget.status_LoadedMTL.repaint()
             QApplication.processEvents()
             sleep(1)

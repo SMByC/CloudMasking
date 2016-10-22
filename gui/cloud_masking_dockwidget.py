@@ -20,7 +20,6 @@
 """
 
 import os
-import sys
 import tempfile
 
 from PyQt4 import QtGui, uic, QtCore
@@ -193,7 +192,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         #### If we load it okay
         # MTL info
         self.status_LoadedMTL.setChecked(True)
-        self.status_LoadedMTL.setText(self.mtl_file['LANDSAT_SCENE_ID'] + ' Landsat ' + str(self.landsat_version))
+        self.status_LoadedMTL.setText(self.mtl_file['LANDSAT_SCENE_ID'] + ' (L{})'.format(self.landsat_version))
         # Load stack and clear all #########
         self.button_ClearAll.setEnabled(True)
         self.groupBox_LoadStacks.setEnabled(True)
