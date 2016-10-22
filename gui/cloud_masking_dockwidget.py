@@ -75,6 +75,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # MTL info
         self.status_LoadedMTL.setChecked(False)
         self.status_LoadedMTL.setText(self.tr(u"No MTL file loaded yet."))
+        self.status_LoadedMTL.clicked.connect(self.onlyread)
 
         # FMask filters #########
         # start hidden
@@ -121,6 +122,14 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # start hidden
         self.widget_SaveApply_01.setHidden(True)
         self.widget_SaveApply_02.setHidden(True)
+
+    # radiobutton status MTL
+    @QtCore.pyqtSlot()
+    def onlyread(self):
+        if self.status_LoadedMTL.isChecked():
+            self.status_LoadedMTL.setChecked(False)
+        else:
+            self.status_LoadedMTL.setChecked(True)
 
     ### Cirrus prob ratio - for connect Qslider(int) with QdoubleSpinBox(float)
     @QtCore.pyqtSlot(int)
