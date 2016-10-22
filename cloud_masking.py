@@ -453,11 +453,8 @@ class CloudMasking:
         # message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):
             self.dockwidget.tabWidget.setCurrentWidget(self.dockwidget.tab_OL)  # focus first tab
-            self.dockwidget.label_LoadedMTL_1.setText(self.tr(u"Please wait:"))
-            self.dockwidget.label_LoadedMTL_2.setText(self.tr(u"Cleaning temporal files ..."))
-            # repaint
-            self.dockwidget.label_LoadedMTL_1.repaint()
-            self.dockwidget.label_LoadedMTL_2.repaint()
+            self.dockwidget.status_LoadedMTL.setText(self.tr(u"Please wait: Cleaning temporal files ..."))
+            self.dockwidget.status_LoadedMTL.repaint()
             QApplication.processEvents()
             sleep(1)
 
@@ -492,6 +489,5 @@ class CloudMasking:
 
         # restore initial message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):
-            self.dockwidget.label_LoadedMTL_1.setText(self.tr(u"No MTL file loaded yet."))
-            self.dockwidget.label_LoadedMTL_2.setText('')
+            self.dockwidget.status_LoadedMTL.setText(self.tr(u"No MTL file loaded yet."))
 

@@ -73,9 +73,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.button_FindMTL.clicked.connect(self.fileDialog_findMTL)
         # load MTL: this is called from cloud_masking
         # MTL info
-        self.kled_LoadedMTL.off()
-        self.label_LoadedMTL_1.setText(self.tr(u"No MTL file loaded yet."))
-        self.label_LoadedMTL_2.setText('')
+        self.status_LoadedMTL.setChecked(False)
+        self.status_LoadedMTL.setText(self.tr(u"No MTL file loaded yet."))
 
         # FMask filters #########
         # start hidden
@@ -170,8 +169,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.mtl_path = str(self.lineEdit_PathMTL.text())
 
         if not os.path.isfile(self.mtl_path):
-            self.label_LoadedMTL_1.setText(self.tr(u"Error:"))
-            self.label_LoadedMTL_2.setText(self.tr(u"File not exist"))
+            self.status_LoadedMTL.setText(self.tr(u"Error: File not exist"))
             return
 
         # load the MTL file
@@ -180,15 +178,13 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             # get the landsat version
             self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
         except:
-            self.label_LoadedMTL_1.setText(self.tr(u"Error:"))
-            self.label_LoadedMTL_2.setText(self.tr(u"Cannot parse MTL file"))
+            self.status_LoadedMTL.setText(self.tr(u"Error: Cannot parse MTL file"))
             return
 
         #### If we load it okay
         # MTL info
-        self.kled_LoadedMTL.on()
-        self.label_LoadedMTL_1.setText(self.mtl_file['LANDSAT_SCENE_ID'])
-        self.label_LoadedMTL_2.setText('Landsat {}'.format(self.landsat_version))
+        self.status_LoadedMTL.setChecked(True)
+        self.status_LoadedMTL.setText(self.mtl_file['LANDSAT_SCENE_ID'] + ' Landsat ' + str(self.landsat_version))
         # Load stack and clear all #########
         self.button_ClearAll.setEnabled(True)
         self.groupBox_LoadStacks.setEnabled(True)
@@ -212,7 +208,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         """
 
         # MTL info
-        self.kled_LoadedMTL.off()
+        self.status_LoadedMTL.setChecked(False)
         # deactivate filters box
         self.groupBox_Filters.setEnabled(False)
         self.groupBox_Filters.setChecked(False)

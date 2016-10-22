@@ -27,7 +27,7 @@
 }</string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_OL">
        <attribute name="title">
@@ -116,58 +116,9 @@
                    <number>4</number>
                   </property>
                   <item>
-                   <widget class="KLed" name="kled_LoadedMTL">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true">font-size: 10pt;</string>
-                    </property>
-                    <property name="state">
-                     <enum>KLed::Off</enum>
-                    </property>
-                    <property name="look">
-                     <enum>KLed::Flat</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_LoadedMTL_1">
-                    <property name="styleSheet">
-                     <string notr="true"/>
-                    </property>
-                    <property name="lineWidth">
-                     <number>0</number>
-                    </property>
+                   <widget class="QRadioButton" name="status_LoadedMTL">
                     <property name="text">
                      <string/>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="label_LoadedMTL_2">
-                    <property name="font">
-                     <font>
-                      <pointsize>9</pointsize>
-                     </font>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true"/>
-                    </property>
-                    <property name="lineWidth">
-                     <number>0</number>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                     </property>
                    </widget>
                   </item>
@@ -845,11 +796,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KLed</class>
-   <extends>QWidget</extends>
-   <header>kled.h</header>
-  </customwidget>
-  <customwidget>
    <class>ExtentSelector</class>
    <extends>QWidget</extends>
    <header>CloudMasking.gui.extent_selector</header>
@@ -881,12 +827,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>179</x>
-     <y>431</y>
+     <x>190</x>
+     <y>382</y>
     </hint>
     <hint type="destinationlabel">
-     <x>179</x>
-     <y>502</y>
+     <x>190</x>
+     <y>453</y>
     </hint>
    </hints>
   </connection>
@@ -897,12 +843,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>221</x>
-     <y>555</y>
+     <x>232</x>
+     <y>506</y>
     </hint>
     <hint type="destinationlabel">
-     <x>218</x>
-     <y>641</y>
+     <x>229</x>
+     <y>592</y>
     </hint>
    </hints>
   </connection>
@@ -917,8 +863,8 @@
      <y>249</y>
     </hint>
     <hint type="destinationlabel">
-     <x>112</x>
-     <y>112</y>
+     <x>115</x>
+     <y>180</y>
     </hint>
    </hints>
   </connection>
@@ -933,8 +879,8 @@
      <y>249</y>
     </hint>
     <hint type="destinationlabel">
-     <x>112</x>
-     <y>112</y>
+     <x>115</x>
+     <y>241</y>
     </hint>
    </hints>
   </connection>
@@ -945,12 +891,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>48</x>
-     <y>708</y>
+     <x>51</x>
+     <y>688</y>
     </hint>
     <hint type="destinationlabel">
-     <x>50</x>
-     <y>745</y>
+     <x>53</x>
+     <y>704</y>
     </hint>
    </hints>
   </connection>
