@@ -27,14 +27,11 @@ from PyQt4 import QtGui, uic, QtCore
 from PyQt4.QtCore import pyqtSignal
 from qgis.utils import iface
 
-# adding the plugin path
-plugin_folder = os.path.dirname(os.path.dirname(__file__))
-if plugin_folder not in sys.path:
-    sys.path.append(plugin_folder)
-
 # from plugins
-from core import cloud_masking_utils
+from CloudMasking.core import cloud_masking_utils
 
+# plugin path
+plugin_folder = os.path.dirname(os.path.dirname(__file__))
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     plugin_folder, 'ui', 'cloud_masking_dockwidget_base.ui'))
 

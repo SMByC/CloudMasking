@@ -30,9 +30,9 @@ from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRaster
 # Initialize Qt resources from file resources.py
 import resources
 
-from core import cloud_filters, color_stack
-from core.utils import apply_symbology
-from gui.cloud_masking_dockwidget import CloudMaskingDockWidget
+from CloudMasking.core import cloud_filters, color_stack
+from CloudMasking.core.utils import apply_symbology
+from CloudMasking.gui.cloud_masking_dockwidget import CloudMaskingDockWidget
 
 
 class CloudMasking:

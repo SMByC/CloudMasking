@@ -26,17 +26,14 @@ from datetime import datetime
 from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtGui import QApplication
 
-# adding the plugin path
-plugin_folder = os.path.dirname(os.path.dirname(__file__))
-if plugin_folder not in sys.path:
-    sys.path.append(plugin_folder)
+# from plugins
+from CloudMasking.core.utils import get_prefer_name
+
 # adding the libs plugin path
 libs_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), "libs")
 if libs_folder not in sys.path:
     sys.path.append(libs_folder)
 
-# from plugins
-from core.utils import get_prefer_name
 # from libs
 import gdal_merge
 from fmask import fmask, landsatTOA, landsatangles, config, saturationcheck
