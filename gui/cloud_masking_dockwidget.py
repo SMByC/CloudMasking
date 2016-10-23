@@ -42,7 +42,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     cloud_buffer = 4
     shadow_buffer = 6
     # Blue band by default
-    bb_threshold = 110
+    bb_threshold_L57 = 110  # for L5 and L7
+    bb_threshold_L8 = 14000  # for L8
 
     closingPlugin = pyqtSignal()
 
@@ -99,7 +100,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # Synchronize the slider with the spin box
         self.horizontalSlider_BB.sliderMoved.connect(self.doubleSpinBox_BB.setValue)
         self.doubleSpinBox_BB.valueChanged.connect(self.horizontalSlider_BB.setValue)
-        self.doubleSpinBox_BB.setValue(self.bb_threshold)  # initial value
+        self.doubleSpinBox_BB.setValue(self.bb_threshold_L57)  # initial value
 
         # Quality control flags #########
         # start hidden
@@ -205,6 +206,20 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.tmp_dir = tempfile.mkdtemp()
         # set QCflags if this MTL have QC file
         self.set_QCflags()
+
+        #### adjust UI
+        self.UI_adjust()
+
+    def UI_adjust(self):
+        """UI adjust base on landsat version"""
+        if self.landsat_version in [5, 7]:
+            pass
+        if self.landsat_version in [8]:
+            #### Blue Band adjusts
+            self.horizontalSlider_BB.setMaximum(40000)
+            self.horizontalSlider_BB.setValue(self.bb_threshold_L8)
+            self.doubleSpinBox_BB.setMaximum(40000)
+            self.doubleSpinBox_BB.setValue(self.bb_threshold_L8)
 
     def set_QCflags(self):
         # TODO
