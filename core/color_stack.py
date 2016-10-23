@@ -18,21 +18,14 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os, sys
+import os
 import tempfile
 
 from qgis.core import QgsMapLayerRegistry, QgsRasterLayer
 
 # from plugins
 from CloudMasking.core.utils import get_prefer_name
-
-# adding the libs plugin path
-libs_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), "libs")
-if libs_folder not in sys.path:
-    sys.path.append(libs_folder)
-
-# from libs
-import gdal_merge
+from CloudMasking.libs import gdal_merge
 
 
 class ColorStack(object):

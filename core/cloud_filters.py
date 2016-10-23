@@ -28,6 +28,7 @@ from PyQt4.QtGui import QApplication
 
 # from plugins
 from CloudMasking.core.utils import get_prefer_name
+from CloudMasking.libs import gdal_merge
 
 # adding the libs plugin path
 libs_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), "libs")
@@ -35,7 +36,6 @@ if libs_folder not in sys.path:
     sys.path.append(libs_folder)
 
 # from libs
-import gdal_merge
 from fmask import fmask, landsatTOA, landsatangles, config, saturationcheck
 from rios import fileinfo
 
