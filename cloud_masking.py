@@ -33,6 +33,7 @@ import resources
 from CloudMasking.core import cloud_filters, color_stack
 from CloudMasking.core.utils import apply_symbology
 from CloudMasking.gui.cloud_masking_dockwidget import CloudMaskingDockWidget
+from CloudMasking.libs import gdal_calc
 
 
 class CloudMasking:
@@ -382,10 +383,8 @@ class CloudMasking:
                     self.dockwidget.checkBox_BlueBand.isChecked()):
                 self.final_cloud_mask_file = \
                     os.path.join(self.dockwidget.tmp_dir, "cloud_blended_{}.tif".format(datetime.now().strftime('%H%M%S')))
-                call('gdal_calc.py -A ' + self.masking_result.cloud_masking_files[0] +
-                     ' -B ' + self.masking_result.cloud_masking_files[1] + ' --outfile=' +
-                     self.final_cloud_mask_file + ' --type=Byte --calc="A*logical_or(B!=6,A!=1)+B*logical_and(B==6,A==1)"',
-                     shell=True)
+                gdal_calc.main("A*logical_or(B!=6,A!=1)+B*logical_and(B==6,A==1)",
+                               self.final_cloud_mask_file, self.masking_result.cloud_masking_files[0:2])
 
         ########################################
         # Post process mask

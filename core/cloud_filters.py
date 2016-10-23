@@ -28,7 +28,7 @@ from PyQt4.QtGui import QApplication
 
 # from plugins
 from CloudMasking.core.utils import get_prefer_name
-from CloudMasking.libs import gdal_merge
+from CloudMasking.libs import gdal_merge, gdal_calc
 
 # adding the libs plugin path
 libs_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), "libs")
@@ -329,11 +329,8 @@ class CloudMaskingResult(object):
 
         ########################################
         # do blue band filter
-        return_code = call(
-            'gdal_calc.py -A ' + self.blue_band_for_process + ' --outfile=' + self.cloud_bb_file +
-            ' --type=Byte --calc="1*(A<{threshold})+6*(A>={threshold})" --allBands=A  --overwrite'
-            .format(threshold=bb_threshold),
-            shell=True)
+        gdal_calc.main("1*(A<{threshold})+6*(A>={threshold})".format(threshold=bb_threshold),
+                       self.cloud_bb_file, [self.blue_band_for_process], output_type="Byte")
 
         # save final result of masking
         self.cloud_masking_files.append(self.cloud_bb_file)
