@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- Cloud Filters
+ CloudMasking
                                  A QGIS plugin
  Cloud masking for landsat products using different process suck as fmask
                              -------------------
@@ -18,9 +18,9 @@
  *                                                                         *
  ***************************************************************************/
 """
+
 import os, sys
 import tempfile
-from subprocess import call
 from datetime import datetime
 
 from PyQt4.QtCore import QCoreApplication
@@ -28,7 +28,7 @@ from PyQt4.QtGui import QApplication
 
 # from plugins
 from CloudMasking.core.utils import get_prefer_name
-from CloudMasking.libs import gdal_merge, gdal_calc
+from CloudMasking.libs import gdal_merge, gdal_calc, gdal_clip
 
 # adding the libs plugin path
 libs_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), "libs")
@@ -109,11 +109,7 @@ class CloudMaskingResult(object):
         return QCoreApplication.translate(context, string)
 
     def do_clipping_extent(self, in_file, out_file):
-        return_code = call(
-            'gdal_translate -projwin ' +
-            ' '.join([str(x) for x in [self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2]]) +
-            ' -of GTiff ' + in_file + ' ' + out_file,
-            shell=True)
+        gdal_clip.main(in_file, out_file, [self.extent_x1, self.extent_x2, self.extent_y2, self.extent_y1])
 
     def do_fmask(self, cirrus_prob_ratio=0.04, min_cloud_size=0, cloud_buffer_size=4, shadow_buffer_size=6):
 

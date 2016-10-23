@@ -21,7 +21,6 @@
 import os.path
 import shutil
 from datetime import datetime
-from subprocess import call
 from time import sleep
 
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
