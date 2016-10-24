@@ -81,10 +81,13 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # start hidden
         self.widget_FMask.setHidden(True)
         # Synchronize the slider with the spin box
-        # cirrus_prob_ratio
-        self.horizontalSlider_CPR.valueChanged.connect(self.update_cirrus_prob_ratio_slider)
-        self.doubleSpinBox_CPR.valueChanged.connect(self.update_cirrus_prob_ratio_box)
-        self.update_cirrus_prob_ratio_box(self.cirrus_prob_ratio)  # initial value
+        # cirrus_prob_ratio (float values)
+        self.horizontalSlider_CPR.valueChanged.connect(
+            lambda: self.update_spinbox(self.doubleSpinBox_CPR, self.horizontalSlider_CPR.value(), 1000))
+        self.doubleSpinBox_CPR.valueChanged.connect(
+            lambda: self.update_slider(self.horizontalSlider_CPR, self.doubleSpinBox_CPR.value(), 1000))
+        self.update_spinbox(self.doubleSpinBox_CPR, self.cirrus_prob_ratio, 1000)  # initial value
+        self.update_slider(self.horizontalSlider_CPR, self.cirrus_prob_ratio, 1000)  # initial value
         # cloud_buffer
         self.horizontalSlider_CB.sliderMoved.connect(self.doubleSpinBox_CB.setValue)
         self.doubleSpinBox_CB.valueChanged.connect(self.horizontalSlider_CB.setValue)
@@ -131,13 +134,11 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         else:
             self.status_LoadedMTL.setChecked(True)
 
-    ### Cirrus prob ratio - for connect Qslider(int) with QdoubleSpinBox(float)
-    @QtCore.pyqtSlot(int)
-    def update_cirrus_prob_ratio_slider(self, value):
-        self.doubleSpinBox_CPR.setValue(value/1000.0)
-    @QtCore.pyqtSlot(float)
-    def update_cirrus_prob_ratio_box(self, value):
-        self.horizontalSlider_CPR.setValue(value*1000)
+    ### SpinBox and Slider float connections (Qslider(int) with QdoubleSpinBox(float))
+    def update_spinbox(self, spinbox, value, multiplier):
+        spinbox.setValue(value/float(multiplier))
+    def update_slider(self, slider, value, multiplier):
+        slider.setValue(value*multiplier)
 
     ### Extent selector widget
     def switchClippingMode(self):
