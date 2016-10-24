@@ -27,7 +27,7 @@
 }</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_OL">
        <attribute name="title">
@@ -440,6 +440,9 @@
                         </item>
                         <item row="2" column="0">
                          <widget class="QLabel" name="label_10">
+                          <property name="toolTip">
+                           <string>Extra buffer around cloud shadown layer (pixels)</string>
+                          </property>
                           <property name="text">
                            <string>ShadowBuffer</string>
                           </property>
@@ -447,6 +450,9 @@
                         </item>
                         <item row="1" column="0">
                          <widget class="QLabel" name="label">
+                          <property name="toolTip">
+                           <string>Extra buffer around cloud layer (pixels)</string>
+                          </property>
                           <property name="text">
                            <string>CloudBuffer</string>
                           </property>
@@ -502,6 +508,9 @@
                         </item>
                         <item row="4" column="0">
                          <widget class="QLabel" name="label_12">
+                          <property name="toolTip">
+                           <string>Ratio used to determine the cirrus cloud probability</string>
+                          </property>
                           <property name="text">
                            <string>CirrusProbRatio</string>
                           </property>
