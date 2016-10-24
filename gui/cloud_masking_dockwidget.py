@@ -246,15 +246,26 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.UI_adjust()
 
     def UI_adjust(self):
-        """UI adjust base on landsat version"""
+        """UI adjust after load MTL file for some configurations
+        based on landsat version or availability files"""
         if self.landsat_version in [5, 7]:
-            pass
+            reflectance_bands = [1, 2, 3, 4, 5, 7]
         if self.landsat_version in [8]:
+            reflectance_bands = [2, 3, 4, 5, 6, 7]
             #### Blue Band adjusts
             self.horizontalSlider_BB.setMaximum(40000)
             self.horizontalSlider_BB.setValue(self.bb_threshold_L8)
             self.doubleSpinBox_BB.setMaximum(40000)
             self.doubleSpinBox_BB.setValue(self.bb_threshold_L8)
+
+        #### Enable apply to SR reflectance stack if are available
+        exists_sr_files = \
+            [os.path.isfile(f) for f in [os.path.join(os.path.dirname(self.mtl_path),
+                self.mtl_file['FILE_NAME_BAND_' + str(N)].replace("_B", "_sr_band").replace(".TIF", ".tif"))
+                for N in reflectance_bands]]
+        if all(exists_sr_files):
+            self.radioButton_ToSR_RefStack.setVisible(True)
+            self.radioButton_ToSR_RefStack.setChecked(True)
 
     def set_QCflags(self):
         # TODO
