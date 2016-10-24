@@ -153,10 +153,10 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.widget_ExtentSelector.selectionStarted.connect(self.checkRun)
         self.checkBox_ExtentSelector.toggled.connect(self.switchClippingMode)
 
-        # Save and apply #########
+        # Apply and save #########
         # start hidden
-        self.widget_SaveApply_01.setHidden(True)
-        self.widget_SaveApply_02.setHidden(True)
+        self.radioButton_ToSR_RefStack.setHidden(True)
+        self.widget_ApplyToFile.setHidden(True)
 
     # radiobutton status MTL
     @QtCore.pyqtSlot()
@@ -232,13 +232,15 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.groupBox_LoadStacks.setEnabled(True)
         # active filters box
         self.groupBox_Filters.setEnabled(True)
-        #self.groupBox_Filters.setChecked(True)
         # active generate cloud mask box
         self.groupBox_GenerateMask.setEnabled(True)
         # tmp dir for process this MTL
         self.tmp_dir = tempfile.mkdtemp()
         # set QCflags if this MTL have QC file
         self.set_QCflags()
+        # activate SaveApply
+        self.groupBox_SelectMask.setEnabled(True)
+        self.groupBox_ApplyMask.setEnabled(True)
 
         #### adjust UI
         self.UI_adjust()
@@ -267,10 +269,9 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.status_LoadedMTL.setChecked(False)
         # deactivate filters box
         self.groupBox_Filters.setEnabled(False)
-        self.groupBox_Filters.setChecked(False)
         # deactivate save and apply box
-        self.groupBox_SaveApply.setEnabled(False)
-        self.groupBox_SaveApply.setChecked(False)
+        self.groupBox_SelectMask.setEnabled(False)
+        self.groupBox_ApplyMask.setEnabled(False)
 
         # Load stack and clear all #########
         self.button_ClearAll.setEnabled(False)
