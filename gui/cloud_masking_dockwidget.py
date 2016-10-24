@@ -283,6 +283,9 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # deactivate save and apply box
         self.groupBox_SelectMask.setEnabled(False)
         self.groupBox_ApplyMask.setEnabled(False)
+        self.radioButton_ToSR_RefStack.setHidden(True)
+        self.radioButton_ToRefStack.setChecked(True)
+        self.widget_ApplyToFile.setHidden(True)
 
         # Load stack and clear all #########
         self.button_ClearAll.setEnabled(False)

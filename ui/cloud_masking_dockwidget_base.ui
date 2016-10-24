@@ -911,14 +911,17 @@
                      <item>
                       <widget class="QRadioButton" name="radioButton_ToRefStack">
                        <property name="text">
-                        <string>Reflectance stack</string>
+                        <string>Reflective stack</string>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
                        </property>
                       </widget>
                      </item>
                      <item>
                       <widget class="QRadioButton" name="radioButton_ToSR_RefStack">
                        <property name="text">
-                        <string>SR reflectance stack</string>
+                        <string>SR Reflec stack</string>
                        </property>
                       </widget>
                      </item>
