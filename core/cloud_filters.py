@@ -111,7 +111,9 @@ class CloudMaskingResult(object):
     def do_clipping_extent(self, in_file, out_file):
         gdal_clip.main(in_file, out_file, [self.extent_x1, self.extent_x2, self.extent_y2, self.extent_y1])
 
-    def do_fmask(self, cirrus_prob_ratio=0.04, min_cloud_size=0, cloud_buffer_size=4, shadow_buffer_size=6):
+
+    def do_fmask(self, min_cloud_size=0, cloud_buffer_size=4, shadow_buffer_size=6, cirrus_prob_ratio=0.04,
+                 nir_fill_thresh=0.02, swir2_thresh=0.03, whiteness_thresh=0.7, swir2_water_test=0.03):
 
         ########################################
         # reflective bands stack
@@ -277,12 +279,16 @@ class CloudMaskingResult(object):
         fmaskConfig.setKeepIntermediates(False)
         fmaskConfig.setVerbose(False)
         fmaskConfig.setTempDir(self.tmp_dir)
-        fmaskConfig.setMinCloudSize(min_cloud_size)
-        fmaskConfig.setCirrusProbRatio(cirrus_prob_ratio)
 
-        # Work out a suitable buffer and shadow size, in pixels
+        # Set the settings fmask filters from widget to FmaskConfig
+        fmaskConfig.setMinCloudSize(min_cloud_size)
         fmaskConfig.setCloudBufferSize(int(cloud_buffer_size))
         fmaskConfig.setShadowBufferSize(int(shadow_buffer_size))
+        fmaskConfig.setCirrusProbRatio(cirrus_prob_ratio)
+        fmaskConfig.setEqn19NIRFillThresh(nir_fill_thresh)
+        fmaskConfig.setEqn1Swir2Thresh(swir2_thresh)
+        fmaskConfig.setEqn2WhitenessThresh(whiteness_thresh)
+        fmaskConfig.setEqn7Swir2Thresh(swir2_water_test)
 
         fmask.doFmask(fmaskFilenames, fmaskConfig)
 

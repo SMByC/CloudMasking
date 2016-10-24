@@ -352,6 +352,10 @@ class CloudMasking:
                 cirrus_prob_ratio=float(self.dockwidget.doubleSpinBox_CPR.value()),
                 cloud_buffer_size=float(self.dockwidget.doubleSpinBox_CB.value()),
                 shadow_buffer_size=float(self.dockwidget.doubleSpinBox_SB.value()),
+                nir_fill_thresh=float(self.dockwidget.doubleSpinBox_NFT.value()),
+                swir2_thresh=float(self.dockwidget.doubleSpinBox_S2T.value()),
+                whiteness_thresh=float(self.dockwidget.doubleSpinBox_WT.value()),
+                swir2_water_test=float(self.dockwidget.doubleSpinBox_S2WT.value()),
             )
             enable_symbology[0:5] = [True, True, True, True, True]
 

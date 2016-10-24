@@ -38,9 +38,13 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
     # Fmask parameters by default
-    cirrus_prob_ratio = 0.04
     cloud_buffer = 4
     shadow_buffer = 6
+    cirrus_prob_ratio = 0.04
+    nir_fill_thresh = 0.02
+    swir2_thresh = 0.03
+    whiteness_thresh = 0.7
+    swir2_water_test = 0.03
     # Blue band by default
     bb_threshold_L57 = 110  # for L5 and L7
     bb_threshold_L8 = 14000  # for L8
@@ -81,13 +85,6 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # start hidden
         self.widget_FMask.setHidden(True)
         # Synchronize the slider with the spin box
-        # cirrus_prob_ratio (float values)
-        self.horizontalSlider_CPR.valueChanged.connect(
-            lambda: self.update_spinbox(self.doubleSpinBox_CPR, self.horizontalSlider_CPR.value(), 1000))
-        self.doubleSpinBox_CPR.valueChanged.connect(
-            lambda: self.update_slider(self.horizontalSlider_CPR, self.doubleSpinBox_CPR.value(), 1000))
-        self.update_spinbox(self.doubleSpinBox_CPR, self.cirrus_prob_ratio, 1000)  # initial value
-        self.update_slider(self.horizontalSlider_CPR, self.cirrus_prob_ratio, 1000)  # initial value
         # cloud_buffer
         self.horizontalSlider_CB.sliderMoved.connect(self.doubleSpinBox_CB.setValue)
         self.doubleSpinBox_CB.valueChanged.connect(self.horizontalSlider_CB.setValue)
@@ -96,6 +93,41 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.horizontalSlider_SB.sliderMoved.connect(self.doubleSpinBox_SB.setValue)
         self.doubleSpinBox_SB.valueChanged.connect(self.horizontalSlider_SB.setValue)
         self.doubleSpinBox_SB.setValue(self.shadow_buffer)  # initial value
+        # cirrus_prob_ratio (float values)
+        self.horizontalSlider_CPR.valueChanged.connect(
+            lambda: self.update_spinbox(self.doubleSpinBox_CPR, self.horizontalSlider_CPR.value(), 1000))
+        self.doubleSpinBox_CPR.valueChanged.connect(
+            lambda: self.update_slider(self.horizontalSlider_CPR, self.doubleSpinBox_CPR.value(), 1000))
+        self.update_spinbox(self.doubleSpinBox_CPR, self.cirrus_prob_ratio, 1000)  # initial value
+        self.update_slider(self.horizontalSlider_CPR, self.cirrus_prob_ratio, 1000)  # initial value
+        # NIRFillThresh (float values)
+        self.horizontalSlider_NFT.valueChanged.connect(
+            lambda: self.update_spinbox(self.doubleSpinBox_NFT, self.horizontalSlider_NFT.value(), 1000))
+        self.doubleSpinBox_NFT.valueChanged.connect(
+            lambda: self.update_slider(self.horizontalSlider_NFT, self.doubleSpinBox_NFT.value(), 1000))
+        self.update_spinbox(self.doubleSpinBox_NFT, self.nir_fill_thresh, 1000)  # initial value
+        self.update_slider(self.horizontalSlider_NFT, self.nir_fill_thresh, 1000)  # initial value
+        # Swir2Thresh (float values)
+        self.horizontalSlider_S2T.valueChanged.connect(
+            lambda: self.update_spinbox(self.doubleSpinBox_S2T, self.horizontalSlider_S2T.value(), 1000))
+        self.doubleSpinBox_S2T.valueChanged.connect(
+            lambda: self.update_slider(self.horizontalSlider_S2T, self.doubleSpinBox_S2T.value(), 1000))
+        self.update_spinbox(self.doubleSpinBox_S2T, self.swir2_thresh, 1000)  # initial value
+        self.update_slider(self.horizontalSlider_S2T, self.swir2_thresh, 1000)  # initial value
+        # WhitenessThresh (float values)
+        self.horizontalSlider_WT.valueChanged.connect(
+            lambda: self.update_spinbox(self.doubleSpinBox_WT, self.horizontalSlider_WT.value(), 1000))
+        self.doubleSpinBox_WT.valueChanged.connect(
+            lambda: self.update_slider(self.horizontalSlider_WT, self.doubleSpinBox_WT.value(), 1000))
+        self.update_spinbox(self.doubleSpinBox_WT, self.whiteness_thresh, 1000)  # initial value
+        self.update_slider(self.horizontalSlider_WT, self.whiteness_thresh, 1000)  # initial value
+        # Swir2WaterTest (float values)
+        self.horizontalSlider_S2WT.valueChanged.connect(
+            lambda: self.update_spinbox(self.doubleSpinBox_S2WT, self.horizontalSlider_S2WT.value(), 1000))
+        self.doubleSpinBox_S2WT.valueChanged.connect(
+            lambda: self.update_slider(self.horizontalSlider_S2WT, self.doubleSpinBox_S2WT.value(), 1000))
+        self.update_spinbox(self.doubleSpinBox_S2WT, self.swir2_water_test, 1000)  # initial value
+        self.update_slider(self.horizontalSlider_S2WT, self.swir2_water_test, 1000)  # initial value
 
         # Blue band threshold #########
         # start hidden
