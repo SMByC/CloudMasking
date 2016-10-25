@@ -22,9 +22,10 @@ import os.path
 import shutil
 from datetime import datetime
 from time import sleep
+from shutil import copyfile
 
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
-from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox, QApplication, QCursor
+from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox, QApplication, QCursor, QFileDialog
 from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer
 # Initialize Qt resources from file resources.py
 import resources
@@ -279,6 +280,8 @@ class CloudMasking:
                         lambda: self.load_color_stack("infrareds"))
         # call to process mask
         QObject.connect(self.dockwidget.button_processMask, SIGNAL("clicked()"), self.process_mask)
+        # save mask
+        self.dockwidget.button_SaveMask.clicked.connect(self.fileDialog_saveMask)
 
     def updateLayersList_MaskLayer(self):
         if self.dockwidget is not None:
@@ -437,6 +440,17 @@ class CloudMasking:
 
         # restore mouse
         QApplication.restoreOverrideCursor()
+
+    def fileDialog_saveMask(self):
+        """Open QFileDialog for save mask file
+        """
+        suggested_filename_mask = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Enmask.tif"
+        mask_outpath = str(QFileDialog. getSaveFileName(self.dockwidget, self.tr(u"Save mask file"),
+                                os.path.join(os.path.dirname(self.dockwidget.mtl_path), suggested_filename_mask),
+                                self.tr(u"Tif files (*.tif);;All files (*.*)")))
+        mask_inpath = unicode(self.getLayerByName(self.dockwidget.select_MaskLayer.currentText()).dataProvider().dataSourceUri())
+
+        copyfile(mask_inpath, mask_outpath)
 
     def apply_mask(self):
         current_layer = self.getLayerByName(self.dockwidget.lineEdit_PathMTL.currentText())

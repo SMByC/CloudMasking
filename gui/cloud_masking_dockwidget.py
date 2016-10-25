@@ -197,7 +197,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                             getOpenFileName(self, self.tr(u"Select the MTL file"),
                                             self.mtl_path if os.path.isdir(self.mtl_path)
                                             else os.path.dirname(self.mtl_path),
-                                            self.tr(u"MTL file (*MTL.txt);;All files (*.*)")))
+                                            self.tr(u"MTL files (*MTL.txt);;All files (*.*)")))
         if self.mtl_path != '':
             self.lineEdit_PathMTL.setText(self.mtl_path)
 
