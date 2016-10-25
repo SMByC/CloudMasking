@@ -262,6 +262,8 @@ class CloudMasking:
         self.color_stack_scene = None
         # handle connect when the list of layers changed
         QObject.connect(self.canvas, SIGNAL("layersChanged()"), self.updateLayersList_MaskLayer)
+        self.dockwidget.checkBox_ActivatedLayers.clicked.connect(self.updateLayersList_MaskLayer)
+        self.dockwidget.checkBox_MaskLayers.clicked.connect(self.updateLayersList_MaskLayer)
         # call to load MTL file
         QObject.connect(self.dockwidget.button_LoadMTL, SIGNAL("clicked()"), self.clear_all)
         QObject.connect(self.dockwidget.button_LoadMTL, SIGNAL("clicked()"), self.dockwidget.load_MTL)
@@ -290,8 +292,19 @@ class CloudMasking:
     def updateLayersList_MaskLayer(self):
         if self.dockwidget is not None:
             self.dockwidget.select_MaskLayer.clear()
-            for layer in self.canvas.layers():
-                self.dockwidget.select_MaskLayer.addItem(layer.name())
+
+            if self.dockwidget.checkBox_ActivatedLayers.isChecked():
+                layers = self.canvas.layers()
+            else:
+                layers = QgsMapLayerRegistry.instance().mapLayers().values()
+
+            for layer in layers:
+                if self.dockwidget.checkBox_MaskLayers.isChecked():
+                    if layer.name().startswith("Cloud Mask"):
+                        self.dockwidget.select_MaskLayer.addItem(layer.name())
+                else:
+                    self.dockwidget.select_MaskLayer.addItem(layer.name())
+
 
     def getLayerByName(self, layer_name):
         for layer in self.canvas.layers():
@@ -473,6 +486,8 @@ class CloudMasking:
             self.dockwidget.lineEdit_ResultPath.setText(result_path)
 
     def apply_mask(self):
+        # init progress bar
+        self.dockwidget.progressBar_ApplyMask.setValue(0)
 
         # get mask layer
         try:
