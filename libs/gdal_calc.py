@@ -166,7 +166,7 @@ def main(calculation, raster_output, rasters,
             dimensions = [datasets[0].RasterXSize, datasets[0].RasterYSize]
 
     # process allBands option
-    allbandsindex = None
+    allbandsindex = 0
     allbandscount = 1
     if allBands:
         allbandscount = datasets[allbandsindex].RasterCount
