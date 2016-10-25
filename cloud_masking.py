@@ -282,6 +282,8 @@ class CloudMasking:
         QObject.connect(self.dockwidget.button_processMask, SIGNAL("clicked()"), self.process_mask)
         # save mask
         self.dockwidget.button_SaveMask.clicked.connect(self.fileDialog_saveMask)
+        # select result
+        self.dockwidget.button_SelectResult.clicked.connect(self.fileDialog_SaveResult)
 
     def updateLayersList_MaskLayer(self):
         if self.dockwidget is not None:
@@ -445,12 +447,28 @@ class CloudMasking:
         """Open QFileDialog for save mask file
         """
         suggested_filename_mask = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Enmask.tif"
-        mask_outpath = str(QFileDialog. getSaveFileName(self.dockwidget, self.tr(u"Save mask file"),
+        mask_outpath = str(QFileDialog.getSaveFileName(self.dockwidget, self.tr(u"Save mask file"),
                                 os.path.join(os.path.dirname(self.dockwidget.mtl_path), suggested_filename_mask),
                                 self.tr(u"Tif files (*.tif);;All files (*.*)")))
         mask_inpath = unicode(self.getLayerByName(self.dockwidget.select_MaskLayer.currentText()).dataProvider().dataSourceUri())
 
-        copyfile(mask_inpath, mask_outpath)
+        if mask_outpath != '' and mask_inpath != '':
+            copyfile(mask_inpath, mask_outpath)
+
+    def fileDialog_SaveResult(self):
+        """Open QFileDialog for save result after apply mask
+        """
+        if self.dockwidget.radioButton_ToSR_RefStack.isChecked():
+            suggested_filename_result = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "SR_Mask.tif"
+        else:
+            suggested_filename_result = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Mask.tif"
+
+        result_path = str(QFileDialog.getOpenFileName(self.dockwidget, self.tr(u"Save result"),
+                                os.path.join(os.path.dirname(self.dockwidget.mtl_path), suggested_filename_result),
+                                self.tr(u"Tif files (*.tif);;All files (*.*)")))
+
+        if result_path != '':
+            self.dockwidget.lineEdit_ResultPath.setText(result_path)
 
     def apply_mask(self):
         current_layer = self.getLayerByName(self.dockwidget.lineEdit_PathMTL.currentText())

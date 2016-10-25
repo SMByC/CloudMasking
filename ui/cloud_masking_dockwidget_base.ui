@@ -958,20 +958,10 @@
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QComboBox" name="comboBox_2">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="editable">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
+                      <widget class="QLineEdit" name="lineEdit_ParticularFile"/>
                      </item>
                      <item>
-                      <widget class="QPushButton" name="pushButton_2">
+                      <widget class="QPushButton" name="button_SelectPFile">
                        <property name="text">
                         <string>Select...</string>
                        </property>
@@ -1000,20 +990,10 @@
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QComboBox" name="comboBox">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="editable">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
+                      <widget class="QLineEdit" name="lineEdit_ResultPath"/>
                      </item>
                      <item>
-                      <widget class="QPushButton" name="pushButton">
+                      <widget class="QPushButton" name="button_SelectResult">
                        <property name="text">
                         <string>Select...</string>
                        </property>
