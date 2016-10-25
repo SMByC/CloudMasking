@@ -31,9 +31,9 @@ from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRaster
 import resources
 
 from CloudMasking.core import cloud_filters, color_stack
-from CloudMasking.core.utils import apply_symbology
+from CloudMasking.core.utils import apply_symbology, get_prefer_name
 from CloudMasking.gui.cloud_masking_dockwidget import CloudMaskingDockWidget
-from CloudMasking.libs import gdal_calc
+from CloudMasking.libs import gdal_calc, gdal_merge
 
 
 class CloudMasking:
@@ -284,6 +284,8 @@ class CloudMasking:
         self.dockwidget.button_SaveMask.clicked.connect(self.fileDialog_saveMask)
         # select result
         self.dockwidget.button_SelectResult.clicked.connect(self.fileDialog_SaveResult)
+        # button for Apply Mask
+        self.dockwidget.button_ApplyMask.clicked.connect(self.apply_mask)
 
     def updateLayersList_MaskLayer(self):
         if self.dockwidget is not None:
@@ -463,7 +465,7 @@ class CloudMasking:
         else:
             suggested_filename_result = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Mask.tif"
 
-        result_path = str(QFileDialog.getOpenFileName(self.dockwidget, self.tr(u"Save result"),
+        result_path = str(QFileDialog.getSaveFileName(self.dockwidget, self.tr(u"Save result"),
                                 os.path.join(os.path.dirname(self.dockwidget.mtl_path), suggested_filename_result),
                                 self.tr(u"Tif files (*.tif);;All files (*.*)")))
 
@@ -471,15 +473,78 @@ class CloudMasking:
             self.dockwidget.lineEdit_ResultPath.setText(result_path)
 
     def apply_mask(self):
-        current_layer = self.getLayerByName(self.dockwidget.lineEdit_PathMTL.currentText())
 
-        if current_layer is not None:
-            if current_layer.type() == QgsMapLayer.VectorLayer:
-                QMessageBox.information(self.iface.mainWindow(), "Information",
-                                        self.tr(u"Selected Layer is not Raster Layer..."))
-            elif current_layer.type() == QgsMapLayer.RasterLayer:
-                layerDataProvider = current_layer.dataProvider()
-                QgsMessageLog.logMessage(unicode(layerDataProvider.dataSourceUri()))
+        # get mask layer
+        try:
+            mask_path = \
+                unicode(self.getLayerByName(self.dockwidget.select_MaskLayer.currentText()).dataProvider().dataSourceUri())
+        except:
+            self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"Error: Mask for apply not valid"))
+            return
+
+        # check mask layer
+        if not os.path.isfile(mask_path):
+            self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"Error: Mask file not exists"))
+            return
+
+        # get result path
+        result_path = self.dockwidget.lineEdit_ResultPath.text()
+        if result_path is None or result_path == '':
+            self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"Error: Not selected file for save"))
+            return
+
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))  # mouse wait
+
+        if not self.dockwidget.radioButton_ToParticularFile.isChecked():
+            self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"Making the reflectance stack..."))
+            self.dockwidget.progressBar_ApplyMask.setValue(20)
+            QApplication.processEvents()
+
+        # making layer stack
+        if self.dockwidget.landsat_version in [5, 7]:
+            reflectance_bands = [1, 2, 3, 4, 5, 7]
+        if self.dockwidget.landsat_version in [8]:
+            reflectance_bands = [2, 3, 4, 5, 6, 7]
+
+        # SR reflectance stack if are available else normal bands (_bands or B)
+        if self.dockwidget.radioButton_ToSR_RefStack.isChecked():
+            stack_bands = \
+                [os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                    self.dockwidget.mtl_file['FILE_NAME_BAND_' + str(N)].replace("_B", "_sr_band").replace(".TIF", ".tif"))
+                    for N in reflectance_bands]
+        else:
+            stack_bands = [os.path.join(os.path.dirname(self.dockwidget.mtl_path), self.dockwidget.mtl_file['FILE_NAME_BAND_' + str(N)])
+                           for N in reflectance_bands]
+            stack_bands = [get_prefer_name(file_path) for file_path in stack_bands]
+
+        # tmp file for stack_bands
+        self.reflective_stack_file = os.path.join(self.dockwidget.tmp_dir, "Reflective_stack_" +
+                                             self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + ".tif")
+
+        gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
+                         self.reflective_stack_file] + stack_bands)
+
+        self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"Applying mask..."))
+        self.dockwidget.progressBar_ApplyMask.setValue(50)
+        QApplication.processEvents()
+
+        # apply mask to stack
+        gdal_calc.main("A*(B==1)", result_path, [self.reflective_stack_file, mask_path], allBands=True)
+
+        # Add to QGIS the result saved
+        if self.dockwidget.radioButton_ToParticularFile.isChecked():
+            result_qgis_name = self.dockwidget.mtl_file['LANDSAT_SCENE_ID']  #TODO
+        else:
+            result_qgis_name = self.dockwidget.mtl_file['LANDSAT_SCENE_ID']
+
+        result_rlayer = QgsRasterLayer(result_path, "Result masked: " + result_qgis_name)
+        QgsMapLayerRegistry.instance().addMapLayer(result_rlayer)
+
+        self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"DONE"))
+        self.dockwidget.progressBar_ApplyMask.setValue(100)
+        QApplication.processEvents()
+        QApplication.restoreOverrideCursor()  # restore mouse
+
 
     def clear_all(self):
         # TODO
