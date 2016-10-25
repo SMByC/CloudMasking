@@ -546,14 +546,15 @@ class CloudMasking:
         # apply mask to stack
         gdal_calc.main("A*(B==1)", result_path, [self.reflective_stack_file, mask_path], allBands=True)
 
-        # Add to QGIS the result saved
-        if self.dockwidget.radioButton_ToParticularFile.isChecked():
-            result_qgis_name = self.dockwidget.mtl_file['LANDSAT_SCENE_ID']  #TODO
-        else:
-            result_qgis_name = self.dockwidget.mtl_file['LANDSAT_SCENE_ID']
-
-        result_rlayer = QgsRasterLayer(result_path, "Result masked: " + result_qgis_name)
-        QgsMapLayerRegistry.instance().addMapLayer(result_rlayer)
+        # load into canvas when finished
+        if self.dockwidget.checkBox_LoadResult.isChecked():
+            # Add to QGIS the result saved
+            if self.dockwidget.radioButton_ToParticularFile.isChecked():
+                result_qgis_name = self.dockwidget.mtl_file['LANDSAT_SCENE_ID']  #TODO
+            else:
+                result_qgis_name = self.dockwidget.mtl_file['LANDSAT_SCENE_ID']
+            result_rlayer = QgsRasterLayer(result_path, "Result masked: " + result_qgis_name)
+            QgsMapLayerRegistry.instance().addMapLayer(result_rlayer)
 
         self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"DONE"))
         self.dockwidget.progressBar_ApplyMask.setValue(100)
