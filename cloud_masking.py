@@ -289,7 +289,7 @@ class CloudMasking:
         # select result
         self.dockwidget.button_SelectPFile.clicked.connect(self.fileDialog_SelectPFile)
         # button for Apply Mask
-        self.dockwidget.button_ApplyMask.clicked.connect(self.apply_mask)
+        self.dockwidget.button_processApplyMask.clicked.connect(self.apply_mask)
 
     def updateLayersList_MaskLayer(self):
         if self.dockwidget is not None:
@@ -333,7 +333,7 @@ class CloudMasking:
         if (not self.dockwidget.checkBox_FMask.isChecked() and
                 not self.dockwidget.checkBox_BlueBand.isChecked() and
                 not self.dockwidget.checkBox_QCflags.isChecked()):
-            self.dockwidget.label_processMaskStatus.setText(
+            self.dockwidget.status_processMask.setText(
                 self.tr(u"Error: no filters enabled for apply")
             )
             return
@@ -345,8 +345,8 @@ class CloudMasking:
             self.masking_result = cloud_filters.CloudMaskingResult(self.dockwidget.mtl_path,
                                                                    self.dockwidget.mtl_file,
                                                                    self.dockwidget.tmp_dir)
-            self.masking_result.process_status = self.dockwidget.label_processMaskStatus
-            self.masking_result.process_bar = self.dockwidget.progressBar
+            self.masking_result.process_status = self.dockwidget.status_processMask
+            self.masking_result.process_bar = self.dockwidget.bar_processMask
 
         # re-init the result masking files
         self.masking_result.cloud_masking_files = []
@@ -499,32 +499,32 @@ class CloudMasking:
 
     def apply_mask(self):
         # init progress bar
-        self.dockwidget.progressBar_ApplyMask.setValue(0)
+        self.dockwidget.bar_processApplyMask.setValue(0)
 
         # get mask layer
         try:
             mask_path = \
                 unicode(self.getLayerByName(self.dockwidget.select_MaskLayer.currentText()).dataProvider().dataSourceUri())
         except:
-            self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"Error: Mask for apply not valid"))
+            self.dockwidget.status_processApplyMask.setText(self.tr(u"Error: Mask for apply not valid"))
             return
 
         # check mask layer
         if not os.path.isfile(mask_path):
-            self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"Error: Mask file not exists"))
+            self.dockwidget.status_processApplyMask.setText(self.tr(u"Error: Mask file not exists"))
             return
 
         # get result path
         result_path = self.dockwidget.lineEdit_ResultPath.text()
         if result_path is None or result_path == '':
-            self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"Error: Not selected file for save"))
+            self.dockwidget.status_processApplyMask.setText(self.tr(u"Error: Not selected file for save"))
             return
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))  # mouse wait
 
         if not self.dockwidget.radioButton_ToParticularFile.isChecked():
-            self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"Making the reflectance stack..."))
-            self.dockwidget.progressBar_ApplyMask.setValue(20)
+            self.dockwidget.status_processApplyMask.setText(self.tr(u"Making the reflectance stack..."))
+            self.dockwidget.bar_processApplyMask.setValue(20)
             QApplication.processEvents()
 
         # making layer stack
@@ -550,8 +550,8 @@ class CloudMasking:
             self.reflective_stack_file = self.dockwidget.lineEdit_ParticularFile.text()
             # check if exists
             if not os.path.isfile(self.reflective_stack_file):
-                self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"Error: The particular file not exists"))
-                self.dockwidget.progressBar_ApplyMask.setValue(0)
+                self.dockwidget.status_processApplyMask.setText(self.tr(u"Error: The particular file not exists"))
+                self.dockwidget.bar_processApplyMask.setValue(0)
                 QApplication.restoreOverrideCursor()  # restore mouse
                 return
 
@@ -563,8 +563,8 @@ class CloudMasking:
             gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
                              self.reflective_stack_file] + stack_bands)
 
-        self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"Applying mask..."))
-        self.dockwidget.progressBar_ApplyMask.setValue(50)
+        self.dockwidget.status_processApplyMask.setText(self.tr(u"Applying mask..."))
+        self.dockwidget.bar_processApplyMask.setValue(50)
         QApplication.processEvents()
 
         # apply mask to stack
@@ -580,8 +580,8 @@ class CloudMasking:
             result_rlayer = QgsRasterLayer(result_path, "Result masked: " + result_qgis_name)
             QgsMapLayerRegistry.instance().addMapLayer(result_rlayer)
 
-        self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"DONE"))
-        self.dockwidget.progressBar_ApplyMask.setValue(100)
+        self.dockwidget.status_processApplyMask.setText(self.tr(u"DONE"))
+        self.dockwidget.bar_processApplyMask.setValue(100)
         QApplication.processEvents()
         QApplication.restoreOverrideCursor()  # restore mouse
 
