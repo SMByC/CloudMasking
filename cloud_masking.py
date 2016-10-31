@@ -286,6 +286,8 @@ class CloudMasking:
         self.dockwidget.button_SaveMask.clicked.connect(self.fileDialog_saveMask)
         # select result
         self.dockwidget.button_SelectResult.clicked.connect(self.fileDialog_SaveResult)
+        # select result
+        self.dockwidget.button_SelectPFile.clicked.connect(self.fileDialog_SelectPFile)
         # button for Apply Mask
         self.dockwidget.button_ApplyMask.clicked.connect(self.apply_mask)
 
@@ -470,6 +472,16 @@ class CloudMasking:
         if mask_outpath != '' and mask_inpath != '':
             copyfile(mask_inpath, mask_outpath)
 
+    def fileDialog_SelectPFile(self):
+        """Open QFileDialog for select particular file to apply mask
+        """
+        p_file_path = str(QFileDialog.getOpenFileName(self.dockwidget, self.tr(u"Select particular file to apply mask"),
+                                os.path.dirname(self.dockwidget.mtl_path),
+                                self.tr(u"Tif files (*.tif);;All files (*.*)")))
+
+        if p_file_path != '':
+            self.dockwidget.lineEdit_ParticularFile.setText(p_file_path)
+
     def fileDialog_SaveResult(self):
         """Open QFileDialog for save result after apply mask
         """
@@ -521,23 +533,35 @@ class CloudMasking:
         if self.dockwidget.landsat_version in [8]:
             reflectance_bands = [2, 3, 4, 5, 6, 7]
 
-        # SR reflectance stack if are available else normal bands (_bands or B)
+        ## Select the stack or file to apply mask
+        # reflectance stack, normal bands (_bands and _B)
+        if self.dockwidget.radioButton_ToRefStack.isChecked():
+            stack_bands = [os.path.join(os.path.dirname(self.dockwidget.mtl_path), self.dockwidget.mtl_file['FILE_NAME_BAND_' + str(N)])
+                           for N in reflectance_bands]
+            stack_bands = [get_prefer_name(file_path) for file_path in stack_bands]
+        # SR reflectance stack if are available (_sr_bands)
         if self.dockwidget.radioButton_ToSR_RefStack.isChecked():
             stack_bands = \
                 [os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                     self.dockwidget.mtl_file['FILE_NAME_BAND_' + str(N)].replace("_B", "_sr_band").replace(".TIF", ".tif"))
                     for N in reflectance_bands]
-        else:
-            stack_bands = [os.path.join(os.path.dirname(self.dockwidget.mtl_path), self.dockwidget.mtl_file['FILE_NAME_BAND_' + str(N)])
-                           for N in reflectance_bands]
-            stack_bands = [get_prefer_name(file_path) for file_path in stack_bands]
+        # select particular file for apply mask
+        if self.dockwidget.radioButton_ToParticularFile.isChecked():
+            self.reflective_stack_file = self.dockwidget.lineEdit_ParticularFile.text()
+            # check if exists
+            if not os.path.isfile(self.reflective_stack_file):
+                self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"Error: The particular file not exists"))
+                self.dockwidget.progressBar_ApplyMask.setValue(0)
+                QApplication.restoreOverrideCursor()  # restore mouse
+                return
 
-        # tmp file for stack_bands
-        self.reflective_stack_file = os.path.join(self.dockwidget.tmp_dir, "Reflective_stack_" +
-                                             self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + ".tif")
+        # make stack to apply mask in tmp file
+        if self.dockwidget.radioButton_ToRefStack.isChecked() or self.dockwidget.radioButton_ToSR_RefStack.isChecked():
+            self.reflective_stack_file = os.path.join(self.dockwidget.tmp_dir, "Reflective_stack_" +
+                                                 self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + ".tif")
 
-        gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
-                         self.reflective_stack_file] + stack_bands)
+            gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
+                             self.reflective_stack_file] + stack_bands)
 
         self.dockwidget.label_ApplyMaskStatus.setText(self.tr(u"Applying mask..."))
         self.dockwidget.progressBar_ApplyMask.setValue(50)
