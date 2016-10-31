@@ -32,10 +32,9 @@ class ColorStack(object):
     """Making the Red-Green-Blue Stack for view the scene
     """
 
-    def __init__(self, mtl_path, mtl_file, color_type, tmp_dir=None):
+    def __init__(self, mtl_path, mtl_file, bands, tmp_dir=None):
         self.mtl_path = mtl_path
         self.mtl_file = mtl_file
-        self.color_type = color_type
         # dir to input landsat files
         self.input_dir = os.path.dirname(mtl_path)
         # tmp dir for process
@@ -47,39 +46,12 @@ class ColorStack(object):
         self.process_status = None
         self.process_bar = None
         # set base name
-        self.base_name = self.color_type.replace("_", " ").title()
+        self.base_name = "RGB bands: {}-{}-{}".format(*bands)
 
-        # get_metadata
-        self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
-
-        ### select the bands for color stack for Landsat 4, 5 y 7
-        if self.landsat_version in [4, 5, 7]:
-            if self.color_type == "natural_color":
-                self.color_bands = [
-                    os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
-                    for N in [3, 2, 1]]
-            if self.color_type == "false_color":
-                self.color_bands = [
-                    os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
-                    for N in [4, 3, 2]]
-            if self.color_type == "infrareds":
-                self.color_bands = [
-                    os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
-                    for N in [4, 5, 7]]
-        ### select the bands for color stack for Landsat 8
-        if self.landsat_version == 8:
-            if self.color_type == "natural_color":
-                self.color_bands = [
-                    os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
-                    for N in [4, 3, 2]]
-            if self.color_type == "false_color":
-                self.color_bands = [
-                    os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
-                    for N in [5, 4, 3]]
-            if self.color_type == "infrareds":
-                self.color_bands = [
-                    os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
-                    for N in [5, 6, 7]]
+        # get file names
+        self.color_bands = [
+            os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
+            for N in bands]
 
         # set the prefer file name band for process
         self.color_bands = [get_prefer_name(file_path) for file_path in self.color_bands]

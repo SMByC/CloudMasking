@@ -273,13 +273,15 @@ class CloudMasking:
                         lambda: self.dockwidget.lineEdit_PathMTL.setText(''))
         # call to load natural color stack
         QObject.connect(self.dockwidget.button_NaturalColorStack, SIGNAL("clicked()"),
-                        lambda: self.load_color_stack("natural_color"))
+                        lambda: self.set_color_stack("natural_color"))
         # call to load false color stack
         QObject.connect(self.dockwidget.button_FalseColorStack, SIGNAL("clicked()"),
-                        lambda: self.load_color_stack("false_color"))
+                        lambda: self.set_color_stack("false_color"))
         # call to load infrareds stack
         QObject.connect(self.dockwidget.button_InfraredsStack, SIGNAL("clicked()"),
-                        lambda: self.load_color_stack("infrareds"))
+                        lambda: self.set_color_stack("infrareds"))
+        # call to process load stack
+        QObject.connect(self.dockwidget.button_processLoadStack, SIGNAL("clicked()"), self.load_stack)
         # call to process mask
         QObject.connect(self.dockwidget.button_processMask, SIGNAL("clicked()"), self.process_mask)
         # save mask
@@ -313,15 +315,51 @@ class CloudMasking:
             if layer.name() == layer_name:
                 return layer
 
-    def load_color_stack(self, color_type):
+    def set_color_stack(self, color_type):
+        # select the bands for color stack for Landsat 4, 5 y 7
+        if self.dockwidget.landsat_version in [4, 5, 7]:
+            if color_type == "natural_color":
+                bands = [3, 2, 1]
+            if color_type == "false_color":
+                bands = [4, 3, 2]
+            if color_type == "infrareds":
+                bands = [4, 5, 7]
+        # select the bands for color stack for Landsat 8
+        if self.dockwidget.landsat_version == 8:
+            if color_type == "natural_color":
+                bands = [4, 3, 2]
+            if color_type == "false_color":
+                bands = [5, 4, 3]
+            if color_type == "infrareds":
+                bands = [5, 6, 7]
+
+        self.dockwidget.SelectBand_R.setCurrentIndex(self.dockwidget.reflectance_bands.index(bands[0]))
+        self.dockwidget.SelectBand_G.setCurrentIndex(self.dockwidget.reflectance_bands.index(bands[1]))
+        self.dockwidget.SelectBand_B.setCurrentIndex(self.dockwidget.reflectance_bands.index(bands[2]))
+
+    def load_stack(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))  # mouse wait
+        self.dockwidget.bar_progressLoadStack.setValue(0)  # init progress bar
+        self.dockwidget.status_processLoadStack.setText("Loading stack...")
+        QApplication.processEvents()
+        bands = []
+        bands.append(int(self.dockwidget.SelectBand_R.currentText()))
+        bands.append(int(self.dockwidget.SelectBand_G.currentText()))
+        bands.append(int(self.dockwidget.SelectBand_B.currentText()))
+
+        self.dockwidget.bar_progressLoadStack.setValue(40)
+        QApplication.processEvents()
         self.color_stack_scene = color_stack.ColorStack(self.dockwidget.mtl_path,
                                                         self.dockwidget.mtl_file,
-                                                        color_type,
+                                                        bands,
                                                         self.dockwidget.tmp_dir)
         self.color_stack_scene.do_color_stack()
+        self.dockwidget.bar_progressLoadStack.setValue(60)
+        QApplication.processEvents()
         self.color_stack_scene.load_color_stack()
         QApplication.restoreOverrideCursor()  # restore mouse
+        self.dockwidget.bar_progressLoadStack.setValue(100)
+        self.dockwidget.status_processLoadStack.setText("DONE")
 
     def process_mask(self):
         """Make the process
@@ -601,8 +639,7 @@ class CloudMasking:
         try:
             self.dockwidget.unload_MTL()
             self.dockwidget.widget_ExtentSelector.stop()
-        except:
-            pass
+        except: pass
 
         # unload all layers instances from Qgis saved in tmp dir
         layers_loaded = QgsMapLayerRegistry.instance().mapLayers().values()
@@ -623,8 +660,14 @@ class CloudMasking:
         try:
             shutil.rmtree(self.dockwidget.tmp_dir, ignore_errors=True)
             self.dockwidget.tmp_dir = None
-        except:
-            pass
+        except: pass
+
+        # clear load bands select stack
+        try:
+            self.dockwidget.SelectBand_R.clear()
+            self.dockwidget.SelectBand_G.clear()
+            self.dockwidget.SelectBand_B.clear()
+        except: pass
 
         # restore initial message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):

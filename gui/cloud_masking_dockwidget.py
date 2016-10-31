@@ -223,10 +223,22 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.status_LoadedMTL.setText(self.tr(u"Error: Cannot parse MTL file"))
             return
 
-        #### If we load it okay
+        #### Process post MTL loaded (If we load it okay)
         # MTL info
         self.status_LoadedMTL.setChecked(True)
         self.status_LoadedMTL.setText(self.mtl_file['LANDSAT_SCENE_ID'] + ' (L{})'.format(self.landsat_version))
+
+        # set QCflags if this MTL have QC file
+        self.set_QCflags()
+
+        #### activate, load and adjust UI
+        self.activate_UI()
+
+    def activate_UI(self):
+        """UI adjust after load MTL file for some configurations
+        based on landsat version or availability files"""
+
+        #### first activate sections
         # Load stack and clear all #########
         self.button_ClearAll.setEnabled(True)
         self.groupBox_LoadStacks.setEnabled(True)
@@ -236,23 +248,24 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.groupBox_GenerateMask.setEnabled(True)
         # tmp dir for process this MTL
         self.tmp_dir = tempfile.mkdtemp()
-        # set QCflags if this MTL have QC file
-        self.set_QCflags()
         # activate SaveApply
         self.groupBox_SelectMask.setEnabled(True)
         self.groupBox_ApplyMask.setEnabled(True)
 
-        #### adjust UI
-        self.UI_adjust()
-
-    def UI_adjust(self):
-        """UI adjust after load MTL file for some configurations
-        based on landsat version or availability files"""
+        #### set reflectance bands
         if self.landsat_version in [5, 7]:
-            reflectance_bands = [1, 2, 3, 4, 5, 7]
+            self.reflectance_bands = [1, 2, 3, 4, 5, 7]
         if self.landsat_version in [8]:
-            reflectance_bands = [2, 3, 4, 5, 6, 7]
-            #### Blue Band adjusts
+            self.reflectance_bands = [2, 3, 4, 5, 6, 7]
+
+        #### set items to RGB combobox
+        self.label_SelectBands.setText("Select bands (Landsat {})".format(self.landsat_version))
+        self.SelectBand_R.addItems([str(b) for b in self.reflectance_bands])
+        self.SelectBand_G.addItems([str(b) for b in self.reflectance_bands])
+        self.SelectBand_B.addItems([str(b) for b in self.reflectance_bands])
+
+        #### blue Band adjusts UI limits
+        if self.landsat_version in [8]:
             self.horizontalSlider_BB.setMaximum(40000)
             self.horizontalSlider_BB.setValue(self.bb_threshold_L8)
             self.doubleSpinBox_BB.setMaximum(40000)
@@ -262,7 +275,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         exists_sr_files = \
             [os.path.isfile(f) for f in [os.path.join(os.path.dirname(self.mtl_path),
                 self.mtl_file['FILE_NAME_BAND_' + str(N)].replace("_B", "_sr_band").replace(".TIF", ".tif"))
-                for N in reflectance_bands]]
+                for N in self.reflectance_bands]]
         if all(exists_sr_files):
             self.radioButton_ToSR_RefStack.setVisible(True)
             self.radioButton_ToSR_RefStack.setChecked(True)
