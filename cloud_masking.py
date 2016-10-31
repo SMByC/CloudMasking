@@ -463,7 +463,7 @@ class CloudMasking:
     def fileDialog_saveMask(self):
         """Open QFileDialog for save mask file
         """
-        suggested_filename_mask = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Enmask.tif"
+        suggested_filename_mask = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Mask.tif"
         mask_outpath = str(QFileDialog.getSaveFileName(self.dockwidget, self.tr(u"Save mask file"),
                                 os.path.join(os.path.dirname(self.dockwidget.mtl_path), suggested_filename_mask),
                                 self.tr(u"Tif files (*.tif);;All files (*.*)")))
@@ -486,9 +486,9 @@ class CloudMasking:
         """Open QFileDialog for save result after apply mask
         """
         if self.dockwidget.radioButton_ToSR_RefStack.isChecked():
-            suggested_filename_result = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "SR_Mask.tif"
+            suggested_filename_result = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "SR_Enmask.tif"
         else:
-            suggested_filename_result = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Mask.tif"
+            suggested_filename_result = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Enmask.tif"
 
         result_path = str(QFileDialog.getSaveFileName(self.dockwidget, self.tr(u"Save result"),
                                 os.path.join(os.path.dirname(self.dockwidget.mtl_path), suggested_filename_result),
