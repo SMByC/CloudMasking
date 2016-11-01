@@ -350,7 +350,6 @@ class CloudMasking:
                                                         bands,
                                                         self.dockwidget.tmp_dir)
         self.color_stack_scene.do_color_stack()
-        update_process_bar(self.dockwidget.bar_progressLoadStack, 60)
         self.color_stack_scene.load_color_stack()
         update_process_bar(self.dockwidget.bar_progressLoadStack, 100,
                            self.dockwidget.status_processLoadStack, self.tr(u"DONE"))

@@ -102,10 +102,14 @@ def update_process_bar(bar_inst=None, bar=None, status_inst=None, status=None):
         QtGui.QApplication.processEvents()
 
     if bar is not None and 0 < bar < 100:
-        super(bar_inst.__class__, bar_inst).setCursor(QtGui.QCursor(Qt.WaitCursor))  # mouse wait
+        # set mouse wait
+        cursor = QtGui.QApplication.overrideCursor()
+        if cursor is None or cursor == 0:
+            QtGui.QApplication.setOverrideCursor(QtGui.QCursor(Qt.WaitCursor))
         QtGui.QApplication.processEvents()
 
     if bar is not None and (bar == 100 or bar == 0):
-        super(bar_inst.__class__, bar_inst).setCursor(QtGui.QCursor(Qt.PointingHandCursor))  # restore mouse
+        # restore mouse
+        QtGui.QApplication.restoreOverrideCursor()
         QtGui.QApplication.processEvents()
 
