@@ -294,6 +294,8 @@ class CloudMaskingResult(object):
     def do_blue_band(self, bb_threshold):
         # tmp file for cloud
         self.cloud_bb_file = os.path.join(self.tmp_dir, "cloud_bb_{}.tif".format(datetime.now().strftime('%H%M%S')))
+        update_process_bar(self.process_bar, 50, self.process_status,
+                           self.tr(u"Making the blue band filter..."))
 
         ########################################
         # select the Blue Band
@@ -310,9 +312,6 @@ class CloudMaskingResult(object):
         ########################################
         # clipping the Blue Band
         if self.clipping_extent:
-            update_process_bar(self.process_bar, 27, self.process_status,
-                               self.tr(u"Clipping the blue band..."))
-
             self.blue_band_clip_file = os.path.join(self.tmp_dir, "blue_band_clip.tif")
             self.do_clipping_extent(self.blue_band_file, self.blue_band_clip_file)
             self.blue_band_for_process = self.blue_band_clip_file

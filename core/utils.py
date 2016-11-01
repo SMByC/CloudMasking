@@ -93,11 +93,13 @@ def apply_symbology(rlayer, symbology, symbology_enabled, transparent=255):
 def update_process_bar(bar_inst=None, bar=None, status_inst=None, status=None):
 
     if bar_inst is not None and bar is not None:
+        # set bar value
         bar = int(bar)
         bar_inst.setValue(bar)
         QtGui.QApplication.processEvents()
 
     if status_inst is not None and status is not None:
+        # set status
         status_inst.setText(str(status))
         QtGui.QApplication.processEvents()
 

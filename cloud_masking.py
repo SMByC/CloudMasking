@@ -382,10 +382,6 @@ class CloudMasking:
         # re-init the result masking files
         self.masking_result.cloud_masking_files = []
 
-        # mouse wait
-        update_process_bar(self.dockwidget.bar_progressLoadStack, 40,
-                           self.dockwidget.status_processLoadStack, self.tr(u"Loading stack..."))
-
         ########################################
         # Set the extent selector
         if self.dockwidget.isExtentAreaSelected:
