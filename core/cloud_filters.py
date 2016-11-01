@@ -27,7 +27,7 @@ from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtGui import QApplication
 
 # from plugins
-from CloudMasking.core.utils import get_prefer_name
+from CloudMasking.core.utils import get_prefer_name, update_process_bar
 from CloudMasking.libs import gdal_merge, gdal_calc, gdal_clip
 
 # adding the libs plugin path
@@ -122,9 +122,8 @@ class CloudMaskingResult(object):
         self.reflective_stack_file = os.path.join(self.tmp_dir, "reflective_stack.tif")
 
         if not os.path.isfile(self.reflective_stack_file):
-            self.process_status.setText(self.tr(u"Making reflective bands stack..."))
-            self.process_bar.setValue(10)
-            QApplication.processEvents()
+            update_process_bar(self.process_bar, 10, self.process_status,
+                               self.tr(u"Making reflective bands stack..."))
 
             gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
                              self.reflective_stack_file] + self.reflective_bands)
@@ -136,9 +135,8 @@ class CloudMaskingResult(object):
         self.thermal_stack_file = os.path.join(self.tmp_dir, "thermal_stack.tif")
 
         if not os.path.isfile(self.thermal_stack_file):
-            self.process_status.setText(self.tr(u"Making thermal bands stack..."))
-            self.process_bar.setValue(20)
-            QApplication.processEvents()
+            update_process_bar(self.process_bar, 20, self.process_status,
+                               self.tr(u"Making thermal bands stack..."))
 
             gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
                              self.thermal_stack_file] + self.thermal_bands)
@@ -147,9 +145,8 @@ class CloudMaskingResult(object):
         # clipping the reflective bands stack
 
         if self.clipping_extent:
-            self.process_status.setText(self.tr(u"Clipping the reflective stack..."))
-            self.process_bar.setValue(24)
-            QApplication.processEvents()
+            update_process_bar(self.process_bar, 24, self.process_status,
+                               self.tr(u"Clipping the reflective stack..."))
 
             self.reflective_stack_clip_file = os.path.join(self.tmp_dir, "reflective_stack_clip.tif")
             self.do_clipping_extent(self.reflective_stack_file, self.reflective_stack_clip_file)
@@ -161,9 +158,8 @@ class CloudMaskingResult(object):
         # clipping the thermal bands stack
 
         if self.clipping_extent:
-            self.process_status.setText(self.tr(u"Clipping the thermal stack..."))
-            self.process_bar.setValue(27)
-            QApplication.processEvents()
+            update_process_bar(self.process_bar, 27, self.process_status,
+                               self.tr(u"Clipping the thermal stack..."))
 
             self.thermal_stack_clip_file = os.path.join(self.tmp_dir, "thermal_stack_clip.tif")
             self.do_clipping_extent(self.thermal_stack_file, self.thermal_stack_clip_file)
@@ -180,9 +176,8 @@ class CloudMaskingResult(object):
         # tmp file for angles
         self.angles_file = os.path.join(self.tmp_dir, "angles.tif")
 
-        self.process_status.setText(self.tr(u"Making fmask angles file..."))
-        self.process_bar.setValue(30)
-        QApplication.processEvents()
+        update_process_bar(self.process_bar, 30, self.process_status,
+                           self.tr(u"Making fmask angles file..."))
 
         mtlInfo = config.readMTLFile(self.mtl_path)
 
@@ -204,9 +199,8 @@ class CloudMaskingResult(object):
         # tmp file for angles
         self.saturationmask_file = os.path.join(self.tmp_dir, "saturationmask.tif")
 
-        self.process_status.setText(self.tr(u"Making saturation mask file..."))
-        self.process_bar.setValue(40)
-        QApplication.processEvents()
+        update_process_bar(self.process_bar, 40, self.process_status,
+                           self.tr(u"Making saturation mask file..."))
 
         if self.landsat_version == 4:
             sensor = config.FMASK_LANDSAT47
@@ -232,9 +226,8 @@ class CloudMaskingResult(object):
         # tmp file for toa
         self.toa_file = os.path.join(self.tmp_dir, "toa.tif")
 
-        self.process_status.setText(self.tr(u"Making top of Atmosphere ref..."))
-        self.process_bar.setValue(50)
-        QApplication.processEvents()
+        update_process_bar(self.process_bar, 50, self.process_status,
+                           self.tr(u"Making top of Atmosphere ref..."))
 
         landsatTOA.makeTOAReflectance(self.reflective_stack_for_process, self.mtl_path,
                                       self.angles_file, self.toa_file)
@@ -247,9 +240,8 @@ class CloudMaskingResult(object):
         # tmp file for cloud
         self.cloud_fmask_file = os.path.join(self.tmp_dir, "cloud_fmask_{}.tif".format(datetime.now().strftime('%H%M%S')))
 
-        self.process_status.setText(self.tr(u"Making cloud mask with fmask..."))
-        self.process_bar.setValue(70)
-        QApplication.processEvents()
+        update_process_bar(self.process_bar, 70, self.process_status,
+                           self.tr(u"Making cloud mask with fmask..."))
 
         # 1040nm thermal band should always be the first (or only) band in a
         # stack of Landsat thermal bands
@@ -296,9 +288,8 @@ class CloudMaskingResult(object):
         self.cloud_masking_files.append(self.cloud_fmask_file)
 
         ### ending fmask process
-        self.process_status.setText(self.tr(u"DONE"))
-        self.process_bar.setValue(100)
-        QApplication.processEvents()
+        update_process_bar(self.process_bar, 100, self.process_status,
+                           self.tr(u"DONE"))
 
     def do_blue_band(self, bb_threshold):
         # tmp file for cloud
@@ -319,9 +310,8 @@ class CloudMaskingResult(object):
         ########################################
         # clipping the Blue Band
         if self.clipping_extent:
-            self.process_status.setText(self.tr(u"Clipping the blue band..."))
-            self.process_bar.setValue(27)
-            QApplication.processEvents()
+            update_process_bar(self.process_bar, 27, self.process_status,
+                               self.tr(u"Clipping the blue band..."))
 
             self.blue_band_clip_file = os.path.join(self.tmp_dir, "blue_band_clip.tif")
             self.do_clipping_extent(self.blue_band_file, self.blue_band_clip_file)
@@ -338,6 +328,5 @@ class CloudMaskingResult(object):
         self.cloud_masking_files.append(self.cloud_bb_file)
 
         ### ending fmask process
-        self.process_status.setText(self.tr(u"DONE"))
-        self.process_bar.setValue(100)
-        QApplication.processEvents()
+        update_process_bar(self.process_bar, 100, self.process_status,
+                           self.tr(u"DONE"))

@@ -21,6 +21,7 @@
 import os
 
 from PyQt4 import QtGui
+from PyQt4.QtCore import Qt
 import qgis.core
 
 
@@ -87,3 +88,24 @@ def apply_symbology(rlayer, symbology, symbology_enabled, transparent=255):
     if hasattr(rlayer, 'setCacheImage'):
         rlayer.setCacheImage(None)
     rlayer.triggerRepaint()
+
+
+def update_process_bar(bar_inst=None, bar=None, status_inst=None, status=None):
+
+    if bar_inst is not None and bar is not None:
+        bar = int(bar)
+        bar_inst.setValue(bar)
+        QtGui.QApplication.processEvents()
+
+    if status_inst is not None and status is not None:
+        status_inst.setText(str(status))
+        QtGui.QApplication.processEvents()
+
+    if bar is not None and 0 < bar < 100:
+        super(bar_inst.__class__, bar_inst).setCursor(QtGui.QCursor(Qt.WaitCursor))  # mouse wait
+        QtGui.QApplication.processEvents()
+
+    if bar is not None and (bar == 100 or bar == 0):
+        super(bar_inst.__class__, bar_inst).setCursor(QtGui.QCursor(Qt.PointingHandCursor))  # restore mouse
+        QtGui.QApplication.processEvents()
+

@@ -31,7 +31,7 @@ from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRaster
 import resources
 
 from CloudMasking.core import cloud_filters, color_stack
-from CloudMasking.core.utils import apply_symbology, get_prefer_name
+from CloudMasking.core.utils import apply_symbology, get_prefer_name, update_process_bar
 from CloudMasking.gui.cloud_masking_dockwidget import CloudMaskingDockWidget
 from CloudMasking.libs import gdal_calc, gdal_merge
 
@@ -338,28 +338,22 @@ class CloudMasking:
         self.dockwidget.SelectBand_B.setCurrentIndex(self.dockwidget.reflectance_bands.index(bands[2]))
 
     def load_stack(self):
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))  # mouse wait
-        self.dockwidget.bar_progressLoadStack.setValue(0)  # init progress bar
-        self.dockwidget.status_processLoadStack.setText("Loading stack...")
-        QApplication.processEvents()
+        update_process_bar(self.dockwidget.bar_progressLoadStack, 40,
+                           self.dockwidget.status_processLoadStack, self.tr(u"Loading stack..."))
         bands = []
         bands.append(int(self.dockwidget.SelectBand_R.currentText()))
         bands.append(int(self.dockwidget.SelectBand_G.currentText()))
         bands.append(int(self.dockwidget.SelectBand_B.currentText()))
 
-        self.dockwidget.bar_progressLoadStack.setValue(40)
-        QApplication.processEvents()
         self.color_stack_scene = color_stack.ColorStack(self.dockwidget.mtl_path,
                                                         self.dockwidget.mtl_file,
                                                         bands,
                                                         self.dockwidget.tmp_dir)
         self.color_stack_scene.do_color_stack()
-        self.dockwidget.bar_progressLoadStack.setValue(60)
-        QApplication.processEvents()
+        update_process_bar(self.dockwidget.bar_progressLoadStack, 60)
         self.color_stack_scene.load_color_stack()
-        QApplication.restoreOverrideCursor()  # restore mouse
-        self.dockwidget.bar_progressLoadStack.setValue(100)
-        self.dockwidget.status_processLoadStack.setText("DONE")
+        update_process_bar(self.dockwidget.bar_progressLoadStack, 100,
+                           self.dockwidget.status_processLoadStack, self.tr(u"DONE"))
 
     def process_mask(self):
         """Make the process
@@ -390,7 +384,8 @@ class CloudMasking:
         self.masking_result.cloud_masking_files = []
 
         # mouse wait
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        update_process_bar(self.dockwidget.bar_progressLoadStack, 40,
+                           self.dockwidget.status_processLoadStack, self.tr(u"Loading stack..."))
 
         ########################################
         # Set the extent selector
@@ -495,9 +490,6 @@ class CloudMasking:
         # Refresh layer symbology
         self.iface.legendInterface().refreshLayerSymbology(self.cloud_mask_rlayer)
 
-        # restore mouse
-        QApplication.restoreOverrideCursor()
-
     def fileDialog_saveMask(self):
         """Open QFileDialog for save mask file
         """
@@ -537,33 +529,35 @@ class CloudMasking:
 
     def apply_mask(self):
         # init progress bar
-        self.dockwidget.bar_processApplyMask.setValue(0)
+        update_process_bar(self.dockwidget.bar_processApplyMask, 0)
 
         # get mask layer
         try:
             mask_path = \
                 unicode(self.getLayerByName(self.dockwidget.select_MaskLayer.currentText()).dataProvider().dataSourceUri())
         except:
-            self.dockwidget.status_processApplyMask.setText(self.tr(u"Error: Mask for apply not valid"))
+            update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
+                               self.tr(u"Error: Mask for apply not valid"))
             return
 
         # check mask layer
         if not os.path.isfile(mask_path):
-            self.dockwidget.status_processApplyMask.setText(self.tr(u"Error: Mask file not exists"))
+            update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
+                               self.tr(u"Error: Mask file not exists"))
             return
 
         # get result path
         result_path = self.dockwidget.lineEdit_ResultPath.text()
         if result_path is None or result_path == '':
-            self.dockwidget.status_processApplyMask.setText(self.tr(u"Error: Not selected file for save"))
+            update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
+                               self.tr(u"Error: Not selected file for save"))
             return
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))  # mouse wait
 
         if not self.dockwidget.radioButton_ToParticularFile.isChecked():
-            self.dockwidget.status_processApplyMask.setText(self.tr(u"Making the reflectance stack..."))
-            self.dockwidget.bar_processApplyMask.setValue(20)
-            QApplication.processEvents()
+            update_process_bar(self.dockwidget.bar_processApplyMask, 20, self.dockwidget.status_processApplyMask,
+                               self.tr(u"Making the reflectance stack..."))
 
         # making layer stack
         if self.dockwidget.landsat_version in [5, 7]:
@@ -588,9 +582,8 @@ class CloudMasking:
             self.reflective_stack_file = self.dockwidget.lineEdit_ParticularFile.text()
             # check if exists
             if not os.path.isfile(self.reflective_stack_file):
-                self.dockwidget.status_processApplyMask.setText(self.tr(u"Error: The particular file not exists"))
-                self.dockwidget.bar_processApplyMask.setValue(0)
-                QApplication.restoreOverrideCursor()  # restore mouse
+                update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
+                                   self.tr(u"Error: The particular file not exists"))
                 return
 
         # make stack to apply mask in tmp file
@@ -601,9 +594,8 @@ class CloudMasking:
             gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
                              self.reflective_stack_file] + stack_bands)
 
-        self.dockwidget.status_processApplyMask.setText(self.tr(u"Applying mask..."))
-        self.dockwidget.bar_processApplyMask.setValue(50)
-        QApplication.processEvents()
+        update_process_bar(self.dockwidget.bar_processApplyMask, 50, self.dockwidget.status_processApplyMask,
+                           self.tr(u"Applying mask..."))
 
         # apply mask to stack
         gdal_calc.main("A*(B==1)", result_path, [self.reflective_stack_file, mask_path], allBands=True)
@@ -618,10 +610,8 @@ class CloudMasking:
             result_rlayer = QgsRasterLayer(result_path, "Result masked: " + result_qgis_name)
             QgsMapLayerRegistry.instance().addMapLayer(result_rlayer)
 
-        self.dockwidget.status_processApplyMask.setText(self.tr(u"DONE"))
-        self.dockwidget.bar_processApplyMask.setValue(100)
-        QApplication.processEvents()
-        QApplication.restoreOverrideCursor()  # restore mouse
+        update_process_bar(self.dockwidget.bar_processApplyMask, 100, self.dockwidget.status_processApplyMask,
+                           self.tr(u"DONE"))
 
 
     def clear_all(self):
