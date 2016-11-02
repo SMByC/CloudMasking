@@ -586,7 +586,7 @@ class CloudMasking:
             self.reflective_stack_file = os.path.join(self.dockwidget.tmp_dir, "Reflective_stack_" +
                                                  self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + ".tif")
 
-            gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
+            gdal_merge.main(["", "-separate", "-of", "GTiff", "-o",
                              self.reflective_stack_file] + stack_bands)
 
         update_process_bar(self.dockwidget.bar_processApplyMask, 50, self.dockwidget.status_processApplyMask,

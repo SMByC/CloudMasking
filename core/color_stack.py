@@ -62,7 +62,7 @@ class ColorStack(object):
         self.color_stack_file = os.path.join(self.tmp_dir, self.base_name + "_" +
                                              self.mtl_file['LANDSAT_SCENE_ID'] + ".tif")
 
-        gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
+        gdal_merge.main(["", "-separate", "-of", "GTiff", "-o",
                          self.color_stack_file] + self.color_bands)
 
     def load_color_stack(self):

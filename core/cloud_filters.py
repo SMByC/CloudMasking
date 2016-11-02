@@ -125,7 +125,7 @@ class CloudMaskingResult(object):
             update_process_bar(self.process_bar, 10, self.process_status,
                                self.tr(u"Making reflective bands stack..."))
 
-            gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
+            gdal_merge.main(["", "-separate", "-of", "GTiff", "-o",
                              self.reflective_stack_file] + self.reflective_bands)
 
         ########################################
@@ -138,7 +138,7 @@ class CloudMaskingResult(object):
             update_process_bar(self.process_bar, 20, self.process_status,
                                self.tr(u"Making thermal bands stack..."))
 
-            gdal_merge.main(["", "-separate", "-of", "GTiff", "-co", "COMPRESSED=YES", "-o",
+            gdal_merge.main(["", "-separate", "-of", "GTiff", "-o",
                              self.thermal_stack_file] + self.thermal_bands)
 
         ########################################
