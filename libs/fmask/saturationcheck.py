@@ -22,6 +22,7 @@ radiance file, not the TOA reflectance.
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 from __future__ import print_function, division
 
+import multiprocessing
 import numpy
 from rios import applier, cuiprogress
 from . import config
@@ -57,6 +58,9 @@ def makeSaturationMask(fmaskConfig, radiancefile, outMask):
     otherargs.radianceBands = fmaskConfig.bands
     
     controls = applier.ApplierControls()
+    controls.setNumThreads(multiprocessing.cpu_count() - 1)
+    controls.setJobManagerType("multiprocessing")
+
     controls.progress = cuiprogress.GDALProgressBar()
     
     applier.apply(riosSaturationMask, inputs, outputs, 
