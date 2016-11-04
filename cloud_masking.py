@@ -358,12 +358,12 @@ class CloudMasking:
         """Make the process
         """
         # initialize the symbology
-        enable_symbology = [False, False, False, False, False, False]
+        enable_symbology = [False, False, False, False, False, False, False]
 
         # check if any filters has been enabled before process
         if (not self.dockwidget.checkBox_FMask.isChecked() and
                 not self.dockwidget.checkBox_BlueBand.isChecked() and
-                not self.dockwidget.checkBox_QCflags.isChecked()):
+                not self.dockwidget.checkBox_CloudQA.isChecked()):
             self.dockwidget.status_processMask.setText(
                 self.tr(u"Error: no filters enabled for apply")
             )
@@ -418,6 +418,14 @@ class CloudMasking:
             enable_symbology[5] = True
 
         ########################################
+        # Cloud QA filter
+
+        if self.dockwidget.checkBox_CloudQA.isChecked():
+            self.masking_result.do_cloud_qa(self.dockwidget.cloud_qa_file)
+            enable_symbology[0] = True
+            enable_symbology[6] = True
+
+        ########################################
         # Quality Control Flags filter
 
         if self.dockwidget.checkBox_QCflags.isChecked():
@@ -455,6 +463,10 @@ class CloudMasking:
         if self.dockwidget.checkBox_BlueBand.isChecked():
             if self.masking_result.clipping_extent:
                 os.remove(self.masking_result.blue_band_clip_file)
+        # from cloud qa
+        if self.dockwidget.checkBox_CloudQA.isChecked():
+            if self.masking_result.clipping_extent:
+                os.remove(self.masking_result.cloud_qa_clip_file)
         # from original blended files
         for cloud_masking_file in self.masking_result.cloud_masking_files:
             if cloud_masking_file != self.final_cloud_mask_file:
@@ -470,12 +482,13 @@ class CloudMasking:
 
         # Set symbology (thematic color and name) for new raster layer
         symbology = {
-            'land': (0, 0, 0, 0),
-            'cloud': (255, 0, 255, 255),
-            'shadow': (255, 255, 0, 255),
-            'snow': (85, 255, 255, 255),
-            'water': (0, 0, 200, 255),
-            'blue band': (120, 212, 245, 255)
+            'Land': (0, 0, 0, 0),
+            'Cloud': (255, 0, 255, 255),
+            'Shadow': (255, 255, 0, 255),
+            'Snow': (85, 255, 255, 255),
+            'Water': (0, 0, 200, 255),
+            'Blue band': (120, 212, 245, 255),
+            'Cloud QA': (255, 170, 0, 255),
         }
         # apply
         apply_symbology(self.cloud_mask_rlayer,

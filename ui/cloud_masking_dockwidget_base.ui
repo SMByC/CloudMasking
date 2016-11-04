@@ -27,7 +27,7 @@
 }</string>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_OL">
        <attribute name="title">
@@ -458,9 +458,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-151</y>
+             <y>-220</y>
              <width>565</width>
-             <height>906</height>
+             <height>1022</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -549,7 +549,7 @@
                  </layout>
                 </widget>
                </item>
-               <item row="2" column="1">
+               <item row="3" column="1">
                 <widget class="QFrame" name="frame_QCflags">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
@@ -851,6 +851,75 @@
                       </widget>
                      </item>
                     </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QFrame" name="frame_CloudQA">
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_20">
+                  <item>
+                   <widget class="QWidget" name="widget_16" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_13">
+                     <property name="spacing">
+                      <number>6</number>
+                     </property>
+                     <property name="margin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QCheckBox" name="checkBox_CloudQA">
+                       <property name="text">
+                        <string>Cloud QA</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_CloudQA_FileStatus">
+                       <property name="text">
+                        <string>(Cloud QA file not found)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_6">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QWidget" name="widget_CloudQA_L57" native="true">
+                    <layout class="QVBoxLayout" name="verticalLayout_22">
+                     <item>
+                      <widget class="QLabel" name="label_6">
+                       <property name="text">
+                        <string>Enabled Cloud QA binary filter (Landsat 5 and 7)</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QWidget" name="widget_CloudQA_L8" native="true">
+                    <layout class="QVBoxLayout" name="verticalLayout_21"/>
                    </widget>
                   </item>
                  </layout>
@@ -1363,8 +1432,8 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>135</y>
+     <x>157</x>
+     <y>-58</y>
     </hint>
     <hint type="destinationlabel">
      <x>143</x>
@@ -1379,12 +1448,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>201</x>
-     <y>570</y>
+     <x>212</x>
+     <y>348</y>
     </hint>
     <hint type="destinationlabel">
-     <x>201</x>
-     <y>641</y>
+     <x>212</x>
+     <y>419</y>
     </hint>
    </hints>
   </connection>
@@ -1395,12 +1464,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>243</x>
-     <y>694</y>
+     <x>254</x>
+     <y>590</y>
     </hint>
     <hint type="destinationlabel">
-     <x>240</x>
-     <y>780</y>
+     <x>251</x>
+     <y>629</y>
     </hint>
    </hints>
   </connection>
@@ -1411,12 +1480,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>54</x>
-     <y>876</y>
+     <x>57</x>
+     <y>772</y>
     </hint>
     <hint type="destinationlabel">
-     <x>56</x>
-     <y>892</y>
+     <x>59</x>
+     <y>788</y>
     </hint>
    </hints>
   </connection>
@@ -1427,12 +1496,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>503</x>
-     <y>320</y>
+     <x>530</x>
+     <y>377</y>
     </hint>
     <hint type="destinationlabel">
-     <x>524</x>
-     <y>352</y>
+     <x>533</x>
+     <y>426</y>
     </hint>
    </hints>
   </connection>
