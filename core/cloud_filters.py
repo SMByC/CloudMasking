@@ -27,6 +27,8 @@ from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtGui import QApplication
 
 # from plugins
+from osgeo.gdal import Translate
+
 from CloudMasking.core.utils import get_prefer_name, update_process_bar
 from CloudMasking.libs import gdal_merge, gdal_calc, gdal_clip
 
@@ -349,7 +351,13 @@ class CloudMaskingResult(object):
         # do Cloud QA filter
         if self.landsat_version in [5, 7]:
             gdal_calc.main("1*(A!=255)+7*(A==255)", self.cloud_bb_file, [self.cloud_qa_for_process],
-                           output_type="Byte", nodata=255)
+                           output_type="Byte", nodata=1)
+            # unset the nodata, leave the 1 (valid fields)
+            Translate(self.cloud_bb_file.replace(".tif", "tmp.tif"), self.cloud_bb_file, noData="none")
+            # only left the final file
+            os.remove(self.cloud_bb_file)
+            os.rename(self.cloud_bb_file.replace(".tif", "tmp.tif"), self.cloud_bb_file)
+
         if self.landsat_version in [8]:
             pass
         # save final result of masking
