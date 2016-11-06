@@ -421,7 +421,15 @@ class CloudMasking:
         # QA Masks filter
 
         if self.dockwidget.checkBox_QA_Masks.isChecked():
-            self.masking_result.do_cloud_qa(self.dockwidget.cloud_qa_file)
+            cloud_qa_file, shadow_qa_file, ddv_qa_file = [None]*3
+            if self.dockwidget.checkBox_CloudQA.isChecked():
+                cloud_qa_file = self.dockwidget.cloud_qa_file
+            if self.dockwidget.checkBox_ShadowQA.isChecked():
+                shadow_qa_file = self.dockwidget.shadow_qa_file
+            if self.dockwidget.checkBox_DDVQA.isChecked():
+                ddv_qa_file = self.dockwidget.ddv_qa_file
+
+            self.masking_result.do_qa_masks(cloud_qa_file, shadow_qa_file, ddv_qa_file)
             enable_symbology[0] = True
             enable_symbology[6] = True
 

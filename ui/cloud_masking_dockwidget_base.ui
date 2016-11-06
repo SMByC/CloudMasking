@@ -915,24 +915,39 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QCheckBox" name="checkBox_CloudQA">
-                       <property name="text">
-                        <string>Cloud QA</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="checkBox_ShadowQA">
-                       <property name="text">
-                        <string>Shadow QA</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="checkBox_DDVQA">
-                       <property name="text">
-                        <string>Dark Dense Vegetation QA</string>
-                       </property>
+                      <widget class="QWidget" name="widget_15" native="true">
+                       <layout class="QVBoxLayout" name="verticalLayout_23">
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QCheckBox" name="checkBox_CloudQA">
+                          <property name="text">
+                           <string>Cloud QA</string>
+                          </property>
+                          <property name="checked">
+                           <bool>true</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="checkBox_ShadowQA">
+                          <property name="text">
+                           <string>Shadow QA</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="checkBox_DDVQA">
+                          <property name="text">
+                           <string>Dark Dense Vegetation QA</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
                       </widget>
                      </item>
                     </layout>
@@ -1460,12 +1475,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>157</x>
-     <y>-58</y>
+     <x>168</x>
+     <y>-214</y>
     </hint>
     <hint type="destinationlabel">
-     <x>143</x>
-     <y>183</y>
+     <x>154</x>
+     <y>-12</y>
     </hint>
    </hints>
   </connection>
@@ -1476,12 +1491,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>212</x>
-     <y>348</y>
+     <x>223</x>
+     <y>222</y>
     </hint>
     <hint type="destinationlabel">
-     <x>212</x>
-     <y>419</y>
+     <x>223</x>
+     <y>293</y>
     </hint>
    </hints>
   </connection>
@@ -1492,8 +1507,8 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>254</x>
-     <y>590</y>
+     <x>265</x>
+     <y>573</y>
     </hint>
     <hint type="destinationlabel">
      <x>251</x>
@@ -1508,12 +1523,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>57</x>
-     <y>772</y>
+     <x>60</x>
+     <y>725</y>
     </hint>
     <hint type="destinationlabel">
-     <x>59</x>
-     <y>788</y>
+     <x>62</x>
+     <y>762</y>
     </hint>
    </hints>
   </connection>

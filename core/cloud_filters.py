@@ -332,36 +332,58 @@ class CloudMaskingResult(object):
         update_process_bar(self.process_bar, 100, self.process_status,
                            self.tr(u"DONE"))
 
-    def do_cloud_qa(self, cloud_qa_file):
+    def do_qa_masks(self, cloud_qa_file, shadow_qa_file, ddv_qa_file):
         # tmp file for cloud
-        self.cloud_bb_file = os.path.join(self.tmp_dir, "cloud_qa_{}.tif".format(datetime.now().strftime('%H%M%S')))
+        self.qa_masks = os.path.join(self.tmp_dir, "qa_masks_{}.tif".format(datetime.now().strftime('%H%M%S')))
         update_process_bar(self.process_bar, 50, self.process_status,
-                           self.tr(u"Making the QA Masks filter..."))
+                           self.tr(u"Making the QA masks filter..."))
 
-        ########################################
-        # clipping the QA Masks
-        if self.clipping_extent:
-            self.cloud_qa_clip_file = os.path.join(self.tmp_dir, "cloud_qa_clip.tif")
-            self.do_clipping_extent(cloud_qa_file, self.cloud_qa_clip_file)
-            self.cloud_qa_for_process = self.cloud_qa_clip_file
-        else:
-            self.cloud_qa_for_process = cloud_qa_file
+        qa_masks_files = []
+        for qa_count, qa_mask in enumerate([qa_mask for qa_mask in [cloud_qa_file, shadow_qa_file, ddv_qa_file] if qa_mask]):
+            if not os.path.isfile(qa_mask):
+                update_process_bar(self.process_bar, 0, self.process_status,
+                                   self.tr(u"Error: file not exist for QA mask selected"))
+                return
+            ########################################
+            # clipping the QA Mask
+            if self.clipping_extent:
+                self.qa_masks_clip_file = os.path.join(self.tmp_dir, "qa_masks_clip_{}.tif".format(qa_count))
+                self.do_clipping_extent(qa_mask, self.qa_masks_clip_file)
+                self.qa_mask_for_process = self.qa_masks_clip_file
+            else:
+                self.qa_mask_for_process = qa_mask
 
-        ########################################
-        # do QA Masks filter
-        if self.landsat_version in [4, 5, 7]:
-            gdal_calc.main("1*(A!=255)+7*(A==255)", self.cloud_bb_file, [self.cloud_qa_for_process],
-                           output_type="Byte", nodata=1)
-            # unset the nodata, leave the 1 (valid fields)
-            Translate(self.cloud_bb_file.replace(".tif", "tmp.tif"), self.cloud_bb_file, noData="none")
-            # only left the final file
-            os.remove(self.cloud_bb_file)
-            os.rename(self.cloud_bb_file.replace(".tif", "tmp.tif"), self.cloud_bb_file)
+            ########################################
+            # do QA Mask filter
+            if self.landsat_version in [4, 5, 7]:
+                tmp_qa_file = os.path.join(self.tmp_dir, "qa_mask_{}.tif".format(qa_count))
+                gdal_calc.main("1*(A!=255)+7*(A==255)", tmp_qa_file,
+                               [self.qa_mask_for_process], output_type="Byte", nodata=1)
+                # unset the nodata, leave the 1 (valid fields)
+                Translate(tmp_qa_file.replace(".tif", "tmp.tif"), tmp_qa_file, noData="none")
+                # only left the final file
+                os.remove(tmp_qa_file)
+                os.rename(tmp_qa_file.replace(".tif", "tmp.tif"), tmp_qa_file)
 
-        if self.landsat_version in [8]:
-            pass
+            if self.landsat_version in [8]:
+                pass
+
+            qa_masks_files.append(tmp_qa_file)
+
+        # blended the all qa masks files in one
+        if len(qa_masks_files) == 1:
+            os.rename(qa_masks_files[0], self.qa_masks)
+        if len(qa_masks_files) == 2:
+            gdal_calc.main("1*(A+B==2)+7*(A+B>=7)", self.qa_masks,
+                           qa_masks_files, output_type="Byte")
+        if len(qa_masks_files) == 3:
+            gdal_calc.main("1*(A+B+C==3)+7*(A+B+C>=7)", self.qa_masks,
+                           qa_masks_files, output_type="Byte")
+        # delete tmp files
+        [os.remove(tmp_file) for tmp_file in qa_masks_files if os.path.isfile(tmp_file)]
+
         # save final result of masking
-        self.cloud_masking_files.append(self.cloud_bb_file)
+        self.cloud_masking_files.append(self.qa_masks)
 
         ### ending process
         update_process_bar(self.process_bar, 100, self.process_status,
