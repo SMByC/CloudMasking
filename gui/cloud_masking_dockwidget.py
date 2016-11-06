@@ -137,11 +137,11 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.doubleSpinBox_BB.valueChanged.connect(self.horizontalSlider_BB.setValue)
         self.doubleSpinBox_BB.setValue(self.bb_threshold_L57)  # initial value
 
-        # Cloud QA filter #########
+        # QA Masks filter #########
         # start hidden
-        self.label_CloudQA_FileStatus.setHidden(True)
-        self.widget_CloudQA_L57.setHidden(True)
-        self.widget_CloudQA_L8.setHidden(True)
+        self.label_QA_FileStatus.setHidden(True)
+        self.widget_QA_Masks_L457.setHidden(True)
+        self.widget_QA_Masks_L8.setHidden(True)
 
 
         # Quality control flags #########
@@ -278,24 +278,36 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.doubleSpinBox_BB.setMaximum(40000)
             self.doubleSpinBox_BB.setValue(self.bb_threshold_L8)
 
-        #### Cloud QA adjusts
-        # search and check Cloud QA file
+        #### QA Masks adjusts
+        # search and check QA Masks files
         if self.landsat_version in [5, 7]:
             self.cloud_qa_file = os.path.join(os.path.dirname(self.mtl_path),
                                          self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud_qa.tif"))
+            self.shadow_qa_file = os.path.join(os.path.dirname(self.mtl_path),
+                                              self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud_shadow_qa.tif"))
+            self.ddv_qa_file = os.path.join(os.path.dirname(self.mtl_path),
+                                              self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_ddv_qa.tif"))
+            # check QA files
+            if os.path.isfile(self.cloud_qa_file) and os.path.isfile(self.shadow_qa_file) and os.path.isfile(self.ddv_qa_file):
+                self.checkBox_QA_Masks.setEnabled(True)
+                self.label_QA_FileStatus.setVisible(False)
+                self.checkBox_QA_Masks.clicked.connect(self.widget_QA_Masks_L457.setVisible)
+            else:
+                self.label_QA_FileStatus.setVisible(True)
+                self.checkBox_QA_Masks.setChecked(False)
+                self.checkBox_QA_Masks.setEnabled(False)
+
         if self.landsat_version in [8]:
             self.cloud_qa_file = os.path.join(os.path.dirname(self.mtl_path),
                                          self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud.tif"))
-        if os.path.isfile(self.cloud_qa_file):
-            self.label_CloudQA_FileStatus.setVisible(False)
-            self.checkBox_CloudQA.setEnabled(True)
-            if self.landsat_version in [5, 7]:
-                self.checkBox_CloudQA.clicked.connect(self.widget_CloudQA_L57.setVisible)
-            if self.landsat_version in [8]:
-                self.checkBox_CloudQA.clicked.connect(self.widget_CloudQA_L8.setVisible)
-        else:
-            self.label_CloudQA_FileStatus.setVisible(True)
-            self.checkBox_CloudQA.setEnabled(False)
+
+            if os.path.isfile(self.cloud_qa_file):
+                self.label_QA_FileStatus.setVisible(False)
+                self.checkBox_QA_Masks.setEnabled(True)
+                self.checkBox_QA_Masks.clicked.connect(self.widget_QA_Masks_L8.setVisible)
+            else:
+                self.label_QA_FileStatus.setVisible(True)
+                self.checkBox_QA_Masks.setEnabled(False)
 
         #### Enable apply to SR reflectance stack if are available
         exists_sr_files = \

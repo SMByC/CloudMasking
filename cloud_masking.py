@@ -363,7 +363,7 @@ class CloudMasking:
         # check if any filters has been enabled before process
         if (not self.dockwidget.checkBox_FMask.isChecked() and
                 not self.dockwidget.checkBox_BlueBand.isChecked() and
-                not self.dockwidget.checkBox_CloudQA.isChecked()):
+                not self.dockwidget.checkBox_QA_Masks.isChecked()):
             self.dockwidget.status_processMask.setText(
                 self.tr(u"Error: no filters enabled for apply")
             )
@@ -418,9 +418,9 @@ class CloudMasking:
             enable_symbology[5] = True
 
         ########################################
-        # Cloud QA filter
+        # QA Masks filter
 
-        if self.dockwidget.checkBox_CloudQA.isChecked():
+        if self.dockwidget.checkBox_QA_Masks.isChecked():
             self.masking_result.do_cloud_qa(self.dockwidget.cloud_qa_file)
             enable_symbology[0] = True
             enable_symbology[6] = True
@@ -463,8 +463,8 @@ class CloudMasking:
         if self.dockwidget.checkBox_BlueBand.isChecked():
             if self.masking_result.clipping_extent:
                 os.remove(self.masking_result.blue_band_clip_file)
-        # from cloud qa
-        if self.dockwidget.checkBox_CloudQA.isChecked():
+        # from QA Masks
+        if self.dockwidget.checkBox_QA_Masks.isChecked():
             if self.masking_result.clipping_extent:
                 os.remove(self.masking_result.cloud_qa_clip_file)
         # from original blended files
@@ -488,7 +488,7 @@ class CloudMasking:
             'Snow': (85, 255, 255, 255),
             'Water': (0, 0, 200, 255),
             'Blue band': (120, 212, 245, 255),
-            'Cloud QA': (255, 170, 0, 255),
+            'QA masks': (255, 170, 0, 255),
         }
         # apply
         apply_symbology(self.cloud_mask_rlayer,

@@ -336,10 +336,10 @@ class CloudMaskingResult(object):
         # tmp file for cloud
         self.cloud_bb_file = os.path.join(self.tmp_dir, "cloud_qa_{}.tif".format(datetime.now().strftime('%H%M%S')))
         update_process_bar(self.process_bar, 50, self.process_status,
-                           self.tr(u"Making the cloud QA filter..."))
+                           self.tr(u"Making the QA Masks filter..."))
 
         ########################################
-        # clipping the Cloud QA
+        # clipping the QA Masks
         if self.clipping_extent:
             self.cloud_qa_clip_file = os.path.join(self.tmp_dir, "cloud_qa_clip.tif")
             self.do_clipping_extent(cloud_qa_file, self.cloud_qa_clip_file)
@@ -348,7 +348,7 @@ class CloudMaskingResult(object):
             self.cloud_qa_for_process = cloud_qa_file
 
         ########################################
-        # do Cloud QA filter
+        # do QA Masks filter
         if self.landsat_version in [5, 7]:
             gdal_calc.main("1*(A!=255)+7*(A==255)", self.cloud_bb_file, [self.cloud_qa_for_process],
                            output_type="Byte", nodata=1)
