@@ -446,14 +446,19 @@ class CloudMasking:
         if len(self.masking_result.cloud_masking_files) == 1:
             self.final_cloud_mask_file = self.masking_result.cloud_masking_files[0]
 
-        # two filters (fmask + blueband) are activated
+        # two filters are activated
         if len(self.masking_result.cloud_masking_files) == 2:
-            if (self.dockwidget.checkBox_FMask.isChecked() and
-                    self.dockwidget.checkBox_BlueBand.isChecked()):
-                self.final_cloud_mask_file = \
-                    os.path.join(self.dockwidget.tmp_dir, "cloud_blended_{}.tif".format(datetime.now().strftime('%H%M%S')))
-                gdal_calc.main("A*logical_or(B!=6,A!=1)+B*logical_and(B==6,A==1)",
-                               self.final_cloud_mask_file, self.masking_result.cloud_masking_files[0:2])
+            self.final_cloud_mask_file = os.path.join(self.dockwidget.tmp_dir,
+                                                      "cloud_blended_{}.tif".format(datetime.now().strftime('%H%M%S')))
+            gdal_calc.main("A*(A>1)+B*(A==1)",
+                           self.final_cloud_mask_file, self.masking_result.cloud_masking_files)
+
+        # three filters are activated
+        if len(self.masking_result.cloud_masking_files) == 3:
+            self.final_cloud_mask_file = os.path.join(self.dockwidget.tmp_dir,
+                                                      "cloud_blended_{}.tif".format(datetime.now().strftime('%H%M%S')))
+            gdal_calc.main("A*(A>1)+B*logical_and(A==1,B>1)+C*logical_and(A==1,B==1)",
+                           self.final_cloud_mask_file, self.masking_result.cloud_masking_files)
 
         ########################################
         # Post process mask
@@ -474,7 +479,7 @@ class CloudMasking:
         # from QA Masks
         if self.dockwidget.checkBox_QA_Masks.isChecked():
             if self.masking_result.clipping_extent:
-                os.remove(self.masking_result.cloud_qa_clip_file)
+                os.remove(self.masking_result.qa_masks_clip_file)
         # from original blended files
         for cloud_masking_file in self.masking_result.cloud_masking_files:
             if cloud_masking_file != self.final_cloud_mask_file:
