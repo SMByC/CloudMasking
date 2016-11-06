@@ -294,6 +294,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 self.checkBox_QA_Masks.clicked.connect(self.widget_QA_Masks_L457.setVisible)
             else:
                 self.label_QA_FileStatus.setVisible(True)
+                self.widget_QA_Masks_L457.setVisible(False)
                 self.checkBox_QA_Masks.setChecked(False)
                 self.checkBox_QA_Masks.setEnabled(False)
 
@@ -307,6 +308,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 self.checkBox_QA_Masks.clicked.connect(self.widget_QA_Masks_L8.setVisible)
             else:
                 self.label_QA_FileStatus.setVisible(True)
+                self.widget_QA_Masks_L8.setVisible(False)
                 self.checkBox_QA_Masks.setEnabled(False)
 
         #### Enable apply to SR reflectance stack if are available
