@@ -349,7 +349,7 @@ class CloudMaskingResult(object):
 
         ########################################
         # do QA Masks filter
-        if self.landsat_version in [5, 7]:
+        if self.landsat_version in [4, 5, 7]:
             gdal_calc.main("1*(A!=255)+7*(A==255)", self.cloud_bb_file, [self.cloud_qa_for_process],
                            output_type="Byte", nodata=1)
             # unset the nodata, leave the 1 (valid fields)

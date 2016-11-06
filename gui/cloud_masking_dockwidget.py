@@ -46,7 +46,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     whiteness_thresh = 0.7
     swir2_water_test = 0.03
     # Blue band by default
-    bb_threshold_L57 = 110  # for L5 and L7
+    bb_threshold_L457 = 110  # for L4, L5 and L7
     bb_threshold_L8 = 14000  # for L8
 
     closingPlugin = pyqtSignal()
@@ -135,7 +135,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # Synchronize the slider with the spin box
         self.horizontalSlider_BB.sliderMoved.connect(self.doubleSpinBox_BB.setValue)
         self.doubleSpinBox_BB.valueChanged.connect(self.horizontalSlider_BB.setValue)
-        self.doubleSpinBox_BB.setValue(self.bb_threshold_L57)  # initial value
+        self.doubleSpinBox_BB.setValue(self.bb_threshold_L457)  # initial value
 
         # QA Masks filter #########
         # start hidden
@@ -260,7 +260,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.groupBox_ApplyMask.setEnabled(True)
 
         #### set reflectance bands
-        if self.landsat_version in [5, 7]:
+        if self.landsat_version in [4, 5, 7]:
             self.reflectance_bands = [1, 2, 3, 4, 5, 7]
         if self.landsat_version in [8]:
             self.reflectance_bands = [2, 3, 4, 5, 6, 7]
@@ -280,7 +280,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         #### QA Masks adjusts
         # search and check QA Masks files
-        if self.landsat_version in [5, 7]:
+        if self.landsat_version in [4, 5, 7]:
             self.cloud_qa_file = os.path.join(os.path.dirname(self.mtl_path),
                                          self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud_qa.tif"))
             self.shadow_qa_file = os.path.join(os.path.dirname(self.mtl_path),

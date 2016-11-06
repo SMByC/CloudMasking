@@ -568,7 +568,7 @@ class CloudMasking:
                                self.tr(u"Making the reflectance stack..."))
 
         # making layer stack
-        if self.dockwidget.landsat_version in [5, 7]:
+        if self.dockwidget.landsat_version in [4, 5, 7]:
             reflectance_bands = [1, 2, 3, 4, 5, 7]
         if self.dockwidget.landsat_version in [8]:
             reflectance_bands = [2, 3, 4, 5, 6, 7]
