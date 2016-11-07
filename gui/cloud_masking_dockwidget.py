@@ -24,6 +24,7 @@ import tempfile
 
 from PyQt4 import QtGui, uic, QtCore
 from PyQt4.QtCore import pyqtSignal
+from PyQt4.QtGui import QMessageBox
 from qgis.utils import iface
 
 # from plugins
@@ -200,19 +201,18 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def fileDialog_findMTL(self):
         """Open QFileDialog to find a MTL file
         """
-        self.mtl_path = str(QtGui.QFileDialog.
+        dialog_mtl_path = str(QtGui.QFileDialog.
                             getOpenFileName(self, self.tr(u"Select the MTL file"),
                                             self.mtl_path if os.path.isdir(self.mtl_path)
                                             else os.path.dirname(self.mtl_path),
                                             self.tr(u"MTL files (*MTL.txt);;All files (*.*)")))
-        if self.mtl_path != '':
-            self.lineEdit_PathMTL.setText(self.mtl_path)
+        if dialog_mtl_path != '':
+            self.lineEdit_PathMTL.setText(dialog_mtl_path)
 
     @QtCore.pyqtSlot()
     def load_MTL(self):
         """Load MTL file currently specified in QLineEdit"""
 
-        # TODO: first prompt to user if delete the current
         # process and load a new MTL file
 
         self.mtl_path = str(self.lineEdit_PathMTL.text())
@@ -339,6 +339,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         # MTL info
         self.status_LoadedMTL.setChecked(False)
+        self.mtl_path = None
         # deactivate filters box
         self.groupBox_Filters.setEnabled(False)
         # deactivate save and apply box

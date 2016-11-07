@@ -265,12 +265,9 @@ class CloudMasking:
         self.dockwidget.checkBox_ActivatedLayers.clicked.connect(self.updateLayersList_MaskLayer)
         self.dockwidget.checkBox_MaskLayers.clicked.connect(self.updateLayersList_MaskLayer)
         # call to load MTL file
-        QObject.connect(self.dockwidget.button_LoadMTL, SIGNAL("clicked()"), self.clear_all)
-        QObject.connect(self.dockwidget.button_LoadMTL, SIGNAL("clicked()"), self.dockwidget.load_MTL)
+        QObject.connect(self.dockwidget.button_LoadMTL, SIGNAL("clicked()"), self.buttom_load_mtl)
         # call to clear all
-        QObject.connect(self.dockwidget.button_ClearAll, SIGNAL("clicked()"), self.clear_all)
-        QObject.connect(self.dockwidget.button_ClearAll, SIGNAL("clicked()"),
-                        lambda: self.dockwidget.lineEdit_PathMTL.setText(''))
+        QObject.connect(self.dockwidget.button_ClearAll, SIGNAL("clicked()"), self.buttom_clear_all)
         # call to load natural color stack
         QObject.connect(self.dockwidget.button_NaturalColorStack, SIGNAL("clicked()"),
                         lambda: self.set_color_stack("natural_color"))
@@ -645,9 +642,37 @@ class CloudMasking:
         update_process_bar(self.dockwidget.bar_processApplyMask, 100, self.dockwidget.status_processApplyMask,
                            self.tr(u"DONE"))
 
+    def buttom_load_mtl(self):
+        # check if is the same MTL
+        print self.dockwidget.mtl_path
+        if self.dockwidget.mtl_path == str(self.dockwidget.lineEdit_PathMTL.text()):
+            return
+        # first prompt to user if delete the current
+        # process and load a new MTL file
+        if self.dockwidget.status_LoadedMTL.isChecked():
+            quit_msg = "Are you sure you want to clean all the old MTL and load the new MTL file?"
+            reply = QMessageBox.question(self.dockwidget, 'Loading the new MTL...',
+                                         quit_msg, QMessageBox.Yes, QMessageBox.No)
+            if reply == QMessageBox.No:
+                return
+        # run clean all
+        self.clear_all()
+        # run load MTL
+        self.dockwidget.load_MTL()
+
+    def buttom_clear_all(self):
+        # first prompt
+        quit_msg = "Are you sure you want to clean all: delete unsaved masks, clean tmp files, unload processed images?"
+        reply = QMessageBox.question(self.dockwidget, 'Cleaning all for the current MTL file...',
+                                           quit_msg, QMessageBox.Yes, QMessageBox.No)
+        if reply == QMessageBox.No:
+            return
+        # run clean all
+        self.clear_all()
+        # clean MTL path
+        self.dockwidget.lineEdit_PathMTL.setText('')
 
     def clear_all(self):
-        # TODO
 
         # message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):
@@ -655,7 +680,7 @@ class CloudMasking:
             self.dockwidget.status_LoadedMTL.setText(self.tr(u"Cleaning temporal files ..."))
             self.dockwidget.status_LoadedMTL.repaint()
             QApplication.processEvents()
-            sleep(1)
+            sleep(0.3)
 
         # unload MTL file and extent selector
         try:
