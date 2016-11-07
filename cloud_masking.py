@@ -421,15 +421,26 @@ class CloudMasking:
         # QA Masks filter
 
         if self.dockwidget.checkBox_QA_Masks.isChecked():
-            cloud_qa_file, shadow_qa_file, ddv_qa_file = [None]*3
-            if self.dockwidget.checkBox_CloudQA.isChecked():
-                cloud_qa_file = self.dockwidget.cloud_qa_file
-            if self.dockwidget.checkBox_ShadowQA.isChecked():
-                shadow_qa_file = self.dockwidget.shadow_qa_file
-            if self.dockwidget.checkBox_DDVQA.isChecked():
-                ddv_qa_file = self.dockwidget.ddv_qa_file
+            if self.dockwidget.landsat_version in [4, 5, 7]:
+                cloud_qa_file, shadow_qa_file, ddv_qa_file = [None]*3
+                if self.dockwidget.checkBox_CloudQA.isChecked():
+                    cloud_qa_file = self.dockwidget.cloud_qa_file
+                if self.dockwidget.checkBox_ShadowQA.isChecked():
+                    shadow_qa_file = self.dockwidget.shadow_qa_file
+                if self.dockwidget.checkBox_DDVQA.isChecked():
+                    ddv_qa_file = self.dockwidget.ddv_qa_file
 
-            self.masking_result.do_qa_masks(cloud_qa_file, shadow_qa_file, ddv_qa_file)
+                self.masking_result.do_qa_masks(cloud_qa_file, shadow_qa_file, ddv_qa_file)
+
+            if self.dockwidget.landsat_version in [8]:
+                # TODO
+                checked_items = []
+                for index in range(self.dockwidget.listWidget_QA_codes.count()):
+                    if self.dockwidget.listWidget_QA_codes.item(index).checkState() == Qt.Checked:
+                        checked_items.append(self.dockwidget.listWidget_QA_codes.item(index))
+                print [x.text() for x in checked_items]
+                return
+
             enable_symbology[0] = True
             enable_symbology[6] = True
 

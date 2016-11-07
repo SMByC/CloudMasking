@@ -460,7 +460,7 @@
              <x>0</x>
              <y>-348</y>
              <width>551</width>
-             <height>1133</height>
+             <height>1240</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -958,7 +958,22 @@
                   </item>
                   <item>
                    <widget class="QWidget" name="widget_QA_Masks_L8" native="true">
-                    <layout class="QVBoxLayout" name="verticalLayout_21"/>
+                    <layout class="QVBoxLayout" name="verticalLayout_21">
+                     <item>
+                      <widget class="QLabel" name="label_18">
+                       <property name="text">
+                        <string>Enable/disable QA codes (Landsat 8):</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QListWidget" name="listWidget_QA_codes">
+                       <property name="sortingEnabled">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                  </layout>
