@@ -60,6 +60,7 @@ def makeSaturationMask(fmaskConfig, radiancefile, outMask):
     controls = applier.ApplierControls()
     controls.setNumThreads(multiprocessing.cpu_count() - 1)
     controls.setJobManagerType("multiprocessing")
+    controls.setCalcStats(False)
 
     controls.progress = cuiprogress.GDALProgressBar()
     

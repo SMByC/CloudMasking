@@ -165,8 +165,9 @@ def makeTOAReflectance(infile, mtlFile, anglesfile, outfile):
     controls = applier.ApplierControls()
 
     controls.progress = cuiprogress.GDALProgressBar()
+    controls.setCalcStats(False)
     controls.setStatsIgnore(otherinputs.outNull)
-    
+
     applier.apply(riosTOA, inputs, outputs, otherinputs, controls=controls)
 
 if __name__ == '__main__':
