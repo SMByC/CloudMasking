@@ -23,6 +23,7 @@ import shutil
 from datetime import datetime
 from time import sleep
 from shutil import copyfile
+import gdal
 
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
 from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox, QApplication, QCursor, QFileDialog
@@ -467,6 +468,30 @@ class CloudMasking:
                                                       "cloud_blended_{}.tif".format(datetime.now().strftime('%H%M%S')))
             gdal_calc.main("A*(A>1)+B*logical_and(A==1,B>1)+C*logical_and(A==1,B==1)",
                            self.final_cloud_mask_file, self.masking_result.cloud_masking_files)
+
+        ########################################
+        # Keep the original size if made the
+        # mask in selected area
+
+        if self.dockwidget.checkBox_ExtentSelector.isChecked() and \
+            self.dockwidget.widget_ExtentSelector.checkBox_KeepOriginalSize.isChecked():
+            data = gdal.Open(get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                                                          self.dockwidget.mtl_file['FILE_NAME_BAND_1'])), gdal.GA_ReadOnly)
+            geoTransform = data.GetGeoTransform()
+            minx = geoTransform[0]
+            maxy = geoTransform[3]
+            maxx = minx + geoTransform[1] * data.RasterXSize
+            miny = maxy + geoTransform[5] * data.RasterYSize
+
+            # expand
+            gdal.Translate(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file,
+                           projWin=[minx, maxy, maxx, miny], noData=1)
+            os.remove(self.final_cloud_mask_file)
+            # unset the nodata, leave the 1 (valid fields)
+            gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "1.tif"), noData="none")
+            # only left the final file
+            os.remove(self.final_cloud_mask_file.replace(".tif", "1.tif"))
+
 
         ########################################
         # Post process mask
