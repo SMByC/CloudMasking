@@ -305,15 +305,17 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 self.checkBox_QA_Masks.clicked.connect(self.widget_QA_Masks_L8.setVisible)
 
                 # fill the QlistWidget of QA code
-                # TODO
-                for n in range(30):
-                    item = QtGui.QListWidgetItem('Item {}'.format(n))
+                cloud_qa_codes = ["Cirrus cloud", "Cloud", "Adjacent to cloud", "Cloud shadow",
+                         "Aerosol clim-level", "Aerosol low", "Aerosol avg", "Aerosol high"]
+                for cloud_qa_code in cloud_qa_codes:
+                    item = QtGui.QListWidgetItem(cloud_qa_code)
                     item.setCheckState(QtCore.Qt.Unchecked)
                     self.listWidget_QA_codes.addItem(item)
 
             else:
                 self.label_QA_FileStatus.setVisible(True)
                 self.widget_QA_Masks_L8.setVisible(False)
+                self.checkBox_QA_Masks.setChecked(False)
                 self.checkBox_QA_Masks.setEnabled(False)
 
         #### Enable apply to SR reflectance stack if are available
