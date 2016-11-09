@@ -416,7 +416,7 @@ class CloudMasking:
             enable_symbology[5] = True
 
         ########################################
-        # QA Masks filter
+        # Cloud QA filter
 
         if self.dockwidget.checkBox_QA_Masks.isChecked():
             if self.dockwidget.landsat_version in [4, 5, 7]:
@@ -428,7 +428,7 @@ class CloudMasking:
                 if self.dockwidget.checkBox_DDVQA.isChecked():
                     ddv_qa_file = self.dockwidget.ddv_qa_file
 
-                self.masking_result.do_qa_masks(cloud_qa_file, shadow_qa_file, ddv_qa_file)
+                self.masking_result.do_cloud_qa_l457(cloud_qa_file, shadow_qa_file, ddv_qa_file)
 
             if self.dockwidget.landsat_version in [8]:
                 # TODO
@@ -509,10 +509,10 @@ class CloudMasking:
         if self.dockwidget.checkBox_BlueBand.isChecked():
             if self.masking_result.clipping_extent:
                 os.remove(self.masking_result.blue_band_clip_file)
-        # from QA Masks
+        # from cloud QA
         if self.dockwidget.checkBox_QA_Masks.isChecked():
             if self.masking_result.clipping_extent:
-                os.remove(self.masking_result.qa_masks_clip_file)
+                os.remove(self.masking_result.cloud_qa_clip_file)
         # from original blended files
         for cloud_masking_file in self.masking_result.cloud_masking_files:
             if cloud_masking_file != self.final_cloud_mask_file:
@@ -534,7 +534,7 @@ class CloudMasking:
             'Snow': (85, 255, 255, 255),
             'Water': (0, 0, 200, 255),
             'Blue band': (120, 212, 245, 255),
-            'QA masks': (255, 170, 0, 255),
+            'Cloud QA': (255, 170, 0, 255),
         }
         # apply
         apply_symbology(self.cloud_mask_rlayer,

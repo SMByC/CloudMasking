@@ -137,7 +137,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.doubleSpinBox_BB.valueChanged.connect(self.horizontalSlider_BB.setValue)
         self.doubleSpinBox_BB.setValue(self.bb_threshold_L457)  # initial value
 
-        # QA Masks filter #########
+        # Cloud QA filter #########
         # start hidden
         self.label_QA_FileStatus.setHidden(True)
         self.widget_QA_Masks_L457.setHidden(True)
@@ -275,8 +275,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.doubleSpinBox_BB.setMaximum(40000)
             self.doubleSpinBox_BB.setValue(self.bb_threshold_L8)
 
-        #### QA Masks adjusts
-        # search and check QA Masks files
+        #### Cloud QA adjusts
+        # search and check Cloud QA files
         if self.landsat_version in [4, 5, 7]:
             self.cloud_qa_file = os.path.join(os.path.dirname(self.mtl_path),
                                          self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud_qa.tif"))

@@ -458,7 +458,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-348</y>
+             <y>-485</y>
              <width>551</width>
              <height>1240</height>
             </rect>
@@ -561,7 +561,7 @@
                   <item row="0" column="0">
                    <widget class="QCheckBox" name="checkBox_QCflags">
                     <property name="text">
-                     <string>Quality control flags</string>
+                     <string>Band QA</string>
                     </property>
                    </widget>
                   </item>
@@ -877,7 +877,7 @@
                      <item>
                       <widget class="QCheckBox" name="checkBox_QA_Masks">
                        <property name="text">
-                        <string>QA Masks</string>
+                        <string>Cloud QA Masks</string>
                        </property>
                       </widget>
                      </item>
@@ -962,14 +962,14 @@
                      <item>
                       <widget class="QLabel" name="label_18">
                        <property name="text">
-                        <string>Enable/disable QA codes (Landsat 8):</string>
+                        <string>Enable/disable Cloud QA codes (Landsat 8):</string>
                        </property>
                       </widget>
                      </item>
                      <item>
                       <widget class="QListWidget" name="listWidget_QA_codes">
-                       <property name="sortingEnabled">
-                        <bool>true</bool>
+                       <property name="selectionMode">
+                        <enum>QAbstractItemView::NoSelection</enum>
                        </property>
                       </widget>
                      </item>
