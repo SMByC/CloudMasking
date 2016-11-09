@@ -271,7 +271,7 @@ class CloudMaskingResult(object):
         fmaskConfig.setThermalInfo(thermalInfo)
         fmaskConfig.setAnglesInfo(anglesInfo)
         fmaskConfig.setKeepIntermediates(False)
-        fmaskConfig.setVerbose(False)
+        fmaskConfig.setVerbose(True)
         fmaskConfig.setTempDir(self.tmp_dir)
 
         # Set the settings fmask filters from widget to FmaskConfig

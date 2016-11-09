@@ -469,9 +469,7 @@ def doPotentialCloudSecondPass(fmaskFilenames, fmaskConfig, pass1file,
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-    controls.setNumThreads(multiprocessing.cpu_count() - 1)
-    controls.setJobManagerType("multiprocessing")
-    
+
     infiles.pass1 = pass1file
     infiles.toaref = fmaskFilenames.toaRef
     if not missingThermal:
@@ -580,9 +578,7 @@ def doCloudLayerFinalPass(fmaskFilenames, fmaskConfig, pass1file, pass2file,
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-    controls.setNumThreads(multiprocessing.cpu_count() - 1)
-    controls.setJobManagerType("multiprocessing")
-    
+
     infiles.pass1 = pass1file
     infiles.pass2 = pass2file
     if not missingThermal:
@@ -746,7 +742,7 @@ def make3Dclouds(fmaskFilenames, fmaskConfig, clumps, numClumps, missingThermal)
     controls = applier.ApplierControls()
     controls.setNumThreads(multiprocessing.cpu_count() - 1)
     controls.setJobManagerType("multiprocessing")
-    
+
     # if we have thermal, run against that 
     # otherwise we are just 
     if not missingThermal:
