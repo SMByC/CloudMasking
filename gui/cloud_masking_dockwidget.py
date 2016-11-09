@@ -24,7 +24,6 @@ import tempfile
 
 from PyQt4 import QtGui, uic, QtCore
 from PyQt4.QtCore import pyqtSignal
-from PyQt4.QtGui import QMessageBox
 from qgis.utils import iface
 
 # from plugins
@@ -203,9 +202,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         """
         dialog_mtl_path = str(QtGui.QFileDialog.
                             getOpenFileName(self, self.tr(u"Select the MTL file"),
-                                            self.mtl_path if os.path.isdir(self.mtl_path)
-                                            else os.path.dirname(self.mtl_path),
-                                            self.tr(u"MTL files (*MTL.txt);;All files (*.*)")))
+                                            "", self.tr(u"MTL files (*MTL.txt);;All files (*.*)")))
         if dialog_mtl_path != '':
             self.lineEdit_PathMTL.setText(dialog_mtl_path)
 
