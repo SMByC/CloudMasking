@@ -431,13 +431,26 @@ class CloudMasking:
                 self.masking_result.do_cloud_qa_l457(cloud_qa_file, shadow_qa_file, ddv_qa_file)
 
             if self.dockwidget.landsat_version in [8]:
-                # TODO
                 checked_items = []
                 for index in range(self.dockwidget.listWidget_QA_codes.count()):
                     if self.dockwidget.listWidget_QA_codes.item(index).checkState() == Qt.Checked:
                         checked_items.append(self.dockwidget.listWidget_QA_codes.item(index))
-                print [x.text() for x in checked_items]
-                return
+                checked_items = [x.text() for x in checked_items]
+                print checked_items
+
+                # check is only selected one aerosol
+                if len(checked_items) == 0:
+                    self.dockwidget.status_processMask.setText(
+                        self.tr(u"Error: no filters selected in Cloud QA"))
+                    return
+
+                # check is only selected one aerosol
+                if len([x for x in checked_items if x.startswith("Aerosol")]) > 1:
+                    self.dockwidget.status_processMask.setText(
+                        self.tr(u"Error: select only one Aerosol in Cloud QA"))
+                    return
+
+                self.masking_result.do_cloud_qa_l8(self.dockwidget.cloud_qa_file, checked_items)
 
             enable_symbology[0] = True
             enable_symbology[6] = True

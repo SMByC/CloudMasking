@@ -384,57 +384,60 @@ class CloudMaskingResult(object):
         update_process_bar(self.process_bar, 100, self.process_status,
                            self.tr(u"DONE"))
 
+    def do_cloud_qa_l8(self, cloud_qa_file, checked_items):
+        # tmp file for cloud
+        self.cloud_qa = os.path.join(self.tmp_dir, "cloud_qa_{}.tif".format(datetime.now().strftime('%H%M%S')))
+        update_process_bar(self.process_bar, 50, self.process_status,
+                           self.tr(u"Making the Cloud QA filter..."))
 
-def do_cloud_qa_l457(self, cloud_qa_file, shadow_qa_file, ddv_qa_file):
-    # tmp file for cloud
-    self.cloud_qa = os.path.join(self.tmp_dir, "cloud_qa_{}.tif".format(datetime.now().strftime('%H%M%S')))
-    update_process_bar(self.process_bar, 50, self.process_status,
-                       self.tr(u"Making the Cloud QA filter..."))
-
-    cloud_qa_files = []
-    for cqa_count, cloud_qa in enumerate(
-            [cloud_qa for cloud_qa in [cloud_qa_file, shadow_qa_file, ddv_qa_file] if cloud_qa]):
-        if not os.path.isfile(cloud_qa):
-            update_process_bar(self.process_bar, 0, self.process_status,
-                               self.tr(u"Error: file not exist for QA mask selected"))
-            return
         ########################################
         # clipping the QA Mask
         if self.clipping_extent:
-            self.cloud_qa_clip_file = os.path.join(self.tmp_dir, "cloud_qa_clip_{}.tif".format(cqa_count))
-            self.do_clipping_extent(cloud_qa, self.cloud_qa_clip_file)
+            self.cloud_qa_clip_file = os.path.join(self.tmp_dir, "cloud_qa_clip.tif")
+            self.do_clipping_extent(cloud_qa_file, self.cloud_qa_clip_file)
             self.cloud_qa_for_process = self.cloud_qa_clip_file
         else:
-            self.cloud_qa_for_process = cloud_qa
+            self.cloud_qa_for_process = cloud_qa_file
+
+        ########################################
+        # convert selected items to binary and decimal value
+        cloud_qa_codes = ["Cirrus cloud", "Cloud", "Adjacent to cloud", "Cloud shadow"]
+        binary = []
+        for item in cloud_qa_codes:
+            if item in checked_items:
+                binary.append("1")
+            else:
+                binary.append("0")
+
+        if "Aerosol clim-level" in checked_items:
+            binary.append("0")
+            binary.append("0")
+        if "Aerosol low" in checked_items:
+            binary.append("1")
+            binary.append("0")
+        if "Aerosol avg" in checked_items:
+            binary.append("0")
+            binary.append("1")
+        if "Aerosol high" in checked_items:
+            binary.append("1")
+            binary.append("1")
+
+        binary.reverse()
+        filter_value = int("".join(binary), 2)
 
         ########################################
         # do QA Mask filter
-        tmp_cqa_file = os.path.join(self.tmp_dir, "cloud_qa_{}.tif".format(cqa_count))
-        gdal_calc.main("1*(A!=255)+7*(A==255)", tmp_cqa_file,
+        tmp_cqa_file = os.path.join(self.tmp_dir, "cloud_qa.tif")
+        gdal_calc.main("1*(A!={fv})+7*(A=={fv})".format(fv=filter_value), tmp_cqa_file,
                        [self.cloud_qa_for_process], output_type="Byte", nodata=1)
         # unset the nodata, leave the 1 (valid fields)
-        Translate(tmp_cqa_file.replace(".tif", "tmp.tif"), tmp_cqa_file, noData="none")
-        # only left the final file
+        Translate(self.cloud_qa, tmp_cqa_file, noData="none")
+        # delete tmp files
         os.remove(tmp_cqa_file)
-        os.rename(tmp_cqa_file.replace(".tif", "tmp.tif"), tmp_cqa_file)
 
-        cloud_qa_files.append(tmp_cqa_file)
+        # save final result of masking
+        self.cloud_masking_files.append(self.cloud_qa)
 
-    # blended the all Cloud QA files in one
-    if len(cloud_qa_files) == 1:
-        os.rename(cloud_qa_files[0], self.cloud_qa)
-    if len(cloud_qa_files) == 2:
-        gdal_calc.main("1*(A+B==2)+7*(A+B>=7)", self.cloud_qa,
-                       cloud_qa_files, output_type="Byte")
-    if len(cloud_qa_files) == 3:
-        gdal_calc.main("1*(A+B+C==3)+7*(A+B+C>=7)", self.cloud_qa,
-                       cloud_qa_files, output_type="Byte")
-    # delete tmp files
-    [os.remove(tmp_file) for tmp_file in cloud_qa_files if os.path.isfile(tmp_file)]
-
-    # save final result of masking
-    self.cloud_masking_files.append(self.cloud_qa)
-
-    ### ending process
-    update_process_bar(self.process_bar, 100, self.process_status,
-                       self.tr(u"DONE"))
+        ### ending process
+        update_process_bar(self.process_bar, 100, self.process_status,
+                           self.tr(u"DONE"))
