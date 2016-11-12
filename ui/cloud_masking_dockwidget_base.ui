@@ -458,9 +458,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-485</y>
+             <y>-540</y>
              <width>551</width>
-             <height>1287</height>
+             <height>1295</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -561,28 +561,13 @@
                   <item row="0" column="0">
                    <widget class="QCheckBox" name="checkBox_QCflags">
                     <property name="text">
-                     <string>Band QA</string>
+                     <string>QA Band</string>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
                    <widget class="QWidget" name="widget_QCflags" native="true">
-                    <layout class="QVBoxLayout" name="verticalLayout_3">
-                     <item>
-                      <widget class="QCheckBox" name="checkBox_4">
-                       <property name="text">
-                        <string>QC 01</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="checkBox_5">
-                       <property name="text">
-                        <string>QC 02</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
+                    <layout class="QVBoxLayout" name="verticalLayout_3"/>
                    </widget>
                   </item>
                  </layout>
@@ -857,7 +842,7 @@
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QFrame" name="frame_QA_Masks">
+                <widget class="QFrame" name="frame_CloudQA">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
@@ -875,14 +860,14 @@
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QCheckBox" name="checkBox_QA_Masks">
+                      <widget class="QCheckBox" name="checkBox_CloudQA">
                        <property name="text">
-                        <string>Cloud QA Masks</string>
+                        <string>Cloud QA</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QLabel" name="label_QA_FileStatus">
+                      <widget class="QLabel" name="label_CloudQA_FileStatus">
                        <property name="text">
                         <string>(files not found)</string>
                        </property>
@@ -905,7 +890,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QWidget" name="widget_QA_Masks_L457" native="true">
+                   <widget class="QWidget" name="widget_CloudQA_L457" native="true">
                     <layout class="QVBoxLayout" name="verticalLayout_22">
                      <item>
                       <widget class="QLabel" name="label_6">
@@ -924,7 +909,7 @@
                          <number>0</number>
                         </property>
                         <item>
-                         <widget class="QCheckBox" name="checkBox_CloudQA">
+                         <widget class="QCheckBox" name="checkBox_CloudQA_mask">
                           <property name="text">
                            <string>Cloud QA</string>
                           </property>
@@ -934,7 +919,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QCheckBox" name="checkBox_ShadowQA">
+                         <widget class="QCheckBox" name="checkBox_ShadowQA_mask">
                           <property name="text">
                            <string>Shadow QA</string>
                           </property>
@@ -944,7 +929,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QCheckBox" name="checkBox_DDVQA">
+                         <widget class="QCheckBox" name="checkBox_DDVQA_mask">
                           <property name="text">
                            <string>Dark Dense Vegetation QA</string>
                           </property>
@@ -957,7 +942,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QWidget" name="widget_QA_Masks_L8" native="true">
+                   <widget class="QWidget" name="widget_CloudQA_L8" native="true">
                     <layout class="QVBoxLayout" name="verticalLayout_21">
                      <item>
                       <widget class="QLabel" name="label_18">
@@ -968,6 +953,12 @@
                      </item>
                      <item>
                       <widget class="QListWidget" name="listWidget_QA_codes">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>150</height>
+                        </size>
+                       </property>
                        <property name="selectionMode">
                         <enum>QAbstractItemView::NoSelection</enum>
                        </property>

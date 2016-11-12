@@ -361,7 +361,7 @@ class CloudMasking:
         # check if any filters has been enabled before process
         if (not self.dockwidget.checkBox_FMask.isChecked() and
                 not self.dockwidget.checkBox_BlueBand.isChecked() and
-                not self.dockwidget.checkBox_QA_Masks.isChecked()):
+                not self.dockwidget.checkBox_CloudQA.isChecked()):
             self.dockwidget.status_processMask.setText(
                 self.tr(u"Error: no filters enabled for apply")
             )
@@ -418,14 +418,14 @@ class CloudMasking:
         ########################################
         # Cloud QA filter
 
-        if self.dockwidget.checkBox_QA_Masks.isChecked():
+        if self.dockwidget.checkBox_CloudQA.isChecked():
             if self.dockwidget.landsat_version in [4, 5, 7]:
                 cloud_qa_file, shadow_qa_file, ddv_qa_file = [None]*3
-                if self.dockwidget.checkBox_CloudQA.isChecked():
+                if self.dockwidget.checkBox_CloudQA_mask.isChecked():
                     cloud_qa_file = self.dockwidget.cloud_qa_file
-                if self.dockwidget.checkBox_ShadowQA.isChecked():
+                if self.dockwidget.checkBox_ShadowQA_mask.isChecked():
                     shadow_qa_file = self.dockwidget.shadow_qa_file
-                if self.dockwidget.checkBox_DDVQA.isChecked():
+                if self.dockwidget.checkBox_DDVQA_mask.isChecked():
                     ddv_qa_file = self.dockwidget.ddv_qa_file
 
                 self.masking_result.do_cloud_qa_l457(cloud_qa_file, shadow_qa_file, ddv_qa_file)
@@ -534,7 +534,7 @@ class CloudMasking:
             if self.masking_result.clipping_extent:
                 os.remove(self.masking_result.blue_band_clip_file)
         # from cloud QA
-        if self.dockwidget.checkBox_QA_Masks.isChecked():
+        if self.dockwidget.checkBox_CloudQA.isChecked():
             if self.masking_result.clipping_extent:
                 os.remove(self.masking_result.cloud_qa_clip_file)
         # from original blended files

@@ -139,9 +139,9 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         # Cloud QA filter #########
         # start hidden
-        self.label_QA_FileStatus.setHidden(True)
-        self.widget_QA_Masks_L457.setHidden(True)
-        self.widget_QA_Masks_L8.setHidden(True)
+        self.label_CloudQA_FileStatus.setHidden(True)
+        self.widget_CloudQA_L457.setHidden(True)
+        self.widget_CloudQA_L8.setHidden(True)
 
 
         # Quality control flags #########
@@ -286,23 +286,23 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                                               self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_ddv_qa.tif"))
             # check QA files
             if os.path.isfile(self.cloud_qa_file) and os.path.isfile(self.shadow_qa_file) and os.path.isfile(self.ddv_qa_file):
-                self.checkBox_QA_Masks.setEnabled(True)
-                self.label_QA_FileStatus.setVisible(False)
-                self.checkBox_QA_Masks.clicked.connect(self.widget_QA_Masks_L457.setVisible)
+                self.checkBox_CloudQA.setEnabled(True)
+                self.label_CloudQA_FileStatus.setVisible(False)
+                self.checkBox_CloudQA.clicked.connect(self.widget_CloudQA_L457.setVisible)
             else:
-                self.label_QA_FileStatus.setVisible(True)
-                self.widget_QA_Masks_L457.setVisible(False)
-                self.checkBox_QA_Masks.setChecked(False)
-                self.checkBox_QA_Masks.setEnabled(False)
+                self.label_CloudQA_FileStatus.setVisible(True)
+                self.widget_CloudQA_L457.setVisible(False)
+                self.checkBox_CloudQA.setChecked(False)
+                self.checkBox_CloudQA.setEnabled(False)
 
         if self.landsat_version in [8]:
             self.cloud_qa_file = os.path.join(os.path.dirname(self.mtl_path),
                                          self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud.tif"))
 
             if os.path.isfile(self.cloud_qa_file):
-                self.label_QA_FileStatus.setVisible(False)
-                self.checkBox_QA_Masks.setEnabled(True)
-                self.checkBox_QA_Masks.clicked.connect(self.widget_QA_Masks_L8.setVisible)
+                self.label_CloudQA_FileStatus.setVisible(False)
+                self.checkBox_CloudQA.setEnabled(True)
+                self.checkBox_CloudQA.clicked.connect(self.widget_CloudQA_L8.setVisible)
 
                 # fill the QlistWidget of QA code
                 cloud_qa_codes = ["Cirrus cloud", "Cloud", "Adjacent to cloud", "Cloud shadow",
@@ -313,10 +313,10 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                     self.listWidget_QA_codes.addItem(item)
 
             else:
-                self.label_QA_FileStatus.setVisible(True)
-                self.widget_QA_Masks_L8.setVisible(False)
-                self.checkBox_QA_Masks.setChecked(False)
-                self.checkBox_QA_Masks.setEnabled(False)
+                self.label_CloudQA_FileStatus.setVisible(True)
+                self.widget_CloudQA_L8.setVisible(False)
+                self.checkBox_CloudQA.setChecked(False)
+                self.checkBox_CloudQA.setEnabled(False)
 
         #### Enable apply to SR reflectance stack if are available
         exists_sr_files = \
