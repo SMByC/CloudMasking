@@ -458,9 +458,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-540</y>
+             <y>-676</y>
              <width>551</width>
-             <height>1369</height>
+             <height>1525</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -558,18 +558,83 @@
                   <enum>QFrame::Raised</enum>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_9">
-                  <item row="0" column="0">
-                   <widget class="QCheckBox" name="checkBox_QABand">
-                    <property name="text">
-                     <string>QA Band</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="1" column="0">
                    <widget class="QWidget" name="widget_QABand" native="true">
                     <layout class="QVBoxLayout" name="verticalLayout_3">
                      <item>
-                      <widget class="QListWidget" name="listWidget_QABand_codes"/>
+                      <widget class="QLabel" name="label_20">
+                       <property name="text">
+                        <string>Enable/disable QA Band bits:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QListWidget" name="listWidget_QABand_bits">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>150</height>
+                        </size>
+                       </property>
+                       <property name="toolTip">
+                        <string>Each bit (item) masked all pixel that have this bit activated (all combination values)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QWidget" name="widget_19" native="true">
+                       <layout class="QHBoxLayout" name="horizontalLayout_18">
+                        <property name="margin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QLabel" name="label_21">
+                          <property name="text">
+                           <string>Specific values:</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="lineEdit_QABand_svalues"/>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QWidget" name="widget_18" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_17">
+                     <property name="margin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QCheckBox" name="checkBox_QABand">
+                       <property name="text">
+                        <string>QA Band</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_QABand_FileStatus">
+                       <property name="text">
+                        <string>(files not found)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_7">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
                      </item>
                     </layout>
                    </widget>
