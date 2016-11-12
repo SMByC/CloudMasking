@@ -458,7 +458,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-676</y>
+             <y>-451</y>
              <width>551</width>
              <height>1525</height>
             </rect>
@@ -619,7 +619,7 @@
                      <item>
                       <widget class="QLabel" name="label_QABand_FileStatus">
                        <property name="text">
-                        <string>(files not found)</string>
+                        <string>(file not found)</string>
                        </property>
                       </widget>
                      </item>

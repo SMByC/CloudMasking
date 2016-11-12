@@ -232,9 +232,6 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.status_LoadedMTL.setChecked(True)
         self.status_LoadedMTL.setText(self.mtl_file['LANDSAT_SCENE_ID'] + ' (L{})'.format(self.landsat_version))
 
-        # set QABand if this MTL have QC file
-        self.set_QABand()
-
         #### activate, load and adjust UI
         self.activate_UI()
 
@@ -284,7 +281,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                                               self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud_shadow_qa.tif"))
             self.ddv_qa_file = os.path.join(os.path.dirname(self.mtl_path),
                                               self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_ddv_qa.tif"))
-            # check QA files
+            # check Cloud QA files
             if os.path.isfile(self.cloud_qa_file) and os.path.isfile(self.shadow_qa_file) and os.path.isfile(self.ddv_qa_file):
                 self.checkBox_CloudQA.setEnabled(True)
                 self.label_CloudQA_FileStatus.setVisible(False)
@@ -298,12 +295,11 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         if self.landsat_version in [8]:
             self.cloud_qa_file = os.path.join(os.path.dirname(self.mtl_path),
                                          self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud.tif"))
-
+            # check Cloud QA file
             if os.path.isfile(self.cloud_qa_file):
                 self.label_CloudQA_FileStatus.setVisible(False)
                 self.checkBox_CloudQA.setEnabled(True)
                 self.checkBox_CloudQA.clicked.connect(self.widget_CloudQA_L8.setVisible)
-
                 # fill the QlistWidget of QA code
                 cloud_qa_codes = ["Cirrus cloud (bit 0)", "Cloud (bit 1)", "Adjacent to cloud (bit 2)", "Cloud shadow (bit 3)",
                          "Aerosol clim-level (bits 4-5)", "Aerosol low (bits 4-5)", "Aerosol avg (bits 4-5)", "Aerosol high (bits 4-5)"]
@@ -311,12 +307,26 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                     item = QtGui.QListWidgetItem(cloud_qa_code)
                     item.setCheckState(QtCore.Qt.Unchecked)
                     self.listWidget_CloudQA_bits.addItem(item)
-
             else:
                 self.label_CloudQA_FileStatus.setVisible(True)
                 self.widget_CloudQA_L8.setVisible(False)
                 self.checkBox_CloudQA.setChecked(False)
                 self.checkBox_CloudQA.setEnabled(False)
+
+        #### QA Band adjusts
+        # search and check QA Band file
+        self.qa_band_file = os.path.join(os.path.dirname(self.mtl_path),
+                                         self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_qa.tif"))
+        # check QA Band file exists
+        if os.path.isfile(self.qa_band_file):
+            self.checkBox_QABand.setEnabled(True)
+            self.label_QABand_FileStatus.setVisible(False)
+            self.checkBox_QABand.clicked.connect(self.widget_QABand.setVisible)
+        else:
+            self.label_QABand_FileStatus.setVisible(True)
+            self.widget_QABand.setVisible(False)
+            self.checkBox_QABand.setChecked(False)
+            self.checkBox_QABand.setEnabled(False)
 
         #### Enable apply to SR reflectance stack if are available
         exists_sr_files = \
@@ -326,10 +336,6 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         if all(exists_sr_files):
             self.radioButton_ToSR_RefStack.setVisible(True)
             self.radioButton_ToSR_RefStack.setChecked(True)
-
-    def set_QABand(self):
-        # TODO
-        self.frame_QABand.setHidden(True)
 
     def unload_MTL(self):
         """Disconnect, unload and remove temporal files of old MTL
