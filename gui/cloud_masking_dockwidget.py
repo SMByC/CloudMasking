@@ -142,9 +142,15 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.label_CloudQA_FileStatus.setHidden(True)
         self.widget_CloudQA_L457.setHidden(True)
         self.widget_CloudQA_L8.setHidden(True)
+        # fill the QlistWidget of QA code
+        cloud_qa_codes = ["Cirrus cloud (bit 0)", "Cloud (bit 1)", "Adjacent to cloud (bit 2)", "Cloud shadow (bit 3)",
+                          "Aerosol clim (bits 4-5)", "Aerosol low (bits 4-5)", "Aerosol avg (bits 4-5)","Aerosol high (bits 4-5)"]
+        for cloud_qa_code in cloud_qa_codes:
+            item = QtGui.QListWidgetItem(cloud_qa_code)
+            item.setCheckState(QtCore.Qt.Unchecked)
+            self.listWidget_CloudQA_bits.addItem(item)
 
-
-        # Quality control flags #########
+        # QA Band filter #########
         # start hidden
         self.widget_QABand.setHidden(True)
 
@@ -285,6 +291,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             if os.path.isfile(self.cloud_qa_file) and os.path.isfile(self.shadow_qa_file) and os.path.isfile(self.ddv_qa_file):
                 self.checkBox_CloudQA.setEnabled(True)
                 self.label_CloudQA_FileStatus.setVisible(False)
+                try: self.checkBox_CloudQA.clicked.disconnect()
+                except: pass
                 self.checkBox_CloudQA.clicked.connect(self.widget_CloudQA_L457.setVisible)
             else:
                 self.label_CloudQA_FileStatus.setVisible(True)
@@ -299,14 +307,9 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             if os.path.isfile(self.cloud_qa_file):
                 self.label_CloudQA_FileStatus.setVisible(False)
                 self.checkBox_CloudQA.setEnabled(True)
+                try: self.checkBox_CloudQA.clicked.disconnect()
+                except: pass
                 self.checkBox_CloudQA.clicked.connect(self.widget_CloudQA_L8.setVisible)
-                # fill the QlistWidget of QA code
-                cloud_qa_codes = ["Cirrus cloud (bit 0)", "Cloud (bit 1)", "Adjacent to cloud (bit 2)", "Cloud shadow (bit 3)",
-                         "Aerosol clim-level (bits 4-5)", "Aerosol low (bits 4-5)", "Aerosol avg (bits 4-5)", "Aerosol high (bits 4-5)"]
-                for cloud_qa_code in cloud_qa_codes:
-                    item = QtGui.QListWidgetItem(cloud_qa_code)
-                    item.setCheckState(QtCore.Qt.Unchecked)
-                    self.listWidget_CloudQA_bits.addItem(item)
             else:
                 self.label_CloudQA_FileStatus.setVisible(True)
                 self.widget_CloudQA_L8.setVisible(False)

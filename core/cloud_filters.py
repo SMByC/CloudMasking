@@ -402,8 +402,7 @@ class CloudMaskingResult(object):
         ########################################
         # convert selected items to binary and decimal value
         cloud_qa_codes = ["Cirrus cloud (bit 0)", "Cloud (bit 1)", "Adjacent to cloud (bit 2)", "Cloud shadow (bit 3)",
-                          "Aerosol clim-level (bits 4-5)", "Aerosol low (bits 4-5)", "Aerosol avg (bits 4-5)",
-                          "Aerosol high (bits 4-5)"]
+                          "Aerosol clim (bits 4-5)", "Aerosol low (bits 4-5)", "Aerosol avg (bits 4-5)", "Aerosol high (bits 4-5)"]
 
         values_combinations = []
         for bit_pos, item in enumerate(cloud_qa_codes[0:4]):
