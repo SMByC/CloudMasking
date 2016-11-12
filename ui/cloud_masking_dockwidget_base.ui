@@ -460,7 +460,7 @@
              <x>0</x>
              <y>-540</y>
              <width>551</width>
-             <height>1295</height>
+             <height>1369</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -550,7 +550,7 @@
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QFrame" name="frame_QCflags">
+                <widget class="QFrame" name="frame_QABand">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
@@ -559,15 +559,19 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_9">
                   <item row="0" column="0">
-                   <widget class="QCheckBox" name="checkBox_QCflags">
+                   <widget class="QCheckBox" name="checkBox_QABand">
                     <property name="text">
                      <string>QA Band</string>
                     </property>
                    </widget>
                   </item>
                   <item row="1" column="0">
-                   <widget class="QWidget" name="widget_QCflags" native="true">
-                    <layout class="QVBoxLayout" name="verticalLayout_3"/>
+                   <widget class="QWidget" name="widget_QABand" native="true">
+                    <layout class="QVBoxLayout" name="verticalLayout_3">
+                     <item>
+                      <widget class="QListWidget" name="listWidget_QABand_codes"/>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                  </layout>
@@ -947,17 +951,20 @@
                      <item>
                       <widget class="QLabel" name="label_18">
                        <property name="text">
-                        <string>Enable/disable Cloud QA codes (Landsat 8):</string>
+                        <string>Enable/disable Cloud QA bits (Landsat 8):</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QListWidget" name="listWidget_QA_codes">
+                      <widget class="QListWidget" name="listWidget_CloudQA_bits">
                        <property name="minimumSize">
                         <size>
                          <width>0</width>
                          <height>150</height>
                         </size>
+                       </property>
+                       <property name="toolTip">
+                        <string>Each bit (item) masked all pixel that have this bit activated (all combination values)</string>
                        </property>
                        <property name="selectionMode">
                         <enum>QAbstractItemView::NoSelection</enum>
@@ -1534,9 +1541,9 @@ You can add multiple values separated by comma</string>
    </hints>
   </connection>
   <connection>
-   <sender>checkBox_QCflags</sender>
+   <sender>checkBox_QABand</sender>
    <signal>clicked(bool)</signal>
-   <receiver>widget_QCflags</receiver>
+   <receiver>widget_QABand</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">

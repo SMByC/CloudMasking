@@ -432,9 +432,9 @@ class CloudMasking:
 
             if self.dockwidget.landsat_version in [8]:
                 checked_items = []
-                for index in range(self.dockwidget.listWidget_QA_codes.count()):
-                    if self.dockwidget.listWidget_QA_codes.item(index).checkState() == Qt.Checked:
-                        checked_items.append(self.dockwidget.listWidget_QA_codes.item(index))
+                for index in range(self.dockwidget.listWidget_CloudQA_bits.count()):
+                    if self.dockwidget.listWidget_CloudQA_bits.item(index).checkState() == Qt.Checked:
+                        checked_items.append(self.dockwidget.listWidget_CloudQA_bits.item(index))
                 checked_items = [x.text() for x in checked_items]
 
                 # check is only selected one aerosol
@@ -469,7 +469,7 @@ class CloudMasking:
         ########################################
         # Quality Control Flags filter
 
-        if self.dockwidget.checkBox_QCflags.isChecked():
+        if self.dockwidget.checkBox_QABand.isChecked():
             pass
 
         ########################################

@@ -146,7 +146,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         # Quality control flags #########
         # start hidden
-        self.widget_QCflags.setHidden(True)
+        self.widget_QABand.setHidden(True)
 
         # Generate the cloud mask #########
         # selected area start hidden
@@ -232,8 +232,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.status_LoadedMTL.setChecked(True)
         self.status_LoadedMTL.setText(self.mtl_file['LANDSAT_SCENE_ID'] + ' (L{})'.format(self.landsat_version))
 
-        # set QCflags if this MTL have QC file
-        self.set_QCflags()
+        # set QABand if this MTL have QC file
+        self.set_QABand()
 
         #### activate, load and adjust UI
         self.activate_UI()
@@ -305,12 +305,12 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 self.checkBox_CloudQA.clicked.connect(self.widget_CloudQA_L8.setVisible)
 
                 # fill the QlistWidget of QA code
-                cloud_qa_codes = ["Cirrus cloud", "Cloud", "Adjacent to cloud", "Cloud shadow",
-                         "Aerosol clim-level", "Aerosol low", "Aerosol avg", "Aerosol high"]
+                cloud_qa_codes = ["Cirrus cloud (bit 0)", "Cloud (bit 1)", "Adjacent to cloud (bit 2)", "Cloud shadow (bit 3)",
+                         "Aerosol clim-level (bits 4-5)", "Aerosol low (bits 4-5)", "Aerosol avg (bits 4-5)", "Aerosol high (bits 4-5)"]
                 for cloud_qa_code in cloud_qa_codes:
                     item = QtGui.QListWidgetItem(cloud_qa_code)
                     item.setCheckState(QtCore.Qt.Unchecked)
-                    self.listWidget_QA_codes.addItem(item)
+                    self.listWidget_CloudQA_bits.addItem(item)
 
             else:
                 self.label_CloudQA_FileStatus.setVisible(True)
@@ -327,9 +327,9 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.radioButton_ToSR_RefStack.setVisible(True)
             self.radioButton_ToSR_RefStack.setChecked(True)
 
-    def set_QCflags(self):
+    def set_QABand(self):
         # TODO
-        self.frame_QCflags.setHidden(True)
+        self.frame_QABand.setHidden(True)
 
     def unload_MTL(self):
         """Disconnect, unload and remove temporal files of old MTL

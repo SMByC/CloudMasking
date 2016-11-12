@@ -401,22 +401,24 @@ class CloudMaskingResult(object):
 
         ########################################
         # convert selected items to binary and decimal value
-        cloud_qa_codes = ["Cirrus cloud", "Cloud", "Adjacent to cloud", "Cloud shadow"]
+        cloud_qa_codes = ["Cirrus cloud (bit 0)", "Cloud (bit 1)", "Adjacent to cloud (bit 2)", "Cloud shadow (bit 3)",
+                          "Aerosol clim-level (bits 4-5)", "Aerosol low (bits 4-5)", "Aerosol avg (bits 4-5)",
+                          "Aerosol high (bits 4-5)"]
 
         values_combinations = []
-        for bit_pos, item in enumerate(cloud_qa_codes):
+        for bit_pos, item in enumerate(cloud_qa_codes[0:4]):
             binary = [0, 0, 0, 0, 0, 0]
             if item in checked_items:
                 binary[(len(binary)-1)-bit_pos] = 1
                 values_combinations += list(binary_combination(binary, [bit_pos]))
 
-        if "Aerosol clim-level" in checked_items:
+        if cloud_qa_codes[4] in checked_items:
             values_combinations += list(binary_combination([0, 0, 0, 0, 0, 0], [4, 5]))
-        if "Aerosol low" in checked_items:
+        if cloud_qa_codes[5] in checked_items:
             values_combinations += list(binary_combination([0, 1, 0, 0, 0, 0], [4, 5]))
-        if "Aerosol avg" in checked_items:
+        if cloud_qa_codes[6] in checked_items:
             values_combinations += list(binary_combination([1, 0, 0, 0, 0, 0], [4, 5]))
-        if "Aerosol high" in checked_items:
+        if cloud_qa_codes[7] in checked_items:
             values_combinations += list(binary_combination([1, 1, 0, 0, 0, 0], [4, 5]))
 
         # add the specific values
