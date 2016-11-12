@@ -29,7 +29,7 @@ from PyQt4.QtGui import QApplication
 # from plugins
 from osgeo.gdal import Translate
 
-from CloudMasking.core.utils import get_prefer_name, update_process_bar
+from CloudMasking.core.utils import get_prefer_name, update_process_bar, binary_combination
 from CloudMasking.libs import gdal_merge, gdal_calc, gdal_clip
 
 # adding the libs plugin path
@@ -384,7 +384,7 @@ class CloudMaskingResult(object):
         update_process_bar(self.process_bar, 100, self.process_status,
                            self.tr(u"DONE"))
 
-    def do_cloud_qa_l8(self, cloud_qa_file, checked_items):
+    def do_cloud_qa_l8(self, cloud_qa_file, checked_items, specific_values=[]):
         # tmp file for cloud
         self.cloud_qa = os.path.join(self.tmp_dir, "cloud_qa_{}.tif".format(datetime.now().strftime('%H%M%S')))
         update_process_bar(self.process_bar, 50, self.process_status,
@@ -402,34 +402,38 @@ class CloudMaskingResult(object):
         ########################################
         # convert selected items to binary and decimal value
         cloud_qa_codes = ["Cirrus cloud", "Cloud", "Adjacent to cloud", "Cloud shadow"]
-        binary = []
-        for item in cloud_qa_codes:
+
+        values_combinations = []
+        for bit_pos, item in enumerate(cloud_qa_codes):
+            binary = [0, 0, 0, 0, 0, 0]
             if item in checked_items:
-                binary.append("1")
-            else:
-                binary.append("0")
+                binary[(len(binary)-1)-bit_pos] = 1
+                values_combinations += list(binary_combination(binary, [bit_pos]))
 
         if "Aerosol clim-level" in checked_items:
-            binary.append("0")
-            binary.append("0")
+            values_combinations += list(binary_combination([0, 0, 0, 0, 0, 0], [4, 5]))
         if "Aerosol low" in checked_items:
-            binary.append("1")
-            binary.append("0")
+            values_combinations += list(binary_combination([0, 1, 0, 0, 0, 0], [4, 5]))
         if "Aerosol avg" in checked_items:
-            binary.append("0")
-            binary.append("1")
+            values_combinations += list(binary_combination([1, 0, 0, 0, 0, 0], [4, 5]))
         if "Aerosol high" in checked_items:
-            binary.append("1")
-            binary.append("1")
+            values_combinations += list(binary_combination([1, 1, 0, 0, 0, 0], [4, 5]))
 
-        binary.reverse()
-        filter_value = int("".join(binary), 2)
+        # add the specific values
+        if specific_values:
+            values_combinations += specific_values
+
+        # delete duplicates
+        values_combinations = list(set(values_combinations))
+
+        filter_values = ",".join(["A=="+str(x) for x in values_combinations])
+        not_filter_values = ",".join(["A!="+str(x) for x in values_combinations])
 
         ########################################
         # do QA Mask filter
         tmp_cqa_file = os.path.join(self.tmp_dir, "cloud_qa.tif")
-        gdal_calc.main("1*(A!={fv})+7*(A=={fv})".format(fv=filter_value), tmp_cqa_file,
-                       [self.cloud_qa_for_process], output_type="Byte", nodata=1)
+        gdal_calc.main("1*(numpy.all([{nfv}], axis=0)) + 7*(numpy.any([{fv}], axis=0))".format(
+            fv=filter_values, nfv=not_filter_values), tmp_cqa_file, [self.cloud_qa_for_process], output_type="Byte", nodata=1)
         # unset the nodata, leave the 1 (valid fields)
         Translate(self.cloud_qa, tmp_cqa_file, noData="none")
         # delete tmp files

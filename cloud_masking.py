@@ -436,13 +436,6 @@ class CloudMasking:
                     if self.dockwidget.listWidget_QA_codes.item(index).checkState() == Qt.Checked:
                         checked_items.append(self.dockwidget.listWidget_QA_codes.item(index))
                 checked_items = [x.text() for x in checked_items]
-                print checked_items
-
-                # check is only selected one aerosol
-                if len(checked_items) == 0:
-                    self.dockwidget.status_processMask.setText(
-                        self.tr(u"Error: no filters selected in Cloud QA"))
-                    return
 
                 # check is only selected one aerosol
                 if len([x for x in checked_items if x.startswith("Aerosol")]) > 1:
@@ -450,7 +443,25 @@ class CloudMasking:
                         self.tr(u"Error: select only one Aerosol in Cloud QA"))
                     return
 
-                self.masking_result.do_cloud_qa_l8(self.dockwidget.cloud_qa_file, checked_items)
+                # set and check the specific decimal values
+                try:
+                    cloud_qa_svalues = self.dockwidget.lineEdit_CloudQA_svalues.text()
+                    if cloud_qa_svalues:
+                        cloud_qa_svalues = [int(sv) for sv in cloud_qa_svalues.split(",")]
+                    else:
+                        cloud_qa_svalues = []
+                except:
+                    self.dockwidget.status_processMask.setText(
+                        self.tr(u"Error: setting the specific values in Cloud QA"))
+                    return
+
+                # check is only selected one aerosol
+                if len(checked_items) == 0 and not cloud_qa_svalues:
+                    self.dockwidget.status_processMask.setText(
+                        self.tr(u"Error: no filters selected in Cloud QA"))
+                    return
+
+                self.masking_result.do_cloud_qa_l8(self.dockwidget.cloud_qa_file, checked_items, cloud_qa_svalues)
 
             enable_symbology[0] = True
             enable_symbology[6] = True

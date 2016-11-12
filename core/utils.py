@@ -115,3 +115,26 @@ def update_process_bar(bar_inst=None, bar=None, status_inst=None, status=None):
         QtGui.QApplication.restoreOverrideCursor()
         QtGui.QApplication.processEvents()
 
+
+def binary_combination(binary, fix_bits=None):
+    """
+    Binary combination with fixed bit. For complete combination let
+    fix_bits as []
+
+    Example:
+        input: binary=[0,1,1,0], fix_bits=[0,1]
+        output: [0,0,1,0], [0,1,1,0], [1,0,1,0], [1,1,1,0] -> [2,6,10,14]
+    """
+    if fix_bits is None:
+        fix_bits = []
+
+    n = len(binary)
+    fix_bits = [n-x-1 for x in fix_bits]
+    for i in range(1 << n):
+        s = bin(i)[2:]
+        s = '0'*(n-len(s))+s
+        bit_string = map(int, list(s))
+        if all([bit_string[fb] == int(binary[fb]) for fb in fix_bits]):
+            bit_string = [str(x) for x in bit_string]
+            yield int("".join(bit_string), 2)
+
