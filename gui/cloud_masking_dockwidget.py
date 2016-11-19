@@ -142,13 +142,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.label_CloudQA_FileStatus.setHidden(True)
         self.widget_CloudQA_L457.setHidden(True)
         self.widget_CloudQA_L8.setHidden(True)
-        # fill the QlistWidget of Cloud QA bits
-        cloud_qa_items = ["Cirrus cloud (bit 0)", "Cloud (bit 1)", "Adjacent to cloud (bit 2)", "Cloud shadow (bit 3)",
-                          "Aerosol clim (bits 4-5)", "Aerosol low (bits 4-5)", "Aerosol avg (bits 4-5)","Aerosol high (bits 4-5)"]
-        for cloud_qa_code in cloud_qa_items:
-            item = QtGui.QListWidgetItem(cloud_qa_code)
-            item.setCheckState(QtCore.Qt.Unchecked)
-            self.listWidget_CloudQA_bits.addItem(item)
+        self.widget_CloudQA_Aerosol.setHidden(True)
 
         # QA Band filter #########
         # start hidden

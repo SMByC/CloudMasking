@@ -458,9 +458,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-1157</y>
+             <y>-802</y>
              <width>551</width>
-             <height>1943</height>
+             <height>2060</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -599,6 +599,9 @@
                     <layout class="QVBoxLayout" name="verticalLayout_3">
                      <item>
                       <widget class="QLabel" name="label_20">
+                       <property name="toolTip">
+                        <string>Each bit (item) masked all pixel that have this bit activated (all combination values)</string>
+                       </property>
                        <property name="text">
                         <string>Enable/disable QA Band bits:</string>
                        </property>
@@ -911,7 +914,7 @@
                            <item>
                             <widget class="QLineEdit" name="lineEdit_QABand_svalues">
                              <property name="toolTip">
-                              <string>Enter specific values for Cloud QA filters in decimal format. 
+                              <string>Enter specific values for QA Band filters in decimal format. 
 You can add multiple values separated by comma</string>
                              </property>
                             </widget>
@@ -1301,46 +1304,140 @@ You can add multiple values separated by comma</string>
                     <layout class="QVBoxLayout" name="verticalLayout_21">
                      <item>
                       <widget class="QLabel" name="label_18">
+                       <property name="toolTip">
+                        <string>Each bit (item) masked all pixel that have this bit activated (all combination values)</string>
+                       </property>
                        <property name="text">
                         <string>Enable/disable Cloud QA bits (Landsat 8):</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QListWidget" name="listWidget_CloudQA_bits">
-                       <property name="minimumSize">
-                        <size>
-                         <width>0</width>
-                         <height>150</height>
-                        </size>
-                       </property>
-                       <property name="toolTip">
-                        <string>Each bit (item) masked all pixel that have this bit activated (all combination values)</string>
-                       </property>
-                       <property name="selectionMode">
-                        <enum>QAbstractItemView::NoSelection</enum>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QWidget" name="widget_17" native="true">
-                       <layout class="QHBoxLayout" name="horizontalLayout_16">
-                        <property name="margin">
+                      <widget class="QWidget" name="widget_CloudQA_bits" native="true">
+                       <layout class="QVBoxLayout" name="verticalLayout_24">
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
                          <number>0</number>
                         </property>
                         <item>
-                         <widget class="QLabel" name="label_19">
+                         <widget class="QCheckBox" name="CloudQA_Cirrus">
                           <property name="text">
-                           <string>Specific values:</string>
+                           <string>Cirrus cloud (bit 0)</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="lineEdit_CloudQA_svalues">
-                          <property name="toolTip">
-                           <string>Enter specific values for Cloud QA filters in decimal format. 
-You can add multiple values separated by comma</string>
+                         <widget class="QCheckBox" name="CloudQA_Cloud">
+                          <property name="text">
+                           <string>Cloud (bit 1)</string>
                           </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="CloudQA_AdjCloud">
+                          <property name="text">
+                           <string>Adjacent to cloud (bit 2)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="CloudQA_Shadow">
+                          <property name="text">
+                           <string>Cloud shadow (bit 3)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QGroupBox" name="CloudQA_Aerosol">
+                          <property name="styleSheet">
+                           <string notr="true">font-weight:normal;</string>
+                          </property>
+                          <property name="title">
+                           <string>Aerosol (bits 4-5)</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_30">
+                           <item>
+                            <widget class="QWidget" name="widget_CloudQA_Aerosol" native="true">
+                             <layout class="QGridLayout" name="gridLayout_14">
+                              <property name="margin">
+                               <number>0</number>
+                              </property>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="CloudQA_Aerosol_clim">
+                                <property name="text">
+                                 <string>Climatology content</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="CloudQA_Aerosol_avg">
+                                <property name="text">
+                                 <string>Average content</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QRadioButton" name="CloudQA_Aerosol_low">
+                                <property name="text">
+                                 <string>Low content</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="1">
+                               <widget class="QRadioButton" name="CloudQA_Aerosol_high">
+                                <property name="text">
+                                 <string>High content</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QWidget" name="widget_17" native="true">
+                          <layout class="QHBoxLayout" name="horizontalLayout_16">
+                           <property name="margin">
+                            <number>0</number>
+                           </property>
+                           <item>
+                            <widget class="QLabel" name="label_19">
+                             <property name="text">
+                              <string>Specific values:</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="lineEdit_CloudQA_svalues">
+                             <property name="toolTip">
+                              <string>Enter specific values for Cloud QA filters in decimal format. 
+You can add multiple values separated by comma</string>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
                          </widget>
                         </item>
                        </layout>
@@ -1867,11 +1964,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>179</x>
-     <y>-894</y>
+     <y>-411</y>
     </hint>
     <hint type="destinationlabel">
      <x>165</x>
-     <y>-599</y>
+     <y>-116</y>
     </hint>
    </hints>
   </connection>
@@ -1883,11 +1980,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>234</x>
-     <y>-458</y>
+     <y>25</y>
     </hint>
     <hint type="destinationlabel">
      <x>234</x>
-     <y>-387</y>
+     <y>96</y>
     </hint>
    </hints>
   </connection>
@@ -1899,11 +1996,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>139</x>
-     <y>123</y>
+     <y>723</y>
     </hint>
     <hint type="destinationlabel">
      <x>251</x>
-     <y>629</y>
+     <y>1229</y>
     </hint>
    </hints>
   </connection>
@@ -1915,11 +2012,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>63</x>
-     <y>837</y>
+     <y>1455</y>
     </hint>
     <hint type="destinationlabel">
      <x>65</x>
-     <y>874</y>
+     <y>1492</y>
     </hint>
    </hints>
   </connection>
@@ -1946,12 +2043,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>297</x>
-     <y>268</y>
+     <x>295</x>
+     <y>860</y>
     </hint>
     <hint type="destinationlabel">
-     <x>374</x>
-     <y>299</y>
+     <x>372</x>
+     <y>891</y>
     </hint>
    </hints>
   </connection>
@@ -1962,12 +2059,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>197</x>
-     <y>395</y>
+     <x>195</x>
+     <y>987</y>
     </hint>
     <hint type="destinationlabel">
-     <x>272</x>
-     <y>419</y>
+     <x>270</x>
+     <y>1011</y>
     </hint>
    </hints>
   </connection>
@@ -1978,12 +2075,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>191</x>
-     <y>517</y>
+     <x>189</x>
+     <y>1109</y>
     </hint>
     <hint type="destinationlabel">
-     <x>269</x>
-     <y>547</y>
+     <x>267</x>
+     <y>1139</y>
     </hint>
    </hints>
   </connection>
@@ -1994,12 +2091,28 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>207</x>
-     <y>639</y>
+     <x>205</x>
+     <y>1231</y>
     </hint>
     <hint type="destinationlabel">
-     <x>272</x>
-     <y>670</y>
+     <x>270</x>
+     <y>1262</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>CloudQA_Aerosol</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_CloudQA_Aerosol</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>273</x>
+     <y>515</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>281</x>
+     <y>544</y>
     </hint>
    </hints>
   </connection>

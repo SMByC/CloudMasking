@@ -433,17 +433,27 @@ class CloudMasking:
                 self.masking_result.do_cloud_qa_l457(cloud_qa_file, shadow_qa_file, ddv_qa_file)
 
             if self.dockwidget.landsat_version in [8]:
-                checked_items = []
-                for index in range(self.dockwidget.listWidget_CloudQA_bits.count()):
-                    if self.dockwidget.listWidget_CloudQA_bits.item(index).checkState() == Qt.Checked:
-                        checked_items.append(self.dockwidget.listWidget_CloudQA_bits.item(index))
-                checked_items = [x.text() for x in checked_items]
+                checked_items = {}
 
-                # check is only selected one aerosol
-                if len([x for x in checked_items if x.startswith("Aerosol")]) > 1:
-                    self.dockwidget.status_processMask.setText(
-                        self.tr(u"Error: select only one Aerosol in Cloud QA"))
-                    return
+                # one bit items selected
+                cloud_qa_items_1b = ["Cirrus cloud (bit 0)", "Cloud (bit 1)",
+                                     "Adjacent to cloud (bit 2)", "Cloud shadow (bit 3)"]
+                for checkbox in self.dockwidget.widget_CloudQA_bits.findChildren(QCheckBox):
+                    if checkbox.text() in cloud_qa_items_1b:
+                        checked_items[checkbox.text()] = checkbox.isChecked()
+
+                # two bits items selected
+                cloud_qa_items_2b = ["Aerosol (bits 4-5)"]
+                levels = ["Climatology content", "Low content", "Average content", "High content"]
+
+                for groupbox in self.dockwidget.widget_CloudQA_bits.findChildren(QGroupBox):
+                    if groupbox.title() in cloud_qa_items_2b and groupbox.isChecked():
+                        levels_selected = []
+                        for radiobutton in groupbox.findChildren(QRadioButton):
+                            if radiobutton.text() in levels and radiobutton.isChecked():
+                                levels_selected.append(radiobutton.text())
+                        if levels_selected:
+                            checked_items[groupbox.title()] = levels_selected
 
                 # set and check the specific decimal values
                 try:

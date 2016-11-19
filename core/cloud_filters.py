@@ -400,24 +400,32 @@ class CloudMaskingResult(object):
 
         ########################################
         # convert selected items to binary and decimal values
-        cloud_qa_items = ["Cirrus cloud (bit 0)", "Cloud (bit 1)", "Adjacent to cloud (bit 2)", "Cloud shadow (bit 3)",
-                          "Aerosol clim (bits 4-5)", "Aerosol low (bits 4-5)", "Aerosol avg (bits 4-5)", "Aerosol high (bits 4-5)"]
-
         values_combinations = []
-        for bit_pos, item in enumerate(cloud_qa_items[0:4]):
-            binary = [0]*6
-            if item in checked_items:
-                binary[(len(binary)-1)-bit_pos] = 1
-                values_combinations += list(binary_combination(binary, [bit_pos]))
+        # bits not used or not fill
+        static_bits = [6, 7]
 
-        if cloud_qa_items[4] in checked_items:
-            values_combinations += list(binary_combination([0, 0, 0, 0, 0, 0], [4, 5]))
-        if cloud_qa_items[5] in checked_items:
-            values_combinations += list(binary_combination([0, 1, 0, 0, 0, 0], [4, 5]))
-        if cloud_qa_items[6] in checked_items:
-            values_combinations += list(binary_combination([1, 0, 0, 0, 0, 0], [4, 5]))
-        if cloud_qa_items[7] in checked_items:
-            values_combinations += list(binary_combination([1, 1, 0, 0, 0, 0], [4, 5]))
+        # generate the values combinations for one bit items selected
+        cloud_qa_items_1b = {"Cirrus cloud (bit 0)": [0], "Cloud (bit 1)": [1],
+                             "Adjacent to cloud (bit 2)": [2], "Cloud shadow (bit 3)": [3]}
+
+        for item, bits in cloud_qa_items_1b.items():
+            binary = [0]*8
+            if checked_items[item]:
+                binary[(len(binary) - 1) - bits[0]] = 1
+                values_combinations += list(binary_combination(binary, static_bits + bits))
+
+        # generate the values combinations for two bits items selected
+        cloud_qa_items_2b = {"Aerosol (bits 4-5)": [4, 5]}
+        levels = {"Climatology content": [0, 0], "Low content": [0, 1],
+                  "Average content": [1, 0], "High content": [1, 1]}
+
+        for item, bits in cloud_qa_items_2b.items():
+            if item in checked_items.keys():
+                for level in checked_items[item]:
+                    binary = [0]*8
+                    binary[bits[0]:bits[1]+1] = (levels[level])[::-1]
+                    binary.reverse()
+                    values_combinations += list(binary_combination(binary, static_bits + bits))
 
         # add the specific values
         if specific_values:
