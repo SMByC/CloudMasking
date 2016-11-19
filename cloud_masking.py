@@ -476,7 +476,7 @@ class CloudMasking:
 
             # one bit items selected
             qa_band_items_1b = ["Dropped Frame (bit 1)", "Terrain Occlusion (bit 2)"]
-            for checkbox in self.dockwidget.scrollArea_QABand_bits.findChildren(QCheckBox):
+            for checkbox in self.dockwidget.widget_QABand_bits.findChildren(QCheckBox):
                 if checkbox.text() in qa_band_items_1b:
                     checked_items[checkbox.text()] = checkbox.isChecked()
 
@@ -484,7 +484,7 @@ class CloudMasking:
             qa_band_items_2b = ["Water (bits 4-5)", "Snow/ice (bits 10-11)", "Cirrus (bits 12-13)", "Cloud (bits 14-15)"]
             levels = ["Not Determined", "0-33% Confidence", "34-66% Confidence", "67-100% Confidence"]
 
-            for groupbox in self.dockwidget.scrollArea_QABand_bits.findChildren(QGroupBox):
+            for groupbox in self.dockwidget.widget_QABand_bits.findChildren(QGroupBox):
                 if groupbox.title() in qa_band_items_2b:
                     for radiobutton in groupbox.findChildren(QRadioButton):
                         if radiobutton.text() in levels and radiobutton.isChecked():

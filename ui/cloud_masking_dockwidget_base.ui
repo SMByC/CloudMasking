@@ -458,9 +458,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-864</y>
+             <y>-985</y>
              <width>551</width>
-             <height>1725</height>
+             <height>1943</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -605,295 +605,278 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QScrollArea" name="scrollArea_QABand_bits">
-                       <property name="minimumSize">
-                        <size>
-                         <width>0</width>
-                         <height>350</height>
-                        </size>
-                       </property>
-                       <property name="horizontalScrollBarPolicy">
-                        <enum>Qt::ScrollBarAlwaysOff</enum>
-                       </property>
-                       <property name="widgetResizable">
-                        <bool>true</bool>
-                       </property>
-                       <widget class="QWidget" name="scrollAreaWidgetContents">
-                        <property name="geometry">
-                         <rect>
-                          <x>0</x>
-                          <y>0</y>
-                          <width>471</width>
-                          <height>586</height>
-                         </rect>
+                      <widget class="QWidget" name="widget_QABand_bits" native="true">
+                       <layout class="QVBoxLayout" name="verticalLayout_29">
+                        <property name="topMargin">
+                         <number>0</number>
                         </property>
-                        <layout class="QVBoxLayout" name="verticalLayout_24">
-                         <item>
-                          <widget class="QCheckBox" name="QA_DroppedFrame">
-                           <property name="text">
-                            <string>Dropped Frame (bit 1)</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QCheckBox" name="QA_TerrainOcclusion">
-                           <property name="text">
-                            <string>Terrain Occlusion (bit 2)</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QGroupBox" name="groupBox_Water">
-                           <property name="styleSheet">
-                            <string notr="true">font-weight:normal;</string>
-                           </property>
-                           <property name="title">
-                            <string>Water (bits 4-5)</string>
-                           </property>
-                           <property name="checkable">
-                            <bool>true</bool>
-                           </property>
-                           <property name="checked">
-                            <bool>false</bool>
-                           </property>
-                           <layout class="QVBoxLayout" name="verticalLayout_25">
-                            <item>
-                             <widget class="QWidget" name="widget_QA_Water" native="true">
-                              <layout class="QGridLayout" name="gridLayout_10">
-                               <property name="margin">
-                                <number>0</number>
-                               </property>
-                               <item row="0" column="0">
-                                <widget class="QRadioButton" name="QAWater_0">
-                                 <property name="text">
-                                  <string>Not Determined</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="0" column="1">
-                                <widget class="QRadioButton" name="QAWater_66">
-                                 <property name="text">
-                                  <string>34-66% Confidence</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="1" column="0">
-                                <widget class="QRadioButton" name="QAWater_33">
-                                 <property name="text">
-                                  <string>0-33% Confidence</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="1" column="1">
-                                <widget class="QRadioButton" name="QAWater_100">
-                                 <property name="text">
-                                  <string>67-100% Confidence</string>
-                                 </property>
-                                </widget>
-                               </item>
-                              </layout>
-                             </widget>
-                            </item>
-                           </layout>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QGroupBox" name="groupBox_SnowIce">
-                           <property name="styleSheet">
-                            <string notr="true">font-weight:normal;</string>
-                           </property>
-                           <property name="title">
-                            <string>Snow/ice (bits 10-11)</string>
-                           </property>
-                           <property name="checkable">
-                            <bool>true</bool>
-                           </property>
-                           <property name="checked">
-                            <bool>false</bool>
-                           </property>
-                           <layout class="QVBoxLayout" name="verticalLayout_26">
-                            <item>
-                             <widget class="QWidget" name="widget_QA_SnowIce" native="true">
-                              <layout class="QGridLayout" name="gridLayout_11">
-                               <property name="margin">
-                                <number>0</number>
-                               </property>
-                               <item row="0" column="0">
-                                <widget class="QRadioButton" name="QASnowIce_0">
-                                 <property name="text">
-                                  <string>Not Determined</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="0" column="1">
-                                <widget class="QRadioButton" name="QASnowIce_66">
-                                 <property name="text">
-                                  <string>34-66% Confidence</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="1" column="0">
-                                <widget class="QRadioButton" name="QASnowIce_33">
-                                 <property name="text">
-                                  <string>0-33% Confidence</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="1" column="1">
-                                <widget class="QRadioButton" name="QASnowIce_100">
-                                 <property name="text">
-                                  <string>67-100% Confidence</string>
-                                 </property>
-                                </widget>
-                               </item>
-                              </layout>
-                             </widget>
-                            </item>
-                           </layout>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QGroupBox" name="groupBox_Cirrus">
-                           <property name="styleSheet">
-                            <string notr="true">font-weight:normal;</string>
-                           </property>
-                           <property name="title">
-                            <string>Cirrus (bits 12-13)</string>
-                           </property>
-                           <property name="checkable">
-                            <bool>true</bool>
-                           </property>
-                           <property name="checked">
-                            <bool>false</bool>
-                           </property>
-                           <layout class="QVBoxLayout" name="verticalLayout_27">
-                            <item>
-                             <widget class="QWidget" name="widget_QA_Cirrus" native="true">
-                              <layout class="QGridLayout" name="gridLayout_12">
-                               <property name="margin">
-                                <number>0</number>
-                               </property>
-                               <item row="0" column="0">
-                                <widget class="QRadioButton" name="QACirrus_0">
-                                 <property name="text">
-                                  <string>Not Determined</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="0" column="1">
-                                <widget class="QRadioButton" name="QACirrus_66">
-                                 <property name="text">
-                                  <string>34-66% Confidence</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="1" column="0">
-                                <widget class="QRadioButton" name="QACirrus_33">
-                                 <property name="text">
-                                  <string>0-33% Confidence</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="1" column="1">
-                                <widget class="QRadioButton" name="QACirrus_100">
-                                 <property name="text">
-                                  <string>67-100% Confidence</string>
-                                 </property>
-                                </widget>
-                               </item>
-                              </layout>
-                             </widget>
-                            </item>
-                           </layout>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QGroupBox" name="groupBox_Cloud">
-                           <property name="styleSheet">
-                            <string notr="true">font-weight:normal;</string>
-                           </property>
-                           <property name="title">
-                            <string>Cloud (bits 14-15)</string>
-                           </property>
-                           <property name="checkable">
-                            <bool>true</bool>
-                           </property>
-                           <property name="checked">
-                            <bool>false</bool>
-                           </property>
-                           <layout class="QVBoxLayout" name="verticalLayout_28">
-                            <item>
-                             <widget class="QWidget" name="widget_QA_Cloud" native="true">
-                              <layout class="QGridLayout" name="gridLayout_13">
-                               <property name="margin">
-                                <number>0</number>
-                               </property>
-                               <item row="0" column="0">
-                                <widget class="QRadioButton" name="QACloud_0">
-                                 <property name="text">
-                                  <string>Not Determined</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="0" column="1">
-                                <widget class="QRadioButton" name="QACloud_66">
-                                 <property name="text">
-                                  <string>34-66% Confidence</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="1" column="0">
-                                <widget class="QRadioButton" name="QACloud_33">
-                                 <property name="text">
-                                  <string>0-33% Confidence</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item row="1" column="1">
-                                <widget class="QRadioButton" name="QACloud_100">
-                                 <property name="text">
-                                  <string>67-100% Confidence</string>
-                                 </property>
-                                </widget>
-                               </item>
-                              </layout>
-                             </widget>
-                            </item>
-                           </layout>
-                          </widget>
-                         </item>
-                         <item>
-                          <spacer name="verticalSpacer_4">
-                           <property name="orientation">
-                            <enum>Qt::Vertical</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>20</width>
-                             <height>40</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                        </layout>
-                       </widget>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QWidget" name="widget_19" native="true">
-                       <layout class="QHBoxLayout" name="horizontalLayout_18">
-                        <property name="margin">
+                        <property name="bottomMargin">
                          <number>0</number>
                         </property>
                         <item>
-                         <widget class="QLabel" name="label_21">
+                         <widget class="QCheckBox" name="QA_DroppedFrame">
                           <property name="text">
-                           <string>Specific values:</string>
+                           <string>Dropped Frame (bit 1)</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="lineEdit_QABand_svalues"/>
+                         <widget class="QCheckBox" name="QA_TerrainOcclusion">
+                          <property name="text">
+                           <string>Terrain Occlusion (bit 2)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QGroupBox" name="groupBox_Water">
+                          <property name="styleSheet">
+                           <string notr="true">font-weight:normal;</string>
+                          </property>
+                          <property name="title">
+                           <string>Water (bits 4-5)</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_25">
+                           <item>
+                            <widget class="QWidget" name="widget_QA_Water" native="true">
+                             <layout class="QGridLayout" name="gridLayout_10">
+                              <property name="margin">
+                               <number>0</number>
+                              </property>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QAWater_0">
+                                <property name="text">
+                                 <string>Not Determined</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QAWater_66">
+                                <property name="text">
+                                 <string>34-66% Confidence</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QRadioButton" name="QAWater_33">
+                                <property name="text">
+                                 <string>0-33% Confidence</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="1">
+                               <widget class="QRadioButton" name="QAWater_100">
+                                <property name="text">
+                                 <string>67-100% Confidence</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QGroupBox" name="groupBox_SnowIce">
+                          <property name="styleSheet">
+                           <string notr="true">font-weight:normal;</string>
+                          </property>
+                          <property name="title">
+                           <string>Snow/ice (bits 10-11)</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_26">
+                           <item>
+                            <widget class="QWidget" name="widget_QA_SnowIce" native="true">
+                             <layout class="QGridLayout" name="gridLayout_11">
+                              <property name="margin">
+                               <number>0</number>
+                              </property>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QASnowIce_0">
+                                <property name="text">
+                                 <string>Not Determined</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QASnowIce_66">
+                                <property name="text">
+                                 <string>34-66% Confidence</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QRadioButton" name="QASnowIce_33">
+                                <property name="text">
+                                 <string>0-33% Confidence</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="1">
+                               <widget class="QRadioButton" name="QASnowIce_100">
+                                <property name="text">
+                                 <string>67-100% Confidence</string>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QGroupBox" name="groupBox_Cirrus">
+                          <property name="styleSheet">
+                           <string notr="true">font-weight:normal;</string>
+                          </property>
+                          <property name="title">
+                           <string>Cirrus (bits 12-13)</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_27">
+                           <item>
+                            <widget class="QWidget" name="widget_QA_Cirrus" native="true">
+                             <layout class="QGridLayout" name="gridLayout_12">
+                              <property name="margin">
+                               <number>0</number>
+                              </property>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QACirrus_0">
+                                <property name="text">
+                                 <string>Not Determined</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QACirrus_66">
+                                <property name="text">
+                                 <string>34-66% Confidence</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QRadioButton" name="QACirrus_33">
+                                <property name="text">
+                                 <string>0-33% Confidence</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="1">
+                               <widget class="QRadioButton" name="QACirrus_100">
+                                <property name="text">
+                                 <string>67-100% Confidence</string>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QGroupBox" name="groupBox_Cloud">
+                          <property name="styleSheet">
+                           <string notr="true">font-weight:normal;</string>
+                          </property>
+                          <property name="title">
+                           <string>Cloud (bits 14-15)</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_28">
+                           <item>
+                            <widget class="QWidget" name="widget_QA_Cloud" native="true">
+                             <layout class="QGridLayout" name="gridLayout_13">
+                              <property name="margin">
+                               <number>0</number>
+                              </property>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QACloud_0">
+                                <property name="text">
+                                 <string>Not Determined</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QACloud_66">
+                                <property name="text">
+                                 <string>34-66% Confidence</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QRadioButton" name="QACloud_33">
+                                <property name="text">
+                                 <string>0-33% Confidence</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="1">
+                               <widget class="QRadioButton" name="QACloud_100">
+                                <property name="text">
+                                 <string>67-100% Confidence</string>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QWidget" name="widget_19" native="true">
+                          <layout class="QHBoxLayout" name="horizontalLayout_18">
+                           <property name="margin">
+                            <number>0</number>
+                           </property>
+                           <item>
+                            <widget class="QLabel" name="label_21">
+                             <property name="text">
+                              <string>Specific values:</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="lineEdit_QABand_svalues"/>
+                           </item>
+                          </layout>
+                         </widget>
                         </item>
                        </layout>
                       </widget>
