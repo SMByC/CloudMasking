@@ -19,10 +19,11 @@
  ***************************************************************************/
 """
 import os
-
+import gdal
 from PyQt4 import QtGui
 from PyQt4.QtCore import Qt
 import qgis.core
+from numpy import intersect1d
 
 
 def get_prefer_name(file_path):
@@ -137,4 +138,17 @@ def binary_combination(binary, fix_bits=None):
         if all([bit_string[fb] == int(binary[fb]) for fb in fix_bits]):
             bit_string = [str(x) for x in bit_string]
             yield int("".join(bit_string), 2)
+
+
+def check_values_in_image(img, values, band=1):
+    """
+    Return only the list values that is in the image
+    """
+    ds = gdal.Open(img)
+    raster_array = ds.GetRasterBand(band).ReadAsArray().ravel()
+    ds = None
+    return intersect1d(raster_array, values)
+
+
+
 

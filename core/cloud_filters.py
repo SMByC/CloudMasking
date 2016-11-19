@@ -24,12 +24,11 @@ import tempfile
 from datetime import datetime
 
 from PyQt4.QtCore import QCoreApplication
-from PyQt4.QtGui import QApplication
 
 # from plugins
 from osgeo.gdal import Translate
 
-from CloudMasking.core.utils import get_prefer_name, update_process_bar, binary_combination
+from CloudMasking.core.utils import get_prefer_name, update_process_bar, binary_combination, check_values_in_image
 from CloudMasking.libs import gdal_merge, gdal_calc, gdal_clip
 
 # adding the libs plugin path
@@ -427,6 +426,9 @@ class CloudMaskingResult(object):
         # delete duplicates
         values_combinations = list(set(values_combinations))
 
+        # only left the values inside the image
+        values_combinations = check_values_in_image(self.cloud_qa_for_process, values_combinations)
+
         filter_values = ",".join(["A=="+str(x) for x in values_combinations])
         not_filter_values = ",".join(["A!="+str(x) for x in values_combinations])
 
@@ -500,6 +502,9 @@ class CloudMaskingResult(object):
 
         # delete duplicates
         values_combinations = list(set(values_combinations))
+
+        # only left the values inside the image
+        values_combinations = check_values_in_image(self.qa_band_for_process, values_combinations)
 
         filter_values = ",".join(["A==" + str(x) for x in values_combinations])
         not_filter_values = ",".join(["A!=" + str(x) for x in values_combinations])
