@@ -458,7 +458,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-985</y>
+             <y>-1157</y>
              <width>551</width>
              <height>1943</height>
             </rect>
@@ -720,12 +720,18 @@
                                 <property name="text">
                                  <string>Not Determined</string>
                                 </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
                                </widget>
                               </item>
                               <item row="0" column="1">
                                <widget class="QRadioButton" name="QASnowIce_66">
                                 <property name="text">
                                  <string>34-66% Confidence</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
                                 </property>
                                </widget>
                               </item>
@@ -734,12 +740,18 @@
                                 <property name="text">
                                  <string>0-33% Confidence</string>
                                 </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
                                </widget>
                               </item>
                               <item row="1" column="1">
                                <widget class="QRadioButton" name="QASnowIce_100">
                                 <property name="text">
                                  <string>67-100% Confidence</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
                                 </property>
                                </widget>
                               </item>
@@ -775,12 +787,18 @@
                                 <property name="text">
                                  <string>Not Determined</string>
                                 </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
                                </widget>
                               </item>
                               <item row="0" column="1">
                                <widget class="QRadioButton" name="QACirrus_66">
                                 <property name="text">
                                  <string>34-66% Confidence</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
                                 </property>
                                </widget>
                               </item>
@@ -789,12 +807,18 @@
                                 <property name="text">
                                  <string>0-33% Confidence</string>
                                 </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
                                </widget>
                               </item>
                               <item row="1" column="1">
                                <widget class="QRadioButton" name="QACirrus_100">
                                 <property name="text">
                                  <string>67-100% Confidence</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
                                 </property>
                                </widget>
                               </item>
@@ -830,12 +854,18 @@
                                 <property name="text">
                                  <string>Not Determined</string>
                                 </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
                                </widget>
                               </item>
                               <item row="0" column="1">
                                <widget class="QRadioButton" name="QACloud_66">
                                 <property name="text">
                                  <string>34-66% Confidence</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
                                 </property>
                                </widget>
                               </item>
@@ -844,12 +874,18 @@
                                 <property name="text">
                                  <string>0-33% Confidence</string>
                                 </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
                                </widget>
                               </item>
                               <item row="1" column="1">
                                <widget class="QRadioButton" name="QACloud_100">
                                 <property name="text">
                                  <string>67-100% Confidence</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
                                 </property>
                                </widget>
                               </item>
@@ -873,7 +909,12 @@
                             </widget>
                            </item>
                            <item>
-                            <widget class="QLineEdit" name="lineEdit_QABand_svalues"/>
+                            <widget class="QLineEdit" name="lineEdit_QABand_svalues">
+                             <property name="toolTip">
+                              <string>Enter specific values for Cloud QA filters in decimal format. 
+You can add multiple values separated by comma</string>
+                             </property>
+                            </widget>
                            </item>
                           </layout>
                          </widget>

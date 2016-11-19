@@ -485,10 +485,13 @@ class CloudMasking:
             levels = ["Not Determined", "0-33% Confidence", "34-66% Confidence", "67-100% Confidence"]
 
             for groupbox in self.dockwidget.widget_QABand_bits.findChildren(QGroupBox):
-                if groupbox.title() in qa_band_items_2b:
+                if groupbox.title() in qa_band_items_2b and groupbox.isChecked():
+                    levels_selected = []
                     for radiobutton in groupbox.findChildren(QRadioButton):
                         if radiobutton.text() in levels and radiobutton.isChecked():
-                            checked_items[groupbox.title()] = radiobutton.text()
+                            levels_selected.append(radiobutton.text())
+                    if levels_selected:
+                        checked_items[groupbox.title()] = levels_selected
 
             # set and check the specific decimal values
             try:

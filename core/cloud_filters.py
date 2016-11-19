@@ -473,7 +473,7 @@ class CloudMaskingResult(object):
         # bits not used or not fill
         static_bits = [0, 3, 6, 7, 8, 9]
 
-        # one bit items selected
+        # generate the values combinations for one bit items selected
         qa_band_items_1b = {"Dropped Frame (bit 1)": [1], "Terrain Occlusion (bit 2)": [2]}
 
         for item, bits in qa_band_items_1b.items():
@@ -482,19 +482,19 @@ class CloudMaskingResult(object):
                 binary[(len(binary) - 1) - bits[0]] = 1
                 values_combinations += list(binary_combination(binary, static_bits + bits))
 
-        # two bits items selected
+        # generate the values combinations for two bits items selected
         qa_band_items_2b = {"Water (bits 4-5)": [4, 5], "Snow/ice (bits 10-11)": [10, 11],
                             "Cirrus (bits 12-13)": [12, 13], "Cloud (bits 14-15)": [14, 15]}
         levels = {"Not Determined": [0, 0], "0-33% Confidence": [0, 1],
                   "34-66% Confidence": [1, 0], "67-100% Confidence": [1, 1]}
 
         for item, bits in qa_band_items_2b.items():
-            binary = [0]*16
-
             if item in checked_items.keys():
-                binary[bits[0]:bits[1]+1] = (levels[checked_items[item]])[::-1]
-                binary.reverse()
-                values_combinations += list(binary_combination(binary, static_bits + bits))
+                for level in checked_items[item]:
+                    binary = [0] * 16
+                    binary[bits[0]:bits[1]+1] = (levels[level])[::-1]
+                    binary.reverse()
+                    values_combinations += list(binary_combination(binary, static_bits + bits))
 
         # add the specific values
         if specific_values:
