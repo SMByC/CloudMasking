@@ -400,13 +400,13 @@ class CloudMaskingResult(object):
             self.cloud_qa_for_process = cloud_qa_file
 
         ########################################
-        # convert selected items to binary and decimal value
+        # convert selected items to binary and decimal values
         cloud_qa_items = ["Cirrus cloud (bit 0)", "Cloud (bit 1)", "Adjacent to cloud (bit 2)", "Cloud shadow (bit 3)",
                           "Aerosol clim (bits 4-5)", "Aerosol low (bits 4-5)", "Aerosol avg (bits 4-5)", "Aerosol high (bits 4-5)"]
 
         values_combinations = []
         for bit_pos, item in enumerate(cloud_qa_items[0:4]):
-            binary = [0, 0, 0, 0, 0, 0]
+            binary = [0]*6
             if item in checked_items:
                 binary[(len(binary)-1)-bit_pos] = 1
                 values_combinations += list(binary_combination(binary, [bit_pos]))
@@ -442,6 +442,81 @@ class CloudMaskingResult(object):
 
         # save final result of masking
         self.cloud_masking_files.append(self.cloud_qa)
+
+        ### ending process
+        update_process_bar(self.process_bar, 100, self.process_status,
+                           self.tr(u"DONE"))
+
+    def do_qa_band(self, qa_band_file, checked_items, specific_values=[]):
+        """
+        http://landsat.usgs.gov/qualityband.php
+        """
+        # tmp file for qa band
+        self.qa_band = os.path.join(self.tmp_dir, "qa_band_{}.tif".format(datetime.now().strftime('%H%M%S')))
+        update_process_bar(self.process_bar, 50, self.process_status,
+                           self.tr(u"Making the QA Band filter..."))
+
+        ########################################
+        # clipping the QA Mask
+        if self.clipping_extent:
+            self.qa_band_clip_file = os.path.join(self.tmp_dir, "qa_band_clip.tif")
+            self.do_clipping_extent(qa_band_file, self.qa_band_clip_file)
+            self.qa_band_for_process = self.qa_band_clip_file
+        else:
+            self.qa_band_for_process = qa_band_file
+
+        ########################################
+        # convert selected items to binary and decimal values
+        values_combinations = []
+        # bits not used or not fill
+        static_bits = [0, 3, 6, 7, 8, 9]
+
+        # one bit items selected
+        qa_band_items_1b = {"Dropped Frame (bit 1)": [1], "Terrain Occlusion (bit 2)": [2]}
+
+        for item, bits in qa_band_items_1b.items():
+            binary = [0]*16
+            if checked_items[item]:
+                binary[(len(binary) - 1) - bits[0]] = 1
+                values_combinations += list(binary_combination(binary, static_bits + bits))
+
+        # two bits items selected
+        qa_band_items_2b = {"Water (bits 4-5)": [4, 5], "Snow/ice (bits 10-11)": [10, 11],
+                            "Cirrus (bits 12-13)": [12, 13], "Cloud (bits 14-15)": [14, 15]}
+        levels = {"Not Determined": [0, 0], "0-33% Confidence": [0, 1],
+                  "34-66% Confidence": [1, 0], "67-100% Confidence": [1, 1]}
+
+        for item, bits in qa_band_items_2b.items():
+            binary = [0]*16
+
+            if item in checked_items.keys():
+                binary[bits[0]:bits[1]+1] = (levels[checked_items[item]])[::-1]
+                binary.reverse()
+                values_combinations += list(binary_combination(binary, static_bits + bits))
+
+        # add the specific values
+        if specific_values:
+            values_combinations += specific_values
+
+        # delete duplicates
+        values_combinations = list(set(values_combinations))
+
+        filter_values = ",".join(["A==" + str(x) for x in values_combinations])
+        not_filter_values = ",".join(["A!=" + str(x) for x in values_combinations])
+
+        ########################################
+        # do QA Mask filter
+        tmp_qab_file = os.path.join(self.tmp_dir, "qa_band.tif")
+        gdal_calc.main("1*(numpy.all([{nfv}], axis=0)) + 8*(numpy.any([{fv}], axis=0))".format(
+            fv=filter_values, nfv=not_filter_values), tmp_qab_file, [self.qa_band_for_process], output_type="Byte",
+            nodata=1)
+        # unset the nodata, leave the 1 (valid fields)
+        Translate(self.qa_band, tmp_qab_file, noData="none")
+        # delete tmp files
+        os.remove(tmp_qab_file)
+
+        # save final result of masking
+        self.cloud_masking_files.append(self.qa_band)
 
         ### ending process
         update_process_bar(self.process_bar, 100, self.process_status,

@@ -27,6 +27,7 @@ import gdal
 
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
 from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox, QApplication, QCursor, QFileDialog
+from PyQt4.QtGui import QCheckBox, QGroupBox, QRadioButton
 from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer
 # Initialize Qt resources from file resources.py
 import resources
@@ -356,12 +357,13 @@ class CloudMasking:
         """Make the process
         """
         # initialize the symbology
-        enable_symbology = [False, False, False, False, False, False, False]
+        enable_symbology = [False, False, False, False, False, False, False, False]
 
         # check if any filters has been enabled before process
         if (not self.dockwidget.checkBox_FMask.isChecked() and
                 not self.dockwidget.checkBox_BlueBand.isChecked() and
-                not self.dockwidget.checkBox_CloudQA.isChecked()):
+                not self.dockwidget.checkBox_CloudQA.isChecked() and
+                not self.dockwidget.checkBox_QABand.isChecked()):
             self.dockwidget.status_processMask.setText(
                 self.tr(u"Error: no filters enabled for apply")
             )
@@ -467,10 +469,43 @@ class CloudMasking:
             enable_symbology[6] = True
 
         ########################################
-        # Quality Control Flags filter
+        # QA Band filter
 
         if self.dockwidget.checkBox_QABand.isChecked():
-            pass
+            checked_items = {}
+
+            # one bit items selected
+            qa_band_items_1b = ["Dropped Frame (bit 1)", "Terrain Occlusion (bit 2)"]
+            for checkbox in self.dockwidget.scrollArea_QABand_bits.findChildren(QCheckBox):
+                if checkbox.text() in qa_band_items_1b:
+                    checked_items[checkbox.text()] = checkbox.isChecked()
+
+            # two bits items selected
+            qa_band_items_2b = ["Water (bits 4-5)", "Snow/ice (bits 10-11)", "Cirrus (bits 12-13)", "Cloud (bits 14-15)"]
+            levels = ["Not Determined", "0-33% Confidence", "34-66% Confidence", "67-100% Confidence"]
+
+            for groupbox in self.dockwidget.scrollArea_QABand_bits.findChildren(QGroupBox):
+                if groupbox.title() in qa_band_items_2b:
+                    for radiobutton in groupbox.findChildren(QRadioButton):
+                        if radiobutton.text() in levels and radiobutton.isChecked():
+                            checked_items[groupbox.title()] = radiobutton.text()
+
+            # set and check the specific decimal values
+            try:
+                qa_band_svalues = self.dockwidget.lineEdit_QABand_svalues.text()
+                if qa_band_svalues:
+                    qa_band_svalues = [int(sv) for sv in qa_band_svalues.split(",")]
+                else:
+                    qa_band_svalues = []
+            except:
+                self.dockwidget.status_processMask.setText(
+                    self.tr(u"Error: setting the specific values in QA Band"))
+                return
+
+            self.masking_result.do_qa_band(self.dockwidget.qa_band_file, checked_items, qa_band_svalues)
+
+            enable_symbology[0] = True
+            enable_symbology[7] = True
 
         ########################################
         # Blended cloud masking files
@@ -559,6 +594,7 @@ class CloudMasking:
             'Water': (0, 0, 200, 255),
             'Blue band': (120, 212, 245, 255),
             'Cloud QA': (255, 170, 0, 255),
+            'QA Band': (20, 180, 140, 255),
         }
         # apply
         apply_symbology(self.cloud_mask_rlayer,

@@ -51,8 +51,8 @@ def apply_symbology(rlayer, symbology, symbology_enabled, transparent=255):
     color_ramp_shader = qgis.core.QgsColorRampShader()
     # Loop over Fmask values and add to color item list
     color_ramp_item_list = []
-    for name, value, enable in zip(['Land', 'Cloud', 'Shadow', 'Snow', 'Water', 'Blue band', 'Cloud QA'],
-                                   [1, 2, 3, 4, 5, 6, 7],
+    for name, value, enable in zip(['Land', 'Cloud', 'Shadow', 'Snow', 'Water', 'Blue band', 'Cloud QA', 'QA Band'],
+                                   [1, 2, 3, 4, 5, 6, 7, 8],
                                    symbology_enabled):
         if enable is False:
             continue
