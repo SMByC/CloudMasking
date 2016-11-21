@@ -561,6 +561,14 @@ class CloudMasking:
             gdal_calc.main("A*(A>1)+B*logical_and(A==1,B>1)+C*logical_and(A==1,B==1)",
                            self.final_cloud_mask_file, self.masking_result.cloud_masking_files)
 
+        # four filters are activated
+        if len(self.masking_result.cloud_masking_files) == 4:
+            self.final_cloud_mask_file = os.path.join(self.dockwidget.tmp_dir,
+                                                      "cloud_blended_{}.tif".format(datetime.now().strftime('%H%M%S')))
+            gdal_calc.main("A*(A>1)+B*logical_and(A==1,B>1)+C*logical_and(logical_and(A==1,B==1),C>1)"
+                           "+D*logical_and(logical_and(A==1,B==1),C==1)",
+                           self.final_cloud_mask_file, self.masking_result.cloud_masking_files)
+
         ########################################
         # Keep the original size if made the
         # mask in selected area
