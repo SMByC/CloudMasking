@@ -292,10 +292,12 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 self.label_CloudQA_FileStatus.setVisible(False)
                 try: self.checkBox_CloudQA.clicked.disconnect()
                 except: pass
+                self.widget_CloudQA_L8.setHidden(True)
+                self.checkBox_CloudQA.setChecked(False)
                 self.checkBox_CloudQA.clicked.connect(self.widget_CloudQA_L457.setVisible)
             else:
                 self.label_CloudQA_FileStatus.setVisible(True)
-                self.widget_CloudQA_L457.setVisible(False)
+                self.widget_CloudQA_L457.setHidden(True)
                 self.checkBox_CloudQA.setChecked(False)
                 self.checkBox_CloudQA.setEnabled(False)
 
@@ -308,10 +310,12 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 self.checkBox_CloudQA.setEnabled(True)
                 try: self.checkBox_CloudQA.clicked.disconnect()
                 except: pass
+                self.widget_CloudQA_L457.setHidden(True)
+                self.checkBox_CloudQA.setChecked(False)
                 self.checkBox_CloudQA.clicked.connect(self.widget_CloudQA_L8.setVisible)
             else:
                 self.label_CloudQA_FileStatus.setVisible(True)
-                self.widget_CloudQA_L8.setVisible(False)
+                self.widget_CloudQA_L8.setHidden(True)
                 self.checkBox_CloudQA.setChecked(False)
                 self.checkBox_CloudQA.setEnabled(False)
 
