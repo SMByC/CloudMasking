@@ -397,8 +397,29 @@ class CloudMasking:
         # FMask filter
 
         if self.dockwidget.checkBox_FMask.isChecked():
+            # get enabled Fmask filters from UI and set symbology
+            enable_symbology[0:5] = [True, False, False, False, False]
+            filters_enabled = {"Cloud": False, "Shadow": False, "Snow": False, "Water": False, }
+            # Cloud
+            if self.dockwidget.checkBox_FMask_Cloud.isChecked():
+                enable_symbology[1] = True
+                filters_enabled["Cloud"] = True
+            # Shadow
+            if self.dockwidget.checkBox_FMask_Shadow.isChecked():
+                enable_symbology[2] = True
+                filters_enabled["Shadow"] = True
+            # Snow
+            if self.dockwidget.checkBox_FMask_Snow.isChecked():
+                enable_symbology[3] = True
+                filters_enabled["Snow"] = True
+            # Water
+            if self.dockwidget.checkBox_FMask_Water.isChecked():
+                enable_symbology[4] = True
+                filters_enabled["Water"] = True
+
             # fmask filter
             self.masking_result.do_fmask(
+                filters_enabled=filters_enabled,
                 cirrus_prob_ratio=float(self.dockwidget.doubleSpinBox_CPR.value()),
                 cloud_buffer_size=float(self.dockwidget.doubleSpinBox_CB.value()),
                 shadow_buffer_size=float(self.dockwidget.doubleSpinBox_SB.value()),
@@ -407,7 +428,6 @@ class CloudMasking:
                 whiteness_thresh=float(self.dockwidget.doubleSpinBox_WT.value()),
                 swir2_water_test=float(self.dockwidget.doubleSpinBox_S2WT.value()),
             )
-            enable_symbology[0:5] = [True, True, True, True, True]
 
         ########################################
         # Blue Band filter

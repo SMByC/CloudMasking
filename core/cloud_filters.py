@@ -112,7 +112,7 @@ class CloudMaskingResult(object):
     def do_clipping_extent(self, in_file, out_file):
         gdal_clip.main(in_file, out_file, [self.extent_x1, self.extent_x2, self.extent_y2, self.extent_y1])
 
-    def do_fmask(self, min_cloud_size=0, cloud_buffer_size=4, shadow_buffer_size=6, cirrus_prob_ratio=0.04,
+    def do_fmask(self, filters_enabled, min_cloud_size=0, cloud_buffer_size=4, shadow_buffer_size=6, cirrus_prob_ratio=0.04,
                  nir_fill_thresh=0.02, swir2_thresh=0.03, whiteness_thresh=0.7, swir2_water_test=0.03):
 
         ########################################
@@ -282,6 +282,28 @@ class CloudMaskingResult(object):
         fmaskConfig.setEqn2WhitenessThresh(whiteness_thresh)
         fmaskConfig.setEqn7Swir2Thresh(swir2_water_test)
 
+        # set to 1 for all Fmask filters disabled
+        if filters_enabled["Cloud"]:
+            fmask.OUTCODE_CLOUD = 2
+        else:
+            fmask.OUTCODE_CLOUD = 1
+
+        if filters_enabled["Shadow"]:
+            fmask.OUTCODE_SHADOW = 3
+        else:
+            fmask.OUTCODE_SHADOW = 1
+
+        if filters_enabled["Snow"]:
+            fmask.OUTCODE_SNOW = 4
+        else:
+            fmask.OUTCODE_SNOW = 1
+
+        if filters_enabled["Water"]:
+            fmask.OUTCODE_WATER = 5
+        else:
+            fmask.OUTCODE_WATER = 1
+
+        # process Fmask
         fmask.doFmask(fmaskFilenames, fmaskConfig)
 
         # save final result of masking
