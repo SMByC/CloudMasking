@@ -755,6 +755,16 @@ class CloudMasking:
         update_process_bar(self.dockwidget.bar_processApplyMask, 50, self.dockwidget.status_processApplyMask,
                            self.tr(u"Applying mask..."))
 
+        # check images size if is different, this mean that the mask is a selected area
+        # and "keep the original image size" is not selected. Then resize the reflective
+        # stack to mask size
+        if get_extent(self.reflective_stack_file) != get_extent(mask_path):
+            extent_mask = get_extent(mask_path)
+            gdal.Translate(self.reflective_stack_file.replace(".tif", "_inprogress.tif"), self.reflective_stack_file,
+                           projWin=extent_mask)
+            os.remove(self.reflective_stack_file)
+            os.rename(self.reflective_stack_file.replace(".tif", "_inprogress.tif"), self.reflective_stack_file)
+
         # apply mask to stack
         gdal_calc.Calc(calc="A*(B==1)", A=self.reflective_stack_file, B=mask_path,
                        outfile=self.reflective_stack_file, allBands='A', overwrite=True)
