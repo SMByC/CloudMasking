@@ -159,5 +159,5 @@ def get_extent(img_path):
     miny = maxy + geoTransform[5] * data.RasterYSize
     data = None
 
-    return [minx, maxy, maxx, miny]
+    return [round(minx), round(maxy), round(maxx), round(miny)]
 
