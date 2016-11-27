@@ -591,6 +591,11 @@ class CloudMasking:
             gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "1.tif"), noData="none")
             # only left the final file
             os.remove(self.final_cloud_mask_file.replace(".tif", "1.tif"))
+        else:
+            # unset the nodata
+            gdal.Translate(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file, noData="none")
+            os.remove(self.final_cloud_mask_file)
+            os.rename(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file)
 
 
         ########################################
@@ -754,6 +759,11 @@ class CloudMasking:
 
         # apply mask to stack
         gdal_calc.main("A*(B==1)", result_path, [self.reflective_stack_file, mask_path], allBands=True)
+
+        # unset the nodata
+        gdal.Translate(result_path.replace(".tif", "1.tif"), result_path, noData="none")
+        os.remove(result_path)
+        os.rename(result_path.replace(".tif", "1.tif"), result_path)
 
         # load into canvas when finished
         if self.dockwidget.checkBox_LoadResult.isChecked():
