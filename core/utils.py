@@ -42,7 +42,7 @@ def get_prefer_name(file_path):
     return file_path
 
 
-def apply_symbology(rlayer, symbology, symbology_enabled, transparent=255):
+def apply_symbology(rlayer, symbology, symbology_enabled, transparent=None):
     """ Apply classification symbology to raster layer """
     # See: QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
     # https://github.com/qgis/QGIS/blob/master/src/gui/raster/qgssinglebandpseudocolorrendererwidget.cpp
@@ -80,10 +80,11 @@ def apply_symbology(rlayer, symbology, symbology_enabled, transparent=255):
     rlayer.setRenderer(renderer)
 
     # Set NoData transparency
-    if not isinstance(transparent, list):
-        transparent = [transparent]
-    nodata = [qgis.core.QgsRasterRange(t, t) for t in transparent]
-    rlayer.dataProvider().setUserNoDataValue(1, nodata)
+    if transparent is not None:
+        if not isinstance(transparent, list):
+            transparent = [transparent]
+        nodata = [qgis.core.QgsRasterRange(t, t) for t in transparent]
+        rlayer.dataProvider().setUserNoDataValue(1, nodata)
 
     # Repaint
     if hasattr(rlayer, 'setCacheImage'):

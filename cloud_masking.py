@@ -640,8 +640,7 @@ class CloudMasking:
         # apply
         apply_symbology(self.cloud_mask_rlayer,
                         symbology,
-                        enable_symbology,
-                        transparent=[255, 0])
+                        enable_symbology)
         # Refresh layer symbology
         self.iface.legendInterface().refreshLayerSymbology(self.cloud_mask_rlayer)
 
