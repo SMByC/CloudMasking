@@ -62,6 +62,7 @@ from rios import applier
 from rios import pixelgrid
 from rios import rat
 from rios import imageio
+from rios import fileinfo
 
 # our wrappers for bits of C that are installed with this package
 from . import fillminima
@@ -238,6 +239,16 @@ def doPotentialCloudFirstPass(fmaskFilenames, fmaskConfig, missingThermal):
     otherargs.clearLandBT_hist = numpy.zeros(BT_HISTSIZE, dtype=numpy.uint32)
     otherargs.clearLandB4_hist = numpy.zeros(BT_HISTSIZE, dtype=numpy.uint32)
     otherargs.fmaskConfig = fmaskConfig
+    refImgInfo = fileinfo.ImageInfo(fmaskFilenames.toaRef)
+    otherargs.refNull = refImgInfo.nodataval[0]
+    if otherargs.refNull is None:
+        # The null value used by USGS is 0, but is not recorded in the TIF files
+        otherargs.refNull = 0
+    if not missingThermal:
+        thermalImgInfo = fileinfo.ImageInfo(fmaskFilenames.thermal)
+        otherargs.thermalNull = thermalImgInfo.nodataval[0]
+        if otherargs.thermalNull is None:
+            otherargs.thermalNull = 0
     
     # Which reflective bands do we use to make a null mask. The numbers being set here 
     # are zero-based index numbers for use as array indexes. It should be just all bands, 
@@ -293,16 +304,10 @@ def potentialCloudFirstPass(info, inputs, outputs, otherargs):
     if hasattr(inputs, 'thermal'):
         THERM = otherargs.thermalInfo.thermalBand1040um
     
-    refNull = info.getNoDataValueFor(inputs.toaref)
-    if refNull is None:
-        refNull = 0
     # Special mask needed only for resets in final pass
-    refNullmask = (inputs.toaref[otherargs.bandsForRefNull] == refNull).any(axis=0)
+    refNullmask = (inputs.toaref[otherargs.bandsForRefNull] == otherargs.refNull).any(axis=0)
     if hasattr(inputs, 'thermal'):
-        thermalNull = info.getNoDataValueFor(inputs.thermal)
-        if thermalNull is None:
-            thermalNull = 0
-        thermNullmask = (inputs.thermal[THERM] == thermalNull)
+        thermNullmask = (inputs.thermal[THERM] == otherargs.thermalNull)
         nullmask = (refNullmask | thermNullmask)
         # Brightness temperature in degrees C
         bt = otherargs.thermalInfo.scaleThermalDNtoC(inputs.thermal)
@@ -469,7 +474,7 @@ def doPotentialCloudSecondPass(fmaskFilenames, fmaskConfig, pass1file,
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-
+    
     infiles.pass1 = pass1file
     infiles.toaref = fmaskFilenames.toaRef
     if not missingThermal:
@@ -578,7 +583,9 @@ def doCloudLayerFinalPass(fmaskFilenames, fmaskConfig, pass1file, pass2file,
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-
+    controls.setNumThreads(multiprocessing.cpu_count())
+    controls.setJobManagerType("multiprocessing")
+    
     infiles.pass1 = pass1file
     infiles.pass2 = pass2file
     if not missingThermal:
@@ -740,9 +747,9 @@ def make3Dclouds(fmaskFilenames, fmaskConfig, clumps, numClumps, missingThermal)
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-    controls.setNumThreads(multiprocessing.cpu_count() - 1)
+    controls.setNumThreads(multiprocessing.cpu_count())
     controls.setJobManagerType("multiprocessing")
-
+    
     # if we have thermal, run against that 
     # otherwise we are just 
     if not missingThermal:
@@ -1190,6 +1197,8 @@ def finalizeAll(fmaskFilenames, fmaskConfig, interimCloudmask, interimShadowmask
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
+    controls.setNumThreads(multiprocessing.cpu_count())
+    controls.setJobManagerType("multiprocessing")
     
     infiles.cloud = interimCloudmask
     infiles.shadow = interimShadowmask
@@ -1200,7 +1209,6 @@ def finalizeAll(fmaskFilenames, fmaskConfig, interimCloudmask, interimShadowmask
     controls.setStatsIgnore(OUTCODE_NULL)
     controls.setWindowXsize(RIOS_WINDOW_SIZE)
     controls.setWindowYsize(RIOS_WINDOW_SIZE)
-    controls.setCalcStats(False)
     
     if fmaskConfig.cloudBufferSize > 0:
         otherargs.bufferkernel = makeBufferKernel(fmaskConfig.cloudBufferSize)
