@@ -35,7 +35,7 @@ import resources
 from CloudMasking.core import cloud_filters, color_stack
 from CloudMasking.core.utils import apply_symbology, get_prefer_name, update_process_bar
 from CloudMasking.gui.cloud_masking_dockwidget import CloudMaskingDockWidget
-from CloudMasking.libs import gdal_calc, gdal_merge
+from CloudMasking.libs import gdal_calc, gdal_merge, gdal_clip
 
 
 class CloudMasking:
@@ -752,7 +752,7 @@ class CloudMasking:
         # make stack to apply mask in tmp file
         if self.dockwidget.radioButton_ToRefStack.isChecked() or self.dockwidget.radioButton_ToSR_RefStack.isChecked():
             self.reflective_stack_file = os.path.join(self.dockwidget.tmp_dir, "Reflective_stack_" +
-                                                 self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + ".tif")
+                                                      self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + ".tif")
 
             gdal_merge.main(["", "-separate", "-of", "GTiff", "-o",
                              self.reflective_stack_file] + stack_bands)
@@ -762,12 +762,13 @@ class CloudMasking:
 
         # apply mask to stack
         gdal_calc.Calc(calc="A*(B==1)", A=self.reflective_stack_file, B=mask_path,
-                       outfile=result_path, allBands='A', overwrite=True)
+                       outfile=self.reflective_stack_file, allBands='A', overwrite=True)
 
         # unset the nodata
-        gdal.Translate(result_path.replace(".tif", "1.tif"), result_path, noData="none")
-        os.remove(result_path)
-        os.rename(result_path.replace(".tif", "1.tif"), result_path)
+        gdal.Translate(result_path, self.reflective_stack_file, noData="none")
+
+        # clean
+        os.remove(self.reflective_stack_file)
 
         # load into canvas when finished
         if self.dockwidget.checkBox_LoadResult.isChecked():
