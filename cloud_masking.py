@@ -551,23 +551,26 @@ class CloudMasking:
         if len(self.masking_result.cloud_masking_files) == 2:
             self.final_cloud_mask_file = os.path.join(self.dockwidget.tmp_dir,
                                                       "cloud_blended_{}.tif".format(datetime.now().strftime('%H%M%S')))
-            gdal_calc.main("A*(A>1)+B*(A==1)",
-                           self.final_cloud_mask_file, self.masking_result.cloud_masking_files)
+            gdal_calc.Calc(calc="A*(A>1)+B*(A==1)", outfile=self.final_cloud_mask_file,
+                           A=self.masking_result.cloud_masking_files[0], B=self.masking_result.cloud_masking_files[1])
 
         # three filters are activated
         if len(self.masking_result.cloud_masking_files) == 3:
             self.final_cloud_mask_file = os.path.join(self.dockwidget.tmp_dir,
                                                       "cloud_blended_{}.tif".format(datetime.now().strftime('%H%M%S')))
-            gdal_calc.main("A*(A>1)+B*logical_and(A==1,B>1)+C*logical_and(A==1,B==1)",
-                           self.final_cloud_mask_file, self.masking_result.cloud_masking_files)
+            gdal_calc.Calc(calc="A*(A>1)+B*logical_and(A==1,B>1)+C*logical_and(A==1,B==1)",
+                           outfile=self.final_cloud_mask_file,
+                           A=self.masking_result.cloud_masking_files[0], B=self.masking_result.cloud_masking_files[1],
+                           C=self.masking_result.cloud_masking_files[2])
 
         # four filters are activated
         if len(self.masking_result.cloud_masking_files) == 4:
             self.final_cloud_mask_file = os.path.join(self.dockwidget.tmp_dir,
                                                       "cloud_blended_{}.tif".format(datetime.now().strftime('%H%M%S')))
-            gdal_calc.main("A*(A>1)+B*logical_and(A==1,B>1)+C*logical_and(logical_and(A==1,B==1),C>1)"
-                           "+D*logical_and(logical_and(A==1,B==1),C==1)",
-                           self.final_cloud_mask_file, self.masking_result.cloud_masking_files)
+            gdal_calc.Calc(calc="A*(A>1)+B*logical_and(A==1,B>1)+C*logical_and(logical_and(A==1,B==1),C>1)"
+                           "+D*logical_and(logical_and(A==1,B==1),C==1)", outfile=self.final_cloud_mask_file,
+                           A=self.masking_result.cloud_masking_files[0], B=self.masking_result.cloud_masking_files[1],
+                           C=self.masking_result.cloud_masking_files[2], D=self.masking_result.cloud_masking_files[3])
 
         ########################################
         # Keep the original size if made the
@@ -758,7 +761,8 @@ class CloudMasking:
                            self.tr(u"Applying mask..."))
 
         # apply mask to stack
-        gdal_calc.main("A*(B==1)", result_path, [self.reflective_stack_file, mask_path], allBands=True)
+        gdal_calc.Calc(calc="A*(B==1)", A=self.reflective_stack_file, B=mask_path,
+                       outfile=result_path, allBands='A', overwrite=True)
 
         # unset the nodata
         gdal.Translate(result_path.replace(".tif", "1.tif"), result_path, noData="none")

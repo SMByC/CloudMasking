@@ -1,315 +1,401 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-/***************************************************************************
- CloudMasking
-                                 A QGIS plugin
- Cloud masking for landsat products using different process suck as fmask
-                             -------------------
-        copyright            : (C) 2016 by Xavier Corredor Llano, SMBYC
-        email                : xcorredorl@ideam.gov.co
- ***************************************************************************/
+#******************************************************************************
+#
+#  Project:  GDAL
+#  Purpose:  Command line raster calculator with numpy syntax
+#  Author:   Chris Yesson, chris.yesson@ioz.ac.uk
+#
+#******************************************************************************
+#  Copyright (c) 2010, Chris Yesson <chris.yesson@ioz.ac.uk>
+#  Copyright (c) 2010-2011, Even Rouault <even dot rouault at mines-paris dot org>
+#  Copyright (c) 2016, Piers Titus van der Torren <pierstitus@gmail.com>
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a
+#  copy of this software and associated documentation files (the "Software"),
+#  to deal in the Software without restriction, including without limitation
+#  the rights to use, copy, modify, merge, publish, distribute, sublicense,
+#  and/or sell copies of the Software, and to permit persons to whom the
+#  Software is furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included
+#  in all copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+#  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+#  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+#  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+#  DEALINGS IN THE SOFTWARE.
+#******************************************************************************
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+################################################################
+# Command line raster calculator with numpy syntax. Use any basic arithmetic supported by numpy arrays such as +-*\ along with logical operators such as >.  Note that all files must have the same dimensions, but no projection checking is performed.  Use gdal_calc.py --help for list of options.
 
- This script was based and adapted from:
- https://github.com/OpenDataAnalytics/gaia/blob/master/gaia/geo/gdal_functions.py
- https://pcjericks.github.io/py-gdalogr-cookbook
-"""
+# example 1 - add two files together
+# gdal_calc.py -A input1.tif -B input2.tif --outfile=result.tif --calc="A+B"
 
-import re
-import string
+# example 2 - average of two layers
+# gdal_calc.py -A input.tif -B input2.tif --outfile=result.tif --calc="(A+B)/2"
+
+# example 3 - set values of zero and below to null
+# gdal_calc.py -A input.tif --outfile=result.tif --calc="A*(A>0)" --NoDataValue=0
+################################################################
+
+from optparse import OptionParser, Values
 import os
-import gdalconst
+import sys
+
 import numpy
-import gdal
-try:
-    import gdalnumeric
-except ImportError:
-    from osgeo import gdalnumeric
-import osr
-from osgeo.gdal_array import BandReadAsArray, BandWriteArray
+
+from osgeo import gdal
+from osgeo import gdalnumeric
 
 
-# Python bindings do not raise exceptions unless you
-# explicitly call UseExceptions()
-gdal.UseExceptions()
-gdal.PushErrorHandler('CPLQuietErrorHandler')
+# create alphabetic list for storing input layers
+AlphaList=["A","B","C","D","E","F","G","H","I","J","K","L","M",
+           "N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
-#: Map of raster data types to max values
-ndv_lookup = {
-    'Byte': 255,
-    'UInt16': 65535,
-    'Int16': -32767,
-    'UInt32': 4294967293,
-    'Int32': -2147483647,
-    'Float32': 1.175494351E-38,
-    'Float64': 1.7976931348623158E+308
-}
+# set up some default nodatavalues for each datatype
+DefaultNDVLookup={'Byte':255, 'UInt16':65535, 'Int16':-32767, 'UInt32':4294967293, 'Int32':-2147483647, 'Float32':3.402823466E+38, 'Float64':1.7976931348623158E+308}
 
+################################################################
+def doit(opts, args):
 
-def gdal_reproject(src, dst,
-                   epsg=3857,
-                   error_threshold=0.125,
-                   resampling=gdal.GRA_NearestNeighbour):
-    """
-    Reproject a raster image
+    if opts.debug:
+        print("gdal_calc.py starting calculation %s" %(opts.calc))
 
-    :param src: The source image
-    :param dst: The filepath/name of the output image
-    :param epsg: The EPSG code to reproject to
-    :param error_threshold: Default is 0.125 (same as gdalwarp commandline)
-    :param resampling: Default method is Nearest Neighbor
-    """
-    # Open source dataset
-    src_ds = get_dataset(src)
+    # set up global namespace for eval with all functions of gdalnumeric
+    global_namespace = dict([(key, getattr(gdalnumeric, key))
+        for key in dir(gdalnumeric) if not key.startswith('__')])
 
-    # Define target SRS
-    dst_srs = osr.SpatialReference()
-    dst_srs.ImportFromEPSG(int(epsg))
-    dst_wkt = dst_srs.ExportToWkt()
+    if not opts.calc:
+        raise Exception("No calculation provided.")
+    elif not opts.outF:
+        raise Exception("No output file provided.")
 
-    # Resampling might be passed as a string
-    if not isinstance(resampling, int):
-        resampling = getattr(gdal, resampling)
-
-    # Call AutoCreateWarpedVRT() to fetch default values
-    # for target raster dimensions and geotransform
-    reprojected_ds = gdal.AutoCreateWarpedVRT(src_ds,
-                                              None,
-                                              dst_wkt,
-                                              resampling,
-                                              error_threshold)
-
-    # Create the final warped raster
-    if dst:
-        gdal.GetDriverByName('GTiff').CreateCopy(dst, reprojected_ds)
-    return reprojected_ds
-
-
-def gdal_resize(raster, dimensions, projection, transform):
-    """
-    Transform a dataset to the specified dimensions and projection/bounds
-
-    :param dataset: Dataset to be resized
-    :param dimensions: dimensions to resize to (X, Y)
-    :param projection: Projection of of resized dataset
-    :param transform: Geotransform of resized dataset
-    :return: Resized dataset
-    """
-    dataset = get_dataset(raster)
-    datatype = dataset.GetRasterBand(1).DataType
-    resized_ds = gdal.GetDriverByName('MEM').Create(
-        '', dimensions[0], dimensions[1],  dataset.RasterCount, datatype)
-    for i in range(1, resized_ds.RasterCount+1):
-        nodatavalue = dataset.GetRasterBand(i).GetNoDataValue()
-        resized_band = resized_ds.GetRasterBand(i)
-        resized_arr = resized_band.ReadAsArray()
-        resized_arr[resized_arr == 0] = nodatavalue
-        resized_band.WriteArray(resized_arr)
-        resized_band.SetNoDataValue(nodatavalue)
-
-    resized_ds.SetGeoTransform(transform)
-    resized_ds.SetProjection(projection)
-
-    gdal.ReprojectImage(dataset, resized_ds)
-    return resized_ds
-
-
-def main(calculation, raster_output, rasters,
-              bands=None, nodata=None, allBands=False, output_type=None):
-    """
-    Adopted from GDAL 1.10 gdal_calc.py script.
-
-    :param calculation: equation to calculate, such as A + (B / 2)
-    :param raster_output: Raster file to save output as
-    :param rasters: array of rasters, should equal # of letters in calculation
-    :param bands: array of band numbers, one for each raster in rasters array
-    :param nodata: NoDataValue to use in output raster
-    :param allBands: use all bands of specified raster by index
-    :param output_type: data type for output raster ('Float32', 'Uint16', etc)
-    :return: gdal Dataset
-    """
-
-    calculation = re.sub(r'(logical_|bitwise_)', r'numpy.\1', calculation)
+    ################################################################
+    # fetch details of input layers
+    ################################################################
 
     # set up some lists to store data for each band
-    datasets = [get_dataset(raster) for raster in rasters]
-    if not bands:
-        bands = [1 for raster in rasters]
-    datatypes = []
-    datatype_nums = []
-    nodata_vals = []
-    dimensions = None
-    alpha_list = string.ascii_uppercase[:len(rasters)]
+    myFiles=[]
+    myBands=[]
+    myAlphaList=[]
+    myDataType=[]
+    myDataTypeNum=[]
+    myNDV=[]
+    DimensionsCheck=None
 
     # loop through input files - checking dimensions
-    for i, (raster, alpha, band) in enumerate(zip(datasets, alpha_list, bands)):
-        raster_band = raster.GetRasterBand(band)
-        datatypes.append(gdal.GetDataTypeName(raster_band.DataType))
-        datatype_nums.append(raster_band.DataType)
-        nodata_vals.append(raster_band.GetNoDataValue())
-        # check that the dimensions of each layer are the same as the first
-        if dimensions:
-            if dimensions != [datasets[i].RasterXSize, datasets[i].RasterYSize]:
-                datasets[i] = gdal_resize(raster,
-                                          dimensions,
-                                          datasets[0].GetProjection(),
-                                          datasets[0].GetGeoTransform())
-        else:
-            dimensions = [datasets[0].RasterXSize, datasets[0].RasterYSize]
+    for myI, myF in opts.input_files.items():
+        if not myI.endswith("_band"):
+            # check if we have asked for a specific band...
+            if "%s_band" % myI in opts.input_files:
+                myBand = opts.input_files["%s_band" % myI]
+            else:
+                myBand = 1
+
+            myFile = gdal.Open(myF, gdal.GA_ReadOnly)
+            if not myFile:
+                raise IOError("No such file or directory: '%s'" % myF)
+
+            myFiles.append(myFile)
+            myBands.append(myBand)
+            myAlphaList.append(myI)
+            myDataType.append(gdal.GetDataTypeName(myFile.GetRasterBand(myBand).DataType))
+            myDataTypeNum.append(myFile.GetRasterBand(myBand).DataType)
+            myNDV.append(myFile.GetRasterBand(myBand).GetNoDataValue())
+            # check that the dimensions of each layer are the same
+            if DimensionsCheck:
+                if DimensionsCheck != [myFile.RasterXSize, myFile.RasterYSize]:
+                    raise Exception("Error! Dimensions of file %s (%i, %i) are different from other files (%i, %i).  Cannot proceed" % \
+                            (myF, myFile.RasterXSize, myFile.RasterYSize, DimensionsCheck[0], DimensionsCheck[1]))
+            else:
+                DimensionsCheck = [myFile.RasterXSize, myFile.RasterYSize]
+
+            if opts.debug:
+                print("file %s: %s, dimensions: %s, %s, type: %s" %(myI,myF,DimensionsCheck[0],DimensionsCheck[1],myDataType[-1]))
 
     # process allBands option
-    allbandsindex = 0
-    allbandscount = 1
-    if allBands:
-        allbandscount = datasets[allbandsindex].RasterCount
-        if allbandscount <= 1:
-            allbandsindex = None
+    allBandsIndex=None
+    allBandsCount=1
+    if opts.allBands:
+        try:
+            allBandsIndex=myAlphaList.index(opts.allBands)
+        except ValueError:
+            raise Exception("Error! allBands option was given but Band %s not found.  Cannot proceed" % (opts.allBands))
+        allBandsCount=myFiles[allBandsIndex].RasterCount
+        if allBandsCount <= 1:
+            allBandsIndex=None
 
     ################################################################
     # set up output file
     ################################################################
 
     # open output file exists
-    # remove existing file and regenerate
-    if os.path.isfile(raster_output):
-        os.remove(raster_output)
+    if os.path.isfile(opts.outF) and not opts.overwrite:
+        if allBandsIndex is not None:
+            raise Exception("Error! allBands option was given but Output file exists, must use --overwrite option!")
+        if opts.debug:
+            print("Output file %s exists - filling in results into file" %(opts.outF))
+        myOut=gdal.Open(opts.outF, gdal.GA_Update)
+        if [myOut.RasterXSize,myOut.RasterYSize] != DimensionsCheck:
+            raise Exception("Error! Output exists, but is the wrong size.  Use the --overwrite option to automatically overwrite the existing file")
+        myOutB=myOut.GetRasterBand(1)
+        myOutNDV=myOutB.GetNoDataValue()
+        myOutType=gdal.GetDataTypeName(myOutB.DataType)
 
-    # find data type to use
-    if not output_type:
-        # use the largest type of the input files
-        output_type = gdal.GetDataTypeName(max(datatype_nums))
+    else:
+        # remove existing file and regenerate
+        if os.path.isfile(opts.outF):
+            os.remove(opts.outF)
+        # create a new file
+        if opts.debug:
+            print("Generating output file %s" %(opts.outF))
 
-    # create file
-    output_driver = gdal.GetDriverByName('MEM')
-    output_dataset = output_driver.Create(
-        '', dimensions[0], dimensions[1], allbandscount,
-        gdal.GetDataTypeByName(output_type))
+        # find data type to use
+        if not opts.type:
+            # use the largest type of the input files
+            myOutType=gdal.GetDataTypeName(max(myDataTypeNum))
+        else:
+            myOutType=opts.type
 
-    # set output geo info based on first input layer
-    output_dataset.SetGeoTransform(datasets[0].GetGeoTransform())
-    output_dataset.SetProjection(datasets[0].GetProjection())
+        # create file
+        myOutDrv = gdal.GetDriverByName(opts.format)
+        myOut = myOutDrv.Create(
+            opts.outF, DimensionsCheck[0], DimensionsCheck[1], allBandsCount,
+            gdal.GetDataTypeByName(myOutType), opts.creation_options)
 
-    if nodata is None:
-        nodata = ndv_lookup[output_type]
+        # set output geo info based on first input layer
+        myOut.SetGeoTransform(myFiles[0].GetGeoTransform())
+        myOut.SetProjection(myFiles[0].GetProjection())
 
-    for i in range(1, allbandscount+1):
-        output_band = output_dataset.GetRasterBand(i)
-        output_band.SetNoDataValue(nodata)
-        # write to band
-        output_band = None
+        if opts.NoDataValue!=None:
+            myOutNDV=opts.NoDataValue
+        else:
+            myOutNDV=DefaultNDVLookup[myOutType]
+
+        for i in range(1,allBandsCount+1):
+            myOutB=myOut.GetRasterBand(i)
+            myOutB.SetNoDataValue(myOutNDV)
+            # write to band
+            myOutB=None
+
+    if opts.debug:
+        print("output file: %s, dimensions: %s, %s, type: %s" %(opts.outF,myOut.RasterXSize,myOut.RasterYSize,myOutType))
 
     ################################################################
     # find block size to chop grids into bite-sized chunks
     ################################################################
 
     # use the block size of the first layer to read efficiently
-    block_size = datasets[0].GetRasterBand(bands[0]).GetBlockSize()
+    myBlockSize=myFiles[0].GetRasterBand(myBands[0]).GetBlockSize();
     # store these numbers in variables that may change later
-    n_x_valid = block_size[0]
-    n_y_valid = block_size[1]
+    nXValid = myBlockSize[0]
+    nYValid = myBlockSize[1]
     # find total x and y blocks to be read
-    n_x_blocks = int((dimensions[0] + block_size[0] - 1) / block_size[0])
-    n_y_blocks = int((dimensions[1] + block_size[1] - 1) / block_size[1])
-    buffer_size = block_size[0]*block_size[1]
+    nXBlocks = (int)((DimensionsCheck[0] + myBlockSize[0] - 1) / myBlockSize[0]);
+    nYBlocks = (int)((DimensionsCheck[1] + myBlockSize[1] - 1) / myBlockSize[1]);
+    myBufSize = myBlockSize[0]*myBlockSize[1]
+
+    if opts.debug:
+        print("using blocksize %s x %s" %(myBlockSize[0], myBlockSize[1]))
+
+    # variables for displaying progress
+    ProgressCt=-1
+    ProgressMk=-1
+    ProgressEnd=nXBlocks*nYBlocks*allBandsCount
 
     ################################################################
-    # start looping through each band in allbandscount
+    # start looping through each band in allBandsCount
     ################################################################
-    for band_num in range(1, allbandscount+1):
+
+    for bandNo in range(1,allBandsCount+1):
 
         ################################################################
         # start looping through blocks of data
         ################################################################
+
         # loop through X-lines
-        for x in range(0, n_x_blocks):
+        for X in range(0,nXBlocks):
+
             # in the rare (impossible?) case that the blocks don't fit perfectly
             # change the block size of the final piece
-            if x == n_x_blocks-1:
-                n_x_valid = dimensions[0] - x * block_size[0]
-                buffer_size = n_x_valid*n_y_valid
+            if X==nXBlocks-1:
+                nXValid = DimensionsCheck[0] - X * myBlockSize[0]
+                myBufSize = nXValid*nYValid
 
             # find X offset
-            x_offset = x*block_size[0]
+            myX=X*myBlockSize[0]
 
             # reset buffer size for start of Y loop
-            n_y_valid = block_size[1]
-            buffer_size = n_x_valid*n_y_valid
+            nYValid = myBlockSize[1]
+            myBufSize = nXValid*nYValid
 
             # loop through Y lines
-            for y in range(0, n_y_blocks):
+            for Y in range(0,nYBlocks):
+                ProgressCt+=1
+                if 10*ProgressCt/ProgressEnd%10!=ProgressMk and not opts.quiet:
+                    ProgressMk=10*ProgressCt/ProgressEnd%10
+                    from sys import version_info
+                    if version_info >= (3,0,0):
+                        exec('print("%d.." % (10*ProgressMk), end=" ")')
+                    else:
+                        exec('print 10*ProgressMk, "..",')
+
                 # change the block size of the final piece
-                if y == n_y_blocks-1:
-                    n_y_valid = dimensions[1] - y * block_size[1]
-                    buffer_size = n_x_valid*n_y_valid
+                if Y==nYBlocks-1:
+                    nYValid = DimensionsCheck[1] - Y * myBlockSize[1]
+                    myBufSize = nXValid*nYValid
 
                 # find Y offset
-                y_offset = y*block_size[1]
+                myY=Y*myBlockSize[1]
 
                 # create empty buffer to mark where nodata occurs
-                nodatavalues = numpy.zeros(buffer_size)
-                nodatavalues.shape = (n_y_valid, n_x_valid)
+                myNDVs = None
+
+                # make local namespace for calculation
+                local_namespace = {}
 
                 # fetch data for each input layer
-                for i, alpha in enumerate(alpha_list):
+                for i,Alpha in enumerate(myAlphaList):
 
                     # populate lettered arrays with values
-                    if allbandsindex is not None and allbandsindex == i:
-                        this_band = band_num
+                    if allBandsIndex is not None and allBandsIndex==i:
+                        myBandNo=bandNo
                     else:
-                        this_band = bands[i]
-                    band_vals = BandReadAsArray(
-                        datasets[i].GetRasterBand(this_band),
-                        xoff=x_offset,
-                        yoff=y_offset,
-                        win_xsize=n_x_valid,
-                        win_ysize=n_y_valid)
+                        myBandNo=myBands[i]
+                    myval=gdalnumeric.BandReadAsArray(myFiles[i].GetRasterBand(myBandNo),
+                                          xoff=myX, yoff=myY,
+                                          win_xsize=nXValid, win_ysize=nYValid)
 
                     # fill in nodata values
-                    nodatavalues = 1*numpy.logical_or(
-                        nodatavalues == 1, band_vals == nodata_vals[i])
+                    if myNDV[i] is not None:
+                        if myNDVs is None:
+                            myNDVs = numpy.zeros(myBufSize)
+                            myNDVs.shape=(nYValid,nXValid)
+                        myNDVs=1*numpy.logical_or(myNDVs==1, myval==myNDV[i])
 
-                    # create an array of values for this block
-                    exec("%s=band_vals" % alpha)
-                    band_vals = None
+                    # add an array of values for this block to the eval namespace
+                    local_namespace[Alpha] = myval
+                    myval=None
+
 
                 # try the calculation on the array blocks
                 try:
-                    calc_result = eval(calculation)
-                except Exception as e:
-                    raise e
+                    myResult = eval(opts.calc, global_namespace, local_namespace)
+                except:
+                    print("evaluation of calculation %s failed" %(opts.calc))
+                    raise
 
-                # propogate nodata values
-                # (set nodata cells to 0 then add nodata value to these cells)
-                calc_result = ((1 * (nodatavalues == 0)) * calc_result) + \
-                              (nodata * nodatavalues)
+                # Propagate nodata values (set nodata cells to zero
+                # then add nodata value to these cells).
+                if myNDVs is not None:
+                    myResult = ((1*(myNDVs==0))*myResult) + (myOutNDV*myNDVs)
+                elif not isinstance(myResult, numpy.ndarray):
+                    myResult = numpy.ones( (nYValid,nXValid) ) * myResult
 
                 # write data block to the output file
-                output_band = output_dataset.GetRasterBand(band_num)
-                BandWriteArray(output_band, calc_result,
-                               xoff=x_offset, yoff=y_offset)
+                myOutB=myOut.GetRasterBand(bandNo)
+                gdalnumeric.BandWriteArray(myOutB, myResult, xoff=myX, yoff=myY)
 
-    if raster_output:
-        output_driver = gdal.GetDriverByName('GTiff')
-        outfile = output_driver.CreateCopy(raster_output, output_dataset, False)
-    return output_dataset
+    if not opts.quiet:
+        print("100 - Done")
+    #print("Finished - Results written to %s" %opts.outF)
 
+    return
 
-def get_dataset(object):
+################################################################
+def Calc(calc, outfile, NoDataValue=None, type=None, format='GTiff', creation_options=[], allBands='', overwrite=False, debug=False, quiet=False, **input_files):
+    """ Perform raster calculations with numpy syntax.
+    Use any basic arithmetic supported by numpy arrays such as +-*\ along with logical
+    operators such as >. Note that all files must have the same dimensions, but no projection checking is performed.
+
+    Keyword arguments:
+        [A-Z]: input files
+        [A_band - Z_band]: band to use for respective input file
+
+    Examples:
+    add two files together:
+        Calc("A+B", A="input1.tif", B="input2.tif", outfile="result.tif")
+
+    average of two layers:
+        Calc(calc="(A+B)/2", A="input1.tif", B="input2.tif", outfile="result.tif")
+
+    set values of zero and below to null:
+        Calc(calc="A*(A>0)", A="input.tif", A_Band=2, outfile="result.tif", NoDataValue=0)
     """
-    Given an object, try returning a GDAL Dataset
+    opts = Values()
+    opts.input_files = input_files
+    opts.calc = calc
+    opts.outF = outfile
+    opts.NoDataValue = NoDataValue
+    opts.type = type
+    opts.format = format
+    opts.creation_options = creation_options
+    opts.allBands = allBands
+    opts.overwrite = overwrite
+    opts.debug = debug
+    opts.quiet = quiet
 
-    :param object: GDAL Dataset or file path to raster image
-    :return: GDAL Dataset
-    """
-    if type(object).__name__ == 'Dataset':
-        return object
+    doit(opts, None)
+
+def store_input_file(option, opt_str, value, parser):
+    if not hasattr(parser.values, 'input_files'):
+        parser.values.input_files = {}
+    parser.values.input_files[opt_str.lstrip('-')] = value
+
+def main():
+    usage = """usage: %prog --calc=expression --outfile=out_filename [-A filename]
+                    [--A_band=n] [-B...-Z filename] [other_options]"""
+    parser = OptionParser(usage)
+
+    # define options
+    parser.add_option("--calc", dest="calc", help="calculation in gdalnumeric syntax using +-/* or any numpy array functions (i.e. log10())", metavar="expression")
+    # limit the input file options to the ones in the argument list
+    given_args = set([a[1] for a in sys.argv if a[1:2] in AlphaList] + ['A'])
+    for myAlpha in given_args:
+        parser.add_option("-%s" % myAlpha, action="callback", callback=store_input_file, type=str, help="input gdal raster file, you can use any letter (A-Z)", metavar='filename')
+        parser.add_option("--%s_band" % myAlpha, action="callback", callback=store_input_file, type=int, help="number of raster band for file %s (default 1)" % myAlpha, metavar='n')
+
+    parser.add_option("--outfile", dest="outF", help="output file to generate or fill", metavar="filename")
+    parser.add_option("--NoDataValue", dest="NoDataValue", type=float, help="output nodata value (default datatype specific value)", metavar="value")
+    parser.add_option("--type", dest="type", help="output datatype, must be one of %s" % list(DefaultNDVLookup.keys()), metavar="datatype")
+    parser.add_option("--format", dest="format", default="GTiff", help="GDAL format for output file (default 'GTiff')", metavar="gdal_format")
+    parser.add_option(
+        "--creation-option", "--co", dest="creation_options", default=[], action="append",
+        help="Passes a creation option to the output format driver. Multiple "
+        "options may be listed. See format specific documentation for legal "
+        "creation options for each format.", metavar="option")
+    parser.add_option("--allBands", dest="allBands", default="", help="process all bands of given raster (A-Z)", metavar="[A-Z]")
+    parser.add_option("--overwrite", dest="overwrite", action="store_true", help="overwrite output file if it already exists")
+    parser.add_option("--debug", dest="debug", action="store_true", help="print debugging information")
+    parser.add_option("--quiet", dest="quiet", action="store_true", help="suppress progress messages")
+
+    (opts, args) = parser.parse_args()
+    if not hasattr(opts, "input_files"):
+        opts.input_files = {}
+
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(1)
+    elif not opts.calc:
+        print("No calculation provided. Nothing to do!")
+        parser.print_help()
+        sys.exit(1)
+    elif not opts.outF:
+        print("No output file provided. Cannot proceed.")
+        parser.print_help()
+        sys.exit(1)
     else:
-        return gdal.Open(object, gdalconst.GA_ReadOnly)
+        try:
+            doit(opts, args)
+        except IOError as e:
+            print(e)
+            sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

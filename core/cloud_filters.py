@@ -342,8 +342,8 @@ class CloudMaskingResult(object):
 
         ########################################
         # do blue band filter
-        gdal_calc.main("1*(A<{threshold})+6*(A>={threshold})".format(threshold=bb_threshold),
-                       self.cloud_bb_file, [self.blue_band_for_process], output_type="Byte")
+        gdal_calc.Calc(calc="1*(A<{threshold})+6*(A>={threshold})".format(threshold=bb_threshold),
+                       A=self.blue_band_for_process, outfile=self.cloud_bb_file, type="Byte")
 
         # save final result of masking
         self.cloud_masking_files.append(self.cloud_bb_file)
@@ -376,8 +376,8 @@ class CloudMaskingResult(object):
             ########################################
             # do QA Mask filter
             tmp_qa_file = os.path.join(self.tmp_dir, "cloud_qa_{}.tif".format(cqa_count))
-            gdal_calc.main("1*(A!=255)+7*(A==255)", tmp_qa_file,
-                           [self.cloud_qa_for_process], output_type="Byte", nodata=1)
+            gdal_calc.Calc(calc="1*(A!=255)+7*(A==255)", A=self.cloud_qa_for_process,
+                           outfile=tmp_qa_file, type="Byte", NoDataValue=1)
             # unset the nodata, leave the 1 (valid fields)
             Translate(tmp_qa_file.replace(".tif", "tmp.tif"), tmp_qa_file, noData="none")
             # only left the final file
@@ -390,11 +390,11 @@ class CloudMaskingResult(object):
         if len(cloud_qa_files) == 1:
             os.rename(cloud_qa_files[0], self.cloud_qa)
         if len(cloud_qa_files) == 2:
-            gdal_calc.main("1*(A+B==2)+7*(A+B>=7)", self.cloud_qa,
-                           cloud_qa_files, output_type="Byte")
+            gdal_calc.Calc(calc="1*(A+B==2)+7*(A+B>=7)", A=cloud_qa_files[0], B=cloud_qa_files[1],
+                           outfile=self.cloud_qa, type="Byte")
         if len(cloud_qa_files) == 3:
-            gdal_calc.main("1*(A+B+C==3)+7*(A+B+C>=7)", self.cloud_qa,
-                           cloud_qa_files, output_type="Byte")
+            gdal_calc.Calc(calc="1*(A+B+C==3)+7*(A+B+C>=7)", A=cloud_qa_files[0], B=cloud_qa_files[1], C=cloud_qa_files[2],
+                           outfile=self.cloud_qa, type="Byte")
         # delete tmp files
         [os.remove(tmp_file) for tmp_file in cloud_qa_files if os.path.isfile(tmp_file)]
 
@@ -465,8 +465,8 @@ class CloudMaskingResult(object):
         ########################################
         # do QA Mask filter
         tmp_cqa_file = os.path.join(self.tmp_dir, "cloud_qa.tif")
-        gdal_calc.main("1*(numpy.all([{nfv}], axis=0)) + 7*(numpy.any([{fv}], axis=0))".format(
-            fv=filter_values, nfv=not_filter_values), tmp_cqa_file, [self.cloud_qa_for_process], output_type="Byte", nodata=1)
+        gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 7*(numpy.any([{fv}], axis=0))".format(fv=filter_values, nfv=not_filter_values),
+                       A=self.cloud_qa_for_process, outfile=tmp_cqa_file, type="Byte", NoDataValue=1)
         # unset the nodata, leave the 1 (valid fields)
         Translate(self.cloud_qa, tmp_cqa_file, noData="none")
         # delete tmp files
@@ -542,9 +542,8 @@ class CloudMaskingResult(object):
         ########################################
         # do QA Mask filter
         tmp_qab_file = os.path.join(self.tmp_dir, "qa_band.tif")
-        gdal_calc.main("1*(numpy.all([{nfv}], axis=0)) + 8*(numpy.any([{fv}], axis=0))".format(
-            fv=filter_values, nfv=not_filter_values), tmp_qab_file, [self.qa_band_for_process], output_type="Byte",
-            nodata=1)
+        gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 8*(numpy.any([{fv}], axis=0))".format(fv=filter_values, nfv=not_filter_values),
+                       A=self.qa_band_for_process, outfile=tmp_qab_file, type="Byte", NoDataValue=1)
         # unset the nodata, leave the 1 (valid fields)
         Translate(self.qa_band, tmp_qab_file, noData="none")
         # delete tmp files
