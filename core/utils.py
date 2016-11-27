@@ -150,5 +150,14 @@ def check_values_in_image(img, values, band=1):
     return intersect1d(raster_array, values)
 
 
+def get_extent(img_path):
+    data = gdal.Open(img_path, gdal.GA_ReadOnly)
+    geoTransform = data.GetGeoTransform()
+    minx = geoTransform[0]
+    maxy = geoTransform[3]
+    maxx = minx + geoTransform[1] * data.RasterXSize
+    miny = maxy + geoTransform[5] * data.RasterYSize
+    data = None
 
+    return [minx, maxy, maxx, miny]
 

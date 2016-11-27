@@ -33,7 +33,7 @@ from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRaster
 import resources
 
 from CloudMasking.core import cloud_filters, color_stack
-from CloudMasking.core.utils import apply_symbology, get_prefer_name, update_process_bar
+from CloudMasking.core.utils import apply_symbology, get_prefer_name, update_process_bar, get_extent
 from CloudMasking.gui.cloud_masking_dockwidget import CloudMaskingDockWidget
 from CloudMasking.libs import gdal_calc, gdal_merge, gdal_clip
 
@@ -578,17 +578,12 @@ class CloudMasking:
 
         if self.dockwidget.checkBox_ExtentSelector.isChecked() and \
             self.dockwidget.widget_ExtentSelector.checkBox_KeepOriginalSize.isChecked():
-            data = gdal.Open(get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
-                                                          self.dockwidget.mtl_file['FILE_NAME_BAND_1'])), gdal.GA_ReadOnly)
-            geoTransform = data.GetGeoTransform()
-            minx = geoTransform[0]
-            maxy = geoTransform[3]
-            maxx = minx + geoTransform[1] * data.RasterXSize
-            miny = maxy + geoTransform[5] * data.RasterYSize
-
+            img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                                                self.dockwidget.mtl_file['FILE_NAME_BAND_1']))
+            extent = get_extent(img_path)
             # expand
             gdal.Translate(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file,
-                           projWin=[minx, maxy, maxx, miny], noData=1)
+                           projWin=extent, noData=1)
             os.remove(self.final_cloud_mask_file)
             # unset the nodata, leave the 1 (valid fields)
             gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "1.tif"), noData="none")
