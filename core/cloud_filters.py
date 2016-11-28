@@ -28,7 +28,8 @@ from PyQt4.QtCore import QCoreApplication
 # from plugins
 from osgeo.gdal import Translate
 
-from CloudMasking.core.utils import get_prefer_name, update_process_bar, binary_combination, check_values_in_image
+from CloudMasking.core.utils import get_prefer_name, update_process_bar, binary_combination, check_values_in_image, \
+    get_extent
 from CloudMasking.libs import gdal_merge, gdal_calc, gdal_clip
 
 # adding the libs plugin path
@@ -110,6 +111,14 @@ class CloudMaskingResult(object):
         return QCoreApplication.translate(context, string)
 
     def do_clipping_extent(self, in_file, out_file):
+        # check and adjust the maximum/minimum values for extent selected
+        # based on the original image
+        in_extent = get_extent(in_file)
+        if self.extent_x1 < in_extent[0]: self.extent_x1 = in_extent[0]
+        if self.extent_y1 > in_extent[1]: self.extent_y1 = in_extent[1]
+        if self.extent_x2 > in_extent[2]: self.extent_x2 = in_extent[2]
+        if self.extent_y2 < in_extent[3]: self.extent_y2 = in_extent[3]
+
         gdal_clip.main(in_file, out_file, [self.extent_x1, self.extent_x2, self.extent_y2, self.extent_y1])
         # TODO: make this with Translate, but check if the pixes moves after clipping
         #Translate(out_file, in_file, projWin=[self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2])
