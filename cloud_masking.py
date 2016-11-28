@@ -621,6 +621,10 @@ class CloudMasking:
             if cloud_masking_file != self.final_cloud_mask_file:
                 os.remove(cloud_masking_file)
 
+        # hide the extent selector
+        if self.dockwidget.checkBox_ExtentSelector.isChecked():
+            self.dockwidget.checkBox_ExtentSelector.setChecked(False)
+
         # Add to QGIS the reflectance stack file and cloud file
         if self.masking_result.clipping_extent:
             masking_result_name = self.tr(u"Cloud Mask in area ({})".format(datetime.now().strftime('%H:%M:%S')))
