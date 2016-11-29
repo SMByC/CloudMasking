@@ -319,8 +319,8 @@ def makeAnglesImage(templateimg, outfile, nadirLine, extentSunAngles, satAzimuth
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-    controls.setNumThreads(multiprocessing.cpu_count())
-    controls.setJobManagerType("multiprocessing")
+    #controls.setNumThreads(multiprocessing.cpu_count())
+    #controls.setJobManagerType("multiprocessing")
 
     infiles.img = templateimg
     outfiles.angles = outfile

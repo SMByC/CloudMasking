@@ -168,8 +168,8 @@ def makeTOAReflectance(infile, mtlFile, anglesfile, outfile):
     otherinputs.inNull = imginfo.nodataval[0]
 
     controls = applier.ApplierControls()
-    controls.setNumThreads(multiprocessing.cpu_count())
-    controls.setJobManagerType("multiprocessing")
+    #controls.setNumThreads(multiprocessing.cpu_count())
+    #controls.setJobManagerType("multiprocessing")
 
     controls.progress = cuiprogress.GDALProgressBar()
     controls.setStatsIgnore(otherinputs.outNull)
