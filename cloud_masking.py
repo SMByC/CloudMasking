@@ -442,15 +442,15 @@ class CloudMasking:
 
         if self.dockwidget.checkBox_CloudQA.isChecked():
             if self.dockwidget.landsat_version in [4, 5, 7]:
-                cloud_qa_file, shadow_qa_file, ddv_qa_file = [None]*3
+                cloud_qa_file, shadow_qa_file, adjacent_qa_file = [None]*3
                 if self.dockwidget.checkBox_CloudQA_mask.isChecked():
                     cloud_qa_file = self.dockwidget.cloud_qa_file
                 if self.dockwidget.checkBox_ShadowQA_mask.isChecked():
                     shadow_qa_file = self.dockwidget.shadow_qa_file
-                if self.dockwidget.checkBox_DDVQA_mask.isChecked():
-                    ddv_qa_file = self.dockwidget.ddv_qa_file
+                if self.dockwidget.checkBox_AdjacentQA_mask.isChecked():
+                    adjacent_qa_file = self.dockwidget.adjacent_qa_file
 
-                self.masking_result.do_cloud_qa_l457(cloud_qa_file, shadow_qa_file, ddv_qa_file)
+                self.masking_result.do_cloud_qa_l457(cloud_qa_file, shadow_qa_file, adjacent_qa_file)
 
             if self.dockwidget.landsat_version in [8]:
                 checked_items = {}

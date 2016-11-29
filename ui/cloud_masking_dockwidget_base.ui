@@ -476,7 +476,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-446</y>
              <width>551</width>
              <height>2130</height>
             </rect>
@@ -1466,9 +1466,9 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QCheckBox" name="checkBox_DDVQA_mask">
+                         <widget class="QCheckBox" name="checkBox_AdjacentQA_mask">
                           <property name="text">
-                           <string>Dark Dense Vegetation QA</string>
+                           <string>Adjacent to Cloud QA</string>
                           </property>
                          </widget>
                         </item>

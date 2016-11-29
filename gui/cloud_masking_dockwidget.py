@@ -284,10 +284,10 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                                          self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud_qa.tif"))
             self.shadow_qa_file = os.path.join(os.path.dirname(self.mtl_path),
                                               self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud_shadow_qa.tif"))
-            self.ddv_qa_file = os.path.join(os.path.dirname(self.mtl_path),
-                                              self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_ddv_qa.tif"))
+            self.adjacent_qa_file = os.path.join(os.path.dirname(self.mtl_path),
+                                              self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_adjacent_cloud_qa.tif"))
             # check Cloud QA files
-            if os.path.isfile(self.cloud_qa_file) and os.path.isfile(self.shadow_qa_file) and os.path.isfile(self.ddv_qa_file):
+            if os.path.isfile(self.cloud_qa_file) and os.path.isfile(self.shadow_qa_file) and os.path.isfile(self.adjacent_qa_file):
                 self.checkBox_CloudQA.setEnabled(True)
                 self.label_CloudQA_FileStatus.setVisible(False)
                 try: self.checkBox_CloudQA.clicked.disconnect()

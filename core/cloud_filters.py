@@ -363,14 +363,14 @@ class CloudMaskingResult(object):
         update_process_bar(self.process_bar, 100, self.process_status,
                            self.tr(u"DONE"))
 
-    def do_cloud_qa_l457(self, cloud_qa_file, shadow_qa_file, ddv_qa_file):
+    def do_cloud_qa_l457(self, cloud_qa_file, shadow_qa_file, adjacent_qa_file):
         # tmp file for cloud
         self.cloud_qa = os.path.join(self.tmp_dir, "cloud_qa_{}.tif".format(datetime.now().strftime('%H%M%S')))
         update_process_bar(self.process_bar, 50, self.process_status,
                            self.tr(u"Making the Cloud QA filter..."))
 
         cloud_qa_files = []
-        for cqa_count, cloud_qa in enumerate([cloud_qa for cloud_qa in [cloud_qa_file, shadow_qa_file, ddv_qa_file] if cloud_qa]):
+        for cqa_count, cloud_qa in enumerate([cloud_qa for cloud_qa in [cloud_qa_file, shadow_qa_file, adjacent_qa_file] if cloud_qa]):
             if not os.path.isfile(cloud_qa):
                 update_process_bar(self.process_bar, 0, self.process_status,
                                    self.tr(u"Error: file not exist for QA mask selected"))
