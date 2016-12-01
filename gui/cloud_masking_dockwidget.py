@@ -364,20 +364,3 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.button_ClearAll.setEnabled(False)
         self.groupBox_LoadStacks.setEnabled(False)
 
-        # TODO: Removing temporary files
-        # for _tmp in self.temp_files:
-        #     # Try deleting with GDAL
-        #     try:
-        #         ds = gdal.Open(_tmp.name, gdal.GA_Update)
-        #         driver = ds.GetDriver()
-        #         for f in ds.GetFileList():
-        #             logger.info('Removing file {f}'.format(f=f))
-        #             driver.Delete(f)
-        #     except:
-        #         logger.warning('Could not delete {f} using GDAL'.format(f=f))
-        #
-        #     # Try deleting using tempfile
-        #     try:
-        #         _tmp.close()
-        #     except:
-        #         pass
