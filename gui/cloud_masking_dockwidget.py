@@ -25,9 +25,11 @@ import tempfile
 from PyQt4 import QtGui, uic, QtCore
 from PyQt4.QtCore import pyqtSignal
 from qgis.utils import iface
+from PyQt4.QtGui import QMessageBox
 
 # from plugins
 from CloudMasking.core import cloud_masking_utils
+from CloudMasking.core.utils import get_prefer_name
 
 # plugin path
 plugin_folder = os.path.dirname(os.path.dirname(__file__))
@@ -213,24 +215,62 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
     @QtCore.pyqtSlot()
     def load_MTL(self):
-        """Load MTL file currently specified in QLineEdit"""
-
-        # process and load a new MTL file
+        """Load a new MTL file currently specified in QLineEdit"""
 
         self.mtl_path = str(self.lineEdit_PathMTL.text())
 
+        # check if MTL exist
         if not os.path.isfile(self.mtl_path):
             self.status_LoadedMTL.setText(self.tr(u"Error: File not exist"))
+            self.unload_MTL()
             return
 
-        # load the MTL file
+        # parse the new MTL file
         try:
             self.mtl_file = cloud_masking_utils.mtl2dict(self.mtl_path)
             # get the landsat version
             self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
         except:
             self.status_LoadedMTL.setText(self.tr(u"Error: Cannot parse MTL file"))
+            self.unload_MTL()
             return
+
+        # check if there are the basic images for process
+        # these are: "_bandX.tif" or "_BX.TIF"
+        #
+        # set bands for reflective and thermal
+        if self.landsat_version in [4, 5]:
+            # get the reflective file names bands
+            reflective_and_thermal_bands = [
+                os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_'+str(N)])
+                for N in [1, 2, 3, 4, 5, 7, 6]]
+        if self.landsat_version in [7]:
+            # get the reflective file names bands
+            reflective_and_thermal_bands = [
+                os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_'+str(N)])
+                for N in [1, 2, 3, 4, 5, 7]]
+            reflective_and_thermal_bands += [
+                os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_6_VCID_' + str(N)])
+                for N in [1, 2]]
+        if self.landsat_version in [8]:
+            # get the reflective file names bands
+            reflective_and_thermal_bands = [
+                os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_'+str(N)])
+                for N in [1, 2, 3, 4, 5, 6, 7, 9, 10, 11]]
+
+        # set the prefer file name band for process
+        reflective_and_thermal_bands = [get_prefer_name(file_path) for file_path in reflective_and_thermal_bands]
+
+        # check if reflective_and_thermal_bands exists
+        for file_path in reflective_and_thermal_bands:
+            if not os.path.isfile(file_path):
+                msg = "The file {} not exists , is necessary that the raw bands _bandN.tif or _BN.TIF of Landsat " \
+                           "are in the same location as the MTL file.".format(os.path.basename(file_path))
+                QMessageBox.question(self, 'Problem while Loading the new MTL...',
+                                             msg, QMessageBox.Ok)
+                self.status_LoadedMTL.setText(self.tr(u"Error: Not raw landsat files"))
+                self.unload_MTL()
+                return
 
         #### Process post MTL loaded (If we load it okay)
         # MTL info

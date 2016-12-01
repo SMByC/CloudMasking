@@ -793,6 +793,7 @@ class CloudMasking:
         # check if is the same MTL
         if self.dockwidget.mtl_path == str(self.dockwidget.lineEdit_PathMTL.text()):
             return
+
         # first prompt to user if delete the current
         # process and load a new MTL file
         if self.dockwidget.status_LoadedMTL.isChecked():
@@ -803,6 +804,7 @@ class CloudMasking:
                 return
         # run clean all
         self.clear_all()
+
         # run load MTL
         self.dockwidget.load_MTL()
 
