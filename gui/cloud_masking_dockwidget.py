@@ -311,6 +311,11 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.SelectBand_B.addItems([str(b) for b in self.reflectance_bands])
 
         #### blue Band adjusts UI limits
+        if self.landsat_version in [4, 5, 7]:
+            self.horizontalSlider_BB.setMaximum(255)
+            self.horizontalSlider_BB.setValue(self.bb_threshold_L457)
+            self.doubleSpinBox_BB.setMaximum(255)
+            self.doubleSpinBox_BB.setValue(self.bb_threshold_L457)
         if self.landsat_version in [8]:
             self.horizontalSlider_BB.setMaximum(40000)
             self.horizontalSlider_BB.setValue(self.bb_threshold_L8)
