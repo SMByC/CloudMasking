@@ -323,6 +323,11 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.doubleSpinBox_BB.setValue(self.bb_threshold_L8)
 
         #### Cloud QA adjusts
+        # hidden blocks and unchecked
+        self.widget_CloudQA_L8.setHidden(True)
+        self.widget_CloudQA_L457.setHidden(True)
+        self.checkBox_CloudQA.setChecked(False)
+        self.label_CloudQA_FileStatus.setVisible(False)
         # search and check Cloud QA files
         if self.landsat_version in [4, 5, 7]:
             self.cloud_qa_file = os.path.join(os.path.dirname(self.mtl_path),
@@ -334,16 +339,11 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             # check Cloud QA files
             if os.path.isfile(self.cloud_qa_file) and os.path.isfile(self.shadow_qa_file) and os.path.isfile(self.adjacent_qa_file):
                 self.checkBox_CloudQA.setEnabled(True)
-                self.label_CloudQA_FileStatus.setVisible(False)
                 try: self.checkBox_CloudQA.clicked.disconnect()
                 except: pass
-                self.widget_CloudQA_L8.setHidden(True)
-                self.checkBox_CloudQA.setChecked(False)
                 self.checkBox_CloudQA.clicked.connect(self.widget_CloudQA_L457.setVisible)
             else:
                 self.label_CloudQA_FileStatus.setVisible(True)
-                self.widget_CloudQA_L457.setHidden(True)
-                self.checkBox_CloudQA.setChecked(False)
                 self.checkBox_CloudQA.setEnabled(False)
 
         if self.landsat_version in [8]:
@@ -351,17 +351,12 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                                          self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud.tif"))
             # check Cloud QA file
             if os.path.isfile(self.cloud_qa_file):
-                self.label_CloudQA_FileStatus.setVisible(False)
                 self.checkBox_CloudQA.setEnabled(True)
                 try: self.checkBox_CloudQA.clicked.disconnect()
                 except: pass
-                self.widget_CloudQA_L457.setHidden(True)
-                self.checkBox_CloudQA.setChecked(False)
                 self.checkBox_CloudQA.clicked.connect(self.widget_CloudQA_L8.setVisible)
             else:
                 self.label_CloudQA_FileStatus.setVisible(True)
-                self.widget_CloudQA_L8.setHidden(True)
-                self.checkBox_CloudQA.setChecked(False)
                 self.checkBox_CloudQA.setEnabled(False)
 
         #### QA Band adjusts
