@@ -360,18 +360,19 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 self.checkBox_CloudQA.setEnabled(False)
 
         #### QA Band adjusts
+        # hidden blocks and unchecked
+        self.label_QABand_FileStatus.setVisible(False)
+        self.checkBox_QABand.setChecked(False)
+        self.widget_QABand.setHidden(True)
         # search and check QA Band file
         self.qa_band_file = os.path.join(os.path.dirname(self.mtl_path),
                                          self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_qa.tif"))
         # check QA Band file exists
         if os.path.isfile(self.qa_band_file):
             self.checkBox_QABand.setEnabled(True)
-            self.label_QABand_FileStatus.setVisible(False)
             self.checkBox_QABand.clicked.connect(self.widget_QABand.setVisible)
         else:
             self.label_QABand_FileStatus.setVisible(True)
-            self.widget_QABand.setVisible(False)
-            self.checkBox_QABand.setChecked(False)
             self.checkBox_QABand.setEnabled(False)
 
         #### Enable apply to SR reflectance stack if are available
