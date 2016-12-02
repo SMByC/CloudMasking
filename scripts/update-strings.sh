@@ -4,7 +4,7 @@ LOCALES=$*
 # Get newest .py files so we don't update strings unnecessarily
 
 CHANGED_FILES=0
-PYTHON_FILES=`find . -regex ".*\(ui\|py\)$" -type f`
+PYTHON_FILES=`find . -regex ".*\(ui\|py\)$" -type f ! -path "./libs/rios/*" ! -path "./libs/fmask/*"`
 for PYTHON_FILE in $PYTHON_FILES
 do
   CHANGED=$(stat -c %Y $PYTHON_FILE)
@@ -40,7 +40,7 @@ done
 if [ ${UPDATE} == true ]
 # retrieve all python files
 then
-  print ${PYTHON_FILES}
+  echo ${PYTHON_FILES}
   # update .ts
   echo "Please provide translations by editing the translation files below:"
   for LOCALE in ${LOCALES}
