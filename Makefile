@@ -24,7 +24,7 @@
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
 # LOCALES = af
-LOCALES =
+LOCALES = es
 
 # If locales are enabled, set the name of the lrelease binary on your system. If
 # you have trouble compiling the translations, you may have to specify the full path to
@@ -36,15 +36,15 @@ LOCALES =
 # translation
 SOURCES = \
 	__init__.py \
-	cloud_masking.py cloud_masking_dockwidget.py
+	cloud_masking.py gui/cloud_masking_dockwidget.py
 
 PLUGINNAME = CloudMasking
 
 PY_FILES = \
 	__init__.py \
-	cloud_masking.py cloud_masking_dockwidget.py
+	cloud_masking.py gui/cloud_masking_dockwidget.py
 
-UI_FILES = cloud_masking_dockwidget_base.ui
+UI_FILES = ui/cloud_masking_dockwidget_base.ui
 
 EXTRAS = metadata.txt icon.png
 

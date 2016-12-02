@@ -8,14 +8,12 @@
 
 [general]
 name=Cloud Masking
-qgisMinimumVersion=2.0
-description=Cloud masking using different process suck as fmask
-version=0.1
+qgisMinimumVersion=2.14
+description=Cloud masking for Landsat (4, 5, 7 and 8) products using different process such as Fmask, Blue band, Cloud QA and QA Band.
+version=16.12.02
 author=Xavier Corredor Llano, SMBYC
 email=xcorredorl@ideam.gov.co
-
-about=Cloud masking using different process suck as fmask
-
+about=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7 and 8) products using different process such as Fmask, Blue Band, Cloud QA and QA Band
 tracker=https://bitbucket.org/SMBYC/qgisplugin-cloudmasking/issues
 repository=https://bitbucket.org/SMBYC/qgisplugin-cloudmasking
 # End of mandatory metadata
@@ -26,13 +24,13 @@ repository=https://bitbucket.org/SMBYC/qgisplugin-cloudmasking
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=mask,satellital,cloud
+tags=cloud,masking,landsat,raster
 
 homepage=https://bitbucket.org/SMBYC/qgisplugin-cloudmasking
-category=Plugins
+category=Raster
 icon=icon.png
 # experimental flag
-experimental=True
+experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
