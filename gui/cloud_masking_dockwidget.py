@@ -156,8 +156,17 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.widget_QA_Cloud.setHidden(True)
 
         # Generate the cloud mask #########
-        # selected area start hidden
+        # shape and selected area start hidden
         self.widget_ExtentSelector.setHidden(True)
+        self.widget_ShapeSelector.setHidden(True)
+        # connections
+        def selector(widget_from, widget_to):
+            if widget_from.isChecked():
+                widget_to.setChecked(False)
+        self.checkBox_ExtentSelector.toggled.connect(
+            lambda: selector(self.checkBox_ExtentSelector, self.checkBox_ShapeSelector))
+        self.checkBox_ShapeSelector.toggled.connect(
+            lambda: selector(self.checkBox_ShapeSelector, self.checkBox_ExtentSelector))
 
         # Extent selector widget #########
         # set the extent selector

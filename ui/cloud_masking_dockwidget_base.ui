@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>585</width>
-    <height>845</height>
+    <width>589</width>
+    <height>915</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -56,8 +56,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>571</width>
-             <height>755</height>
+             <width>575</width>
+             <height>825</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -169,16 +169,7 @@
                   <property name="spacing">
                    <number>0</number>
                   </property>
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="bottomMargin">
+                  <property name="margin">
                    <number>0</number>
                   </property>
                   <item>
@@ -323,16 +314,7 @@
                            <property name="spacing">
                             <number>0</number>
                            </property>
-                           <property name="leftMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="topMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="rightMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="bottomMargin">
+                           <property name="margin">
                             <number>0</number>
                            </property>
                            <item>
@@ -476,9 +458,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-446</y>
-             <width>551</width>
-             <height>2130</height>
+             <y>-1424</y>
+             <width>555</width>
+             <height>2249</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -579,16 +561,7 @@
                   <item row="0" column="0">
                    <widget class="QWidget" name="widget_18" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_17">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -675,16 +648,7 @@
                            <item>
                             <widget class="QWidget" name="widget_QA_Water" native="true">
                              <layout class="QGridLayout" name="gridLayout_10">
-                              <property name="leftMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="bottomMargin">
+                              <property name="margin">
                                <number>0</number>
                               </property>
                               <item row="0" column="0">
@@ -751,16 +715,7 @@
                            <item>
                             <widget class="QWidget" name="widget_QA_SnowIce" native="true">
                              <layout class="QGridLayout" name="gridLayout_11">
-                              <property name="leftMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="bottomMargin">
+                              <property name="margin">
                                <number>0</number>
                               </property>
                               <item row="0" column="0">
@@ -827,16 +782,7 @@
                            <item>
                             <widget class="QWidget" name="widget_QA_Cirrus" native="true">
                              <layout class="QGridLayout" name="gridLayout_12">
-                              <property name="leftMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="bottomMargin">
+                              <property name="margin">
                                <number>0</number>
                               </property>
                               <item row="0" column="0">
@@ -903,16 +849,7 @@
                            <item>
                             <widget class="QWidget" name="widget_QA_Cloud" native="true">
                              <layout class="QGridLayout" name="gridLayout_13">
-                              <property name="leftMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="bottomMargin">
+                              <property name="margin">
                                <number>0</number>
                               </property>
                               <item row="0" column="0">
@@ -964,16 +901,7 @@
                         <item>
                          <widget class="QWidget" name="widget_19" native="true">
                           <layout class="QHBoxLayout" name="horizontalLayout_18">
-                           <property name="leftMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="topMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="rightMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="bottomMargin">
+                           <property name="margin">
                             <number>0</number>
                            </property>
                            <item>
@@ -1384,16 +1312,7 @@ You can add multiple values separated by comma</string>
                      <property name="spacing">
                       <number>6</number>
                      </property>
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -1546,16 +1465,7 @@ You can add multiple values separated by comma</string>
                            <item>
                             <widget class="QWidget" name="widget_CloudQA_Aerosol" native="true">
                              <layout class="QGridLayout" name="gridLayout_14">
-                              <property name="leftMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="bottomMargin">
+                              <property name="margin">
                                <number>0</number>
                               </property>
                               <item row="0" column="0">
@@ -1607,16 +1517,7 @@ You can add multiple values separated by comma</string>
                         <item>
                          <widget class="QWidget" name="widget_17" native="true">
                           <layout class="QHBoxLayout" name="horizontalLayout_16">
-                           <property name="leftMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="topMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="rightMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="bottomMargin">
+                           <property name="margin">
                             <number>0</number>
                            </property>
                            <item>
@@ -1659,16 +1560,32 @@ You can add multiple values separated by comma</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_6">
                <item row="0" column="0">
-                <widget class="QCheckBox" name="checkBox_ExtentSelector">
-                 <property name="text">
-                  <string>In only selected area</string>
-                 </property>
+                <widget class="QWidget" name="widget_21" native="true">
+                 <layout class="QHBoxLayout" name="horizontalLayout_20">
+                  <property name="margin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QCheckBox" name="checkBox_ExtentSelector">
+                    <property name="text">
+                     <string>In only selected area</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="checkBox_ShapeSelector">
+                    <property name="text">
+                     <string>In only shape area</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
                </item>
                <item row="1" column="0">
                 <widget class="ExtentSelector" name="widget_ExtentSelector" native="true"/>
                </item>
-               <item row="2" column="0">
+               <item row="3" column="0">
                 <widget class="QFrame" name="frame">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
@@ -1705,16 +1622,7 @@ You can add multiple values separated by comma</string>
                      <property name="spacing">
                       <number>0</number>
                      </property>
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -1753,6 +1661,57 @@ You can add multiple values separated by comma</string>
                       </widget>
                      </item>
                     </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QWidget" name="widget_ShapeSelector" native="true">
+                 <layout class="QVBoxLayout" name="verticalLayout_31">
+                  <property name="leftMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>10</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_23">
+                    <property name="text">
+                     <string>Select the shape for apply</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QWidget" name="widget_22" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_21">
+                     <property name="margin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLineEdit" name="lineEdit_ShapeSelector"/>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="pushButton_ShapeSelector">
+                       <property name="text">
+                        <string>Select...</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="shapeSelector_CutWithShape">
+                    <property name="text">
+                     <string>Cut the image with the shape</string>
+                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -1801,8 +1760,8 @@ You can add multiple values separated by comma</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>571</width>
-             <height>755</height>
+             <width>575</width>
+             <height>825</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1834,16 +1793,7 @@ You can add multiple values separated by comma</string>
                   <item row="1" column="0">
                    <widget class="QWidget" name="widget_8" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_9">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -1892,16 +1842,7 @@ You can add multiple values separated by comma</string>
                   <item row="4" column="0">
                    <widget class="QWidget" name="widget_9" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_11">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -1955,16 +1896,7 @@ You can add multiple values separated by comma</string>
                   <item>
                    <widget class="QWidget" name="widget_6" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_3">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -2013,16 +1945,7 @@ You can add multiple values separated by comma</string>
                   <item>
                    <widget class="QWidget" name="widget_ApplyToFile" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_7">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -2054,16 +1977,7 @@ You can add multiple values separated by comma</string>
                   <item row="1" column="1">
                    <widget class="QWidget" name="widget_4" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_2">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -2107,16 +2021,7 @@ You can add multiple values separated by comma</string>
                <item>
                 <widget class="QWidget" name="widget_7" native="true">
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="bottomMargin">
+                  <property name="margin">
                    <number>0</number>
                   </property>
                   <item>
@@ -2135,16 +2040,7 @@ You can add multiple values separated by comma</string>
                      <property name="spacing">
                       <number>0</number>
                      </property>
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -2232,12 +2128,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>190</x>
-     <y>134</y>
+     <x>201</x>
+     <y>-1272</y>
     </hint>
     <hint type="destinationlabel">
-     <x>176</x>
-     <y>171</y>
+     <x>187</x>
+     <y>-1112</y>
     </hint>
    </hints>
   </connection>
@@ -2248,12 +2144,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>245</x>
-     <y>654</y>
+     <x>256</x>
+     <y>-796</y>
     </hint>
     <hint type="destinationlabel">
-     <x>245</x>
-     <y>748</y>
+     <x>256</x>
+     <y>-725</y>
     </hint>
    </hints>
   </connection>
@@ -2265,27 +2161,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>139</x>
-     <y>1375</y>
+     <y>-98</y>
     </hint>
     <hint type="destinationlabel">
-     <x>262</x>
-     <y>2041</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox_ExtentSelector</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>widget_ExtentSelector</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>66</x>
-     <y>2107</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>68</x>
-     <y>2144</y>
+     <x>273</x>
+     <y>568</y>
     </hint>
    </hints>
   </connection>
@@ -2296,12 +2176,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>530</x>
-     <y>377</y>
+     <x>477</x>
+     <y>376</y>
     </hint>
     <hint type="destinationlabel">
-     <x>533</x>
-     <y>426</y>
+     <x>126</x>
+     <y>413</y>
     </hint>
    </hints>
   </connection>
@@ -2312,12 +2192,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>318</x>
-     <y>1613</y>
+     <x>341</x>
+     <y>140</y>
     </hint>
     <hint type="destinationlabel">
-     <x>403</x>
-     <y>1605</y>
+     <x>434</x>
+     <y>132</y>
     </hint>
    </hints>
   </connection>
@@ -2328,12 +2208,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>218</x>
-     <y>1738</y>
+     <x>241</x>
+     <y>265</y>
     </hint>
     <hint type="destinationlabel">
-     <x>301</x>
-     <y>1730</y>
+     <x>332</x>
+     <y>257</y>
     </hint>
    </hints>
   </connection>
@@ -2344,12 +2224,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>212</x>
-     <y>1863</y>
+     <x>235</x>
+     <y>390</y>
     </hint>
     <hint type="destinationlabel">
-     <x>298</x>
-     <y>1855</y>
+     <x>329</x>
+     <y>382</y>
     </hint>
    </hints>
   </connection>
@@ -2360,12 +2240,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>228</x>
-     <y>1988</y>
+     <x>251</x>
+     <y>515</y>
     </hint>
     <hint type="destinationlabel">
-     <x>301</x>
-     <y>1980</y>
+     <x>332</x>
+     <y>507</y>
     </hint>
    </hints>
   </connection>
@@ -2376,12 +2256,44 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>296</x>
-     <y>1269</y>
+     <x>319</x>
+     <y>-204</y>
     </hint>
     <hint type="destinationlabel">
-     <x>312</x>
-     <y>1261</y>
+     <x>343</x>
+     <y>-212</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_ShapeSelector</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widget_ShapeSelector</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>405</x>
+     <y>648</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>427</x>
+     <y>690</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_ExtentSelector</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widget_ExtentSelector</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>107</x>
+     <y>648</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>119</x>
+     <y>677</y>
     </hint>
    </hints>
   </connection>

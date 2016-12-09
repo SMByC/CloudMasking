@@ -577,7 +577,7 @@ class CloudMasking:
         # mask in selected area
 
         if self.dockwidget.checkBox_ExtentSelector.isChecked() and \
-            self.dockwidget.widget_ExtentSelector.checkBox_KeepOriginalSize.isChecked():
+            self.dockwidget.widget_ExtentSelector.extentSelector_KeepOriginalSize.isChecked():
             img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                 self.dockwidget.mtl_file['FILE_NAME_BAND_1']))
             extent = get_extent(img_path)

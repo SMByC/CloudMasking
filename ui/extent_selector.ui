@@ -6,21 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>399</width>
+    <width>398</width>
     <height>139</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item row="3" column="0">
@@ -46,7 +37,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkBox_KeepOriginalSize">
+       <widget class="QCheckBox" name="extentSelector_KeepOriginalSize">
         <property name="toolTip">
          <string>Process in the selected area but keep the original image size for save and apply mask</string>
         </property>
