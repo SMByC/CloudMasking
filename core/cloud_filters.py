@@ -22,6 +22,7 @@
 import os, sys
 import tempfile
 from datetime import datetime
+from subprocess import call
 
 from PyQt4.QtCore import QCoreApplication
 
@@ -61,6 +62,7 @@ class CloudMaskingResult(object):
         self.process_bar = None
         # set initial clipping status
         self.clipping_extent = False
+        self.clipping_with_shape = False
         # save all result files of cloud masking
         self.cloud_masking_files = []
 
@@ -110,6 +112,25 @@ class CloudMaskingResult(object):
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
 
+    def clip(self, in_stack_file, out_clipped_file):
+        """
+        Clipping the stack file only if is activated selected area or shape area,
+        else return the original image
+        """
+        if not self.clipping_extent and not self.clipping_with_shape:
+            return in_stack_file
+
+        update_process_bar(self.process_bar, 24, self.process_status,
+                           self.tr(u"Clipping the reflective stack..."))
+
+        if self.clipping_extent:
+            self.do_clipping_extent(in_stack_file, out_clipped_file)
+
+        if self.clipping_with_shape:
+            self.do_clipping_with_shape(in_stack_file, self.shape_path, out_clipped_file)
+
+        return out_clipped_file
+
     def do_clipping_extent(self, in_file, out_file):
         # check and adjust the maximum/minimum values for extent selected
         # based on the original image
@@ -122,6 +143,14 @@ class CloudMaskingResult(object):
         gdal_clip.main(in_file, out_file, [self.extent_x1, self.extent_x2, self.extent_y2, self.extent_y1])
         # TODO: make this with Translate, but check if the pixes moves after clipping
         #Translate(out_file, in_file, projWin=[self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2])
+
+    def do_clipping_with_shape(self, stack_file, shape_path, clip_file):
+        pass
+        # return_code = call(
+        #     'gdal_translate -projwin ' +
+        #     ' '.join([str(x) for x in [self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2]]) +
+        #     ' -of GTiff ' + in_file + ' ' + out_file,
+        #     shell=True)
 
     def do_fmask(self, filters_enabled, min_cloud_size=0, cloud_buffer_size=4, shadow_buffer_size=6, cirrus_prob_ratio=0.04,
                  nir_fill_thresh=0.02, swir2_thresh=0.03, whiteness_thresh=0.7, swir2_water_test=0.03):
@@ -153,30 +182,14 @@ class CloudMaskingResult(object):
                              self.thermal_stack_file] + self.thermal_bands)
 
         ########################################
-        # clipping the reflective bands stack
-
-        if self.clipping_extent:
-            update_process_bar(self.process_bar, 24, self.process_status,
-                               self.tr(u"Clipping the reflective stack..."))
-
-            self.reflective_stack_clip_file = os.path.join(self.tmp_dir, "reflective_stack_clip.tif")
-            self.do_clipping_extent(self.reflective_stack_file, self.reflective_stack_clip_file)
-            self.reflective_stack_for_process = self.reflective_stack_clip_file
-        else:
-            self.reflective_stack_for_process = self.reflective_stack_file
+        # clipping the reflective bands stack (only if is activated selected area or shape area)
+        self.reflective_stack_clip_file = os.path.join(self.tmp_dir, "reflective_stack_clip.tif")
+        self.reflective_stack_for_process = self.clip(self.reflective_stack_file, self.reflective_stack_clip_file)
 
         ########################################
-        # clipping the thermal bands stack
-
-        if self.clipping_extent:
-            update_process_bar(self.process_bar, 27, self.process_status,
-                               self.tr(u"Clipping the thermal stack..."))
-
-            self.thermal_stack_clip_file = os.path.join(self.tmp_dir, "thermal_stack_clip.tif")
-            self.do_clipping_extent(self.thermal_stack_file, self.thermal_stack_clip_file)
-            self.thermal_stack_for_process = self.thermal_stack_clip_file
-        else:
-            self.thermal_stack_for_process = self.thermal_stack_file
+        # clipping the thermal bands stack (only if is activated selected area or shape area)
+        self.thermal_stack_clip_file = os.path.join(self.tmp_dir, "thermal_stack_clip.tif")
+        self.thermal_stack_for_process = self.clip(self.thermal_stack_file, self.thermal_stack_clip_file)
 
         ########################################
         # estimates of per-pixel angles for sun
@@ -343,13 +356,9 @@ class CloudMaskingResult(object):
         self.blue_band_file = get_prefer_name(self.blue_band_file)
 
         ########################################
-        # clipping the Blue Band
-        if self.clipping_extent:
-            self.blue_band_clip_file = os.path.join(self.tmp_dir, "blue_band_clip.tif")
-            self.do_clipping_extent(self.blue_band_file, self.blue_band_clip_file)
-            self.blue_band_for_process = self.blue_band_clip_file
-        else:
-            self.blue_band_for_process = self.blue_band_file
+        # clipping the Blue Band (only if is activated selected area or shape area)
+        self.blue_band_clip_file = os.path.join(self.tmp_dir, "blue_band_clip.tif")
+        self.blue_band_for_process = self.clip(self.blue_band_file, self.blue_band_clip_file)
 
         ########################################
         # do blue band filter
@@ -376,13 +385,9 @@ class CloudMaskingResult(object):
                                    self.tr(u"Error: file not exist for QA mask selected"))
                 return
             ########################################
-            # clipping the QA Mask
-            if self.clipping_extent:
-                self.cloud_qa_clip_file = os.path.join(self.tmp_dir, "cloud_qa_clip_{}.tif".format(cqa_count))
-                self.do_clipping_extent(cloud_qa, self.cloud_qa_clip_file)
-                self.cloud_qa_for_process = self.cloud_qa_clip_file
-            else:
-                self.cloud_qa_for_process = cloud_qa
+            # clipping the QA Mask (only if is activated selected area or shape area)
+            self.cloud_qa_clip_file = os.path.join(self.tmp_dir, "cloud_qa_clip_{}.tif".format(cqa_count))
+            self.cloud_qa_for_process = self.clip(cloud_qa, self.cloud_qa_clip_file)
 
             ########################################
             # do QA Mask filter
@@ -423,13 +428,9 @@ class CloudMaskingResult(object):
                            self.tr(u"Making the Cloud QA filter..."))
 
         ########################################
-        # clipping the QA Mask
-        if self.clipping_extent:
-            self.cloud_qa_clip_file = os.path.join(self.tmp_dir, "cloud_qa_clip.tif")
-            self.do_clipping_extent(cloud_qa_file, self.cloud_qa_clip_file)
-            self.cloud_qa_for_process = self.cloud_qa_clip_file
-        else:
-            self.cloud_qa_for_process = cloud_qa_file
+        # clipping the QA Mask (only if is activated selected area or shape area)
+        self.cloud_qa_clip_file = os.path.join(self.tmp_dir, "cloud_qa_clip.tif")
+        self.cloud_qa_for_process = self.clip(cloud_qa_file, self.cloud_qa_clip_file)
 
         ########################################
         # convert selected items to binary and decimal values
@@ -500,13 +501,9 @@ class CloudMaskingResult(object):
                            self.tr(u"Making the QA Band filter..."))
 
         ########################################
-        # clipping the QA Mask
-        if self.clipping_extent:
-            self.qa_band_clip_file = os.path.join(self.tmp_dir, "qa_band_clip.tif")
-            self.do_clipping_extent(qa_band_file, self.qa_band_clip_file)
-            self.qa_band_for_process = self.qa_band_clip_file
-        else:
-            self.qa_band_for_process = qa_band_file
+        # clipping the QA Mask (only if is activated selected area or shape area)
+        self.qa_band_clip_file = os.path.join(self.tmp_dir, "qa_band_clip.tif")
+        self.qa_band_for_process = self.clip(qa_band_file, self.qa_band_clip_file)
 
         ########################################
         # convert selected items to binary and decimal values

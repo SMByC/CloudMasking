@@ -403,6 +403,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.mtl_path = None
         # deactivate filters box
         self.groupBox_Filters.setEnabled(False)
+        self.groupBox_GenerateMask.setEnabled(False)
         # deactivate save and apply box
         self.groupBox_SelectMask.setEnabled(False)
         self.groupBox_ApplyMask.setEnabled(False)

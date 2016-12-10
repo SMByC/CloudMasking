@@ -28,7 +28,7 @@ import gdal
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
 from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox, QApplication, QCursor, QFileDialog
 from PyQt4.QtGui import QCheckBox, QGroupBox, QRadioButton
-from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer
+from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer, QgsVectorLayer
 # Initialize Qt resources from file resources.py
 import resources
 
@@ -281,6 +281,9 @@ class CloudMasking:
                         lambda: self.set_color_stack("infrareds"))
         # call to process load stack
         QObject.connect(self.dockwidget.button_processLoadStack, SIGNAL("clicked()"), self.load_stack)
+        # call to search shape area selector file
+        self.dockwidget.pushButton_ShapeSelector.clicked.connect(self.fileDialog_ShapeSelector)
+        self.dockwidget.pushButton_LoadShapeSelector.clicked.connect(self.load_shape_selector)
         # call to process mask
         QObject.connect(self.dockwidget.button_processMask, SIGNAL("clicked()"), self.process_mask)
         # save mask
@@ -353,6 +356,26 @@ class CloudMasking:
         update_process_bar(self.dockwidget.bar_progressLoadStack, 100,
                            self.dockwidget.status_processLoadStack, self.tr(u"DONE"))
 
+    def fileDialog_ShapeSelector(self):
+        """Open QFileDialog for select the shape area file to apply mask
+        """
+        shape_file_path = str(QFileDialog.getOpenFileName(self.dockwidget, self.tr(u"Select the shape file"),
+                                os.path.dirname(self.dockwidget.mtl_path),
+                                self.tr(u"Shape files (*.shp);;All files (*.*)")))
+
+        if shape_file_path != '':
+            self.dockwidget.lineEdit_ShapeSelector.setText(shape_file_path)
+
+    def load_shape_selector(self):
+        shape_path = self.dockwidget.lineEdit_ShapeSelector.text()
+        if shape_path != '' and os.path.isfile(shape_path):
+            # Open in QGIS
+            shape_layer = QgsVectorLayer(shape_path, "Shape area ({})".format(os.path.basename(shape_path)), "ogr")
+            if shape_layer.isValid():
+                QgsMapLayerRegistry.instance().addMapLayer(shape_layer)
+            else:
+                self.iface.messageBar().pushMessage("Error", "Shape {} failed to load!".format(os.path.basename(shape_path)))
+
     def process_mask(self):
         """Make the process
         """
@@ -392,6 +415,10 @@ class CloudMasking:
             self.masking_result.extent_y2 = float(self.dockwidget.widget_ExtentSelector.y2CoordEdit.text())
         else:
             self.masking_result.clipping_extent = False
+        # set for the shape selector
+        if self.dockwidget.checkBox_ShapeSelector.isChecked():
+            self.masking_result.clipping_with_shape = True
+            self.masking_result.shape_path = self.dockwidget.lineEdit_ShapeSelector.text()
 
         ########################################
         # FMask filter
@@ -577,9 +604,9 @@ class CloudMasking:
         # mask in selected area
 
         if self.dockwidget.checkBox_ExtentSelector.isChecked() and \
-            self.dockwidget.widget_ExtentSelector.extentSelector_KeepOriginalSize.isChecked():
+           self.dockwidget.widget_ExtentSelector.extentSelector_KeepOriginalSize.isChecked():
             img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
-                                                self.dockwidget.mtl_file['FILE_NAME_BAND_1']))
+                                                    self.dockwidget.mtl_file['FILE_NAME_BAND_1']))
             extent = get_extent(img_path)
             # expand
             gdal.Translate(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file,
@@ -605,17 +632,23 @@ class CloudMasking:
             os.remove(self.masking_result.angles_file)
             os.remove(self.masking_result.saturationmask_file)
             os.remove(self.masking_result.toa_file)
-            if self.masking_result.clipping_extent:
+            if os.path.isfile(self.masking_result.reflective_stack_clip_file):
                 os.remove(self.masking_result.reflective_stack_clip_file)
+            if os.path.isfile(self.masking_result.thermal_stack_clip_file):
                 os.remove(self.masking_result.thermal_stack_clip_file)
         # from blue band
         if self.dockwidget.checkBox_BlueBand.isChecked():
-            if self.masking_result.clipping_extent:
+            if os.path.isfile(self.masking_result.blue_band_clip_file):
                 os.remove(self.masking_result.blue_band_clip_file)
         # from cloud QA
         if self.dockwidget.checkBox_CloudQA.isChecked():
-            if self.masking_result.clipping_extent:
+            if os.path.isfile(self.masking_result.cloud_qa_clip_file):
                 os.remove(self.masking_result.cloud_qa_clip_file)
+        # from QA Band
+        if self.dockwidget.checkBox_QABand.isChecked():
+            if os.path.isfile(self.masking_result.qa_band_clip_file):
+                os.remove(self.masking_result.qa_band_clip_file)
+
         # from original blended files
         for cloud_masking_file in self.masking_result.cloud_masking_files:
             if cloud_masking_file != self.final_cloud_mask_file:
@@ -850,6 +883,17 @@ class CloudMasking:
                 if file_tmp == layer_loaded.dataProvider().dataSourceUri():
                     layersToRemove.append(layer_loaded)
         QgsMapLayerRegistry.instance().removeMapLayers(layersToRemove)
+
+        # unload shape area if exists
+        for layer_name, layer_loaded in QgsMapLayerRegistry.instance().mapLayers().items():
+            if layer_name.startswith("Shape_area__"):
+                QgsMapLayerRegistry.instance().removeMapLayer(layer_loaded)
+        # clear
+        try:
+            self.dockwidget.checkBox_ExtentSelector.setChecked(False)
+            self.dockwidget.checkBox_ShapeSelector.setChecked(False)
+            self.dockwidget.lineEdit_ShapeSelector.setText("")
+        except: pass
 
         # clear self.dockwidget.tmp_dir
         try:
