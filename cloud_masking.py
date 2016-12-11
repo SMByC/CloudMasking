@@ -388,8 +388,7 @@ class CloudMasking:
                 not self.dockwidget.checkBox_CloudQA.isChecked() and
                 not self.dockwidget.checkBox_QABand.isChecked()):
             self.dockwidget.status_processMask.setText(
-                self.tr(u"Error: no filters enabled for apply")
-            )
+                self.tr(u"Error: no filters enabled for apply"))
             return
 
         # create the masking result instance if not exist
@@ -423,6 +422,22 @@ class CloudMasking:
                 self.masking_result.crop_to_cutline = True
             else:
                 self.masking_result.crop_to_cutline = False
+
+        # check extent area selector and shape file
+        if self.dockwidget.checkBox_ExtentSelector.isChecked() and not self.dockwidget.isExtentAreaSelected:
+            self.dockwidget.status_processMask.setText(
+                self.tr(u"Error: not area selected in canvas"))
+            return
+
+        if self.dockwidget.checkBox_ShapeSelector.isChecked():
+            if not self.masking_result.shape_path:
+                self.dockwidget.status_processMask.setText(
+                    self.tr(u"Error: not shape file defined"))
+                return
+            if not os.path.isfile(self.masking_result.shape_path):
+                self.dockwidget.status_processMask.setText(
+                    self.tr(u"Error: shape file not exists"))
+                return
 
         ########################################
         # FMask filter
