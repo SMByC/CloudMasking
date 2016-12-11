@@ -458,7 +458,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-857</y>
+             <y>-1424</y>
              <width>555</width>
              <height>2249</height>
             </rect>
@@ -1717,7 +1717,7 @@ You can add multiple values separated by comma</string>
                   <item>
                    <widget class="QCheckBox" name="shapeSelector_CutWithShape">
                     <property name="text">
-                     <string>Cut the image with the shape</string>
+                     <string>Delete data outside the shape</string>
                     </property>
                    </widget>
                   </item>
@@ -1968,7 +1968,7 @@ You can add multiple values separated by comma</string>
                      <item>
                       <widget class="QLineEdit" name="lineEdit_StackBands">
                        <property name="toolTip">
-                        <string>Enter the bands for stack to apply mask, bands ordened and separated by comma</string>
+                        <string>Enter the bands for stack to apply mask, bands ordered and separated by comma</string>
                        </property>
                       </widget>
                      </item>
