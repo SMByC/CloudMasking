@@ -178,7 +178,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         # Apply and save #########
         # start hidden
-        self.radioButton_ToSR_RefStack.setHidden(True)
+        self.radioButton_ToSR_Bands.setHidden(True)
         self.widget_ApplyToFile.setHidden(True)
 
     # radiobutton status MTL
@@ -390,8 +390,15 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 self.mtl_file['FILE_NAME_BAND_' + str(N)].replace("_B", "_sr_band").replace(".TIF", ".tif"))
                 for N in self.reflectance_bands]]
         if all(exists_sr_files):
-            self.radioButton_ToSR_RefStack.setVisible(True)
-            self.radioButton_ToSR_RefStack.setChecked(True)
+            self.radioButton_ToSR_Bands.setVisible(True)
+            self.radioButton_ToSR_Bands.setChecked(True)
+
+        #### Set the stack bands by default in stack to apply
+        if self.landsat_version in [4, 5, 7]:
+            reflectance_bands = [1, 2, 3, 4, 5, 7]
+        if self.landsat_version in [8]:
+            reflectance_bands = [2, 3, 4, 5, 6, 7]
+        self.lineEdit_StackBands.setText(','.join([str(x) for x in reflectance_bands]))
 
     def unload_MTL(self):
         """Disconnect, unload and remove temporal files of old MTL
@@ -407,8 +414,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # deactivate save and apply box
         self.groupBox_SelectMask.setEnabled(False)
         self.groupBox_ApplyMask.setEnabled(False)
-        self.radioButton_ToSR_RefStack.setHidden(True)
-        self.radioButton_ToRefStack.setChecked(True)
+        self.radioButton_ToSR_Bands.setHidden(True)
+        self.radioButton_ToRaw_Bands.setChecked(True)
         self.widget_ApplyToFile.setHidden(True)
 
         # Load stack and clear all #########

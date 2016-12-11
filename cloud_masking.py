@@ -731,7 +731,7 @@ class CloudMasking:
     def fileDialog_SaveResult(self):
         """Open QFileDialog for save result after apply mask
         """
-        if self.dockwidget.radioButton_ToSR_RefStack.isChecked():
+        if self.dockwidget.radioButton_ToSR_Bands.isChecked():
             suggested_filename_result = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "SR_Enmask.tif"
         else:
             suggested_filename_result = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Enmask.tif"
@@ -771,24 +771,27 @@ class CloudMasking:
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))  # mouse wait
 
-        if not self.dockwidget.radioButton_ToParticularFile.isChecked():
+        # get and set stack bands for make layer stack for apply mask
+        if self.dockwidget.radioButton_ToRaw_Bands.isChecked() or self.dockwidget.radioButton_ToSR_Bands.isChecked():
             update_process_bar(self.dockwidget.bar_processApplyMask, 20, self.dockwidget.status_processApplyMask,
-                               self.tr(u"Making the reflectance stack..."))
+                               self.tr(u"Making the stack bands..."))
 
-        # making layer stack
-        if self.dockwidget.landsat_version in [4, 5, 7]:
-            reflectance_bands = [1, 2, 3, 4, 5, 7]
-        if self.dockwidget.landsat_version in [8]:
-            reflectance_bands = [2, 3, 4, 5, 6, 7]
+            reflectance_bands = self.dockwidget.lineEdit_StackBands.text()
+            try:
+                reflectance_bands = [int(x) for x in reflectance_bands.split(',')]
+            except:
+                update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
+                                   self.tr(u"Error: Invalid stack bands"))
+                return
 
         ## Select the stack or file to apply mask
         # reflectance stack, normal bands (_bands and _B)
-        if self.dockwidget.radioButton_ToRefStack.isChecked():
+        if self.dockwidget.radioButton_ToRaw_Bands.isChecked():
             stack_bands = [os.path.join(os.path.dirname(self.dockwidget.mtl_path), self.dockwidget.mtl_file['FILE_NAME_BAND_' + str(N)])
                            for N in reflectance_bands]
             stack_bands = [get_prefer_name(file_path) for file_path in stack_bands]
         # SR reflectance stack if are available (_sr_bands)
-        if self.dockwidget.radioButton_ToSR_RefStack.isChecked():
+        if self.dockwidget.radioButton_ToSR_Bands.isChecked():
             stack_bands = \
                 [os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                     self.dockwidget.mtl_file['FILE_NAME_BAND_' + str(N)].replace("_B", "_sr_band").replace(".TIF", ".tif"))
@@ -803,7 +806,7 @@ class CloudMasking:
                 return
 
         # make stack to apply mask in tmp file
-        if self.dockwidget.radioButton_ToRefStack.isChecked() or self.dockwidget.radioButton_ToSR_RefStack.isChecked():
+        if self.dockwidget.radioButton_ToRaw_Bands.isChecked() or self.dockwidget.radioButton_ToSR_Bands.isChecked():
             self.reflective_stack_file = os.path.join(self.dockwidget.tmp_dir, "Reflective_stack_" +
                                                       self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + ".tif")
 
