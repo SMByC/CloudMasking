@@ -831,7 +831,8 @@ class CloudMasking:
         gdal.Translate(result_path, self.reflective_stack_file.replace(".tif", "_inprogress.tif"), noData="none")
 
         # clean
-        os.remove(self.reflective_stack_file)
+        if not self.dockwidget.radioButton_ToParticularFile.isChecked():
+            os.remove(self.reflective_stack_file)
         os.remove(self.reflective_stack_file.replace(".tif", "_inprogress.tif"))
 
         # load into canvas when finished
