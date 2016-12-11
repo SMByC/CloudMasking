@@ -127,7 +127,8 @@ class CloudMaskingResult(object):
             self.do_clipping_extent(in_stack_file, out_clipped_file)
 
         if self.clipping_with_shape:
-            self.do_clipping_with_shape(in_stack_file, self.shape_path, out_clipped_file)
+            self.do_clipping_with_shape(in_stack_file, os.path.abspath(self.shape_path),
+                                        out_clipped_file, self.crop_to_cutline)
 
         return out_clipped_file
 
@@ -144,13 +145,16 @@ class CloudMaskingResult(object):
         # TODO: make this with Translate, but check if the pixes moves after clipping
         #Translate(out_file, in_file, projWin=[self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2])
 
-    def do_clipping_with_shape(self, stack_file, shape_path, clip_file):
-        pass
-        # return_code = call(
-        #     'gdal_translate -projwin ' +
-        #     ' '.join([str(x) for x in [self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2]]) +
-        #     ' -of GTiff ' + in_file + ' ' + out_file,
-        #     shell=True)
+    def do_clipping_with_shape(self, stack_file, shape_path, clip_file, crop_to_cutline):
+        if crop_to_cutline:
+            #  -crop_to_cutline
+            return_code = call(
+                'gdalwarp -cutline ' + shape_path + ' -dstnodata 0 ' + stack_file + ' ' + clip_file,
+                shell=True)
+        else:
+            return_code = call(
+                'gdalwarp -cutline '+shape_path+' '+stack_file+' '+clip_file,
+                shell=True)
 
     def do_fmask(self, filters_enabled, min_cloud_size=0, cloud_buffer_size=4, shadow_buffer_size=6, cirrus_prob_ratio=0.04,
                  nir_fill_thresh=0.02, swir2_thresh=0.03, whiteness_thresh=0.7, swir2_water_test=0.03):

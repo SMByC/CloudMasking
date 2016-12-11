@@ -419,6 +419,10 @@ class CloudMasking:
         if self.dockwidget.checkBox_ShapeSelector.isChecked():
             self.masking_result.clipping_with_shape = True
             self.masking_result.shape_path = self.dockwidget.lineEdit_ShapeSelector.text()
+            if self.dockwidget.shapeSelector_CutWithShape.isChecked():
+                self.masking_result.crop_to_cutline = True
+            else:
+                self.masking_result.crop_to_cutline = False
 
         ########################################
         # FMask filter
@@ -661,6 +665,8 @@ class CloudMasking:
         # Add to QGIS the reflectance stack file and cloud file
         if self.masking_result.clipping_extent:
             masking_result_name = self.tr(u"Cloud Mask in area ({})".format(datetime.now().strftime('%H:%M:%S')))
+        elif self.dockwidget.checkBox_ShapeSelector.isChecked():
+            masking_result_name = self.tr(u"Cloud Mask in shape ({})".format(datetime.now().strftime('%H:%M:%S')))
         else:
             masking_result_name = self.tr(u"Cloud Mask ({})".format(datetime.now().strftime('%H:%M:%S')))
         self.cloud_mask_rlayer = QgsRasterLayer(self.final_cloud_mask_file, masking_result_name)
