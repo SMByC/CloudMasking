@@ -926,6 +926,7 @@ class CloudMasking:
         # clear self.dockwidget.tmp_dir
         try:
             shutil.rmtree(self.dockwidget.tmp_dir, ignore_errors=True)
+            self.dockwidget.tmp_dir.close()
             self.dockwidget.tmp_dir = None
         except: pass
 
@@ -935,6 +936,12 @@ class CloudMasking:
             self.dockwidget.SelectBand_G.clear()
             self.dockwidget.SelectBand_B.clear()
         except: pass
+
+        # delete CloudMaskingResult instance
+        try:
+            del self.masking_result
+            self.masking_result = None
+        except:pass
 
         # restore initial message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):

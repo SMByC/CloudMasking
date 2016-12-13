@@ -282,6 +282,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 return
 
         #### Process post MTL loaded (If we load it okay)
+        # tmp dir for process this MTL
+        self.tmp_dir = tempfile.mkdtemp()
         # MTL info
         self.status_LoadedMTL.setChecked(True)
         self.status_LoadedMTL.setText(self.mtl_file['LANDSAT_SCENE_ID'] + ' (L{})'.format(self.landsat_version))
@@ -301,8 +303,6 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.groupBox_Filters.setEnabled(True)
         # active generate cloud mask box
         self.groupBox_GenerateMask.setEnabled(True)
-        # tmp dir for process this MTL
-        self.tmp_dir = tempfile.mkdtemp()
         # activate SaveApply
         self.groupBox_SelectMask.setEnabled(True)
         self.groupBox_ApplyMask.setEnabled(True)
