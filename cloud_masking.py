@@ -422,6 +422,8 @@ class CloudMasking:
                 self.masking_result.crop_to_cutline = True
             else:
                 self.masking_result.crop_to_cutline = False
+        else:
+            self.masking_result.clipping_with_shape = False
 
         # check extent area selector and shape file
         if self.dockwidget.checkBox_ExtentSelector.isChecked() and not self.dockwidget.isExtentAreaSelected:
