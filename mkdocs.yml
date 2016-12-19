@@ -7,7 +7,7 @@ repo_url: https://bitbucket.org/SMBYC/qgisplugin-cloudmasking
 theme: flatly
 pages:
 - Home: index.md
-- Feature: features.md
+#- Feature: features.md
 - Installation: installation.md
 - How to use: how_to_use.md
 - Cloud Filters: cloud_filters.md

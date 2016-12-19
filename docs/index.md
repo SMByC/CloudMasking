@@ -15,7 +15,11 @@ The latest sources can be obtained from official repository:
 
 ## Issue Tracker
 
-[https://bitbucket.org/SMBYC/qgisplugin-cloudmasking/issues](https://bitbucket.org/SMBYC/qgisplugin-cloudmasking/issues)
+Issues, bugs and enhancement: [https://bitbucket.org/SMBYC/qgisplugin-cloudmasking/issues](https://bitbucket.org/SMBYC/qgisplugin-cloudmasking/issues)
+
+## The home plugin:
+
+The home plugin in plugins.qgis.org: [http://plugins.qgis.org/plugins/CloudMasking/](http://plugins.qgis.org/plugins/CloudMasking/)
 
 ***
 
