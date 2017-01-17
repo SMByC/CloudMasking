@@ -374,10 +374,17 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.checkBox_QABand.setChecked(False)
         self.widget_QABand.setHidden(True)
         # search and check QA Band file
-        self.qa_band_file = os.path.join(os.path.dirname(self.mtl_path),
+        qa_band_file_alt1 = os.path.join(os.path.dirname(self.mtl_path),
                                          self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_qa.tif"))
+        qa_band_file_alt2 = os.path.join(os.path.dirname(self.mtl_path),
+                                         self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_bqa.tif"))
         # check QA Band file exists
-        if os.path.isfile(self.qa_band_file):
+        if os.path.isfile(qa_band_file_alt1):
+            self.qa_band_file = qa_band_file_alt1
+            self.checkBox_QABand.setEnabled(True)
+            self.checkBox_QABand.clicked.connect(self.widget_QABand.setVisible)
+        elif os.path.isfile(qa_band_file_alt2):
+            self.qa_band_file = qa_band_file_alt2
             self.checkBox_QABand.setEnabled(True)
             self.checkBox_QABand.clicked.connect(self.widget_QABand.setVisible)
         else:
