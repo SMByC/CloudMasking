@@ -51,7 +51,7 @@ When multiple bits are selected (and/or specific values) the plugin marked all p
 
 The QA Band are available for only SR Landsat collection. The SR (Surface Reflectance) is a special Landsat collection with more and adjusted products than the raw Landsat products. You can download it from https://espa.cr.usgs.gov/ordering/new
 
-The QA Band is a band of 16 bits, usually the filename ends in `*_qa.tif`. These 16 bits are:
+The QA Band is a band of 16 bits, usually the filename ends in `*_qa.tif` or `*_bqa.tif`. These 16 bits are:
 
 ![](img/filter_qa_band_bits.png)
 

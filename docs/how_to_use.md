@@ -14,47 +14,49 @@ The plugin is divided and ordered by three sections; `(1) Open and Load` this is
 
 ![](img/how_to_use_02.png)
 
-### Browse and load the MTL file
+### 1a. Browse and load the MTL file
 
 The fists step you need to load a MTL file, click in `Browse` and `Load` for read the MTL file, when the MTL file is loaded the others widgets of the plugin is activated for use:
 
 ![](img/how_to_use_03.png)
 
-### Load stacks (optional)
+### 1b. Load stacks (optional)
 
 The `Load stacks` section you can make and open in Qgis the stack in RGB bands combination as you want for visualize and check the Landsat image, in the right side you can access for special stacks (more uses) RBG bands order, you need to do click in `Load stack` bottom for make and load the stack configured. This is not necessary for process only for view:
 
 ![](img/how_to_use_04.png)
 
-### Select the filters to apply
+### 2a. Select the filters to apply
 
 The plugin have a four different filters to apply, the `Fmask` and `Blue Band` are available for all Landsat, but the `Cloud QA` and `QA Band` are available for only SR Landsat collection (see more in [Cloud Filters](cloud_filters.md)). You can activate more than one filter at a time, the plugin accumulate the filters in the same order (bottom up).
 
 ![](img/how_to_use_05.png)
 
-### Generate the cloud mask
+Please see the [cloud filters](cloud_filters.md) for more information about it.
+
+### 2b. Generate the cloud mask
 
 In this section you can generate the mask with the filters enabled, there are three options for generate the mask:
 
-- `In the whole image`, (by default) if the two options _selected in area_ and _shape area_ are disabled, the mask will process in whole image
+- `In the whole image` (by default) if the two options _selected in area_ and _shape area_ are disabled, the mask will process in whole image
 
-- `In only selected area`, if you selected this option you can process the mask in a specific area selected drawing in the canvas (only a rectangle area)
+- `In only selected area` (optional) if you selected this option you can process the mask in a specific area selected drawing in the canvas (only a rectangle area)
 
     - If the option `Keep the original image size` is enabled, the result mask will be with the same extent, else the result mask will be clipping in the area selected
 
-- `In only shape area`, with this option you can process the mask only inside the particular shape, you need create it before apply
+- `In only shape area` (optional) with this option you can process the mask only inside the particular shape, you need create it before apply
 
     - If the option `Delete data outside the shape` is enabled, the result mask will have the same extent but the data outside the sahep will be masked, else the result mask will have the same and the data outside the shape will be valid (only masked inside the shape)
 
 ![](img/how_to_use_06.png)
 
-### Select the mask to apply
+### 3a. Select the mask to apply
 
 In this section you must select the mask to apply or save it, there are two checkbox for help to find the mask in the list: `Only activated layers` and `Only mask layers`. You can save the mask selected with the buttom `Save mask`
 
 ![](img/how_to_use_07.png)
 
-### Apply mask
+### 3b. Apply mask
 
 The plugin help for make, apply and save the stacks with the Landsat loaded, there are three options for which stack will be used for apply the mask:
 
