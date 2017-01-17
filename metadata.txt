@@ -10,7 +10,7 @@
 name=Cloud Masking
 description=Cloud masking for Landsat (4, 5, 7 and 8) products using different process such as Fmask, Blue band, Cloud QA and QA Band.
 about=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7 and 8) products using different process such as Fmask, Blue Band, Cloud QA and QA Band
-version=16.12.20
+version=17.1.17
 qgisMinimumVersion=2.14
 
 author=Xavier Corredor Llano, SMBYC
