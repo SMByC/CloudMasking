@@ -149,11 +149,11 @@ class CloudMaskingResult(object):
         if crop_to_cutline:
             #  -crop_to_cutline
             return_code = call(
-                'gdalwarp -cutline ' + shape_path + ' -dstnodata 0 ' + stack_file + ' ' + clip_file,
+                'gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline ' + shape_path + ' -dstnodata 0 ' + stack_file + ' ' + clip_file,
                 shell=True)
         else:
             return_code = call(
-                'gdalwarp -cutline '+shape_path+' '+stack_file+' '+clip_file,
+                'gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline ' + shape_path + ' ' + stack_file + ' ' + clip_file,
                 shell=True)
 
     def do_fmask(self, filters_enabled, min_cloud_size=0, cloud_buffer_size=4, shadow_buffer_size=6, cirrus_prob_ratio=0.04,
