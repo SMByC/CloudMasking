@@ -20,6 +20,7 @@
 """
 import os.path
 import shutil
+import traceback
 from datetime import datetime
 from time import sleep
 from shutil import copyfile
@@ -28,6 +29,7 @@ import gdal
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
 from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox, QApplication, QCursor, QFileDialog
 from PyQt4.QtGui import QCheckBox, QGroupBox, QRadioButton
+from qgis.gui import QgsMessageBar
 from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer, QgsVectorLayer
 # Initialize Qt resources from file resources.py
 import resources
@@ -295,6 +297,34 @@ class CloudMasking:
         # button for Apply Mask
         self.dockwidget.button_processApplyMask.clicked.connect(self.apply_mask)
 
+    def error_handler(func_name):
+        def decorate(f):
+            def applicator(self, *args, **kwargs):
+                try:
+                    f(self, *args, **kwargs)
+                except Exception as e:
+                    # restore mouse
+                    QApplication.restoreOverrideCursor()
+                    QApplication.processEvents()
+
+                    # message in status bar
+                    msg_error = "An error has occurred in '{0}': {1}. " \
+                                "See more in Qgis log message.".format(func_name, e)
+                    self.iface.messageBar().pushMessage("Error", msg_error,
+                                                        level=QgsMessageBar.CRITICAL, duration=10)
+
+                    # message in log
+                    msg_error = "\n################## ERROR IN CLOUD MASKING PLUGIN:"
+                    msg_error += "\nAn error has occurred in '{0}': {1}\n".format(func_name, e)
+                    msg_error += traceback.format_exc()
+                    msg_error += "\nPlease report the error in:\n" \
+                                 "\thttps://bitbucket.org/SMBYC/qgisplugin-cloudmasking/issues"
+                    msg_error += "\n################## END REPORT"
+                    QgsMessageLog.logMessage(msg_error)
+
+            return applicator
+        return decorate
+
     def updateLayersList_MaskLayer(self):
         if self.dockwidget is not None:
             self.dockwidget.select_MaskLayer.clear()
@@ -339,6 +369,7 @@ class CloudMasking:
         self.dockwidget.SelectBand_G.setCurrentIndex(self.dockwidget.reflectance_bands.index(bands[1]))
         self.dockwidget.SelectBand_B.setCurrentIndex(self.dockwidget.reflectance_bands.index(bands[2]))
 
+    @error_handler('load stack')
     def load_stack(self):
         update_process_bar(self.dockwidget.bar_progressLoadStack, 40,
                            self.dockwidget.status_processLoadStack, self.tr(u"Loading stack..."))
@@ -376,6 +407,7 @@ class CloudMasking:
             else:
                 self.iface.messageBar().pushMessage("Error", "Shape {} failed to load!".format(os.path.basename(shape_path)))
 
+    @error_handler('process mask')
     def process_mask(self):
         """Make the process
         """
@@ -745,6 +777,7 @@ class CloudMasking:
         if result_path != '':
             self.dockwidget.lineEdit_ResultPath.setText(result_path)
 
+    @error_handler('apply mask')
     def apply_mask(self):
         # init progress bar
         update_process_bar(self.dockwidget.bar_processApplyMask, 0)
