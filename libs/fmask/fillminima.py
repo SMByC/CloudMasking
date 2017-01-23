@@ -28,13 +28,17 @@ represent potential shadow objects.
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import os
 import numpy
+import sys
 from scipy.ndimage import grey_erosion, grey_dilation, minimum_filter
 
-# Fail slightly less drastically when running from ReadTheDocs
-if os.getenv('READTHEDOCS', default='False') != 'True':
+# load _fillminima
+is_64bits = sys.maxsize > 2**32
+if is_64bits:
     from . import _fillminima
+else:
+    from CloudMasking.libs.fmask.lib32 import _fillminima
+
 
 def fillMinima(img, nullval, boundaryval):
     """
@@ -70,7 +74,7 @@ def fillMinima(img, nullval, boundaryval):
     boundaryCols = boundaryCols.astype(numpy.int64)
 
     _fillminima.fillMinima(img, img2, hMin, hMax, nullmask, boundaryval,
-                        boundaryRows, boundaryCols)    
+                        boundaryRows, boundaryCols)
     
     img2[nullmask] = nullval
     

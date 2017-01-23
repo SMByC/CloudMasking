@@ -16,12 +16,16 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 from __future__ import print_function, division
 
-import os
+import sys
 import numpy
 
-# Fail slightly less drastically when running from ReadTheDocs
-if os.getenv('READTHEDOCS', default='False') != 'True':
+# load _valueindexes
+is_64bits = sys.maxsize > 2**32
+if is_64bits:
     from . import _valueindexes
+else:
+    from CloudMasking.libs.fmask.lib32 import _valueindexes
+
 
 class ValueIndexesError(Exception):
     pass
@@ -140,7 +144,7 @@ class ValueIndexes(object):
             # a new element of that value. 
             currentIndex = self.start.copy().astype(numpy.uint32)
 
-            _valueindexes.valndxFunc(a, self.indexes, valrange[0], valrange[1], 
+            _valueindexes.valndxFunc(a, self.indexes, valrange[0], valrange[1],
                         self.valLU, currentIndex)
 
     def getIndexes(self, val):
