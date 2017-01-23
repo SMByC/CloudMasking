@@ -265,29 +265,26 @@ class CloudMasking:
         self.masking_result = None
         self.color_stack_scene = None
         # handle connect when the list of layers changed
-        QObject.connect(self.canvas, SIGNAL("layersChanged()"), self.updateLayersList_MaskLayer)
+        self.canvas.layersChanged.connect(self.updateLayersList_MaskLayer)
         self.dockwidget.checkBox_ActivatedLayers.clicked.connect(self.updateLayersList_MaskLayer)
         self.dockwidget.checkBox_MaskLayers.clicked.connect(self.updateLayersList_MaskLayer)
         # call to load MTL file
-        QObject.connect(self.dockwidget.button_LoadMTL, SIGNAL("clicked()"), self.buttom_load_mtl)
+        self.dockwidget.button_LoadMTL.clicked.connect(self.buttom_load_mtl)
         # call to clear all
-        QObject.connect(self.dockwidget.button_ClearAll, SIGNAL("clicked()"), self.buttom_clear_all)
+        self.dockwidget.button_ClearAll.clicked.connect(self.buttom_clear_all)
         # call to load natural color stack
-        QObject.connect(self.dockwidget.button_NaturalColorStack, SIGNAL("clicked()"),
-                        lambda: self.set_color_stack("natural_color"))
+        self.dockwidget.button_NaturalColorStack.clicked.connect(lambda: self.set_color_stack("natural_color"))
         # call to load false color stack
-        QObject.connect(self.dockwidget.button_FalseColorStack, SIGNAL("clicked()"),
-                        lambda: self.set_color_stack("false_color"))
+        self.dockwidget.button_FalseColorStack.clicked.connect(lambda: self.set_color_stack("false_color"))
         # call to load infrareds stack
-        QObject.connect(self.dockwidget.button_InfraredsStack, SIGNAL("clicked()"),
-                        lambda: self.set_color_stack("infrareds"))
+        self.dockwidget.button_InfraredsStack.clicked.connect(lambda: self.set_color_stack("infrareds"))
         # call to process load stack
-        QObject.connect(self.dockwidget.button_processLoadStack, SIGNAL("clicked()"), self.load_stack)
+        self.dockwidget.button_processLoadStack.clicked.connect(self.load_stack)
         # call to search shape area selector file
         self.dockwidget.pushButton_ShapeSelector.clicked.connect(self.fileDialog_ShapeSelector)
         self.dockwidget.pushButton_LoadShapeSelector.clicked.connect(self.load_shape_selector)
         # call to process mask
-        QObject.connect(self.dockwidget.button_processMask, SIGNAL("clicked()"), self.process_mask)
+        self.dockwidget.button_processMask.clicked.connect(self.process_mask)
         # save mask
         self.dockwidget.button_SaveMask.clicked.connect(self.fileDialog_saveMask)
         # select result
@@ -370,7 +367,7 @@ class CloudMasking:
         self.dockwidget.SelectBand_B.setCurrentIndex(self.dockwidget.reflectance_bands.index(bands[2]))
 
     @error_handler('load stack')
-    def load_stack(self):
+    def load_stack(self, *args):
         update_process_bar(self.dockwidget.bar_progressLoadStack, 40,
                            self.dockwidget.status_processLoadStack, self.tr(u"Loading stack..."))
         bands = []
@@ -408,7 +405,7 @@ class CloudMasking:
                 self.iface.messageBar().pushMessage("Error", "Shape {} failed to load!".format(os.path.basename(shape_path)))
 
     @error_handler('process mask')
-    def process_mask(self):
+    def process_mask(self, *args):
         """Make the process
         """
         # initialize the symbology
@@ -778,7 +775,7 @@ class CloudMasking:
             self.dockwidget.lineEdit_ResultPath.setText(result_path)
 
     @error_handler('apply mask')
-    def apply_mask(self):
+    def apply_mask(self, *args):
         # init progress bar
         update_process_bar(self.dockwidget.bar_processApplyMask, 0)
 
