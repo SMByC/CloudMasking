@@ -874,7 +874,7 @@ class CloudMasking:
         if self.dockwidget.checkBox_LoadResult.isChecked():
             # Add to QGIS the result saved
             result_qgis_name = self.dockwidget.mtl_file['LANDSAT_SCENE_ID']
-            result_rlayer = QgsRasterLayer(result_path, "Result masked: " + result_qgis_name)
+            result_rlayer = QgsRasterLayer(result_path, os.path.basename(result_path))
             QgsMapLayerRegistry.instance().addMapLayer(result_rlayer)
 
         update_process_bar(self.dockwidget.bar_processApplyMask, 100, self.dockwidget.status_processApplyMask,
