@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-
+import ConfigParser
 import os
 import tempfile
 
@@ -36,6 +36,10 @@ plugin_folder = os.path.dirname(os.path.dirname(__file__))
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     plugin_folder, 'ui', 'cloud_masking_dockwidget_base.ui'))
 
+cfg = ConfigParser.SafeConfigParser()
+cfg.read(os.path.join(plugin_folder, 'metadata.txt'))
+VERSION = cfg.get('general', 'version')
+HOMEPAGE = cfg.get('general', 'homepage')
 
 class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
@@ -75,6 +79,12 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         event.accept()
 
     def setup_gui(self):
+        # plugin info #########
+        self.plugin_version.setText(self.tr(u"CloudMasking v{}".format(VERSION)))
+        homepage = "<a href='{}'>homepage</a>".format(HOMEPAGE)
+        self.plugin_links.setOpenExternalLinks(True)
+        self.plugin_links.setText(homepage)
+
         # find MTL file #########
         self.button_FindMTL.clicked.connect(self.fileDialog_findMTL)
         # load MTL: this is called from cloud_masking
