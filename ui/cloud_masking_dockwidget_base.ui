@@ -456,8 +456,8 @@
             <item>
              <widget class="QWidget" name="widget_plugin_info" native="true">
               <layout class="QHBoxLayout" name="horizontalLayout_23">
-               <property name="spacing">
-                <number>12</number>
+               <property name="rightMargin">
+                <number>0</number>
                </property>
                <property name="bottomMargin">
                 <number>0</number>
@@ -525,7 +525,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>555</width>
+             <width>528</width>
              <height>2249</height>
             </rect>
            </property>
@@ -1941,8 +1941,8 @@ You can add multiple values separated by comma</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>575</width>
-             <height>825</height>
+             <width>526</width>
+             <height>620</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
