@@ -308,7 +308,7 @@ class CloudMasking:
                     msg_error = "An error has occurred in '{0}': {1}. " \
                                 "See more in Qgis log message.".format(func_name, e)
                     self.iface.messageBar().pushMessage("Error", msg_error,
-                                                        level=QgsMessageBar.CRITICAL, duration=10)
+                                                        level=QgsMessageBar.CRITICAL, duration=0)
 
                     # message in log
                     msg_error = "\n################## ERROR IN CLOUD MASKING PLUGIN:"
