@@ -2,7 +2,7 @@ site_name: Cloud Masking - Qgis plugin
 site_description: Cloud masking for Landsat (4, 5, 7 and 8) products using different process such as Fmask, Blue band, Cloud QA and QA Band.
 site_author: Xavier Corredor Llano, SMBYC-IDEAM
 #site_favicon: favicon_whale.png
-site_url: http://smbyc.bitbucket.org/qgisplugin-cloudmasking
+site_url: https://smbyc.bitbucket.io/qgisplugins/cloudmasking
 repo_url: https://bitbucket.org/SMBYC/qgisplugin-cloudmasking
 theme: flatly
 pages:
