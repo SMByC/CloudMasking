@@ -22,4 +22,5 @@ For upgrade the plugin to a new version:
 
     ![install](img/upgrade_01.png)
 
-    _Windows users: For some reason (with a dll library in the plugin, maybe a bug in Qgis) the update in windows has problems. To upgrade, follow these steps: first deactivated and close the plugin, restart Qgis, then uninstall the plugin or delete manually the plugin directory and finally install it._
+    !!! warning "Windows users"
+        For some reason (with a dll library in the plugin, maybe a bug in Qgis) the update in windows has problems. To upgrade, follow these steps: first deactivated and close the plugin, restart Qgis, then uninstall the plugin or delete manually the plugin directory and finally install it.

@@ -22,7 +22,6 @@ The home plugin in plugins.qgis.org: [http://plugins.qgis.org/plugins/CloudMaski
 
 ***
 
-    GNU General Public License - GPLv3
-    Copyright (c) 2016-2017 by Xavier Corredor Llano, SMBYC
-    Sistema de Monitoreo de Bosques y Carbono
-    Bogotá, Colombia
+Copyright (C) Xavier Corredor Llano <xcorredorl@ideam.gov.co>  
+Sistema de Monitoreo de Bosques y Carbono - SMBYC and FAO  
+General Public License - GPLv3
