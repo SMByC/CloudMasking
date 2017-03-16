@@ -22,7 +22,10 @@ import numpy
 # load _valueindexes
 is_64bits = sys.maxsize > 2**32
 if is_64bits:
-    from . import _valueindexes
+    if sys.platform == "darwin":
+        from CloudMasking.libs.fmask.ios64 import _valueindexes
+    else:
+        from . import _valueindexes
 else:
     from CloudMasking.libs.fmask.lib32 import _valueindexes
 
