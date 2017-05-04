@@ -483,6 +483,9 @@
                  <property name="text">
                   <string>Version</string>
                  </property>
+                 <property name="scaledContents">
+                  <bool>false</bool>
+                 </property>
                 </widget>
                </item>
                <item>
@@ -493,7 +496,23 @@
                  <property name="text">
                   <string>Plugin links</string>
                  </property>
+                 <property name="scaledContents">
+                  <bool>false</bool>
+                 </property>
                 </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_12">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
               </layout>
              </widget>
@@ -525,7 +544,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>528</width>
+             <width>555</width>
              <height>2249</height>
             </rect>
            </property>
@@ -1061,13 +1080,51 @@ You can add multiple values separated by comma</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
                   <item row="0" column="0">
-                   <widget class="QCheckBox" name="checkBox_FMask">
-                    <property name="text">
-                     <string>FMask</string>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
+                   <widget class="QWidget" name="widget_23" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_24">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QCheckBox" name="checkBox_FMask">
+                       <property name="text">
+                        <string>FMask</string>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_FMask_FileStatus">
+                       <property name="text">
+                        <string>(old MTL not supported)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_11">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                   <item row="1" column="0">
@@ -1941,8 +1998,8 @@ You can add multiple values separated by comma</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>526</width>
-             <height>620</height>
+             <width>575</width>
+             <height>825</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
