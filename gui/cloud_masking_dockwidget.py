@@ -395,11 +395,11 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         qa_band_file_alt2 = os.path.join(os.path.dirname(self.mtl_path),
                                          self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_bqa.tif"))
         # check QA Band file exists
-        if os.path.isfile(qa_band_file_alt1):
+        if os.path.isfile(qa_band_file_alt1) and qa_band_file_alt1.endswith("qa.tif"):
             self.qa_band_file = qa_band_file_alt1
             self.checkBox_QABand.setEnabled(True)
             self.checkBox_QABand.clicked.connect(self.widget_QABand.setVisible)
-        elif os.path.isfile(qa_band_file_alt2):
+        elif os.path.isfile(qa_band_file_alt2) and qa_band_file_alt2.endswith("qa.tif"):
             self.qa_band_file = qa_band_file_alt2
             self.checkBox_QABand.setEnabled(True)
             self.checkBox_QABand.clicked.connect(self.widget_QABand.setVisible)
