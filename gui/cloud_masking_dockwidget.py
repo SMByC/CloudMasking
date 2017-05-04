@@ -249,6 +249,12 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.mtl_file = cloud_masking_utils.mtl2dict(self.mtl_path)
             # get the landsat version
             self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'][-1])
+            # normalize metadata for old MLT format (old Landsat 4 and 5)
+            if 'BAND1_FILE_NAME' in self.mtl_file:
+                for N in [1, 2, 3, 4, 5, 7, 6]:
+                    self.mtl_file['FILE_NAME_BAND_' + str(N)] = self.mtl_file['BAND'+str(N)+'_FILE_NAME']
+            if 'METADATA_L1_FILE_NAME' in self.mtl_file:
+                self.mtl_file['LANDSAT_SCENE_ID'] = self.mtl_file['METADATA_L1_FILE_NAME'].split('_MTL.txt')[0]
         except:
             self.status_LoadedMTL.setText(self.tr(u"Error: Cannot parse MTL file"))
             self.unload_MTL()
