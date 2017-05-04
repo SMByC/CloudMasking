@@ -248,7 +248,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         try:
             self.mtl_file = cloud_masking_utils.mtl2dict(self.mtl_path)
             # get the landsat version
-            self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'].split('_')[-1])
+            self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'][-1])
         except:
             self.status_LoadedMTL.setText(self.tr(u"Error: Cannot parse MTL file"))
             self.unload_MTL()
