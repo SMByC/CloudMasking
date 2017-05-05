@@ -96,7 +96,6 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # FMask filters #########
         # start hidden
         self.widget_FMask.setHidden(True)
-        self.label_FMask_FileStatus.setHidden(True)
         # Synchronize the slider with the spin box
         # cloud_buffer
         self.horizontalSlider_CB.sliderMoved.connect(self.doubleSpinBox_CB.setValue)
@@ -250,14 +249,11 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.mtl_file = cloud_masking_utils.mtl2dict(self.mtl_path)
             # get the landsat version
             self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'][-1])
-            self.mtl_file["old_version"] = False
             # normalize metadata for old MLT format (old Landsat 4 and 5)
             if 'BAND1_FILE_NAME' in self.mtl_file:
-                self.mtl_file["old_version"] = True
                 for N in [1, 2, 3, 4, 5, 7, 6]:
                     self.mtl_file['FILE_NAME_BAND_' + str(N)] = self.mtl_file['BAND'+str(N)+'_FILE_NAME']
             if 'METADATA_L1_FILE_NAME' in self.mtl_file:
-                self.mtl_file["old_version"] = True
                 self.mtl_file['LANDSAT_SCENE_ID'] = self.mtl_file['METADATA_L1_FILE_NAME'].split('_MTL.txt')[0]
         except:
             self.status_LoadedMTL.setText(self.tr(u"Error: Cannot parse MTL file"))
@@ -338,14 +334,6 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.SelectBand_R.addItems([str(b) for b in self.reflectance_bands])
         self.SelectBand_G.addItems([str(b) for b in self.reflectance_bands])
         self.SelectBand_B.addItems([str(b) for b in self.reflectance_bands])
-
-        #### Fmask disable for old MTL format
-        if self.mtl_file["old_version"]:
-            self.label_FMask_FileStatus.setVisible(True)
-            self.checkBox_FMask.setEnabled(False)
-        else:
-            self.label_FMask_FileStatus.setHidden(True)
-            self.checkBox_FMask.setEnabled(True)
 
         #### blue Band adjusts UI limits
         if self.landsat_version in [4, 5, 7]:
