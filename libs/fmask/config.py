@@ -25,6 +25,7 @@ import numpy
 import scipy.constants
 
 from osgeo import gdal
+gdal.UseExceptions()
 from rios import applier
 from . import fmaskerrors
 
@@ -78,8 +79,17 @@ class FmaskConfig(object):
     cirrusBandTestThresh = 0.01
     Eqn7Swir2Thresh = 0.03
     Eqn20ThermThresh = 3.8
+    Eqn20NirSnowThresh = 0.11
+    Eqn20GreenSnowThresh = 0.1
     cirrusProbRatio = 0.04
     Eqn19NIRFillThresh = 0.02
+    
+    # Constant term at the end of Equation 17. Zhu's MATLAB code now has this as a configurable
+    # value, which they recommend as 22.5% (i.e. 0.225)
+    Eqn17CloudProbThresh = 0.2
+    
+    # GDAL driver for final output file
+    gdalDriverName = applier.DEFAULTDRIVERNAME
     
     def __init__(self, sensor):
         """
@@ -273,6 +283,16 @@ class FmaskConfig(object):
         """
         self.Eqn7Swir2Thresh = thresh
         
+    def setEqn17CloudProbThresh(self, thresh):
+        """
+        Change the threshold used by Equation 17. The threshold
+        given here is the constant term added to the end of the equation
+        for the land probability threshold. Original paper had this as 0.2,
+        although Zhu et al's MATLAB code now defaults it to 0.225 (i.e. 22.5%)
+        
+        """
+        self.Eqn17CloudProbThresh = thresh
+        
     def setEqn20ThermThresh(self, thresh):
         """
         Change the threshold used by Equation 20 (snow)
@@ -280,6 +300,22 @@ class FmaskConfig(object):
         
         """
         self.Eqn20ThermThresh = thresh
+        
+    def setEqn20NirSnowThresh(self, thresh):
+        """
+        Change the threshold used by Equation 20 (snow)
+        for NIR reflectance. This defaults to 0.11
+        
+        """
+        self.Eqn20NirSnowThresh = thresh
+        
+    def setEqn20GreenSnowThresh(self, thresh):
+        """
+        Change the threshold used by Equation 20 (snow)
+        for green reflectance. This defaults to 0.1
+        
+        """
+        self.Eqn20GreenSnowThresh = thresh
         
     def setCirrusProbRatio(self, ratio):
         """
@@ -298,6 +334,14 @@ class FmaskConfig(object):
         
         """
         self.Eqn19NIRFillThresh = thresh
+    
+    def setGdalDriverName(self, driverName):
+        """
+        Change the GDAL driver used for writing the final output file. Default
+        value is taken from the default for the RIOS package, as per $RIOS_DFLT_DRIVER. 
+        """
+        self.gdalDriverName = driverName
+
 
 class FmaskFilenames(object):
     """
@@ -424,6 +468,12 @@ LANDSAT_RADIANCE_ADD = 'RADIANCE_ADD_BAND_%s'
 LANDSAT_K1_CONST = 'K1_CONSTANT_BAND_%s'
 LANDSAT_K2_CONST = 'K2_CONSTANT_BAND_%s'
 
+# Oldest format of MTL file has only min/max values
+LANDSAT_LMAX_KEY = 'LMAX_BAND%s'
+LANDSAT_LMIN_KEY = 'LMIN_BAND%s'
+LANDSAT_QCALMAX_KEY = 'QCALMAX_BAND%s'
+LANDSAT_QCALMIN_KEY = 'QCALMIN_BAND%s'
+
 "band numbers in mtl file for gain and offset for thermal"
 LANDSAT_TH_BAND_NUM_DICT = {'LANDSAT_4' : '6', 
         'LANDSAT_5' : '6',
@@ -435,8 +485,8 @@ for some reason L4, 5, and 7 don't
 have these numbers in the mtl file, but L8 does
 from http://www.yale.edu/ceo/Documentation/Landsat_DN_to_Kelvin.pdf
 """
-LANDSAT_K1_DICT = {'TM' : 607.76, 'ETM' : 666.09}
-LANDSAT_K2_DICT = {'TM' : 1260.56, 'ETM' : 1282.71}
+LANDSAT_K1_DICT = {'TM' : 607.76, 'ETM' : 666.09, 'ETM+':666.09}
+LANDSAT_K2_DICT = {'TM' : 1260.56, 'ETM' : 1282.71, 'ETM+':1282.71}
         
 def readThermalInfoFromLandsatMTL(mtlfile, thermalBand1040um=0):
     """
@@ -455,10 +505,23 @@ def readThermalInfoFromLandsatMTL(mtlfile, thermalBand1040um=0):
         band = LANDSAT_TH_BAND_NUM_DICT[spaceCraft]
         
         s = LANDSAT_RADIANCE_MULT % band
-        gain = float(mtlData[s])
-            
-        s = LANDSAT_RADIANCE_ADD % band
-        offset = float(mtlData[s])
+
+        oldestMtlFormat = (s not in mtlData)
+        
+        if not oldestMtlFormat:
+            gain = float(mtlData[s])
+            s = LANDSAT_RADIANCE_ADD % band
+            offset = float(mtlData[s])
+        else:
+            # Oldest format MTL file
+            if spaceCraft == "LANDSAT_7":
+                band = "61"
+            lMax = float(mtlData[LANDSAT_LMAX_KEY % band])
+            lMin = float(mtlData[LANDSAT_LMIN_KEY % band])
+            qcalMax = float(mtlData[LANDSAT_QCALMAX_KEY % band])
+            qcalMin = float(mtlData[LANDSAT_QCALMIN_KEY % band])
+            gain = (lMax - lMin) / (qcalMax - qcalMin)
+            offset = lMin - qcalMin * gain
         
     if 'SENSOR_ID' in mtlData:
         # look for k1 and k2
@@ -673,7 +736,18 @@ def readMTLFile(mtl):
         if len(arr) == 2:
             (key, value) = arr
             dict[key.strip()] = value.replace('"', '').strip()
-                                                                
+
+    # For the older format of the MTL file, a few fields had different names. So, we fake the
+    # new names, so that the rest of the code can just use those. 
+    dict['DATE_ACQUIRED'] = dict['ACQUISITION_DATE']
+    dict['SCENE_CENTER_TIME'] = dict['SCENE_CENTER_SCAN_TIME']
+    
+    # Oldest format has spacecraft ID string formatted differently, so reformat it. 
+    spaceCraft = dict['SPACECRAFT_ID']
+    if spaceCraft.startswith('Landsat') and '_' not in spaceCraft:
+        satNum = spaceCraft[-1]
+        dict['SPACECRAFT_ID'] = "LANDSAT_" + satNum
+
     return dict
                                                                     
 
