@@ -152,7 +152,7 @@ def check_values_in_image(img, values, band=1):
     """
     ds = gdal.Open(img)
     raster_array = ds.GetRasterBand(band).ReadAsArray().ravel()
-    ds = None
+    del ds
     return intersect1d(raster_array, values)
 
 
@@ -163,7 +163,7 @@ def get_extent(img_path):
     maxy = geoTransform[3]
     maxx = minx + geoTransform[1] * data.RasterXSize
     miny = maxy + geoTransform[5] * data.RasterYSize
-    data = None
+    del data
 
     return [round(minx), round(maxy), round(maxx), round(miny)]
 
