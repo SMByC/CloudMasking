@@ -836,6 +836,11 @@ class CloudMasking:
                 update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
                                    self.tr(u"Error: The particular file not exists"))
                 return
+            # only tif
+            if not self.reflective_stack_file.endswith((".tif", ".TIF")):
+                update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
+                                   self.tr(u"Error: The particular file should be tif"))
+                return
 
         # make stack to apply mask in tmp file
         if self.dockwidget.radioButton_ToRaw_Bands.isChecked() or self.dockwidget.radioButton_ToSR_Bands.isChecked():
@@ -851,24 +856,25 @@ class CloudMasking:
         # check images size if is different, this mean that the mask is a selected area
         # and "keep the original image size" is not selected. Then resize the reflective
         # stack to mask size
+        inprogress_file = self.reflective_stack_file\
+            .replace(".tif", "_inprogress.tif").replace(".TIF", "_inprogress.tif")
         if get_extent(self.reflective_stack_file) != get_extent(mask_path):
             extent_mask = get_extent(mask_path)
-            gdal.Translate(self.reflective_stack_file.replace(".tif", "_inprogress.tif"), self.reflective_stack_file,
-                           projWin=extent_mask)
+            gdal.Translate(inprogress_file, self.reflective_stack_file, projWin=extent_mask)
             os.remove(self.reflective_stack_file)
-            os.rename(self.reflective_stack_file.replace(".tif", "_inprogress.tif"), self.reflective_stack_file)
+            os.rename(inprogress_file, self.reflective_stack_file)
 
         # apply mask to stack
         gdal_calc.Calc(calc="A*(B==1)", A=self.reflective_stack_file, B=mask_path,
-                       outfile=self.reflective_stack_file.replace(".tif", "_inprogress.tif"), allBands='A', overwrite=True)
+                       outfile=inprogress_file, allBands='A', overwrite=True)
 
         # unset the nodata
-        gdal.Translate(result_path, self.reflective_stack_file.replace(".tif", "_inprogress.tif"), noData="none")
+        gdal.Translate(result_path, inprogress_file, noData="none")
 
         # clean
         if not self.dockwidget.radioButton_ToParticularFile.isChecked():
             os.remove(self.reflective_stack_file)
-        os.remove(self.reflective_stack_file.replace(".tif", "_inprogress.tif"))
+        os.remove(inprogress_file)
 
         # load into canvas when finished
         if self.dockwidget.checkBox_LoadResult.isChecked():
