@@ -53,7 +53,6 @@ class CloudMasking:
         """
         # Save reference to the QGIS interface
         self.iface = iface
-        self.canvas = self.iface.mapCanvas()
 
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
@@ -72,14 +71,13 @@ class CloudMasking:
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-        # Declare instance attributes
-        self.actions = []
-        self.menu = self.tr(u'&Cloud Masking')
-        #self.toolbar = self.iface.addToolBar(u'CloudMasking')
-        #self.toolbar.setObjectName(u'CloudMasking')
+        print "** INITIALIZING CloudMasking"
 
         self.pluginIsActive = False
         self.dockwidget = None
+
+        # Obtaining the map canvas
+        self.canvas = iface.mapCanvas()
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -96,108 +94,18 @@ class CloudMasking:
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('CloudMasking', message)
 
-    def add_action(
-        self,
-        icon_path,
-        text,
-        callback,
-        enabled_flag=True,
-        add_to_menu=True,
-        add_to_toolbar=False,
-        status_tip=None,
-        whats_this=None,
-        parent=None):
-        """Add a toolbar icon to the toolbar.
-
-        :param icon_path: Path to the icon for this action. Can be a resource
-            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
-        :type icon_path: str
-
-        :param text: Text that should be shown in menu items for this action.
-        :type text: str
-
-        :param callback: Function to be called when the action is triggered.
-        :type callback: function
-
-        :param enabled_flag: A flag indicating if the action should be enabled
-            by default. Defaults to True.
-        :type enabled_flag: bool
-
-        :param add_to_menu: Flag indicating whether the action should also
-            be added to the menu. Defaults to True.
-        :type add_to_menu: bool
-
-        :param add_to_toolbar: Flag indicating whether the action should also
-            be added to the toolbar. Defaults to True.
-        :type add_to_toolbar: bool
-
-        :param status_tip: Optional text to show in a popup when mouse pointer
-            hovers over the action.
-        :type status_tip: str
-
-        :param parent: Parent widget for the new action. Defaults None.
-        :type parent: QWidget
-
-        :param whats_this: Optional text to show in the status bar when the
-            mouse pointer hovers over the action.
-
-        :returns: The action that was created. Note that the action is also
-            added to self.actions list.
-        :rtype: QAction
-        """
-
-        icon = QIcon(icon_path)
-        action = QAction(icon, text, parent)
-        action.triggered.connect(callback)
-        action.setEnabled(enabled_flag)
-
-        if status_tip is not None:
-            action.setStatusTip(status_tip)
-
-        if whats_this is not None:
-            action.setWhatsThis(whats_this)
-
-        if add_to_toolbar:
-            self.toolbar.addAction(action)
-
-        if add_to_menu:
-            ## set the smbyc menu
-            self.smbyc_menu = None
-            # Check if the menu exists and get it
-            for menu_item in self.iface.mainWindow().menuBar().children():
-                if isinstance(menu_item, QMenu) and menu_item.title() == u"SMBYC":
-                    self.smbyc_menu = menu_item
-            # If the menu does not exist, create it!
-            if not self.smbyc_menu:
-                self.smbyc_menu = QMenu(self.iface.mainWindow().menuBar())
-                self.smbyc_menu.setObjectName(u'Plugins for the project SMBYC')
-                self.smbyc_menu.setTitle(u"SMBYC")
-
-            ## set the item plugin in smbyc menu
-            self.action = QAction(QIcon(icon_path), self.menu, self.iface.mainWindow())
-            self.action.setObjectName(u'CloudMasking')
-            self.action.setWhatsThis(self.tr(u'Cloud masking ...'))
-            self.action.setStatusTip(self.tr(u'This is status tip'))
-            QObject.connect(self.action, SIGNAL("triggered()"), self.run)
-            self.smbyc_menu.addAction(self.action)
-
-            self.menuBar = self.iface.mainWindow().menuBar()
-            self.menuBar.insertMenu(self.iface.firstRightStandardMenu().menuAction(), self.smbyc_menu)
-
-        self.actions.append(action)
-
-        return action
-
-
     def initGui(self):
-        """Create the menu entries and toolbar icons inside the QGIS GUI."""
-
+        # Create action that will start plugin configuration
         icon_path = ':/plugins/CloudMasking/icon.png'
-        self.add_action(
-            icon_path,
-            text=self.tr(u'Cloud Masking'),
-            callback=self.run,
-            parent=self.iface.mainWindow())
+        self.action = QAction(
+            QIcon(icon_path),
+            self.tr(u'&Cloud Masking'), self.iface.mainWindow())
+        # connect the action to the run method
+        self.action.triggered.connect(self.run)
+
+        # Add toolbar button and menu item
+        self.iface.addToolBarIcon(self.action)
+        self.iface.addPluginToMenu(self.tr(u"&Cloud masking for Landsat products"), self.action)
 
     #--------------------------------------------------------------------------
 
@@ -218,21 +126,15 @@ class CloudMasking:
 
         self.pluginIsActive = False
 
-
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
 
         print "** UNLOAD CloudMasking"
         self.clear_all()
 
-        for action in self.actions:
-            for menu_item in self.iface.mainWindow().menuBar().children():
-                if isinstance(menu_item, QMenu) and menu_item.title() == u"SMBYC":
-                    menu_item.removeAction(self.action)
-                    # TODO: remove menu_item "SMBYC" if this is empty (actions)
-            self.iface.removeToolBarIcon(action)
-        # remove the toolbar
-        #del self.toolbar
+        # Remove the plugin menu item and icon
+        self.iface.removePluginMenu(self.tr(u"&Cloud masking for Landsat products"), self.action)
+        self.iface.removeToolBarIcon(self.action)
 
     #--------------------------------------------------------------------------
 
