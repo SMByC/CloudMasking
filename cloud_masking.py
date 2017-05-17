@@ -26,8 +26,8 @@ from time import sleep
 from shutil import copyfile
 import gdal
 
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QObject, SIGNAL
-from PyQt4.QtGui import QAction, QIcon, QMenu, QMessageBox, QApplication, QCursor, QFileDialog
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
+from PyQt4.QtGui import QAction, QIcon, QMessageBox, QApplication, QCursor, QFileDialog
 from PyQt4.QtGui import QCheckBox, QGroupBox, QRadioButton
 from qgis.gui import QgsMessageBar
 from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer, QgsVectorLayer
@@ -36,8 +36,9 @@ import resources
 
 from CloudMasking.core import cloud_filters, color_stack
 from CloudMasking.core.utils import apply_symbology, get_prefer_name, update_process_bar, get_extent
+from CloudMasking.libs import gdal_calc, gdal_merge
 from CloudMasking.gui.cloud_masking_dockwidget import CloudMaskingDockWidget
-from CloudMasking.libs import gdal_calc, gdal_merge, gdal_clip
+from CloudMasking.gui.about_dialog import AboutDialog
 
 
 class CloudMasking:
@@ -73,11 +74,14 @@ class CloudMasking:
 
         print "** INITIALIZING CloudMasking"
 
+        self.menu_name_plugin = self.tr(u"&Cloud masking for Landsat products")
         self.pluginIsActive = False
         self.dockwidget = None
 
         # Obtaining the map canvas
         self.canvas = iface.mapCanvas()
+
+        self.about_dialog = AboutDialog()
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -95,17 +99,25 @@ class CloudMasking:
         return QCoreApplication.translate('CloudMasking', message)
 
     def initGui(self):
+        ### Main dockwidget
         # Create action that will start plugin configuration
         icon_path = ':/plugins/CloudMasking/icon.png'
-        self.action = QAction(
-            QIcon(icon_path),
-            self.tr(u'&Cloud Masking'), self.iface.mainWindow())
+        self.dockable_action = QAction(QIcon(icon_path), self.tr(u'&Cloud Masking'), self.iface.mainWindow())
         # connect the action to the run method
-        self.action.triggered.connect(self.run)
+        self.dockable_action.triggered.connect(self.run)
 
         # Add toolbar button and menu item
-        self.iface.addToolBarIcon(self.action)
-        self.iface.addPluginToMenu(self.tr(u"&Cloud masking for Landsat products"), self.action)
+        self.iface.addToolBarIcon(self.dockable_action)
+        self.iface.addPluginToMenu(self.menu_name_plugin, self.dockable_action)
+
+        ### About dialog
+        # Create action that will start plugin configuration
+        icon_path = ':/plugins/CloudMasking/gui/about.png'
+        self.about_action = QAction(QIcon(icon_path), self.tr(u'About'), self.iface.mainWindow())
+        # connect the action to the run method
+        self.about_action.triggered.connect(self.about)
+        # Add toolbar button and menu item
+        self.iface.addPluginToMenu(self.menu_name_plugin, self.about_action)
 
     #--------------------------------------------------------------------------
 
@@ -126,6 +138,9 @@ class CloudMasking:
 
         self.pluginIsActive = False
 
+    def about(self):
+        self.about_dialog.show()
+
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
 
@@ -133,8 +148,9 @@ class CloudMasking:
         self.clear_all()
 
         # Remove the plugin menu item and icon
-        self.iface.removePluginMenu(self.tr(u"&Cloud masking for Landsat products"), self.action)
-        self.iface.removeToolBarIcon(self.action)
+        self.iface.removePluginMenu(self.menu_name_plugin, self.dockable_action)
+        self.iface.removePluginMenu(self.menu_name_plugin, self.about_action)
+        self.iface.removeToolBarIcon(self.dockable_action)
 
     #--------------------------------------------------------------------------
 

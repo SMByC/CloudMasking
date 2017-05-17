@@ -5,5 +5,7 @@
         <file>ui/shadow.png</file>
         <file>ui/snow.png</file>
         <file>ui/water.png</file>
+        <file>gui/about.png</file>
+        <file>gui/cloud_masking.png</file>
     </qresource>
 </RCC>
