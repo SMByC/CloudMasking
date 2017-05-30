@@ -11,7 +11,7 @@ Home page documentation: [https://smbyc.bitbucket.io/qgisplugins/cloudmasking](h
 - The plugin can be installed using the QGIS Plugin Manager
 - Go into Qgis to `Plugins` menu and `Manage and install plugins`
 - In `All` section search for `Cloud Masking` click and press Install plugin
-- The plugin will be available in the `SMBYC` menu
+- The plugin will be available in the `Plugins` menu and `Plugins toolbar`
 
 (see more about [installation and upgrade](https://smbyc.bitbucket.io/qgisplugins/cloudmasking/installation))
 

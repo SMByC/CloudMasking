@@ -10,7 +10,7 @@ The plugin can be installed using the QGIS Plugin Manager:
 
     ![install](img/install_02.png)
 
-- The plugin will be available in the `SMBYC` menu
+- The plugin will be available in the `Plugins` menu and `Plugins toolbar`
 
     ![install](img/install_03.png)
 
