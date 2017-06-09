@@ -1,6 +1,6 @@
 
 ## Build a documentation
-mkdocs build --clean --site-dir /home/xavier/Projects/SMBYC/smbyc.bitbucket.org/qgisplugins/cloudmasking/
+mkdocs build --clean --site-dir /home/xavier/Projects/smbyc/smbyc.bitbucket.org/qgisplugins/cloudmasking/
 
 ## Deploy
 pb_tool deploy

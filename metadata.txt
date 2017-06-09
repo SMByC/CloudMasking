@@ -17,8 +17,8 @@ author=Xavier Corredor Llano, SMBYC
 email=xcorredorl@ideam.gov.co
 
 homepage=https://smbyc.bitbucket.io/qgisplugins/cloudmasking
-tracker=https://bitbucket.org/SMBYC/qgisplugin-cloudmasking/issues
-repository=https://bitbucket.org/SMBYC/qgisplugin-cloudmasking
+tracker=https://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues
+repository=https://bitbucket.org/smbyc/qgisplugin-cloudmasking
 
 # Uncomment the following line and add your changelog:
 # changelog=

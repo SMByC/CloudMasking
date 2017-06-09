@@ -18,7 +18,7 @@ Home page documentation: [https://smbyc.bitbucket.io/qgisplugins/cloudmasking](h
 ## Source code
 
 The official version control system repository of the plugin:
-[https://bitbucket.org/SMBYC/qgisplugin-cloudmasking](https://bitbucket.org/SMBYC/qgisplugin-cloudmasking)
+[https://bitbucket.org/smbyc/qgisplugin-cloudmasking](https://bitbucket.org/smbyc/qgisplugin-cloudmasking)
 
 ## The home plugin:
 
@@ -26,7 +26,7 @@ The home plugin in plugins.qgis.org: [http://plugins.qgis.org/plugins/CloudMaski
 
 ## Issue Tracker
 
-Issues, bugs and enhancement: [https://bitbucket.org/SMBYC/qgisplugin-cloudmasking/issues](https://bitbucket.org/SMBYC/qgisplugin-cloudmasking/issues)
+Issues, ideas and enhancements: [https://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues](https://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues)
 
 
 ***

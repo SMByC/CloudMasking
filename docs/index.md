@@ -10,11 +10,11 @@ CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirr
 ## Source code
 
 The latest sources can be obtained from official repository:
-[https://bitbucket.org/SMBYC/qgisplugin-cloudmasking](https://bitbucket.org/SMBYC/qgisplugin-cloudmasking)
+[https://bitbucket.org/smbyc/qgisplugin-cloudmasking](https://bitbucket.org/smbyc/qgisplugin-cloudmasking)
 
 ## Issue Tracker
 
-Issues, bugs and enhancement: [https://bitbucket.org/SMBYC/qgisplugin-cloudmasking/issues](https://bitbucket.org/SMBYC/qgisplugin-cloudmasking/issues)
+Issues, ideas and enhancements: [https://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues](https://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues)
 
 ## The home plugin:
 
@@ -23,5 +23,5 @@ The home plugin in plugins.qgis.org: [http://plugins.qgis.org/plugins/CloudMaski
 ***
 
 Copyright (C) Xavier Corredor Llano <xcorredorl@ideam.gov.co>  
-Sistema de Monitoreo de Bosques y Carbono - SMBYC and FAO  
+Sistema de Monitoreo de Bosques y Carbono SMByC and FAO  
 General Public License - GPLv3

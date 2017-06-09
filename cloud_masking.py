@@ -233,7 +233,7 @@ class CloudMasking:
                     msg_error += "\nAn error has occurred in '{0}': {1}\n".format(func_name, e)
                     msg_error += traceback.format_exc()
                     msg_error += "\nPlease report the error in:\n" \
-                                 "\thttps://bitbucket.org/SMBYC/qgisplugin-cloudmasking/issues"
+                                 "\thttps://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues"
                     msg_error += "\n################## END REPORT"
                     QgsMessageLog.logMessage(msg_error)
 
