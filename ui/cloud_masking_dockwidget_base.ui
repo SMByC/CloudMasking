@@ -60,7 +60,7 @@
              <x>0</x>
              <y>0</y>
              <width>575</width>
-             <height>831</height>
+             <height>839</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -172,16 +172,7 @@
                   <property name="spacing">
                    <number>0</number>
                   </property>
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="bottomMargin">
+                  <property name="margin">
                    <number>0</number>
                   </property>
                   <item>
@@ -326,16 +317,7 @@
                            <property name="spacing">
                             <number>0</number>
                            </property>
-                           <property name="leftMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="topMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="rightMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="bottomMargin">
+                           <property name="margin">
                             <number>0</number>
                            </property>
                            <item>
@@ -544,8 +526,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>528</width>
-             <height>2249</height>
+             <width>555</width>
+             <height>1996</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -646,16 +628,7 @@
                   <item row="0" column="0">
                    <widget class="QWidget" name="widget_18" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_17">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -742,16 +715,7 @@
                            <item>
                             <widget class="QWidget" name="widget_QA_Water" native="true">
                              <layout class="QGridLayout" name="gridLayout_10">
-                              <property name="leftMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="bottomMargin">
+                              <property name="margin">
                                <number>0</number>
                               </property>
                               <item row="0" column="0">
@@ -818,16 +782,7 @@
                            <item>
                             <widget class="QWidget" name="widget_QA_SnowIce" native="true">
                              <layout class="QGridLayout" name="gridLayout_11">
-                              <property name="leftMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="bottomMargin">
+                              <property name="margin">
                                <number>0</number>
                               </property>
                               <item row="0" column="0">
@@ -894,16 +849,7 @@
                            <item>
                             <widget class="QWidget" name="widget_QA_Cirrus" native="true">
                              <layout class="QGridLayout" name="gridLayout_12">
-                              <property name="leftMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="bottomMargin">
+                              <property name="margin">
                                <number>0</number>
                               </property>
                               <item row="0" column="0">
@@ -970,16 +916,7 @@
                            <item>
                             <widget class="QWidget" name="widget_QA_Cloud" native="true">
                              <layout class="QGridLayout" name="gridLayout_13">
-                              <property name="leftMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="bottomMargin">
+                              <property name="margin">
                                <number>0</number>
                               </property>
                               <item row="0" column="0">
@@ -1031,16 +968,7 @@
                         <item>
                          <widget class="QWidget" name="widget_19" native="true">
                           <layout class="QHBoxLayout" name="horizontalLayout_18">
-                           <property name="leftMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="topMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="rightMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="bottomMargin">
+                           <property name="margin">
                             <number>0</number>
                            </property>
                            <item>
@@ -1093,240 +1021,313 @@ You can add multiple values separated by comma</string>
                    <widget class="QWidget" name="widget_FMask" native="true">
                     <layout class="QVBoxLayout" name="verticalLayout_2">
                      <item>
-                      <widget class="QWidget" name="widget_FMask_01" native="true">
-                       <layout class="QGridLayout" name="gridLayout_3">
-                        <item row="7" column="2">
-                         <widget class="QDoubleSpinBox" name="doubleSpinBox_WT">
-                          <property name="maximum">
-                           <double>1.000000000000000</double>
-                          </property>
-                          <property name="singleStep">
-                           <double>0.010000000000000</double>
-                          </property>
+                      <widget class="QWidget" name="widget_23" native="true">
+                       <layout class="QVBoxLayout" name="verticalLayout_32">
+                        <item>
+                         <widget class="QWidget" name="widget_24" native="true">
+                          <layout class="QGridLayout" name="gridLayout_15">
+                           <item row="3" column="2">
+                            <widget class="QDoubleSpinBox" name="doubleSpinBox_CB">
+                             <property name="decimals">
+                              <number>0</number>
+                             </property>
+                             <property name="minimum">
+                              <double>0.000000000000000</double>
+                             </property>
+                             <property name="maximum">
+                              <double>30.000000000000000</double>
+                             </property>
+                             <property name="singleStep">
+                              <double>1.000000000000000</double>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="4" column="0">
+                            <widget class="QLabel" name="label_10">
+                             <property name="toolTip">
+                              <string>Extra buffer around cloud shadown layer (pixels)</string>
+                             </property>
+                             <property name="text">
+                              <string>ShadowBuffer</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="3" column="1">
+                            <widget class="QSlider" name="horizontalSlider_CB">
+                             <property name="minimum">
+                              <number>0</number>
+                             </property>
+                             <property name="maximum">
+                              <number>30</number>
+                             </property>
+                             <property name="singleStep">
+                              <number>1</number>
+                             </property>
+                             <property name="pageStep">
+                              <number>2</number>
+                             </property>
+                             <property name="orientation">
+                              <enum>Qt::Horizontal</enum>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="4" column="2">
+                            <widget class="QDoubleSpinBox" name="doubleSpinBox_SB">
+                             <property name="decimals">
+                              <number>0</number>
+                             </property>
+                             <property name="maximum">
+                              <double>30.000000000000000</double>
+                             </property>
+                             <property name="singleStep">
+                              <double>1.000000000000000</double>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="3" column="0">
+                            <widget class="QLabel" name="label">
+                             <property name="toolTip">
+                              <string>Extra buffer around cloud layer (pixels)</string>
+                             </property>
+                             <property name="text">
+                              <string>CloudBuffer</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="4" column="1">
+                            <widget class="QSlider" name="horizontalSlider_SB">
+                             <property name="maximum">
+                              <number>30</number>
+                             </property>
+                             <property name="pageStep">
+                              <number>2</number>
+                             </property>
+                             <property name="orientation">
+                              <enum>Qt::Horizontal</enum>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="0" column="1">
+                            <widget class="QSlider" name="horizontalSlider_CPT">
+                             <property name="maximum">
+                              <number>1000</number>
+                             </property>
+                             <property name="orientation">
+                              <enum>Qt::Horizontal</enum>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="0" column="2">
+                            <widget class="QDoubleSpinBox" name="doubleSpinBox_CPT">
+                             <property name="decimals">
+                              <number>3</number>
+                             </property>
+                             <property name="maximum">
+                              <double>1.000000000000000</double>
+                             </property>
+                             <property name="singleStep">
+                              <double>0.001000000000000</double>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="0" column="0">
+                            <widget class="QLabel" name="label_25">
+                             <property name="toolTip">
+                              <string>Cloud probability threshold (percentage). To reduce commission errors, increase this value, but this will also increase omission errors.</string>
+                             </property>
+                             <property name="text">
+                              <string>CloudProbThresh</string>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                          <zorder>doubleSpinBox_CB</zorder>
+                          <zorder>doubleSpinBox_CB</zorder>
+                          <zorder>horizontalSlider_CB</zorder>
+                          <zorder>label</zorder>
+                          <zorder>doubleSpinBox_SB</zorder>
+                          <zorder>horizontalSlider_SB</zorder>
+                          <zorder>label_10</zorder>
+                          <zorder>horizontalSlider_CPT</zorder>
+                          <zorder>doubleSpinBox_CPT</zorder>
+                          <zorder>label_25</zorder>
                          </widget>
                         </item>
-                        <item row="6" column="1">
-                         <widget class="QSlider" name="horizontalSlider_S2T">
-                          <property name="maximum">
-                           <number>100</number>
+                        <item>
+                         <widget class="QGroupBox" name="groupBox">
+                          <property name="title">
+                           <string>Advanced options</string>
                           </property>
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
+                          <property name="checkable">
+                           <bool>true</bool>
                           </property>
-                         </widget>
-                        </item>
-                        <item row="5" column="2">
-                         <widget class="QDoubleSpinBox" name="doubleSpinBox_NFT">
-                          <property name="decimals">
-                           <number>3</number>
+                          <property name="checked">
+                           <bool>false</bool>
                           </property>
-                          <property name="maximum">
-                           <double>0.100000000000000</double>
-                          </property>
-                          <property name="singleStep">
-                           <double>0.001000000000000</double>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="6" column="2">
-                         <widget class="QDoubleSpinBox" name="doubleSpinBox_S2T">
-                          <property name="decimals">
-                           <number>3</number>
-                          </property>
-                          <property name="maximum">
-                           <double>0.100000000000000</double>
-                          </property>
-                          <property name="singleStep">
-                           <double>0.001000000000000</double>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="5" column="1">
-                         <widget class="QSlider" name="horizontalSlider_NFT">
-                          <property name="maximum">
-                           <number>100</number>
-                          </property>
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="5" column="0">
-                         <widget class="QLabel" name="label_3">
-                          <property name="text">
-                           <string>NIRFillThresh</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="7" column="0">
-                         <widget class="QLabel" name="label_8">
-                          <property name="text">
-                           <string>WhitenessThresh</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="4" column="0">
-                         <widget class="QLabel" name="label_12">
-                          <property name="toolTip">
-                           <string>Ratio used to determine the cirrus cloud probability</string>
-                          </property>
-                          <property name="text">
-                           <string>CirrusProbRatio</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="2" column="1">
-                         <widget class="QSlider" name="horizontalSlider_SB">
-                          <property name="maximum">
-                           <number>30</number>
-                          </property>
-                          <property name="pageStep">
-                           <number>2</number>
-                          </property>
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="2" column="0">
-                         <widget class="QLabel" name="label_10">
-                          <property name="toolTip">
-                           <string>Extra buffer around cloud shadown layer (pixels)</string>
-                          </property>
-                          <property name="text">
-                           <string>ShadowBuffer</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="1" column="2">
-                         <widget class="QDoubleSpinBox" name="doubleSpinBox_CB">
-                          <property name="decimals">
-                           <number>0</number>
-                          </property>
-                          <property name="minimum">
-                           <double>0.000000000000000</double>
-                          </property>
-                          <property name="maximum">
-                           <double>30.000000000000000</double>
-                          </property>
-                          <property name="singleStep">
-                           <double>1.000000000000000</double>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="1" column="1">
-                         <widget class="QSlider" name="horizontalSlider_CB">
-                          <property name="minimum">
-                           <number>0</number>
-                          </property>
-                          <property name="maximum">
-                           <number>30</number>
-                          </property>
-                          <property name="singleStep">
-                           <number>1</number>
-                          </property>
-                          <property name="pageStep">
-                           <number>2</number>
-                          </property>
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="2" column="2">
-                         <widget class="QDoubleSpinBox" name="doubleSpinBox_SB">
-                          <property name="decimals">
-                           <number>0</number>
-                          </property>
-                          <property name="maximum">
-                           <double>30.000000000000000</double>
-                          </property>
-                          <property name="singleStep">
-                           <double>1.000000000000000</double>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="4" column="1">
-                         <widget class="QSlider" name="horizontalSlider_CPR">
-                          <property name="maximum">
-                           <number>100</number>
-                          </property>
-                          <property name="singleStep">
-                           <number>1</number>
-                          </property>
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="4" column="2">
-                         <widget class="QDoubleSpinBox" name="doubleSpinBox_CPR">
-                          <property name="decimals">
-                           <number>3</number>
-                          </property>
-                          <property name="maximum">
-                           <double>0.100000000000000</double>
-                          </property>
-                          <property name="singleStep">
-                           <double>0.001000000000000</double>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="6" column="0">
-                         <widget class="QLabel" name="label_7">
-                          <property name="text">
-                           <string>Swir2Thresh</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="8" column="2">
-                         <widget class="QDoubleSpinBox" name="doubleSpinBox_S2WT">
-                          <property name="decimals">
-                           <number>3</number>
-                          </property>
-                          <property name="maximum">
-                           <double>0.100000000000000</double>
-                          </property>
-                          <property name="singleStep">
-                           <double>0.001000000000000</double>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="7" column="1">
-                         <widget class="QSlider" name="horizontalSlider_WT">
-                          <property name="maximum">
-                           <number>1000</number>
-                          </property>
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="8" column="0">
-                         <widget class="QLabel" name="label_9">
-                          <property name="text">
-                           <string>Swir2WaterTest</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="8" column="1">
-                         <widget class="QSlider" name="horizontalSlider_S2WT">
-                          <property name="maximum">
-                           <number>100</number>
-                          </property>
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="1" column="0">
-                         <widget class="QLabel" name="label">
-                          <property name="toolTip">
-                           <string>Extra buffer around cloud layer (pixels)</string>
-                          </property>
-                          <property name="text">
-                           <string>CloudBuffer</string>
-                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_33">
+                           <item>
+                            <widget class="QWidget" name="widget_FMask_advanced" native="true">
+                             <layout class="QGridLayout" name="gridLayout_3">
+                              <property name="margin">
+                               <number>0</number>
+                              </property>
+                              <item row="7" column="2">
+                               <widget class="QDoubleSpinBox" name="doubleSpinBox_WT">
+                                <property name="maximum">
+                                 <double>1.000000000000000</double>
+                                </property>
+                                <property name="singleStep">
+                                 <double>0.010000000000000</double>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="6" column="1">
+                               <widget class="QSlider" name="horizontalSlider_S2T">
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="5" column="2">
+                               <widget class="QDoubleSpinBox" name="doubleSpinBox_NFT">
+                                <property name="decimals">
+                                 <number>3</number>
+                                </property>
+                                <property name="maximum">
+                                 <double>0.100000000000000</double>
+                                </property>
+                                <property name="singleStep">
+                                 <double>0.001000000000000</double>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="6" column="2">
+                               <widget class="QDoubleSpinBox" name="doubleSpinBox_S2T">
+                                <property name="decimals">
+                                 <number>3</number>
+                                </property>
+                                <property name="maximum">
+                                 <double>0.100000000000000</double>
+                                </property>
+                                <property name="singleStep">
+                                 <double>0.001000000000000</double>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="5" column="1">
+                               <widget class="QSlider" name="horizontalSlider_NFT">
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="5" column="0">
+                               <widget class="QLabel" name="label_3">
+                                <property name="text">
+                                 <string>NIRFillThresh</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="7" column="0">
+                               <widget class="QLabel" name="label_8">
+                                <property name="text">
+                                 <string>WhitenessThresh</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="0">
+                               <widget class="QLabel" name="label_12">
+                                <property name="toolTip">
+                                 <string>Ratio used to determine the cirrus cloud probability</string>
+                                </property>
+                                <property name="text">
+                                 <string>CirrusProbRatio</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="1">
+                               <widget class="QSlider" name="horizontalSlider_CPR">
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="singleStep">
+                                 <number>1</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="4" column="2">
+                               <widget class="QDoubleSpinBox" name="doubleSpinBox_CPR">
+                                <property name="decimals">
+                                 <number>3</number>
+                                </property>
+                                <property name="maximum">
+                                 <double>0.100000000000000</double>
+                                </property>
+                                <property name="singleStep">
+                                 <double>0.001000000000000</double>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="6" column="0">
+                               <widget class="QLabel" name="label_7">
+                                <property name="text">
+                                 <string>Swir2Thresh</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="8" column="2">
+                               <widget class="QDoubleSpinBox" name="doubleSpinBox_S2WT">
+                                <property name="decimals">
+                                 <number>3</number>
+                                </property>
+                                <property name="maximum">
+                                 <double>0.100000000000000</double>
+                                </property>
+                                <property name="singleStep">
+                                 <double>0.001000000000000</double>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="7" column="1">
+                               <widget class="QSlider" name="horizontalSlider_WT">
+                                <property name="maximum">
+                                 <number>1000</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="8" column="0">
+                               <widget class="QLabel" name="label_9">
+                                <property name="text">
+                                 <string>Swir2WaterTest</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="8" column="1">
+                               <widget class="QSlider" name="horizontalSlider_S2WT">
+                                <property name="maximum">
+                                 <number>100</number>
+                                </property>
+                                <property name="orientation">
+                                 <enum>Qt::Horizontal</enum>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
                          </widget>
                         </item>
                        </layout>
@@ -1451,16 +1452,7 @@ You can add multiple values separated by comma</string>
                      <property name="spacing">
                       <number>6</number>
                      </property>
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -1613,16 +1605,7 @@ You can add multiple values separated by comma</string>
                            <item>
                             <widget class="QWidget" name="widget_CloudQA_Aerosol" native="true">
                              <layout class="QGridLayout" name="gridLayout_14">
-                              <property name="leftMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>0</number>
-                              </property>
-                              <property name="bottomMargin">
+                              <property name="margin">
                                <number>0</number>
                               </property>
                               <item row="0" column="0">
@@ -1674,16 +1657,7 @@ You can add multiple values separated by comma</string>
                         <item>
                          <widget class="QWidget" name="widget_17" native="true">
                           <layout class="QHBoxLayout" name="horizontalLayout_16">
-                           <property name="leftMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="topMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="rightMargin">
-                            <number>0</number>
-                           </property>
-                           <property name="bottomMargin">
+                           <property name="margin">
                             <number>0</number>
                            </property>
                            <item>
@@ -1728,16 +1702,7 @@ You can add multiple values separated by comma</string>
                <item row="0" column="0">
                 <widget class="QWidget" name="widget_21" native="true">
                  <layout class="QHBoxLayout" name="horizontalLayout_20">
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="bottomMargin">
+                  <property name="margin">
                    <number>0</number>
                   </property>
                   <item>
@@ -1797,16 +1762,7 @@ You can add multiple values separated by comma</string>
                      <property name="spacing">
                       <number>0</number>
                      </property>
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -1875,16 +1831,7 @@ You can add multiple values separated by comma</string>
                   <item>
                    <widget class="QWidget" name="widget_22" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_21">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -1960,8 +1907,8 @@ You can add multiple values separated by comma</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>526</width>
-             <height>620</height>
+             <width>575</width>
+             <height>833</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1993,16 +1940,7 @@ You can add multiple values separated by comma</string>
                   <item row="1" column="0">
                    <widget class="QWidget" name="widget_8" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_9">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -2051,16 +1989,7 @@ You can add multiple values separated by comma</string>
                   <item row="4" column="0">
                    <widget class="QWidget" name="widget_9" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_11">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -2114,16 +2043,7 @@ You can add multiple values separated by comma</string>
                   <item>
                    <widget class="QWidget" name="widget_6" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_3">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -2233,16 +2153,7 @@ You can add multiple values separated by comma</string>
                   <item row="1" column="1">
                    <widget class="QWidget" name="widget_4" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_2">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -2286,16 +2197,7 @@ You can add multiple values separated by comma</string>
                <item>
                 <widget class="QWidget" name="widget_7" native="true">
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="bottomMargin">
+                  <property name="margin">
                    <number>0</number>
                   </property>
                   <item>
@@ -2314,16 +2216,7 @@ You can add multiple values separated by comma</string>
                      <property name="spacing">
                       <number>0</number>
                      </property>
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
+                     <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
@@ -2427,8 +2320,8 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>267</x>
-     <y>610</y>
+     <x>278</x>
+     <y>604</y>
     </hint>
     <hint type="destinationlabel">
      <x>267</x>
@@ -2443,12 +2336,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>139</x>
-     <y>1308</y>
+     <x>129</x>
+     <y>1190</y>
     </hint>
     <hint type="destinationlabel">
-     <x>284</x>
-     <y>1895</y>
+     <x>295</x>
+     <y>1744</y>
     </hint>
    </hints>
   </connection>
@@ -2459,12 +2352,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>438</x>
-     <y>377</y>
+     <x>422</x>
+     <y>320</y>
     </hint>
     <hint type="destinationlabel">
-     <x>135</x>
-     <y>473</y>
+     <x>144</x>
+     <y>402</y>
     </hint>
    </hints>
   </connection>
@@ -2475,12 +2368,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>364</x>
-     <y>1576</y>
+     <x>387</x>
+     <y>1386</y>
     </hint>
     <hint type="destinationlabel">
-     <x>465</x>
-     <y>1568</y>
+     <x>496</x>
+     <y>1378</y>
     </hint>
    </hints>
   </connection>
@@ -2491,12 +2384,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>264</x>
-     <y>1701</y>
+     <x>287</x>
+     <y>1490</y>
     </hint>
     <hint type="destinationlabel">
-     <x>363</x>
-     <y>1693</y>
+     <x>394</x>
+     <y>1482</y>
     </hint>
    </hints>
   </connection>
@@ -2507,12 +2400,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>258</x>
-     <y>1826</y>
+     <x>281</x>
+     <y>1594</y>
     </hint>
     <hint type="destinationlabel">
-     <x>360</x>
-     <y>1818</y>
+     <x>391</x>
+     <y>1586</y>
     </hint>
    </hints>
   </connection>
@@ -2523,12 +2416,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>274</x>
-     <y>1951</y>
+     <x>297</x>
+     <y>1698</y>
     </hint>
     <hint type="destinationlabel">
-     <x>363</x>
-     <y>1943</y>
+     <x>394</x>
+     <y>1690</y>
     </hint>
    </hints>
   </connection>
@@ -2539,12 +2432,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>342</x>
-     <y>1114</y>
+     <x>365</x>
+     <y>1098</y>
     </hint>
     <hint type="destinationlabel">
-     <x>374</x>
-     <y>1157</y>
+     <x>405</x>
+     <y>1090</y>
     </hint>
    </hints>
   </connection>
@@ -2556,11 +2449,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>547</x>
-     <y>2070</y>
+     <y>1826</y>
     </hint>
     <hint type="destinationlabel">
-     <x>430</x>
-     <y>2123</y>
+     <x>433</x>
+     <y>1940</y>
     </hint>
    </hints>
   </connection>
@@ -2571,12 +2464,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>110</x>
-     <y>2070</y>
+     <x>113</x>
+     <y>1826</y>
     </hint>
     <hint type="destinationlabel">
-     <x>122</x>
-     <y>2107</y>
+     <x>125</x>
+     <y>1842</y>
     </hint>
    </hints>
   </connection>
@@ -2587,12 +2480,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>174</x>
-     <y>362</y>
+     <x>272</x>
+     <y>320</y>
     </hint>
     <hint type="destinationlabel">
-     <x>148</x>
-     <y>390</y>
+     <x>157</x>
+     <y>360</y>
     </hint>
    </hints>
   </connection>
@@ -2603,12 +2496,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>76</x>
-     <y>369</y>
+     <x>85</x>
+     <y>320</y>
     </hint>
     <hint type="destinationlabel">
-     <x>294</x>
-     <y>404</y>
+     <x>303</x>
+     <y>360</y>
     </hint>
    </hints>
   </connection>
@@ -2619,12 +2512,28 @@ You can add multiple values separated by comma</string>
    <slot>setHidden(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>426</x>
-     <y>353</y>
+     <x>422</x>
+     <y>320</y>
     </hint>
     <hint type="destinationlabel">
-     <x>150</x>
-     <y>384</y>
+     <x>159</x>
+     <y>360</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_FMask_advanced</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>214</x>
+     <y>265</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>208</x>
+     <y>290</y>
     </hint>
    </hints>
   </connection>

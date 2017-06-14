@@ -44,6 +44,7 @@ HOMEPAGE = cfg.get('general', 'homepage')
 class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
     # Fmask parameters by default
+    cloud_prob_thresh = 0.225
     cloud_buffer = 4
     shadow_buffer = 6
     cirrus_prob_ratio = 0.04
@@ -96,7 +97,15 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # FMask filters #########
         # start hidden
         self.widget_FMask.setHidden(True)
+        self.widget_FMask_advanced.setHidden(True)
         # Synchronize the slider with the spin box
+        # Cloud probability threshold
+        self.horizontalSlider_CPT.valueChanged.connect(
+            lambda: self.update_spinbox(self.doubleSpinBox_CPT, self.horizontalSlider_CPT.value(), 1000))
+        self.doubleSpinBox_CPT.valueChanged.connect(
+            lambda: self.update_slider(self.horizontalSlider_CPT, self.doubleSpinBox_CPT.value(), 1000))
+        self.update_spinbox(self.doubleSpinBox_CPT, self.cloud_prob_thresh, 1000)  # initial value
+        self.update_slider(self.horizontalSlider_CPT, self.cloud_prob_thresh, 1000)  # initial value
         # cloud_buffer
         self.horizontalSlider_CB.sliderMoved.connect(self.doubleSpinBox_CB.setValue)
         self.doubleSpinBox_CB.valueChanged.connect(self.horizontalSlider_CB.setValue)
