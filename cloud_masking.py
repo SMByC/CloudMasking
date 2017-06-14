@@ -423,6 +423,8 @@ class CloudMasking:
                 swir2_thresh=float(self.dockwidget.doubleSpinBox_S2T.value()),
                 whiteness_thresh=float(self.dockwidget.doubleSpinBox_WT.value()),
                 swir2_water_test=float(self.dockwidget.doubleSpinBox_S2WT.value()),
+                nir_snow_thresh=float(self.dockwidget.doubleSpinBox_NST.value()),
+                green_snow_thresh=float(self.dockwidget.doubleSpinBox_GST.value()),
             )
 
         ########################################

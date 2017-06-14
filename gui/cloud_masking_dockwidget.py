@@ -52,6 +52,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     swir2_thresh = 0.03
     whiteness_thresh = 0.7
     swir2_water_test = 0.03
+    nir_snow_thresh = 0.11
+    green_snow_thresh = 0.1
     # Blue band by default
     bb_threshold_L457 = 110  # for L4, L5 and L7
     bb_threshold_L8 = 14000  # for L8
@@ -149,6 +151,20 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             lambda: self.update_slider(self.horizontalSlider_S2WT, self.doubleSpinBox_S2WT.value(), 1000))
         self.update_spinbox(self.doubleSpinBox_S2WT, self.swir2_water_test, 1000)  # initial value
         self.update_slider(self.horizontalSlider_S2WT, self.swir2_water_test, 1000)  # initial value
+        # NirSnowThresh (float values)
+        self.horizontalSlider_NST.valueChanged.connect(
+            lambda: self.update_spinbox(self.doubleSpinBox_NST, self.horizontalSlider_NST.value(), 1000))
+        self.doubleSpinBox_NST.valueChanged.connect(
+            lambda: self.update_slider(self.horizontalSlider_NST, self.doubleSpinBox_NST.value(), 1000))
+        self.update_spinbox(self.doubleSpinBox_NST, self.nir_snow_thresh, 1000)  # initial value
+        self.update_slider(self.horizontalSlider_NST, self.nir_snow_thresh, 1000)  # initial value
+        # GreenSnowThresh (float values)
+        self.horizontalSlider_GST.valueChanged.connect(
+            lambda: self.update_spinbox(self.doubleSpinBox_GST, self.horizontalSlider_GST.value(), 1000))
+        self.doubleSpinBox_GST.valueChanged.connect(
+            lambda: self.update_slider(self.horizontalSlider_GST, self.doubleSpinBox_GST.value(), 1000))
+        self.update_spinbox(self.doubleSpinBox_GST, self.green_snow_thresh, 1000)  # initial value
+        self.update_slider(self.horizontalSlider_GST, self.green_snow_thresh, 1000)  # initial value
 
         # Blue band threshold #########
         # start hidden

@@ -156,8 +156,9 @@ class CloudMaskingResult(object):
                 'gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline ' + shape_path + ' ' + stack_file + ' ' + clip_file,
                 shell=True)
 
-    def do_fmask(self, filters_enabled, min_cloud_size=0, cloud_prob_thresh=0.225, cloud_buffer_size=4, shadow_buffer_size=6,
-                 cirrus_prob_ratio=0.04, nir_fill_thresh=0.02, swir2_thresh=0.03, whiteness_thresh=0.7, swir2_water_test=0.03):
+    def do_fmask(self, filters_enabled, min_cloud_size=0, cloud_prob_thresh=0.225, cloud_buffer_size=4,
+                 shadow_buffer_size=6, cirrus_prob_ratio=0.04, nir_fill_thresh=0.02, swir2_thresh=0.03,
+                 whiteness_thresh=0.7, swir2_water_test=0.03, nir_snow_thresh=0.11, green_snow_thresh=0.1):
 
         ########################################
         # reflective bands stack
@@ -310,6 +311,8 @@ class CloudMaskingResult(object):
         fmaskConfig.setEqn1Swir2Thresh(swir2_thresh)
         fmaskConfig.setEqn2WhitenessThresh(whiteness_thresh)
         fmaskConfig.setEqn7Swir2Thresh(swir2_water_test)
+        fmaskConfig.setEqn20NirSnowThresh(nir_snow_thresh)
+        fmaskConfig.setEqn20GreenSnowThresh(green_snow_thresh)
 
         # set to 1 for all Fmask filters disabled
         if filters_enabled["Cloud"]:
