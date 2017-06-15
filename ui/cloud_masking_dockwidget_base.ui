@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>589</width>
-    <height>915</height>
+    <width>776</width>
+    <height>1141</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,15 +17,6 @@
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="1">
      <widget class="QTabWidget" name="tabWidget">
-      <property name="styleSheet">
-       <string notr="true">QTabWidget::pane {
-    margin: -7px;
-    margin-top: -1px;
-    margin-bottom: -1px;
-    padding: 0px;
-
-}</string>
-      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -34,7 +25,10 @@
         <string>Open and Load</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_8">
-        <property name="bottomMargin">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
@@ -48,6 +42,9 @@
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
+          <property name="lineWidth">
+           <number>0</number>
+          </property>
           <property name="horizontalScrollBarPolicy">
            <enum>Qt::ScrollBarAsNeeded</enum>
           </property>
@@ -59,8 +56,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>575</width>
-             <height>839</height>
+             <width>752</width>
+             <height>1050</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -510,6 +507,12 @@
         <string>Filters and Mask</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_9">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
         <item>
          <widget class="QScrollArea" name="scrollArea_FM">
           <property name="frameShape">
@@ -526,8 +529,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>555</width>
-             <height>2076</height>
+             <width>732</width>
+             <height>2570</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -1147,7 +1150,6 @@ You can add multiple values separated by comma</string>
                             </widget>
                            </item>
                           </layout>
-                          <zorder>doubleSpinBox_CB</zorder>
                           <zorder>doubleSpinBox_CB</zorder>
                           <zorder>horizontalSlider_CB</zorder>
                           <zorder>label</zorder>
@@ -1957,6 +1959,12 @@ You can add multiple values separated by comma</string>
         <string>Apply and Save</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_10">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
         <item>
          <widget class="QScrollArea" name="scrollArea_AS">
           <property name="frameShape">
@@ -1973,8 +1981,8 @@ You can add multiple values separated by comma</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>575</width>
-             <height>833</height>
+             <width>752</width>
+             <height>1050</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
