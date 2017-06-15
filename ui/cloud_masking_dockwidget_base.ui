@@ -1028,6 +1028,9 @@ You can add multiple values separated by comma</string>
                           <layout class="QGridLayout" name="gridLayout_15">
                            <item row="3" column="2">
                             <widget class="QDoubleSpinBox" name="doubleSpinBox_CB">
+                             <property name="suffix">
+                              <string> pixels</string>
+                             </property>
                              <property name="decimals">
                               <number>0</number>
                              </property>
@@ -1073,6 +1076,9 @@ You can add multiple values separated by comma</string>
                            </item>
                            <item row="4" column="2">
                             <widget class="QDoubleSpinBox" name="doubleSpinBox_SB">
+                             <property name="suffix">
+                              <string> pixels</string>
+                             </property>
                              <property name="decimals">
                               <number>0</number>
                              </property>
@@ -1367,7 +1373,7 @@ You can add multiple values separated by comma</string>
                               <item row="9" column="0">
                                <widget class="QLabel" name="label_26">
                                 <property name="toolTip">
-                                 <string>Threshold for NIR reflectance for snow detection Increase this to reduce snow commission errors. Used by Equation 20.</string>
+                                 <string>Threshold for NIR reflectance for snow detection. Increase this to reduce snow commission errors. Used by Equation 20.</string>
                                 </property>
                                 <property name="text">
                                  <string>NirSnowThresh</string>
