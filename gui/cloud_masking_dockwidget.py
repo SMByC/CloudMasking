@@ -30,6 +30,7 @@ from PyQt4.QtGui import QMessageBox
 # from plugins
 from CloudMasking.core import cloud_masking_utils
 from CloudMasking.core.utils import get_prefer_name
+from CloudMasking.gui.about_dialog import AboutDialog
 
 # plugin path
 plugin_folder = os.path.dirname(os.path.dirname(__file__))
@@ -83,10 +84,9 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
     def setup_gui(self):
         # plugin info #########
+        self.about_dialog = AboutDialog()
         self.plugin_version.setText(self.tr(u"CloudMasking v{}".format(VERSION)))
-        homepage = "<a href='{}'>homepage</a>".format(HOMEPAGE)
-        self.plugin_links.setOpenExternalLinks(True)
-        self.plugin_links.setText(homepage)
+        self.button_about.clicked.connect(self.about_dialog.show)
 
         # find MTL file #########
         self.button_FindMTL.clicked.connect(self.fileDialog_findMTL)
