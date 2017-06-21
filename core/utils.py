@@ -30,7 +30,7 @@ def get_prefer_name(file_path):
     """Search the prefer name for band: band1 > B1"""
     path_dir, band_file = os.path.split(file_path)
     # prefer thermal b61/2 over band61/2 over B6_VCID_1/2 in Landsat 7
-    if band_file.startswith("LE7"):
+    if band_file.startswith("LE7") or band_file.startswith("LE07"):
         file_bandN = band_file.replace("_B6_VCID_", "_b6").replace(".TIF", ".tif")
         if os.path.isfile(os.path.join(path_dir, file_bandN)):
             return os.path.join(path_dir, file_bandN)
