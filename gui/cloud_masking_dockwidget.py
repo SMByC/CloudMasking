@@ -174,9 +174,10 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.doubleSpinBox_BB.valueChanged.connect(self.horizontalSlider_BB.setValue)
         self.doubleSpinBox_BB.setValue(self.bb_threshold_L457)  # initial value
 
-        # Cloud QA filter #########
+        # Cloud QA L457 filter #########
         # start hidden
         self.label_CloudQA_FileStatus.setHidden(True)
+        self.frame_CloudQA_L457.setHidden(True)
         self.widget_CloudQA_L457.setHidden(True)
         self.widget_CloudQA_L8.setHidden(True)
         self.widget_CloudQA_Aerosol.setHidden(True)
@@ -314,7 +315,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # check if reflective_and_thermal_bands exists
         for file_path in reflective_and_thermal_bands:
             if not os.path.isfile(file_path):
-                msg = "The file {} not exists , is necessary that the raw bands _bandN.tif or _BN.TIF of Landsat " \
+                msg = "The file {} not exists, is necessary that the raw bands _bandN.tif or _BN.TIF of Landsat " \
                            "are in the same location as the MTL file.".format(os.path.basename(file_path))
                 QMessageBox.question(self, 'Problem while Loading the new MTL...',
                                              msg, QMessageBox.Ok)
@@ -372,39 +373,33 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.doubleSpinBox_BB.setMaximum(40000)
             self.doubleSpinBox_BB.setValue(self.bb_threshold_L8)
 
-        #### Cloud QA adjusts
+        #### Cloud QA L457 adjusts
         # hidden blocks and unchecked
-        self.widget_CloudQA_L8.setHidden(True)
-        self.widget_CloudQA_L457.setHidden(True)
+        self.frame_CloudQA_L457.setHidden(True)
         self.checkBox_CloudQA.setChecked(False)
         self.label_CloudQA_FileStatus.setVisible(False)
+        self.widget_CloudQA_L457.setHidden(True)
         # search and check Cloud QA files
         if self.landsat_version in [4, 5, 7]:
+            self.frame_CloudQA_L457.setVisible(True)
             self.cloud_qa_file = os.path.join(os.path.dirname(self.mtl_path),
-                                         self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud_qa.tif"))
-            self.shadow_qa_file = os.path.join(os.path.dirname(self.mtl_path),
-                                              self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud_shadow_qa.tif"))
-            self.adjacent_qa_file = os.path.join(os.path.dirname(self.mtl_path),
-                                              self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_adjacent_cloud_qa.tif"))
+                                         self.mtl_file['FILE_NAME_BAND_1'].replace(self.mtl_file['FILE_NAME_BAND_1'].split("_")[-1],
+                                                                                   "sr_cloud_qa.tif"))
             # check Cloud QA files
-            if os.path.isfile(self.cloud_qa_file) and os.path.isfile(self.shadow_qa_file) and os.path.isfile(self.adjacent_qa_file):
+            if os.path.isfile(self.cloud_qa_file):
                 self.checkBox_CloudQA.setEnabled(True)
-                try: self.checkBox_CloudQA.clicked.disconnect()
-                except: pass
-                self.checkBox_CloudQA.clicked.connect(self.widget_CloudQA_L457.setVisible)
             else:
-                self.label_CloudQA_FileStatus.setVisible(True)
                 self.checkBox_CloudQA.setEnabled(False)
+                self.label_CloudQA_FileStatus.setVisible(True)
 
+
+        self.widget_CloudQA_L8.setHidden(True)
         if self.landsat_version in [8]:
             self.cloud_qa_file = os.path.join(os.path.dirname(self.mtl_path),
                                          self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud.tif"))
             # check Cloud QA file
             if os.path.isfile(self.cloud_qa_file):
                 self.checkBox_CloudQA.setEnabled(True)
-                try: self.checkBox_CloudQA.clicked.disconnect()
-                except: pass
-                self.checkBox_CloudQA.clicked.connect(self.widget_CloudQA_L8.setVisible)
             else:
                 self.label_CloudQA_FileStatus.setVisible(True)
                 self.checkBox_CloudQA.setEnabled(False)
