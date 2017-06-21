@@ -31,7 +31,7 @@ class CUIProgressBar(object):
         self.totalsteps = steps
 
     def setProgress(self,progress):
-        if sys.stdout.isatty(): # don't write if a log file etc
+        if hasattr(sys.stdout, 'isatty') and sys.stdout.isatty(): # don't write if a log file etc
             progress = int(float(progress) / self.totalsteps * 100)
             sys.stdout.write('%d%%\r' % progress)
 
@@ -67,11 +67,11 @@ class GDALProgressBar(object):
         self.totalsteps = steps
 
     def setProgress(self,progress):
-        if sys.stdout.isatty(): # don't write if a log file etc
+        if hasattr(sys.stdout, 'isatty') and sys.stdout.isatty(): # don't write if a log file etc
             TermProgress_nocb(float(progress) / self.totalsteps)
 
     def reset(self):
-        if sys.stdout.isatty(): # don't write if a log file etc
+        if hasattr(sys.stdout, 'isatty') and sys.stdout.isatty(): # don't write if a log file etc
             TermProgress_nocb(100.0)
         sys.stdout.write('\n')
 
@@ -95,7 +95,7 @@ class GDALProgressBar(object):
 
 class SilentProgress(object):
     """
-    A progress object which is completely silent. 
+    A progress object which is completely silent.
     """
     def __init__(self):
         pass
@@ -117,4 +117,3 @@ class SilentProgress(object):
         pass
     def displayInfo(self,text):
         pass
-
