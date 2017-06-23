@@ -441,15 +441,28 @@ class CloudMasking:
 
         if self.dockwidget.checkBox_CloudQA.isChecked():
             if self.dockwidget.landsat_version in [4, 5, 7]:
-                cloud_qa_file, shadow_qa_file, adjacent_qa_file = [None]*3
-                if self.dockwidget.checkBox_CloudQA_mask.isChecked():
-                    cloud_qa_file = self.dockwidget.cloud_qa_file
-                if self.dockwidget.checkBox_ShadowQA_mask.isChecked():
-                    shadow_qa_file = self.dockwidget.shadow_qa_file
-                if self.dockwidget.checkBox_AdjacentQA_mask.isChecked():
-                    adjacent_qa_file = self.dockwidget.adjacent_qa_file
+                checked_items = {}
 
-                self.masking_result.do_cloud_qa_l457(cloud_qa_file, shadow_qa_file, adjacent_qa_file)
+                # one bit items selected
+                cloud_qa_items_1b = ["Dark Dense Vegetation (bit 0)", "Cloud (bit 1)", "Cloud Shadow (bit 2)",
+                                     "Adjacent to cloud (bit 3)", "Snow (bit 4)", "Water (bit 5)"]
+                for checkbox in self.dockwidget.widget_CloudQA_L457_bits.findChildren(QCheckBox):
+                    if checkbox.text() in cloud_qa_items_1b:
+                        checked_items[checkbox.text()] = checkbox.isChecked()
+
+                # set and check the specific decimal values
+                try:
+                    cloud_qa_svalues = self.dockwidget.CloudQA_L457_svalues.text()
+                    if cloud_qa_svalues:
+                        cloud_qa_svalues = [int(sv) for sv in cloud_qa_svalues.split(",")]
+                    else:
+                        cloud_qa_svalues = []
+                except:
+                    self.dockwidget.status_processMask.setText(
+                        self.tr(u"Error: setting the specific values in Cloud QA"))
+                    return
+
+                self.masking_result.do_cloud_qa_l457(self.dockwidget.cloud_qa_file, checked_items, cloud_qa_svalues)
 
             if self.dockwidget.landsat_version in [8]:
                 checked_items = {}

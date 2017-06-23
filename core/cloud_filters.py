@@ -380,47 +380,56 @@ class CloudMaskingResult(object):
         update_process_bar(self.process_bar, 100, self.process_status,
                            self.tr(u"DONE"))
 
-    def do_cloud_qa_l457(self, cloud_qa_file, shadow_qa_file, adjacent_qa_file):
+    def do_cloud_qa_l457(self, cloud_qa_file, checked_items, specific_values=[]):
         # tmp file for cloud
         self.cloud_qa = os.path.join(self.tmp_dir, "cloud_qa_{}.tif".format(datetime.now().strftime('%H%M%S')))
         update_process_bar(self.process_bar, 50, self.process_status,
                            self.tr(u"Making the Cloud QA filter..."))
 
-        cloud_qa_files = []
-        for cqa_count, cloud_qa in enumerate([cloud_qa for cloud_qa in [cloud_qa_file, shadow_qa_file, adjacent_qa_file] if cloud_qa]):
-            if not os.path.isfile(cloud_qa):
-                update_process_bar(self.process_bar, 0, self.process_status,
-                                   self.tr(u"Error: file not exist for QA mask selected"))
-                return
-            ########################################
-            # clipping the QA Mask (only if is activated selected area or shape area)
-            self.cloud_qa_clip_file = os.path.join(self.tmp_dir, "cloud_qa_clip_{}.tif".format(cqa_count))
-            self.cloud_qa_for_process = self.clip(cloud_qa, self.cloud_qa_clip_file)
+        ########################################
+        # clipping the QA Mask (only if is activated selected area or shape area)
+        self.cloud_qa_clip_file = os.path.join(self.tmp_dir, "cloud_qa_clip.tif")
+        self.cloud_qa_for_process = self.clip(cloud_qa_file, self.cloud_qa_clip_file)
 
-            ########################################
-            # do QA Mask filter
-            tmp_qa_file = os.path.join(self.tmp_dir, "cloud_qa_{}.tif".format(cqa_count))
-            gdal_calc.Calc(calc="1*(A!=255)+7*(A==255)", A=self.cloud_qa_for_process,
-                           outfile=tmp_qa_file, type="Byte", NoDataValue=1)
-            # unset the nodata, leave the 1 (valid fields)
-            Translate(tmp_qa_file.replace(".tif", "tmp.tif"), tmp_qa_file, noData="none")
-            # only left the final file
-            os.remove(tmp_qa_file)
-            os.rename(tmp_qa_file.replace(".tif", "tmp.tif"), tmp_qa_file)
+        ########################################
+        # convert selected items to binary and decimal values
+        values_combinations = []
+        # bits not used or not fill
+        static_bits = [6, 7]
 
-            cloud_qa_files.append(tmp_qa_file)
+        # generate the values combinations for one bit items selected
+        cloud_qa_items_1b = {"Dark Dense Vegetation (bit 0)": [0], "Cloud (bit 1)": [1], "Cloud Shadow (bit 2)": [2],
+                             "Adjacent to cloud (bit 3)": [3], "Snow (bit 4)": [4], "Water (bit 5)": [5]}
 
-        # blended the all Cloud QA files in one
-        if len(cloud_qa_files) == 1:
-            os.rename(cloud_qa_files[0], self.cloud_qa)
-        if len(cloud_qa_files) == 2:
-            gdal_calc.Calc(calc="1*(A+B==2)+7*(A+B>=7)", A=cloud_qa_files[0], B=cloud_qa_files[1],
-                           outfile=self.cloud_qa, type="Byte")
-        if len(cloud_qa_files) == 3:
-            gdal_calc.Calc(calc="1*(A+B+C==3)+7*(A+B+C>=7)", A=cloud_qa_files[0], B=cloud_qa_files[1], C=cloud_qa_files[2],
-                           outfile=self.cloud_qa, type="Byte")
+        for item, bits in cloud_qa_items_1b.items():
+            binary = [0] * 8
+            if checked_items[item]:
+                binary[(len(binary) - 1) - bits[0]] = 1
+                values_combinations += list(binary_combination(binary, static_bits + bits))
+
+        # add the specific values
+        if specific_values:
+            values_combinations += specific_values
+
+        # delete duplicates
+        values_combinations = list(set(values_combinations))
+
+        # only left the values inside the image
+        values_combinations = check_values_in_image(self.cloud_qa_for_process, values_combinations)
+
+        filter_values = ",".join(["A==" + str(x) for x in values_combinations])
+        not_filter_values = ",".join(["A!=" + str(x) for x in values_combinations])
+
+        ########################################
+        # do QA Mask filter
+        tmp_cqa_file = os.path.join(self.tmp_dir, "cloud_qa.tif")
+        gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 7*(numpy.any([{fv}], axis=0))".format(fv=filter_values,
+                                                                                                    nfv=not_filter_values),
+                       A=self.cloud_qa_for_process, outfile=tmp_cqa_file, type="Byte", NoDataValue=1)
+        # unset the nodata, leave the 1 (valid fields)
+        Translate(self.cloud_qa, tmp_cqa_file, noData="none")
         # delete tmp files
-        [os.remove(tmp_file) for tmp_file in cloud_qa_files if os.path.isfile(tmp_file)]
+        os.remove(tmp_cqa_file)
 
         # save final result of masking
         self.cloud_masking_files.append(self.cloud_qa)

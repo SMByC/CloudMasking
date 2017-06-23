@@ -464,9 +464,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-651</y>
+             <y>-444</y>
              <width>577</width>
-             <height>2092</height>
+             <height>2194</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -1497,44 +1497,83 @@ You can add multiple values separated by comma</string>
                     <layout class="QVBoxLayout" name="verticalLayout_22">
                      <item>
                       <widget class="QLabel" name="label_6">
+                       <property name="toolTip">
+                        <string>Each bit (item) masked all pixel that have this bit activated (all combination values)</string>
+                       </property>
                        <property name="text">
-                        <string>Enable/disable QA binaries masks:</string>
+                        <string>Enable/disable Cloud QA bits:</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QWidget" name="widget_15" native="true">
+                      <widget class="QWidget" name="widget_CloudQA_L457_bits" native="true">
                        <layout class="QVBoxLayout" name="verticalLayout_23">
-                        <property name="topMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="bottomMargin">
-                         <number>0</number>
-                        </property>
                         <item>
-                         <widget class="QCheckBox" name="checkBox_CloudQA_mask">
+                         <widget class="QCheckBox" name="CloudQA_DDV_mask">
                           <property name="text">
-                           <string>Cloud QA</string>
-                          </property>
-                          <property name="checked">
-                           <bool>true</bool>
+                           <string>Dark Dense Vegetation (bit 0)</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QCheckBox" name="checkBox_ShadowQA_mask">
+                         <widget class="QCheckBox" name="CloudQA_Cloud_mask">
                           <property name="text">
-                           <string>Shadow QA</string>
+                           <string>Cloud (bit 1)</string>
                           </property>
                           <property name="checked">
-                           <bool>true</bool>
+                           <bool>false</bool>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QCheckBox" name="checkBox_AdjacentQA_mask">
+                         <widget class="QCheckBox" name="CloudQA_CloudShadow_mask">
                           <property name="text">
-                           <string>Adjacent to Cloud QA</string>
+                           <string>Cloud Shadow (bit 2)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="CloudQA_AdjacentCloud_mask">
+                          <property name="text">
+                           <string>Adjacent to cloud (bit 3)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="CloudQA_Snow_mask">
+                          <property name="text">
+                           <string>Snow (bit 4)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="CloudQA_Water_mask">
+                          <property name="text">
+                           <string>Water (bit 5)</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QWidget" name="widget_17" native="true">
+                       <layout class="QHBoxLayout" name="horizontalLayout_16">
+                        <property name="margin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QLabel" name="label_19">
+                          <property name="text">
+                           <string>Specific values:</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="CloudQA_L457_svalues">
+                          <property name="toolTip">
+                           <string>Enter specific values for Cloud QA filters in decimal format. 
+You can add multiple values separated by comma</string>
                           </property>
                          </widget>
                         </item>
@@ -1668,30 +1707,6 @@ You can add multiple values separated by comma</string>
                                </widget>
                               </item>
                              </layout>
-                            </widget>
-                           </item>
-                          </layout>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QWidget" name="widget_17" native="true">
-                          <layout class="QHBoxLayout" name="horizontalLayout_16">
-                           <property name="margin">
-                            <number>0</number>
-                           </property>
-                           <item>
-                            <widget class="QLabel" name="label_19">
-                             <property name="text">
-                              <string>Specific values:</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QLineEdit" name="lineEdit_CloudQA_svalues">
-                             <property name="toolTip">
-                              <string>Enter specific values for Cloud QA filters in decimal format. 
-You can add multiple values separated by comma</string>
-                             </property>
                             </widget>
                            </item>
                           </layout>
