@@ -508,42 +508,50 @@ class CloudMaskingResult(object):
         update_process_bar(self.process_bar, 100, self.process_status,
                            self.tr(u"DONE"))
 
-    def do_qa_band(self, qa_band_file, checked_items, specific_values=[]):
+    def do_pixel_qa(self, pixel_qa_file, checked_items, specific_values=[]):
         """
         http://landsat.usgs.gov/qualityband.php
         """
-        # tmp file for qa band
-        self.qa_band = os.path.join(self.tmp_dir, "qa_band_{}.tif".format(datetime.now().strftime('%H%M%S')))
+        # tmp file for Pixel QA
+        self.pixel_qa = os.path.join(self.tmp_dir, "pixel_qa_{}.tif".format(datetime.now().strftime('%H%M%S')))
         update_process_bar(self.process_bar, 50, self.process_status,
-                           self.tr(u"Making the QA Band filter..."))
+                           self.tr(u"Making the Pixel QA filter..."))
 
         ########################################
         # clipping the QA Mask (only if is activated selected area or shape area)
-        self.qa_band_clip_file = os.path.join(self.tmp_dir, "qa_band_clip.tif")
-        self.qa_band_for_process = self.clip(qa_band_file, self.qa_band_clip_file)
+        self.pixel_qa_clip_file = os.path.join(self.tmp_dir, "pixel_qa_clip.tif")
+        self.pixel_qa_for_process = self.clip(pixel_qa_file, self.pixel_qa_clip_file)
 
         ########################################
         # convert selected items to binary and decimal values
         values_combinations = []
         # bits not used or not fill
-        static_bits = [0, 3, 6, 7, 8, 9]
+        if self.landsat_version in [4, 5, 7]:
+            static_bits = [0, 1, 8, 9, 10, 11, 12, 13, 14, 15]
+        if self.landsat_version in [8]:
+            static_bits = [0, 1, 11, 12, 13, 14, 15]
 
         # generate the values combinations for one bit items selected
-        qa_band_items_1b = {"Dropped Frame (bit 1)": [1], "Terrain Occlusion (bit 2)": [2]}
+        pixel_qa_items_1b = {"Water (bit 2)": [2], "Cloud Shadow (bit 3)": [3],
+                             "Snow (bit 4)": [4], "Cloud (bit 5)": [5]}
+        if self.landsat_version in [8]:  # add to L8
+            pixel_qa_items_1b["Terrain Occlusion (bit 10)"] = [10]
 
-        for item, bits in qa_band_items_1b.items():
+        for item, bits in pixel_qa_items_1b.items():
             binary = [0]*16
             if checked_items[item]:
                 binary[(len(binary) - 1) - bits[0]] = 1
                 values_combinations += list(binary_combination(binary, static_bits + bits))
 
         # generate the values combinations for two bits items selected
-        qa_band_items_2b = {"Water (bits 4-5)": [4, 5], "Snow/ice (bits 10-11)": [10, 11],
-                            "Cirrus (bits 12-13)": [12, 13], "Cloud (bits 14-15)": [14, 15]}
-        levels = {"Not Determined": [0, 0], "0-33% Confidence": [0, 1],
-                  "34-66% Confidence": [1, 0], "67-100% Confidence": [1, 1]}
+        if self.landsat_version in [4, 5, 7]:
+            pixel_qa_items_2b = {"Cloud Confidence (bits 6-7)": [6, 7]}
+        if self.landsat_version in [8]:
+            pixel_qa_items_2b = {"Cloud Confidence (bits 6-7)": [6, 7], "Cirrus Confidence (bits 8-9)": [8, 9]}
+        levels = {"0% None": [0, 0], "0-33% Low": [0, 1],
+                  "34-66% Medium": [1, 0], "67-100% High": [1, 1]}
 
-        for item, bits in qa_band_items_2b.items():
+        for item, bits in pixel_qa_items_2b.items():
             if item in checked_items.keys():
                 for level in checked_items[item]:
                     binary = [0] * 16
@@ -559,23 +567,23 @@ class CloudMaskingResult(object):
         values_combinations = list(set(values_combinations))
 
         # only left the values inside the image
-        values_combinations = check_values_in_image(self.qa_band_for_process, values_combinations)
+        values_combinations = check_values_in_image(self.pixel_qa_for_process, values_combinations)
 
         filter_values = ",".join(["A==" + str(x) for x in values_combinations])
         not_filter_values = ",".join(["A!=" + str(x) for x in values_combinations])
 
         ########################################
         # do QA Mask filter
-        tmp_qab_file = os.path.join(self.tmp_dir, "qa_band.tif")
+        tmp_pqa_file = os.path.join(self.tmp_dir, "pixel_qa.tif")
         gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 8*(numpy.any([{fv}], axis=0))".format(fv=filter_values, nfv=not_filter_values),
-                       A=self.qa_band_for_process, outfile=tmp_qab_file, type="Byte", NoDataValue=1)
+                       A=self.pixel_qa_for_process, outfile=tmp_pqa_file, type="Byte", NoDataValue=1)
         # unset the nodata, leave the 1 (valid fields)
-        Translate(self.qa_band, tmp_qab_file, noData="none")
+        Translate(self.pixel_qa, tmp_pqa_file, noData="none")
         # delete tmp files
-        os.remove(tmp_qab_file)
+        os.remove(tmp_pqa_file)
 
         # save final result of masking
-        self.cloud_masking_files.append(self.qa_band)
+        self.cloud_masking_files.append(self.pixel_qa)
 
         ### ending process
         update_process_bar(self.process_bar, 100, self.process_status,

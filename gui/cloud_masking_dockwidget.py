@@ -182,14 +182,15 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.widget_CloudQA_L8.setHidden(True)
         self.widget_CloudQA_Aerosol.setHidden(True)
 
-        # QA Band filter #########
+        # Pixel QA filter #########
         # start hidden
-        self.label_QABand_FileStatus.setHidden(True)
-        self.widget_QABand.setHidden(True)
-        self.widget_QA_Water.setHidden(True)
-        self.widget_QA_SnowIce.setHidden(True)
-        self.widget_QA_Cirrus.setHidden(True)
-        self.widget_QA_Cloud.setHidden(True)
+        self.PixelQA_FileStatus.setHidden(True)
+        self.widget_PixelQA.setHidden(True)
+        self.widget_CloudConfidence.setHidden(True)
+        self.widget_CirrusConfidence.setHidden(True)
+        # only for landsat 8
+        self.groupBox_CirrusConfidence.setHidden(True)
+        self.PixelQA_TerrainO_mask.setHidden(True)
 
         # Generate the cloud mask #########
         # shape and selected area start hidden
@@ -404,28 +405,25 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 self.label_CloudQA_FileStatus.setVisible(True)
                 self.checkBox_CloudQA.setEnabled(False)
 
-        #### QA Band adjusts
+        #### Pixel QA adjusts
         # hidden blocks and unchecked
-        self.label_QABand_FileStatus.setVisible(False)
-        self.checkBox_QABand.setChecked(False)
-        self.widget_QABand.setHidden(True)
-        # search and check QA Band file
-        qa_band_file_alt1 = os.path.join(os.path.dirname(self.mtl_path),
-                                         self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_qa.tif"))
-        qa_band_file_alt2 = os.path.join(os.path.dirname(self.mtl_path),
-                                         self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_bqa.tif"))
-        # check QA Band file exists
-        if os.path.isfile(qa_band_file_alt1) and qa_band_file_alt1.endswith("qa.tif"):
-            self.qa_band_file = qa_band_file_alt1
-            self.checkBox_QABand.setEnabled(True)
-            self.checkBox_QABand.clicked.connect(self.widget_QABand.setVisible)
-        elif os.path.isfile(qa_band_file_alt2) and qa_band_file_alt2.endswith("qa.tif"):
-            self.qa_band_file = qa_band_file_alt2
-            self.checkBox_QABand.setEnabled(True)
-            self.checkBox_QABand.clicked.connect(self.widget_QABand.setVisible)
+        self.PixelQA_FileStatus.setVisible(False)
+        self.checkBox_PixelQA.setChecked(False)
+        self.widget_PixelQA.setHidden(True)
+        # search and check pixel QA file
+        self.pixel_qa_file = os.path.join(os.path.dirname(self.mtl_path),
+                                          self.mtl_file['FILE_NAME_BAND_1'].replace(
+                                             self.mtl_file['FILE_NAME_BAND_1'].split("_")[-1], "pixel_qa.tif"))
+        # check pixel QA file exists
+        if os.path.isfile(self.pixel_qa_file):
+            self.checkBox_PixelQA.setEnabled(True)
+            # only for landsat 8
+            if self.landsat_version in [8]:
+                self.groupBox_CirrusConfidence.setVisible(True)
+                self.PixelQA_TerrainO_mask.setVisible(True)
         else:
-            self.label_QABand_FileStatus.setVisible(True)
-            self.checkBox_QABand.setEnabled(False)
+            self.PixelQA_FileStatus.setVisible(True)
+            self.checkBox_PixelQA.setEnabled(False)
 
         #### Enable apply to SR reflectance stack if are available
         exists_sr_files = \

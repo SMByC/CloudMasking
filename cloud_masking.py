@@ -334,7 +334,7 @@ class CloudMasking:
         if (not self.dockwidget.checkBox_FMask.isChecked() and
                 not self.dockwidget.checkBox_BlueBand.isChecked() and
                 not self.dockwidget.checkBox_CloudQA.isChecked() and
-                not self.dockwidget.checkBox_QABand.isChecked()):
+                not self.dockwidget.checkBox_PixelQA.isChecked()):
             self.dockwidget.status_processMask.setText(
                 self.tr(u"Error: no filters enabled for apply"))
             return
@@ -511,23 +511,31 @@ class CloudMasking:
             enable_symbology[6] = True
 
         ########################################
-        # QA Band filter
+        # Pixel QA filter
 
-        if self.dockwidget.checkBox_QABand.isChecked():
+        if self.dockwidget.checkBox_PixelQA.isChecked():
             checked_items = {}
 
             # one bit items selected
-            qa_band_items_1b = ["Dropped Frame (bit 1)", "Terrain Occlusion (bit 2)"]
-            for checkbox in self.dockwidget.widget_QABand_bits.findChildren(QCheckBox):
-                if checkbox.text() in qa_band_items_1b:
+            if self.dockwidget.landsat_version in [4, 5, 7]:
+                pixel_qa_items_1b = ["Fill-nodata (bit 0)","Water (bit 2)", "Cloud Shadow (bit 3)",
+                                     "Snow (bit 4)", "Cloud (bit 5)"]
+            if self.dockwidget.landsat_version in [8]:
+                pixel_qa_items_1b = ["Fill-nodata (bit 0)", "Water (bit 2)", "Cloud Shadow (bit 3)",
+                                     "Snow (bit 4)", "Cloud (bit 5)", "Terrain Occlusion (bit 10)"]
+            for checkbox in self.dockwidget.widget_PixelQA_bits.findChildren(QCheckBox):
+                if checkbox.text() in pixel_qa_items_1b:
                     checked_items[checkbox.text()] = checkbox.isChecked()
 
             # two bits items selected
-            qa_band_items_2b = ["Water (bits 4-5)", "Snow/ice (bits 10-11)", "Cirrus (bits 12-13)", "Cloud (bits 14-15)"]
-            levels = ["Not Determined", "0-33% Confidence", "34-66% Confidence", "67-100% Confidence"]
+            if self.dockwidget.landsat_version in [4, 5, 7]:
+                pixel_qa_items_2b = ["Cloud Confidence (bits 6-7)"]
+            if self.dockwidget.landsat_version in [8]:
+                pixel_qa_items_2b = ["Cloud Confidence (bits 6-7)", "Cirrus Confidence (bits 8-9)"]
+            levels = ["0% None", "0-33% Low", "34-66% Medium", "67-100% High"]
 
-            for groupbox in self.dockwidget.widget_QABand_bits.findChildren(QGroupBox):
-                if groupbox.title() in qa_band_items_2b and groupbox.isChecked():
+            for groupbox in self.dockwidget.widget_PixelQA_bits.findChildren(QGroupBox):
+                if groupbox.title() in pixel_qa_items_2b and groupbox.isChecked():
                     levels_selected = []
                     for radiobutton in groupbox.findChildren(QRadioButton):
                         if radiobutton.text() in levels and radiobutton.isChecked():
@@ -537,17 +545,17 @@ class CloudMasking:
 
             # set and check the specific decimal values
             try:
-                qa_band_svalues = self.dockwidget.lineEdit_QABand_svalues.text()
-                if qa_band_svalues:
-                    qa_band_svalues = [int(sv) for sv in qa_band_svalues.split(",")]
+                pixel_qa_svalues = self.dockwidget.PixelQA_svalues.text()
+                if pixel_qa_svalues:
+                    pixel_qa_svalues = [int(sv) for sv in pixel_qa_svalues.split(",")]
                 else:
-                    qa_band_svalues = []
+                    pixel_qa_svalues = []
             except:
                 self.dockwidget.status_processMask.setText(
-                    self.tr(u"Error: setting the specific values in QA Band"))
+                    self.tr(u"Error: setting the specific values in Pixel QA"))
                 return
 
-            self.masking_result.do_qa_band(self.dockwidget.qa_band_file, checked_items, qa_band_svalues)
+            self.masking_result.do_pixel_qa(self.dockwidget.pixel_qa_file, checked_items, pixel_qa_svalues)
 
             enable_symbology[0] = True
             enable_symbology[7] = True
@@ -629,10 +637,10 @@ class CloudMasking:
         if self.dockwidget.checkBox_CloudQA.isChecked():
             if os.path.isfile(self.masking_result.cloud_qa_clip_file):
                 os.remove(self.masking_result.cloud_qa_clip_file)
-        # from QA Band
-        if self.dockwidget.checkBox_QABand.isChecked():
-            if os.path.isfile(self.masking_result.qa_band_clip_file):
-                os.remove(self.masking_result.qa_band_clip_file)
+        # from Pixel QA
+        if self.dockwidget.checkBox_PixelQA.isChecked():
+            if os.path.isfile(self.masking_result.pixel_qa_clip_file):
+                os.remove(self.masking_result.pixel_qa_clip_file)
 
         # from original blended files
         for cloud_masking_file in self.masking_result.cloud_masking_files:
@@ -662,7 +670,7 @@ class CloudMasking:
             'Water': (0, 0, 200, 255),
             'Blue band': (120, 212, 245, 255),
             'Cloud QA': (255, 170, 0, 255),
-            'QA Band': (20, 180, 140, 255),
+            'Pixel QA': (20, 180, 140, 255),
         }
         # apply
         apply_symbology(self.cloud_mask_rlayer,
