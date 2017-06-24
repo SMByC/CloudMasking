@@ -328,7 +328,7 @@ class CloudMasking:
         """Make the process
         """
         # initialize the symbology
-        enable_symbology = [False, False, False, False, False, False, False, False]
+        enable_symbology = [False, False, False, False, False, False, False]
 
         # check if any filters has been enabled before process
         if (not self.dockwidget.checkBox_FMask.isChecked() and
@@ -394,24 +394,24 @@ class CloudMasking:
 
         if self.dockwidget.checkBox_FMask.isChecked():
             # get enabled Fmask filters from UI and set symbology
-            enable_symbology[0:5] = [True, False, False, False, False]
-            filters_enabled = {"Cloud": False, "Shadow": False, "Snow": False, "Water": False, }
+            enable_symbology[0:4] = [False, False, False, False]
+            filters_enabled = {"Fmask Cloud": False, "Fmask Shadow": False, "Fmask Snow": False, "Fmask Water": False, }
             # Cloud
             if self.dockwidget.checkBox_FMask_Cloud.isChecked():
-                enable_symbology[1] = True
-                filters_enabled["Cloud"] = True
+                enable_symbology[0] = True
+                filters_enabled["Fmask Cloud"] = True
             # Shadow
             if self.dockwidget.checkBox_FMask_Shadow.isChecked():
-                enable_symbology[2] = True
-                filters_enabled["Shadow"] = True
+                enable_symbology[1] = True
+                filters_enabled["Fmask Shadow"] = True
             # Snow
             if self.dockwidget.checkBox_FMask_Snow.isChecked():
-                enable_symbology[3] = True
-                filters_enabled["Snow"] = True
+                enable_symbology[2] = True
+                filters_enabled["Fmask Snow"] = True
             # Water
             if self.dockwidget.checkBox_FMask_Water.isChecked():
-                enable_symbology[4] = True
-                filters_enabled["Water"] = True
+                enable_symbology[3] = True
+                filters_enabled["Fmask Water"] = True
 
             # fmask filter
             self.masking_result.do_fmask(
@@ -433,8 +433,7 @@ class CloudMasking:
 
         if self.dockwidget.checkBox_BlueBand.isChecked():
             self.masking_result.do_blue_band(int(self.dockwidget.doubleSpinBox_BB.value()))
-            enable_symbology[0] = True
-            enable_symbology[5] = True
+            enable_symbology[4] = True
 
         ########################################
         # Cloud QA filter
@@ -494,8 +493,7 @@ class CloudMasking:
 
                 self.masking_result.do_cloud_qa_l8(self.dockwidget.cloud_qa_file, checked_items, cloud_qa_svalues)
 
-            enable_symbology[0] = True
-            enable_symbology[6] = True
+            enable_symbology[5] = True
 
         ########################################
         # QA Band filter
@@ -536,8 +534,7 @@ class CloudMasking:
 
             self.masking_result.do_qa_band(self.dockwidget.qa_band_file, checked_items, qa_band_svalues)
 
-            enable_symbology[0] = True
-            enable_symbology[7] = True
+            enable_symbology[6] = True
 
         ########################################
         # Blended cloud masking files
@@ -572,6 +569,10 @@ class CloudMasking:
                            C=self.masking_result.cloud_masking_files[2], D=self.masking_result.cloud_masking_files[3])
 
         ########################################
+        # mask the nodata value as 255 value
+        self.masking_result.do_nodata_mask(self.final_cloud_mask_file)
+
+        ########################################
         # Keep the original size if made the
         # mask in selected area
 
@@ -593,7 +594,6 @@ class CloudMasking:
             gdal.Translate(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file, noData="none")
             os.remove(self.final_cloud_mask_file)
             os.rename(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file)
-
 
         ########################################
         # Post process mask
@@ -642,12 +642,11 @@ class CloudMasking:
 
         # Set symbology (thematic color and name) for new raster layer
         symbology = {
-            'Land': (0, 0, 0, 0),
-            'Cloud': (255, 0, 255, 255),
-            'Shadow': (255, 255, 0, 255),
-            'Snow': (85, 255, 255, 255),
-            'Water': (0, 0, 200, 255),
-            'Blue band': (120, 212, 245, 255),
+            'Fmask Cloud': (255, 0, 255, 255),
+            'Fmask Shadow': (255, 255, 0, 255),
+            'Fmask Snow': (85, 255, 255, 255),
+            'Fmask Water': (0, 0, 200, 255),
+            'Blue Band': (120, 212, 245, 255),
             'Cloud QA': (255, 170, 0, 255),
             'QA Band': (20, 180, 140, 255),
         }
@@ -655,7 +654,7 @@ class CloudMasking:
         apply_symbology(self.cloud_mask_rlayer,
                         symbology,
                         enable_symbology,
-                        transparent=[255, 0])
+                        transparent=[])
         # Refresh layer symbology
         self.iface.legendInterface().refreshLayerSymbology(self.cloud_mask_rlayer)
 

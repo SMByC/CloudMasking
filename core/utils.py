@@ -58,9 +58,9 @@ def apply_symbology(rlayer, symbology, symbology_enabled, transparent=255):
     color_ramp_shader = qgis.core.QgsColorRampShader()
     # Loop over Fmask values and add to color item list
     color_ramp_item_list = []
-    for name, value, enable in zip(['Land', 'Cloud', 'Shadow', 'Snow', 'Water', 'Blue band', 'Cloud QA', 'QA Band'],
-                                   [1, 2, 3, 4, 5, 6, 7, 8],
-                                   symbology_enabled):
+    for name, value, enable in zip(['Fmask Cloud', 'Fmask Shadow', 'Fmask Snow',
+                                    'Fmask Water', 'Blue Band', 'Cloud QA', 'QA Band'],
+                                   [2, 3, 4, 5, 6, 7, 8], symbology_enabled):
         if enable is False:
             continue
         color = symbology[name]
@@ -71,6 +71,11 @@ def apply_symbology(rlayer, symbology, symbology_enabled, transparent=255):
             name
         )
         color_ramp_item_list.append(color_ramp_item)
+
+    # Add the NoData symbology
+    color_ramp_item_list.append(qgis.core.QgsColorRampShader.ColorRampItem(255, QtGui.QColor(70, 70, 70, 255), "No Data"))
+    # Add the valid data, no masked
+    color_ramp_item_list.append(qgis.core.QgsColorRampShader.ColorRampItem(1, QtGui.QColor(0, 0, 0, 0), "No Masked"))
     # After getting list of color ramp items
     color_ramp_shader.setColorRampItemList(color_ramp_item_list)
     # Exact color ramp
@@ -85,11 +90,15 @@ def apply_symbology(rlayer, symbology, symbology_enabled, transparent=255):
     # Set renderer for raster layer
     rlayer.setRenderer(renderer)
 
-    # Set NoData transparency
+    # Set NoData transparency to layer qgis (temporal)
     if not isinstance(transparent, list):
         transparent = [transparent]
     nodata = [qgis.core.QgsRasterRange(t, t) for t in transparent]
-    rlayer.dataProvider().setUserNoDataValue(1, nodata)
+    if nodata:
+        rlayer.dataProvider().setUserNoDataValue(1, nodata)
+    # Set NoData transparency to file
+    #for t in transparent:
+    #    rlayer.dataProvider().setNoDataValue(1, t)
 
     # Repaint
     if hasattr(rlayer, 'setCacheImage'):
