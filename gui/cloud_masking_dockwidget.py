@@ -55,7 +55,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     swir2_water_test = 0.03
     nir_snow_thresh = 0.11
     green_snow_thresh = 0.1
-    # Blue band by default
+    # Blue Band by default
     bb_threshold_L457 = 110  # for L4, L5 and L7
     bb_threshold_L8 = 14000  # for L8
 
@@ -166,7 +166,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.update_spinbox(self.doubleSpinBox_GST, self.green_snow_thresh, 1000)  # initial value
         self.update_slider(self.horizontalSlider_GST, self.green_snow_thresh, 1000)  # initial value
 
-        # Blue band threshold #########
+        # Blue Band threshold #########
         # start hidden
         self.widget_BlueBand.setHidden(True)
         # Synchronize the slider with the spin box

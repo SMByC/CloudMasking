@@ -112,7 +112,7 @@ class CloudMaskingResult(object):
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
 
-    def clip(self, in_stack_file, out_clipped_file):
+    def clip(self, in_stack_file, out_clipped_file, process_bar=True):
         """
         Clipping the stack file only if is activated selected area or shape area,
         else return the original image
@@ -120,8 +120,9 @@ class CloudMaskingResult(object):
         if not self.clipping_extent and not self.clipping_with_shape:
             return in_stack_file
 
-        update_process_bar(self.process_bar, 24, self.process_status,
-                           self.tr(u"Clipping the reflective stack..."))
+        if process_bar:
+            update_process_bar(self.process_bar, 24, self.process_status,
+                               self.tr(u"Clipping the reflective stack..."))
 
         if self.clipping_extent:
             self.do_clipping_extent(in_stack_file, out_clipped_file)
@@ -155,6 +156,18 @@ class CloudMaskingResult(object):
             return_code = call(
                 'gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline ' + shape_path + ' ' + stack_file + ' ' + clip_file,
                 shell=True)
+
+    def do_nodata_mask(self, img_to_mask):
+        band_1 = get_prefer_name(os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_1']))
+
+        band_from_mask = self.clip(band_1, os.path.join(self.tmp_dir, "band_from_mask.tif"), process_bar=False)
+
+        gdal_calc.Calc(calc="A*(B>0)+255*logical_or(B==0,A==0)", outfile=img_to_mask.replace(".tif", "1.tif"),
+                       A=img_to_mask, B=band_from_mask, NoDataValue=255)
+
+        # unset the nodata
+        os.remove(img_to_mask)
+        Translate(img_to_mask, img_to_mask.replace(".tif", "1.tif"), noData="none")
 
     def do_fmask(self, filters_enabled, min_cloud_size=0, cloud_prob_thresh=0.225, cloud_buffer_size=4,
                  shadow_buffer_size=6, cirrus_prob_ratio=0.04, nir_fill_thresh=0.02, swir2_thresh=0.03,
@@ -315,22 +328,22 @@ class CloudMaskingResult(object):
         fmaskConfig.setEqn20GreenSnowThresh(green_snow_thresh)
 
         # set to 1 for all Fmask filters disabled
-        if filters_enabled["Cloud"]:
+        if filters_enabled["Fmask Cloud"]:
             fmask.OUTCODE_CLOUD = 2
         else:
             fmask.OUTCODE_CLOUD = 1
 
-        if filters_enabled["Shadow"]:
+        if filters_enabled["Fmask Shadow"]:
             fmask.OUTCODE_SHADOW = 3
         else:
             fmask.OUTCODE_SHADOW = 1
 
-        if filters_enabled["Snow"]:
+        if filters_enabled["Fmask Snow"]:
             fmask.OUTCODE_SNOW = 4
         else:
             fmask.OUTCODE_SNOW = 1
 
-        if filters_enabled["Water"]:
+        if filters_enabled["Fmask Water"]:
             fmask.OUTCODE_WATER = 5
         else:
             fmask.OUTCODE_WATER = 1
