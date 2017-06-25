@@ -689,7 +689,8 @@ class CloudMasking:
         mask_inpath = unicode(self.getLayerByName(self.dockwidget.select_MaskLayer.currentText()).dataProvider().dataSourceUri())
 
         if mask_outpath != '' and mask_inpath != '':
-            copyfile(mask_inpath, mask_outpath)
+            # set nodata to valid data (1) and copy to destination
+            gdal.Translate(mask_outpath, mask_inpath, noData=1)
 
     def fileDialog_SelectPFile(self):
         """Open QFileDialog for select particular file to apply mask
