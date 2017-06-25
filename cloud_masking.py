@@ -462,6 +462,12 @@ class CloudMasking:
                         self.tr(u"Error: setting the specific values in Cloud QA"))
                     return
 
+                # check is not selected any Cloud QA filter
+                if not True in checked_items.values() and not cloud_qa_svalues:
+                    self.dockwidget.status_processMask.setText(
+                        self.tr(u"Error: no filters selected in Cloud QA"))
+                    return
+
                 self.masking_result.do_cloud_qa_l457(self.dockwidget.cloud_qa_file, checked_items, cloud_qa_svalues)
 
             enable_symbology[5] = True
@@ -505,8 +511,8 @@ class CloudMasking:
                         self.tr(u"Error: setting the specific values in Aerosol"))
                     return
 
-                # check is only selected one aerosol
-                if len(checked_items) == 0 and not aerosol_svalues:
+                # check is not selected any Aerosol filter
+                if not True in checked_items.values() and not aerosol_svalues:
                     self.dockwidget.status_processMask.setText(
                         self.tr(u"Error: no filters selected in Aerosol"))
                     return
@@ -558,6 +564,12 @@ class CloudMasking:
             except:
                 self.dockwidget.status_processMask.setText(
                     self.tr(u"Error: setting the specific values in Pixel QA"))
+                return
+
+            # check is not selected any Pixel QA filter
+            if not True in checked_items.values() and not pixel_qa_svalues:
+                self.dockwidget.status_processMask.setText(
+                    self.tr(u"Error: no filters selected in Pixel QA"))
                 return
 
             self.masking_result.do_pixel_qa(self.dockwidget.pixel_qa_file, checked_items, pixel_qa_svalues)
