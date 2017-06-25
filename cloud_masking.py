@@ -485,8 +485,8 @@ class CloudMasking:
                         self.tr(u"Error: setting the specific values in Cloud QA"))
                     return
 
-                # check is only selected one aerosol
-                if len(checked_items) == 0 and not cloud_qa_svalues:
+                # check is not selected any Cloud QA filter
+                if not True in checked_items.values() and not cloud_qa_svalues:
                     self.dockwidget.status_processMask.setText(
                         self.tr(u"Error: no filters selected in Cloud QA"))
                     return
@@ -530,6 +530,12 @@ class CloudMasking:
             except:
                 self.dockwidget.status_processMask.setText(
                     self.tr(u"Error: setting the specific values in QA Band"))
+                return
+
+            # check is not selected any QA Band filter
+            if not True in checked_items.values() and not qa_band_svalues:
+                self.dockwidget.status_processMask.setText(
+                    self.tr(u"Error: no filters selected in QA Band"))
                 return
 
             self.masking_result.do_qa_band(self.dockwidget.qa_band_file, checked_items, qa_band_svalues)
