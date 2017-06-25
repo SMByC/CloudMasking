@@ -328,13 +328,14 @@ class CloudMasking:
         """Make the process
         """
         # initialize the symbology
-        enable_symbology = [False, False, False, False, False, False, False]
+        enable_symbology = [False, False, False, False, False, False, False, False]
 
         # check if any filters has been enabled before process
         if (not self.dockwidget.checkBox_FMask.isChecked() and
-                not self.dockwidget.checkBox_BlueBand.isChecked() and
-                not self.dockwidget.checkBox_CloudQA.isChecked() and
-                not self.dockwidget.checkBox_PixelQA.isChecked()):
+            not self.dockwidget.checkBox_BlueBand.isChecked() and
+            not self.dockwidget.checkBox_CloudQA.isChecked() and
+            not self.dockwidget.checkBox_Aerosol.isChecked() and
+            not self.dockwidget.checkBox_PixelQA.isChecked()):
             self.dockwidget.status_processMask.setText(
                 self.tr(u"Error: no filters enabled for apply"))
             return
@@ -436,7 +437,7 @@ class CloudMasking:
             enable_symbology[4] = True
 
         ########################################
-        # Cloud QA filter
+        # Cloud QA L457 filter
 
         if self.dockwidget.checkBox_CloudQA.isChecked():
             if self.dockwidget.landsat_version in [4, 5, 7]:
@@ -463,22 +464,28 @@ class CloudMasking:
 
                 self.masking_result.do_cloud_qa_l457(self.dockwidget.cloud_qa_file, checked_items, cloud_qa_svalues)
 
+            enable_symbology[5] = True
+
+        ########################################
+        # Aerosol L8 filter
+
+        if self.dockwidget.checkBox_Aerosol.isChecked():
             if self.dockwidget.landsat_version in [8]:
                 checked_items = {}
 
                 # one bit items selected
-                cloud_qa_items_1b = ["Cirrus cloud (bit 0)", "Cloud (bit 1)",
-                                     "Adjacent to cloud (bit 2)", "Cloud shadow (bit 3)"]
-                for checkbox in self.dockwidget.widget_CloudQA_bits.findChildren(QCheckBox):
-                    if checkbox.text() in cloud_qa_items_1b:
+                aerosol_items_1b = ["Aerosol Retrieval - Valid (bit 1)", "Aerosol Retrieval - Interpolated (bit 2)",
+                                    "Water Pixel (bit 3)"]
+                for checkbox in self.dockwidget.widget_Aerosol_bits.findChildren(QCheckBox):
+                    if checkbox.text() in aerosol_items_1b:
                         checked_items[checkbox.text()] = checkbox.isChecked()
 
                 # two bits items selected
-                cloud_qa_items_2b = ["Aerosol (bits 4-5)"]
+                aerosol_items_2b = ["Aerosol Content (bits 6-7)"]
                 levels = ["Climatology content", "Low content", "Average content", "High content"]
 
-                for groupbox in self.dockwidget.widget_CloudQA_bits.findChildren(QGroupBox):
-                    if groupbox.title() in cloud_qa_items_2b and groupbox.isChecked():
+                for groupbox in self.dockwidget.widget_Aerosol_bits.findChildren(QGroupBox):
+                    if groupbox.title() in aerosol_items_2b and groupbox.isChecked():
                         levels_selected = []
                         for radiobutton in groupbox.findChildren(QRadioButton):
                             if radiobutton.text() in levels and radiobutton.isChecked():
@@ -488,25 +495,25 @@ class CloudMasking:
 
                 # set and check the specific decimal values
                 try:
-                    cloud_qa_svalues = self.dockwidget.lineEdit_CloudQA_svalues.text()
-                    if cloud_qa_svalues:
-                        cloud_qa_svalues = [int(sv) for sv in cloud_qa_svalues.split(",")]
+                    aerosol_svalues = self.dockwidget.Aerosol_L8_svalues.text()
+                    if aerosol_svalues:
+                        aerosol_svalues = [int(sv) for sv in aerosol_svalues.split(",")]
                     else:
-                        cloud_qa_svalues = []
+                        aerosol_svalues = []
                 except:
                     self.dockwidget.status_processMask.setText(
-                        self.tr(u"Error: setting the specific values in Cloud QA"))
+                        self.tr(u"Error: setting the specific values in Aerosol"))
                     return
 
                 # check is only selected one aerosol
-                if len(checked_items) == 0 and not cloud_qa_svalues:
+                if len(checked_items) == 0 and not aerosol_svalues:
                     self.dockwidget.status_processMask.setText(
-                        self.tr(u"Error: no filters selected in Cloud QA"))
+                        self.tr(u"Error: no filters selected in Aerosol"))
                     return
 
-                self.masking_result.do_cloud_qa_l8(self.dockwidget.cloud_qa_file, checked_items, cloud_qa_svalues)
+                self.masking_result.do_aerosol_l8(self.dockwidget.aerosol_file, checked_items, aerosol_svalues)
 
-            enable_symbology[5] = True
+            enable_symbology[6] = True
 
         ########################################
         # Pixel QA filter
@@ -555,7 +562,7 @@ class CloudMasking:
 
             self.masking_result.do_pixel_qa(self.dockwidget.pixel_qa_file, checked_items, pixel_qa_svalues)
 
-            enable_symbology[6] = True
+            enable_symbology[7] = True
 
         ########################################
         # Blended cloud masking files
@@ -669,6 +676,7 @@ class CloudMasking:
             'Fmask Water': (0, 0, 200, 255),
             'Blue Band': (120, 212, 245, 255),
             'Cloud QA': (255, 170, 0, 255),
+            'Aerosol': (255, 170, 0, 255),
             'Pixel QA': (20, 180, 140, 255),
         }
         # apply

@@ -451,39 +451,40 @@ class CloudMaskingResult(object):
         update_process_bar(self.process_bar, 100, self.process_status,
                            self.tr(u"DONE"))
 
-    def do_cloud_qa_l8(self, cloud_qa_file, checked_items, specific_values=[]):
+    def do_aerosol_l8(self, aerosol_file, checked_items, specific_values=[]):
         # tmp file for cloud
-        self.cloud_qa = os.path.join(self.tmp_dir, "cloud_qa_{}.tif".format(datetime.now().strftime('%H%M%S')))
+        self.aerosol = os.path.join(self.tmp_dir, "aerosol_{}.tif".format(datetime.now().strftime('%H%M%S')))
         update_process_bar(self.process_bar, 50, self.process_status,
-                           self.tr(u"Making the Cloud QA filter..."))
+                           self.tr(u"Making the Aerosol filter..."))
 
         ########################################
         # clipping the QA Mask (only if is activated selected area or shape area)
-        self.cloud_qa_clip_file = os.path.join(self.tmp_dir, "cloud_qa_clip.tif")
-        self.cloud_qa_for_process = self.clip(cloud_qa_file, self.cloud_qa_clip_file)
+        self.aerosol_clip_file = os.path.join(self.tmp_dir, "aerosol_clip.tif")
+        self.aerosol_for_process = self.clip(aerosol_file, self.aerosol_clip_file)
 
         ########################################
         # convert selected items to binary and decimal values
         values_combinations = []
         # bits not used or not fill
-        static_bits = [6, 7]
+        static_bits = [0, 4, 5]
 
         # generate the values combinations for one bit items selected
-        cloud_qa_items_1b = {"Cirrus cloud (bit 0)": [0], "Cloud (bit 1)": [1],
-                             "Adjacent to cloud (bit 2)": [2], "Cloud shadow (bit 3)": [3]}
+        aerosol_items_1b = {"Aerosol Retrieval - Valid (bit 1)": [1],
+                            "Aerosol Retrieval - Interpolated (bit 2)": [2],
+                            "Water Pixel (bit 3)": [3]}
 
-        for item, bits in cloud_qa_items_1b.items():
+        for item, bits in aerosol_items_1b.items():
             binary = [0]*8
             if checked_items[item]:
                 binary[(len(binary) - 1) - bits[0]] = 1
                 values_combinations += list(binary_combination(binary, static_bits + bits))
 
         # generate the values combinations for two bits items selected
-        cloud_qa_items_2b = {"Aerosol (bits 4-5)": [4, 5]}
+        aerosol_items_2b = {"Aerosol Content (bits 6-7)": [6, 7]}
         levels = {"Climatology content": [0, 0], "Low content": [0, 1],
                   "Average content": [1, 0], "High content": [1, 1]}
 
-        for item, bits in cloud_qa_items_2b.items():
+        for item, bits in aerosol_items_2b.items():
             if item in checked_items.keys():
                 for level in checked_items[item]:
                     binary = [0]*8
@@ -499,23 +500,23 @@ class CloudMaskingResult(object):
         values_combinations = list(set(values_combinations))
 
         # only left the values inside the image
-        values_combinations = check_values_in_image(self.cloud_qa_for_process, values_combinations)
+        values_combinations = check_values_in_image(self.aerosol_for_process, values_combinations)
 
         filter_values = ",".join(["A=="+str(x) for x in values_combinations])
         not_filter_values = ",".join(["A!="+str(x) for x in values_combinations])
 
         ########################################
         # do QA Mask filter
-        tmp_cqa_file = os.path.join(self.tmp_dir, "cloud_qa.tif")
-        gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 7*(numpy.any([{fv}], axis=0))".format(fv=filter_values, nfv=not_filter_values),
-                       A=self.cloud_qa_for_process, outfile=tmp_cqa_file, type="Byte", NoDataValue=1)
+        tmp_cqa_file = os.path.join(self.tmp_dir, "aerosol.tif")
+        gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 8*(numpy.any([{fv}], axis=0))".format(fv=filter_values, nfv=not_filter_values),
+                       A=self.aerosol_for_process, outfile=tmp_cqa_file, type="Byte", NoDataValue=1)
         # unset the nodata, leave the 1 (valid fields)
-        Translate(self.cloud_qa, tmp_cqa_file, noData="none")
+        Translate(self.aerosol, tmp_cqa_file, noData="none")
         # delete tmp files
         os.remove(tmp_cqa_file)
 
         # save final result of masking
-        self.cloud_masking_files.append(self.cloud_qa)
+        self.cloud_masking_files.append(self.aerosol)
 
         ### ending process
         update_process_bar(self.process_bar, 100, self.process_status,
@@ -588,7 +589,7 @@ class CloudMaskingResult(object):
         ########################################
         # do QA Mask filter
         tmp_pqa_file = os.path.join(self.tmp_dir, "pixel_qa.tif")
-        gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 8*(numpy.any([{fv}], axis=0))".format(fv=filter_values, nfv=not_filter_values),
+        gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 9*(numpy.any([{fv}], axis=0))".format(fv=filter_values, nfv=not_filter_values),
                        A=self.pixel_qa_for_process, outfile=tmp_pqa_file, type="Byte", NoDataValue=1)
         # unset the nodata, leave the 1 (valid fields)
         Translate(self.pixel_qa, tmp_pqa_file, noData="none")

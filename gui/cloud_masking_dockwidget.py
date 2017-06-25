@@ -179,8 +179,13 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.label_CloudQA_FileStatus.setHidden(True)
         self.frame_CloudQA_L457.setHidden(True)
         self.widget_CloudQA_L457.setHidden(True)
-        self.widget_CloudQA_L8.setHidden(True)
-        self.widget_CloudQA_Aerosol.setHidden(True)
+
+        # Aerosol L8 filter #########
+        # start hidden
+        self.frame_Aerosol_L8.setHidden(True)
+        self.label_Aerosol_FileStatus.setHidden(True)
+        self.widget_Aerosol_L8.setHidden(True)
+        self.widget_Aerosol_Content.setHidden(True)
 
         # Pixel QA filter #########
         # start hidden
@@ -393,17 +398,19 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 self.checkBox_CloudQA.setEnabled(False)
                 self.label_CloudQA_FileStatus.setVisible(True)
 
-
-        self.widget_CloudQA_L8.setHidden(True)
+        #### Aerosol L8 adjusts
+        self.widget_Aerosol_L8.setHidden(True)
         if self.landsat_version in [8]:
-            self.cloud_qa_file = os.path.join(os.path.dirname(self.mtl_path),
-                                         self.mtl_file['FILE_NAME_BAND_1'].replace("_B1.TIF", "_sr_cloud.tif"))
-            # check Cloud QA file
-            if os.path.isfile(self.cloud_qa_file):
-                self.checkBox_CloudQA.setEnabled(True)
+            self.frame_Aerosol_L8.setVisible(True)
+            self.aerosol_file = os.path.join(os.path.dirname(self.mtl_path),
+                                         self.mtl_file['FILE_NAME_BAND_1'].replace(self.mtl_file['FILE_NAME_BAND_1'].split("_")[-1],
+                                                                                   "sr_aerosol.tif"))
+            # check Aerosol file
+            if os.path.isfile(self.aerosol_file):
+                self.checkBox_Aerosol.setEnabled(True)
             else:
-                self.label_CloudQA_FileStatus.setVisible(True)
-                self.checkBox_CloudQA.setEnabled(False)
+                self.checkBox_Aerosol.setEnabled(False)
+                self.label_Aerosol_FileStatus.setVisible(True)
 
         #### Pixel QA adjusts
         # hidden blocks and unchecked

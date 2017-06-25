@@ -18,7 +18,7 @@
     <item row="0" column="1">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_OL">
        <attribute name="title">
@@ -77,6 +77,9 @@
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
+                    </property>
+                    <property name="dragEnabled">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -464,9 +467,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-1262</y>
+             <y>-744</y>
              <width>577</width>
-             <height>2076</height>
+             <height>2128</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -1379,7 +1382,7 @@ You can add multiple values separated by comma</string>
                         </font>
                        </property>
                        <property name="text">
-                        <string>Cloud QA (Landsat 4-5-7)</string>
+                        <string>Cloud QA</string>
                        </property>
                       </widget>
                      </item>
@@ -1504,7 +1507,7 @@ You can add multiple values separated by comma</string>
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QFrame" name="frame_3">
+                <widget class="QFrame" name="frame_Aerosol_L8">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
@@ -1513,7 +1516,46 @@ You can add multiple values separated by comma</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_34">
                   <item>
-                   <widget class="QWidget" name="widget_CloudQA_L8" native="true">
+                   <widget class="QWidget" name="widget_15" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_24">
+                     <property name="spacing">
+                      <number>0</number>
+                     </property>
+                     <property name="margin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QCheckBox" name="checkBox_Aerosol">
+                       <property name="text">
+                        <string>Aerosol</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_Aerosol_FileStatus">
+                       <property name="text">
+                        <string>(file not found)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_11">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QWidget" name="widget_Aerosol_L8" native="true">
                     <layout class="QVBoxLayout" name="verticalLayout_21">
                      <item>
                       <widget class="QLabel" name="label_18">
@@ -1521,54 +1563,41 @@ You can add multiple values separated by comma</string>
                         <string>Each bit (item) masked all pixel that have this bit activated (all combination values)</string>
                        </property>
                        <property name="text">
-                        <string>Enable/disable Cloud QA bits (Landsat 8):</string>
+                        <string>Enable/disable Aerosol bits:</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QWidget" name="widget_CloudQA_bits" native="true">
+                      <widget class="QWidget" name="widget_Aerosol_bits" native="true">
                        <layout class="QVBoxLayout" name="verticalLayout_24">
-                        <property name="topMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="bottomMargin">
-                         <number>0</number>
-                        </property>
                         <item>
-                         <widget class="QCheckBox" name="CloudQA_Cirrus">
+                         <widget class="QCheckBox" name="Aerosol_RetValid_mask">
                           <property name="text">
-                           <string>Cirrus cloud (bit 0)</string>
+                           <string>Aerosol Retrieval - Valid (bit 1)</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QCheckBox" name="CloudQA_Cloud">
+                         <widget class="QCheckBox" name="Aerosol_RetInterpolated_mask">
                           <property name="text">
-                           <string>Cloud (bit 1)</string>
+                           <string>Aerosol Retrieval - Interpolated (bit 2)</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QCheckBox" name="CloudQA_AdjCloud">
+                         <widget class="QCheckBox" name="Aerosol_WaterPixel_mask">
                           <property name="text">
-                           <string>Adjacent to cloud (bit 2)</string>
+                           <string>Water Pixel (bit 3)</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QCheckBox" name="CloudQA_Shadow">
-                          <property name="text">
-                           <string>Cloud shadow (bit 3)</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QGroupBox" name="CloudQA_Aerosol">
+                         <widget class="QGroupBox" name="Aerosol_Content">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
                           <property name="title">
-                           <string>Aerosol (bits 4-&amp;5)</string>
+                           <string>Aerosol Content (bits 6-7)</string>
                           </property>
                           <property name="checkable">
                            <bool>true</bool>
@@ -1578,13 +1607,13 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_30">
                            <item>
-                            <widget class="QWidget" name="widget_CloudQA_Aerosol" native="true">
+                            <widget class="QWidget" name="widget_Aerosol_Content" native="true">
                              <layout class="QGridLayout" name="gridLayout_14">
                               <property name="margin">
                                <number>0</number>
                               </property>
                               <item row="0" column="0">
-                               <widget class="QRadioButton" name="CloudQA_Aerosol_clim">
+                               <widget class="QRadioButton" name="Aerosol_clim">
                                 <property name="text">
                                  <string>Climatology content</string>
                                 </property>
@@ -1594,7 +1623,7 @@ You can add multiple values separated by comma</string>
                                </widget>
                               </item>
                               <item row="0" column="1">
-                               <widget class="QRadioButton" name="CloudQA_Aerosol_avg">
+                               <widget class="QRadioButton" name="Aerosol_avg">
                                 <property name="text">
                                  <string>A&amp;verage content</string>
                                 </property>
@@ -1604,7 +1633,7 @@ You can add multiple values separated by comma</string>
                                </widget>
                               </item>
                               <item row="1" column="0">
-                               <widget class="QRadioButton" name="CloudQA_Aerosol_low">
+                               <widget class="QRadioButton" name="Aerosol_low">
                                 <property name="text">
                                  <string>&amp;Low content</string>
                                 </property>
@@ -1614,7 +1643,7 @@ You can add multiple values separated by comma</string>
                                </widget>
                               </item>
                               <item row="1" column="1">
-                               <widget class="QRadioButton" name="CloudQA_Aerosol_high">
+                               <widget class="QRadioButton" name="Aerosol_high">
                                 <property name="text">
                                  <string>High content</string>
                                 </property>
@@ -1627,6 +1656,30 @@ You can add multiple values separated by comma</string>
                             </widget>
                            </item>
                           </layout>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QWidget" name="widget_25" native="true">
+                       <layout class="QHBoxLayout" name="horizontalLayout_25">
+                        <property name="margin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QLabel" name="label_28">
+                          <property name="text">
+                           <string>Specific values:</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="Aerosol_L8_svalues">
+                          <property name="toolTip">
+                           <string>Enter specific values for Cloud QA filters in decimal format. 
+You can add multiple values separated by comma</string>
+                          </property>
                          </widget>
                         </item>
                        </layout>
@@ -2323,11 +2376,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>232</x>
-     <y>-1087</y>
+     <y>-484</y>
     </hint>
     <hint type="destinationlabel">
      <x>198</x>
-     <y>-589</y>
+     <y>14</y>
     </hint>
    </hints>
   </connection>
@@ -2339,11 +2392,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>298</x>
-     <y>-505</y>
+     <y>98</y>
     </hint>
     <hint type="destinationlabel">
      <x>287</x>
-     <y>-441</y>
+     <y>162</y>
     </hint>
    </hints>
   </connection>
@@ -2355,11 +2408,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>132</x>
-     <y>199</y>
+     <y>814</y>
     </hint>
     <hint type="destinationlabel">
      <x>315</x>
-     <y>635</y>
+     <y>1250</y>
     </hint>
    </hints>
   </connection>
@@ -2387,11 +2440,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>419</x>
-     <y>559</y>
+     <y>1174</y>
     </hint>
     <hint type="destinationlabel">
      <x>536</x>
-     <y>551</y>
+     <y>1166</y>
     </hint>
    </hints>
   </connection>
@@ -2403,27 +2456,27 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>329</x>
-     <y>455</y>
+     <y>1070</y>
     </hint>
     <hint type="destinationlabel">
      <x>434</x>
-     <y>447</y>
+     <y>1062</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>CloudQA_Aerosol</sender>
+   <sender>Aerosol_Content</sender>
    <signal>clicked(bool)</signal>
-   <receiver>widget_CloudQA_Aerosol</receiver>
+   <receiver>widget_Aerosol_Content</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>397</x>
-     <y>147</y>
+     <y>756</y>
     </hint>
     <hint type="destinationlabel">
      <x>445</x>
-     <y>139</y>
+     <y>748</y>
     </hint>
    </hints>
   </connection>
@@ -2435,11 +2488,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>574</x>
-     <y>694</y>
+     <y>1309</y>
     </hint>
     <hint type="destinationlabel">
      <x>445</x>
-     <y>831</y>
+     <y>1446</y>
     </hint>
    </hints>
   </connection>
@@ -2451,11 +2504,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>125</x>
-     <y>694</y>
+     <y>1309</y>
     </hint>
     <hint type="destinationlabel">
      <x>137</x>
-     <y>733</y>
+     <y>1348</y>
     </hint>
    </hints>
   </connection>
@@ -2515,11 +2568,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>246</x>
-     <y>-649</y>
+     <y>-46</y>
     </hint>
     <hint type="destinationlabel">
      <x>248</x>
-     <y>-627</y>
+     <y>-24</y>
     </hint>
    </hints>
   </connection>
@@ -2531,11 +2584,27 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>42</x>
-     <y>-411</y>
+     <y>192</y>
     </hint>
     <hint type="destinationlabel">
      <x>57</x>
-     <y>-351</y>
+     <y>252</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_Aerosol</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_Aerosol_L8</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>46</x>
+     <y>507</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>60</x>
+     <y>532</y>
     </hint>
    </hints>
   </connection>
