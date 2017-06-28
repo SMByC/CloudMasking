@@ -400,6 +400,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         #### Aerosol L8 adjusts
         self.widget_Aerosol_L8.setHidden(True)
+        self.frame_Aerosol_L8.setHidden(True)
         if self.landsat_version in [8]:
             self.frame_Aerosol_L8.setVisible(True)
             self.aerosol_file = os.path.join(os.path.dirname(self.mtl_path),
@@ -417,6 +418,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.PixelQA_FileStatus.setVisible(False)
         self.checkBox_PixelQA.setChecked(False)
         self.widget_PixelQA.setHidden(True)
+        self.groupBox_CirrusConfidence.setHidden(True)
+        self.PixelQA_TerrainO_mask.setHidden(True)
         # search and check pixel QA file
         self.pixel_qa_file = os.path.join(os.path.dirname(self.mtl_path),
                                           self.mtl_file['FILE_NAME_BAND_1'].replace(
