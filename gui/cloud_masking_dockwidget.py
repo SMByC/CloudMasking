@@ -401,6 +401,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
         #### Aerosol L8 adjusts
         self.widget_Aerosol_L8.setHidden(True)
         self.frame_Aerosol_L8.setHidden(True)
+        self.checkBox_Aerosol.setChecked(False)
+        self.label_Aerosol_FileStatus.setVisible(False)
         if self.landsat_version in [8]:
             self.frame_Aerosol_L8.setVisible(True)
             self.aerosol_file = os.path.join(os.path.dirname(self.mtl_path),
