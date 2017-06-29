@@ -10,7 +10,7 @@
 name=Cloud Masking
 description=Cloud masking (branch for old ESPA format) for Landsat (4, 5, 7 and 8) products using different process such as Fmask, Blue band, Cloud QA and QA Band.
 about=CloudMasking (branch for old ESPA format) is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7 and 8) products using different process such as Fmask, Blue Band, Cloud QA and QA Band
-version=17.6.29
+version=17.6.30
 qgisMinimumVersion=2.14
 
 author=Xavier Corredor Llano, SMBYC
