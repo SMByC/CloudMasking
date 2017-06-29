@@ -463,7 +463,7 @@ class CloudMasking:
                     return
 
                 # check is not selected any Cloud QA filter
-                if not True in checked_items.values() and not cloud_qa_svalues:
+                if not any(checked_items.values()) and not cloud_qa_svalues:
                     self.dockwidget.status_processMask.setText(
                         self.tr(u"Error: no filters selected in Cloud QA"))
                     return
@@ -512,7 +512,7 @@ class CloudMasking:
                     return
 
                 # check is not selected any Aerosol filter
-                if not True in checked_items.values() and not aerosol_svalues:
+                if not any(checked_items.values()) and not aerosol_svalues:
                     self.dockwidget.status_processMask.setText(
                         self.tr(u"Error: no filters selected in Aerosol"))
                     return
@@ -567,7 +567,7 @@ class CloudMasking:
                 return
 
             # check is not selected any Pixel QA filter
-            if not True in checked_items.values() and not pixel_qa_svalues:
+            if not any(checked_items.values()) and not pixel_qa_svalues:
                 self.dockwidget.status_processMask.setText(
                     self.tr(u"Error: no filters selected in Pixel QA"))
                 return
