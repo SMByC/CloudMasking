@@ -486,7 +486,7 @@ class CloudMasking:
                     return
 
                 # check is not selected any Cloud QA filter
-                if not True in checked_items.values() and not cloud_qa_svalues:
+                if not any(checked_items.values()) and not cloud_qa_svalues:
                     self.dockwidget.status_processMask.setText(
                         self.tr(u"Error: no filters selected in Cloud QA"))
                     return
@@ -533,7 +533,7 @@ class CloudMasking:
                 return
 
             # check is not selected any QA Band filter
-            if not True in checked_items.values() and not qa_band_svalues:
+            if not any(checked_items.values()) and not qa_band_svalues:
                 self.dockwidget.status_processMask.setText(
                     self.tr(u"Error: no filters selected in QA Band"))
                 return
