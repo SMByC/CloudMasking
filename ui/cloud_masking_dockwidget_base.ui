@@ -2362,7 +2362,7 @@ You can add multiple values separated by comma</string>
   <customwidget>
    <class>ExtentSelector</class>
    <extends>QWidget</extends>
-   <header>CloudMasking.gui.extent_selector</header>
+   <header>CloudMaskingOldESPA.gui.extent_selector</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

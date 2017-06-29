@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- CloudMasking
+ CloudMaskingOldESPA
                                  A QGIS plugin
  Cloud masking for landsat products using different process suck as fmask
                               -------------------
@@ -34,11 +34,11 @@ from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRaster
 # Initialize Qt resources from file resources.py
 import resources
 
-from CloudMasking.core import cloud_filters, color_stack
-from CloudMasking.core.utils import apply_symbology, get_prefer_name, update_process_bar, get_extent
-from CloudMasking.libs import gdal_calc, gdal_merge
-from CloudMasking.gui.cloud_masking_dockwidget import CloudMaskingDockWidget
-from CloudMasking.gui.about_dialog import AboutDialog
+from CloudMaskingOldESPA.core import cloud_filters, color_stack
+from CloudMaskingOldESPA.core.utils import apply_symbology, get_prefer_name, update_process_bar, get_extent
+from CloudMaskingOldESPA.libs import gdal_calc, gdal_merge
+from CloudMaskingOldESPA.gui.cloud_masking_dockwidget import CloudMaskingDockWidget
+from CloudMaskingOldESPA.gui.about_dialog import AboutDialog
 
 
 class CloudMasking:
@@ -72,9 +72,9 @@ class CloudMasking:
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-        print "** INITIALIZING CloudMasking"
+        print "** INITIALIZING CloudMaskingOldESPA"
 
-        self.menu_name_plugin = self.tr(u"&Cloud masking for Landsat products")
+        self.menu_name_plugin = self.tr(u"&Cloud masking for Landsat products OldESPA")
         self.pluginIsActive = False
         self.dockwidget = None
 
@@ -96,12 +96,12 @@ class CloudMasking:
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('CloudMasking', message)
+        return QCoreApplication.translate('CloudMaskingOldESPA', message)
 
     def initGui(self):
         ### Main dockwidget
         # Create action that will start plugin configuration
-        icon_path = ':/plugins/CloudMasking/icon.png'
+        icon_path = ':/plugins/CloudMaskingOldESPA/icon.png'
         self.dockable_action = QAction(QIcon(icon_path), self.tr(u'&Cloud Masking'), self.iface.mainWindow())
         # connect the action to the run method
         self.dockable_action.triggered.connect(self.run)
@@ -112,7 +112,7 @@ class CloudMasking:
 
         ### About dialog
         # Create action that will start plugin configuration
-        icon_path = ':/plugins/CloudMasking/gui/about.png'
+        icon_path = ':/plugins/CloudMaskingOldESPA/gui/about.png'
         self.about_action = QAction(QIcon(icon_path), self.tr(u'About'), self.iface.mainWindow())
         # connect the action to the run method
         self.about_action.triggered.connect(self.about)
@@ -124,7 +124,7 @@ class CloudMasking:
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed"""
 
-        print "** CLOSING CloudMasking"
+        print "** CLOSING CloudMaskingOldESPA"
         self.clear_all()
 
         # disconnects
@@ -145,7 +145,7 @@ class CloudMasking:
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
 
-        print "** UNLOAD CloudMasking"
+        print "** UNLOAD CloudMaskingOldESPA"
         self.clear_all()
 
         # Remove the plugin menu item and icon
@@ -161,7 +161,7 @@ class CloudMasking:
         if not self.pluginIsActive:
             self.pluginIsActive = True
 
-            #print "** STARTING CloudMasking"
+            #print "** STARTING CloudMaskingOldESPA"
 
             # dockwidget may not exist if:
             #    first run of plugin

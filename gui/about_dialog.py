@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- CloudMasking
+ CloudMaskingOldESPA
                                  A QGIS plugin
  Cloud masking for landsat products using different process suck as fmask
                               -------------------

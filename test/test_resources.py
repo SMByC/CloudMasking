@@ -31,7 +31,7 @@ class CloudMaskingDialogTest(unittest.TestCase):
 
     def test_icon_png(self):
         """Test we can click OK."""
-        path = ':/plugins/CloudMasking/icon.png'
+        path = ':/plugins/CloudMaskingOldESPA/icon.png'
         icon = QIcon(path)
         self.assertFalse(icon.isNull())
 

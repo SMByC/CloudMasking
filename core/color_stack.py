@@ -24,8 +24,8 @@ import tempfile
 from qgis.core import QgsMapLayerRegistry, QgsRasterLayer
 
 # from plugins
-from CloudMasking.core.utils import get_prefer_name
-from CloudMasking.libs import gdal_merge
+from CloudMaskingOldESPA.core.utils import get_prefer_name
+from CloudMaskingOldESPA.libs import gdal_merge
 
 
 class ColorStack(object):

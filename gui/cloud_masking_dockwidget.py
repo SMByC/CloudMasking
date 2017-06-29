@@ -28,9 +28,9 @@ from qgis.utils import iface
 from PyQt4.QtGui import QMessageBox
 
 # from plugins
-from CloudMasking.core import cloud_masking_utils
-from CloudMasking.core.utils import get_prefer_name
-from CloudMasking.gui.about_dialog import AboutDialog
+from CloudMaskingOldESPA.core import cloud_masking_utils
+from CloudMaskingOldESPA.core.utils import get_prefer_name
+from CloudMaskingOldESPA.gui.about_dialog import AboutDialog
 
 # plugin path
 plugin_folder = os.path.dirname(os.path.dirname(__file__))
@@ -85,7 +85,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def setup_gui(self):
         # plugin info #########
         self.about_dialog = AboutDialog()
-        self.plugin_version.setText(self.tr(u"CloudMasking v{}".format(VERSION)))
+        self.plugin_version.setText(self.tr(u"CloudMaskingOldESPA v{}".format(VERSION)))
         self.button_about.clicked.connect(self.about_dialog.show)
 
         # find MTL file #########

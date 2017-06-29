@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/plugins/CloudMasking" >
+    <qresource prefix="/plugins/CloudMaskingOldESPA" >
         <file>icon.png</file>
         <file>ui/cloud.png</file>
         <file>ui/shadow.png</file>

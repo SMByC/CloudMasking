@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- CloudMasking
+ CloudMaskingOldESPA
                                  A QGIS plugin
  Cloud masking for landsat products using different process suck as fmask
                              -------------------
@@ -29,9 +29,9 @@ from PyQt4.QtCore import QCoreApplication
 # from plugins
 from osgeo.gdal import Translate
 
-from CloudMasking.core.utils import get_prefer_name, update_process_bar, binary_combination, check_values_in_image, \
+from CloudMaskingOldESPA.core.utils import get_prefer_name, update_process_bar, binary_combination, check_values_in_image, \
     get_extent
-from CloudMasking.libs import gdal_merge, gdal_calc, gdal_clip
+from CloudMaskingOldESPA.libs import gdal_merge, gdal_calc, gdal_clip
 
 # adding the libs plugin path
 libs_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), "libs")

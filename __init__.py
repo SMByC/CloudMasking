@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- CloudMasking
+ CloudMaskingOldESPA
                                  A QGIS plugin
  Cloud masking using different process suck as fmask
                               -------------------
@@ -23,7 +23,7 @@
 
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
-    """Load CloudMasking class from file CloudMasking.
+    """Load CloudMaskingOldESPA class from file CloudMaskingOldESPA.
 
     :param iface: A QGIS interface instance.
     :type iface: QgsInterface
