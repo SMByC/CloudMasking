@@ -150,12 +150,12 @@ class CloudMaskingResult(object):
         if crop_to_cutline:
             #  -crop_to_cutline
             return_code = call(
-                'gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline ' + shape_path + ' -dstnodata 0 ' + stack_file + ' ' + clip_file,
-                shell=True)
+                'gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline "{}" -dstnodata 0 "{}" "{}"'.
+                    format(shape_path, stack_file, clip_file), shell=True)
         else:
             return_code = call(
-                'gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline ' + shape_path + ' ' + stack_file + ' ' + clip_file,
-                shell=True)
+                'gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline "{}" "{}" "{}"'.
+                    format(shape_path, stack_file, clip_file), shell=True)
 
     def do_nodata_mask(self, img_to_mask):
         band_1 = get_prefer_name(os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_1']))
