@@ -14,6 +14,18 @@ The plugin can be installed using the QGIS Plugin Manager:
 
     ![install](img/install_03.png)
 
+### ESPA format version
+
+The CloudMasking plugin support two ESPA version; the old and new version in different branch, by default the plugin in the Qgis repository is for the new ESPA version and install it as explained above.
+
+!!! warning "For Old ESPA version"
+    If you want masking for old ESPA version, this plugin continue developing in branch repository, then you need download from [here](https://drive.google.com/uc?export=download&id=0B2KQf7Dbx7DUZTFoMGY1dXFWTGc) and install it manually in Qgis. For install manually unpack in plugins qgis user directory:
+
+    * windows: `C:\Users\<user>\.qgis2\python\plugins\` 
+    * linux/mac: `/home/<user>/.qgis2/python/plugins/`
+    
+    Then restart Qgis and activate it in "Plugins" menu and "Manage and install plugins" in "Installed" items.
+
 # Upgrade
 
 For upgrade the plugin to a new version:

@@ -21,7 +21,7 @@ There are available four filters in the plugin, depend of the Landsat version or
 ![](img/filters_layers_L8.png)
 
 !!! warning "For Old ESPA version"
-    If you want masking for old ESPA version images, this plugin continue developing in branch repository, then you need download from [here](https://bitbucket.org/smbyc/qgisplugin-cloudmasking/get/old-espa.zip) and install it manually in Qgis.
+    If you want masking for old ESPA version, this plugin continue developing in branch repository, see [installation](installation.md#espa-format-version) for more information about it.
 
 **Pixel values for the cloud mask:**
 
