@@ -19,10 +19,10 @@
  ***************************************************************************/
 """
 import os
-import gdal
+import qgis.core
+from osgeo import gdal
 from PyQt4 import QtGui
 from PyQt4.QtCore import Qt
-import qgis.core
 from numpy import intersect1d
 
 

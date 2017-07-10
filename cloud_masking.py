@@ -23,14 +23,13 @@ import shutil
 import traceback
 from datetime import datetime
 from time import sleep
-from shutil import copyfile
-import gdal
+from osgeo import gdal
 
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QApplication, QCursor, QFileDialog
 from PyQt4.QtGui import QCheckBox, QGroupBox, QRadioButton
 from qgis.gui import QgsMessageBar
-from qgis.core import QgsMapLayer, QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer, QgsVectorLayer
+from qgis.core import QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer, QgsVectorLayer
 # Initialize Qt resources from file resources.py
 import resources
 

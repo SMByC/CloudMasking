@@ -23,12 +23,7 @@
  https://pcjericks.github.io/py-gdalogr-cookbook
 """
 
-import gdalconst
-import gdal
-try:
-    import gdalnumeric
-except ImportError:
-    from osgeo import gdalnumeric
+from osgeo import gdal, gdalnumeric, gdalconst
 
 # Python bindings do not raise exceptions unless you
 # explicitly call UseExceptions()
