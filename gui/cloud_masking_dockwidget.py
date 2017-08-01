@@ -258,9 +258,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def fileDialog_findMTL(self):
         """Open QFileDialog to find a MTL file
         """
-        dialog_mtl_path = str(QtGui.QFileDialog.
-                            getOpenFileName(self, self.tr(u"Select the MTL file"),
-                                            "", self.tr(u"MTL files (*MTL.txt);;All files (*.*)")))
+        dialog_mtl_path = QtGui.QFileDialog.getOpenFileName(self, self.tr(u"Select the MTL file"),
+                                                            "", self.tr(u"MTL files (*MTL.txt);;All files (*.*)"))
         if dialog_mtl_path != '':
             self.lineEdit_PathMTL.setText(dialog_mtl_path)
 
@@ -268,7 +267,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def load_MTL(self):
         """Load a new MTL file currently specified in QLineEdit"""
 
-        self.mtl_path = str(self.lineEdit_PathMTL.text())
+        self.mtl_path = self.lineEdit_PathMTL.text()
 
         # check if MTL exist
         if not os.path.isfile(self.mtl_path):

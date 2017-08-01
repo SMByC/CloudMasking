@@ -305,9 +305,9 @@ class CloudMasking:
     def fileDialog_ShapeSelector(self):
         """Open QFileDialog for select the shape area file to apply mask
         """
-        shape_file_path = str(QFileDialog.getOpenFileName(self.dockwidget, self.tr(u"Select the shape file"),
-                                os.path.dirname(self.dockwidget.mtl_path),
-                                self.tr(u"Shape files (*.shp);;All files (*.*)")))
+        shape_file_path = QFileDialog.getOpenFileName(self.dockwidget, self.tr(u"Select the shape file"),
+                                                      os.path.dirname(self.dockwidget.mtl_path),
+                                                      self.tr(u"Shape files (*.shp);;All files (*.*)"))
 
         if shape_file_path != '':
             self.dockwidget.lineEdit_ShapeSelector.setText(shape_file_path)
@@ -702,9 +702,10 @@ class CloudMasking:
         """Open QFileDialog for save mask file
         """
         suggested_filename_mask = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Mask.tif"
-        mask_outpath = str(QFileDialog.getSaveFileName(self.dockwidget, self.tr(u"Save mask file"),
-                                os.path.join(os.path.dirname(self.dockwidget.mtl_path), suggested_filename_mask),
-                                self.tr(u"Tif files (*.tif);;All files (*.*)")))
+        mask_outpath = QFileDialog.getSaveFileName(self.dockwidget, self.tr(u"Save mask file"),
+                                                   os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                                                                suggested_filename_mask),
+                                                   self.tr(u"Tif files (*.tif);;All files (*.*)"))
         mask_inpath = unicode(self.getLayerByName(self.dockwidget.select_MaskLayer.currentText()).dataProvider().dataSourceUri())
 
         if mask_outpath != '' and mask_inpath != '':
@@ -714,9 +715,9 @@ class CloudMasking:
     def fileDialog_SelectPFile(self):
         """Open QFileDialog for select particular file to apply mask
         """
-        p_file_path = str(QFileDialog.getOpenFileName(self.dockwidget, self.tr(u"Select particular file to apply mask"),
-                                os.path.dirname(self.dockwidget.mtl_path),
-                                self.tr(u"Tif files (*.tif);;All files (*.*)")))
+        p_file_path = QFileDialog.getOpenFileName(self.dockwidget, self.tr(u"Select particular file to apply mask"),
+                                                  os.path.dirname(self.dockwidget.mtl_path),
+                                                  self.tr(u"Tif files (*.tif);;All files (*.*)"))
 
         if p_file_path != '':
             self.dockwidget.lineEdit_ParticularFile.setText(p_file_path)
@@ -729,9 +730,10 @@ class CloudMasking:
         else:
             suggested_filename_result = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Enmask.tif"
 
-        result_path = str(QFileDialog.getSaveFileName(self.dockwidget, self.tr(u"Save result"),
-                                os.path.join(os.path.dirname(self.dockwidget.mtl_path), suggested_filename_result),
-                                self.tr(u"Tif files (*.tif);;All files (*.*)")))
+        result_path = QFileDialog.getSaveFileName(self.dockwidget, self.tr(u"Save result"),
+                                                  os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                                                               suggested_filename_result),
+                                                  self.tr(u"Tif files (*.tif);;All files (*.*)"))
 
         if result_path != '':
             self.dockwidget.lineEdit_ResultPath.setText(result_path)
