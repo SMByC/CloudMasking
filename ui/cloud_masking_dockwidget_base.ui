@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>621</width>
+    <width>637</width>
     <height>905</height>
    </rect>
   </property>
@@ -56,8 +56,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>597</width>
-             <height>784</height>
+             <width>613</width>
+             <height>763</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -163,7 +163,7 @@
                <bool>false</bool>
               </property>
               <property name="title">
-               <string>Load stacks</string>
+               <string>Load stacks (optional)</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
                <item>
@@ -181,7 +181,7 @@
                      <item>
                       <widget class="QLabel" name="label_SelectBands">
                        <property name="text">
-                        <string>Select bands:</string>
+                        <string>Bands to visualize:</string>
                        </property>
                       </widget>
                      </item>
@@ -370,7 +370,10 @@
                      <item>
                       <widget class="QLabel" name="label_16">
                        <property name="text">
-                        <string>Special stacks:</string>
+                        <string>Set RGB for:</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
                        </property>
                       </widget>
                      </item>
@@ -467,9 +470,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-744</y>
-             <width>577</width>
-             <height>2128</height>
+             <y>0</y>
+             <width>593</width>
+             <height>2631</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -1917,8 +1920,8 @@ You can add multiple values separated by comma</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>597</width>
-             <height>784</height>
+             <width>645</width>
+             <height>743</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">

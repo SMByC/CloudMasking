@@ -361,7 +361,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.reflectance_bands = [2, 3, 4, 5, 6, 7]
 
         #### set items to RGB combobox
-        self.label_SelectBands.setText("Select bands (Landsat {})".format(self.landsat_version))
+        self.label_SelectBands.setText("Bands to visualize (Landsat {}):".format(self.landsat_version))
         self.SelectBand_R.addItems([str(b) for b in self.reflectance_bands])
         self.SelectBand_G.addItems([str(b) for b in self.reflectance_bands])
         self.SelectBand_B.addItems([str(b) for b in self.reflectance_bands])
