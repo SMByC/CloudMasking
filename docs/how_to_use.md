@@ -1,3 +1,19 @@
+# Support landsat products
+
+This plugin support two product types of landsat:
+
+### Level-1 Data Products (raw)
+
+This is a raw Landsat products that can be downloaded from USGS. With that product the plugin only can make the cloud masking using fmask and/or blue-band (see more in [Cloud Filters](cloud_filters.md)).
+
+### Higher-Level Data Products (espa)
+
+It have more processed Landsat products with more bands to be make the quality control and masking, that can be downloaded from [ESPA](https://espa.cr.usgs.gov/ordering/now). With that product the plugin can make the cloud masking using all filters (see more in [Cloud Filters](cloud_filters.md)).
+
+!!! note "Important!"
+    When you're downloading the images from the form on the ESPA page, with the Surface Reflectance you also need to download the input products and metadata:
+    ![](img/espa_products_needed.png)
+
 # How to use
 
 This is a mini guide step by step for use the CloudMasking plugin
