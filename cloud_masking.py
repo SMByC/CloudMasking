@@ -28,7 +28,7 @@ from osgeo import gdal
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QApplication, QCursor, QFileDialog
 from PyQt4.QtGui import QCheckBox, QGroupBox, QRadioButton
-from qgis.gui import QgsMessageBar
+from qgis.gui import QgsMessageBar, QgsMapLayerProxyModel
 from qgis.core import QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer, QgsVectorLayer
 # Initialize Qt resources from file resources.py
 import resources
@@ -177,15 +177,15 @@ class CloudMasking:
             self.dockwidget.tabWidget.setCurrentWidget(self.dockwidget.tab_OL)  # focus first tab
             self.dockwidget.show()
 
-        # set initial input layers list
-        self.updateLayersList_MaskLayer()
         # initial masking and color stack instance
         self.masking_result = None
         self.color_stack_scene = None
-        # handle connect when the list of layers changed
-        self.canvas.layersChanged.connect(self.updateLayersList_MaskLayer)
-        self.dockwidget.checkBox_ActivatedLayers.clicked.connect(self.updateLayersList_MaskLayer)
-        self.dockwidget.checkBox_MaskLayers.clicked.connect(self.updateLayersList_MaskLayer)
+        # set properties to QgsMapLayerComboBox for mask list
+        self.dockwidget.select_MaskLayer.setCurrentIndex(-1)
+        self.dockwidget.select_MaskLayer.setFilters(QgsMapLayerProxyModel.RasterLayer)
+        QgsMapLayerRegistry.instance().layersAdded.connect(self.updateLayersList_MaskLayer)
+        self.updateLayersList_MaskLayer()
+
         # call to load MTL file
         self.dockwidget.button_LoadMTL.clicked.connect(self.buttom_load_mtl)
         # call to clear all
@@ -241,21 +241,16 @@ class CloudMasking:
         return decorate
 
     def updateLayersList_MaskLayer(self):
-        if self.dockwidget is not None:
-            self.dockwidget.select_MaskLayer.clear()
-
-            if self.dockwidget.checkBox_ActivatedLayers.isChecked():
-                layers = self.canvas.layers()
-            else:
-                layers = QgsMapLayerRegistry.instance().mapLayers().values()
-
-            for layer in layers:
-                if self.dockwidget.checkBox_MaskLayers.isChecked():
-                    if layer.name().startswith("Cloud Mask"):
-                        self.dockwidget.select_MaskLayer.addItem(layer.name())
-                else:
-                    self.dockwidget.select_MaskLayer.addItem(layer.name())
-
+        """
+        Only show the cloud mask in combobox for the mask list to apply
+        """
+        # filtering
+        excepted = []
+        for layer in QgsMapLayerRegistry.instance().mapLayers().values():
+            if not layer.name().startswith("Cloud Mask"):
+                excepted.append(layer)
+        # set excepted layers
+        self.dockwidget.select_MaskLayer.setExceptedLayerList(excepted)
 
     def getLayerByName(self, layer_name):
         for layer in self.canvas.layers():

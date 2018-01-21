@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>637</width>
-    <height>905</height>
+    <width>754</width>
+    <height>1159</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -56,8 +56,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>613</width>
-             <height>763</height>
+             <width>730</width>
+             <height>996</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -471,8 +471,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>593</width>
-             <height>2631</height>
+             <width>710</width>
+             <height>3017</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -1920,8 +1920,8 @@ You can add multiple values separated by comma</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>645</width>
-             <height>743</height>
+             <width>730</width>
+             <height>996</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1943,70 +1943,21 @@ You can add multiple values separated by comma</string>
                <item>
                 <widget class="QLabel" name="label_4">
                  <property name="text">
-                  <string>Select the mask layer for apply:</string>
+                  <string>Select the cloud mask layer for apply:</string>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QWidget" name="widget_SaveApply_01" native="true">
                  <layout class="QGridLayout" name="gridLayout_4">
-                  <item row="1" column="0">
-                   <widget class="QWidget" name="widget_8" native="true">
-                    <layout class="QHBoxLayout" name="horizontalLayout_9">
-                     <property name="margin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="label_17">
-                       <property name="text">
-                        <string>Show:</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="checkBox_ActivatedLayers">
-                       <property name="text">
-                        <string>Only activated layers</string>
-                       </property>
-                       <property name="checked">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QCheckBox" name="checkBox_MaskLayers">
-                       <property name="text">
-                        <string>Only mask layers</string>
-                       </property>
-                       <property name="checked">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_5">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="4" column="0">
+                  <item row="3" column="0">
                    <widget class="QWidget" name="widget_9" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_11">
                      <property name="margin">
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QComboBox" name="select_MaskLayer">
+                      <widget class="QgsMapLayerComboBox" name="select_MaskLayer">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                          <horstretch>0</horstretch>
@@ -2367,6 +2318,11 @@ You can add multiple values separated by comma</string>
    <extends>QWidget</extends>
    <header>CloudMasking.gui.extent_selector</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
  <resources/>
