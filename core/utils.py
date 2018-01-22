@@ -19,11 +19,69 @@
  ***************************************************************************/
 """
 import os
-import qgis.core
+from qgis.core import QgsMapLayerRegistry, QgsRasterShader, QgsColorRampShader, QgsSingleBandPseudoColorRenderer, \
+    QgsRasterRange, QgsRasterLayer, QgsVectorLayer
+from qgis.utils import iface
 from osgeo import gdal
 from PyQt4 import QtGui
 from PyQt4.QtCore import Qt
 from numpy import intersect1d
+
+
+def unload_layer_in_qgis(layer_path):
+    layers_loaded = QgsMapLayerRegistry.instance().mapLayers().values()
+    for layer_loaded in layers_loaded:
+        if layer_path == layer_loaded.dataProvider().dataSourceUri().split('|layerid')[0]:
+            QgsMapLayerRegistry.instance().removeMapLayer(layer_loaded)
+
+
+def load_layer_in_qgis(file_path, layer_type):
+    # first unload layer from qgis if exists
+    unload_layer_in_qgis(file_path)
+    # create layer
+    filename = os.path.splitext(os.path.basename(file_path))[0]
+    if layer_type == "raster":
+        layer = QgsRasterLayer(file_path, filename)
+    if layer_type == "vector":
+        layer = QgsVectorLayer(file_path, filename, "ogr")
+    if layer_type == "any":
+        if file_path.endswith((".tif", ".TIF", ".img", ".IMG")):
+            layer = QgsRasterLayer(file_path, filename)
+        if file_path.endswith((".shp", ".SHP")):
+            layer = QgsVectorLayer(file_path, filename, "ogr")
+    # load
+    if layer.isValid():
+        QgsMapLayerRegistry.instance().addMapLayer(layer)
+    else:
+        iface.messageBar().pushMessage("CloudMasking", "Error, {} is not a valid {} file!"
+                                       .format(os.path.basename(file_path), layer_type))
+    return filename
+
+
+def get_layer_by_name(layer_name):
+    layer = QgsMapLayerRegistry.instance().mapLayersByName(layer_name)
+    if layer:
+        return layer[0]
+
+
+def load_and_select_filepath_in(combo_box, file_path, layer_type="any"):
+    filename = os.path.splitext(os.path.basename(file_path))[0]
+    layer = get_layer_by_name(filename)
+    if not layer:
+        # load to qgis and update combobox list
+        load_layer_in_qgis(file_path, layer_type)
+    # select the sampling file in combobox
+    selected_index = combo_box.findText(filename, Qt.MatchFixedString)
+    combo_box.setCurrentIndex(selected_index)
+
+    return get_layer_by_name(filename)
+
+
+def get_file_path_of_layer(layer):
+    try:
+        return unicode(layer.dataProvider().dataSourceUri().split('|layerid')[0])
+    except:
+        return None
 
 
 def get_prefer_name(file_path):
@@ -53,9 +111,9 @@ def apply_symbology(rlayer, symbology, symbology_enabled, transparent=255):
     # See: QgsRasterRenderer* QgsSingleBandPseudoColorRendererWidget::renderer()
     # https://github.com/qgis/QGIS/blob/master/src/gui/raster/qgssinglebandpseudocolorrendererwidget.cpp
     # Get raster shader
-    raster_shader = qgis.core.QgsRasterShader()
+    raster_shader = QgsRasterShader()
     # Color ramp shader
-    color_ramp_shader = qgis.core.QgsColorRampShader()
+    color_ramp_shader = QgsColorRampShader()
     # Loop over Fmask values and add to color item list
     color_ramp_item_list = []
     for name, value, enable in zip(['Fmask Cloud', 'Fmask Shadow', 'Fmask Snow', 'Fmask Water',
@@ -65,7 +123,7 @@ def apply_symbology(rlayer, symbology, symbology_enabled, transparent=255):
             continue
         color = symbology[name]
         # Color ramp item - color, label, value
-        color_ramp_item = qgis.core.QgsColorRampShader.ColorRampItem(
+        color_ramp_item = QgsColorRampShader.ColorRampItem(
             value,
             QtGui.QColor(color[0], color[1], color[2], color[3]),
             name
@@ -73,9 +131,9 @@ def apply_symbology(rlayer, symbology, symbology_enabled, transparent=255):
         color_ramp_item_list.append(color_ramp_item)
 
     # Add the NoData symbology
-    color_ramp_item_list.append(qgis.core.QgsColorRampShader.ColorRampItem(255, QtGui.QColor(70, 70, 70, 255), "No Data"))
+    color_ramp_item_list.append(QgsColorRampShader.ColorRampItem(255, QtGui.QColor(70, 70, 70, 255), "No Data"))
     # Add the valid data, no masked
-    color_ramp_item_list.append(qgis.core.QgsColorRampShader.ColorRampItem(1, QtGui.QColor(0, 0, 0, 0), "No Masked"))
+    color_ramp_item_list.append(QgsColorRampShader.ColorRampItem(1, QtGui.QColor(0, 0, 0, 0), "No Masked"))
     # After getting list of color ramp items
     color_ramp_shader.setColorRampItemList(color_ramp_item_list)
     # Exact color ramp
@@ -83,7 +141,7 @@ def apply_symbology(rlayer, symbology, symbology_enabled, transparent=255):
     # Add color ramp shader to raster shader
     raster_shader.setRasterShaderFunction(color_ramp_shader)
     # Create color renderer for raster layer
-    renderer = qgis.core.QgsSingleBandPseudoColorRenderer(
+    renderer = QgsSingleBandPseudoColorRenderer(
         rlayer.dataProvider(),
         1,
         raster_shader)
@@ -93,7 +151,7 @@ def apply_symbology(rlayer, symbology, symbology_enabled, transparent=255):
     # Set NoData transparency to layer qgis (temporal)
     if not isinstance(transparent, list):
         transparent = [transparent]
-    nodata = [qgis.core.QgsRasterRange(t, t) for t in transparent]
+    nodata = [QgsRasterRange(t, t) for t in transparent]
     if nodata:
         rlayer.dataProvider().setUserNoDataValue(1, nodata)
     # Set NoData transparency to file

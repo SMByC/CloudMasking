@@ -25,16 +25,17 @@ from datetime import datetime
 from time import sleep
 from osgeo import gdal
 
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QApplication, QCursor, QFileDialog
 from PyQt4.QtGui import QCheckBox, QGroupBox, QRadioButton
 from qgis.gui import QgsMessageBar, QgsMapLayerProxyModel
-from qgis.core import QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer, QgsVectorLayer
+from qgis.core import QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer
 # Initialize Qt resources from file resources.py
 import resources
 
 from CloudMasking.core import cloud_filters, color_stack
-from CloudMasking.core.utils import apply_symbology, get_prefer_name, update_process_bar, get_extent
+from CloudMasking.core.utils import apply_symbology, get_prefer_name, update_process_bar, get_extent, \
+    load_and_select_filepath_in, get_file_path_of_layer
 from CloudMasking.libs import gdal_calc, gdal_merge
 from CloudMasking.gui.cloud_masking_dockwidget import CloudMaskingDockWidget
 from CloudMasking.gui.about_dialog import AboutDialog
@@ -186,6 +187,16 @@ class CloudMasking:
         QgsMapLayerRegistry.instance().layersAdded.connect(self.updateLayersList_MaskLayer)
         self.updateLayersList_MaskLayer()
 
+        # set properties to QgsMapLayerComboBox for shape area
+        self.dockwidget.QCBox_MaskInShapeArea.setCurrentIndex(-1)
+        self.dockwidget.QCBox_MaskInShapeArea.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        # call to browse the shape area for make mask inside it
+        self.dockwidget.button_BrowseShapeArea.clicked.connect(lambda: self.fileDialog_browse(
+            self.dockwidget.QCBox_MaskInShapeArea,
+            dialog_title=self.tr(u"Select the shape file"),
+            dialog_types=self.tr(u"Shape files (*.shp);;All files (*.*)"),
+            layer_type="vector", suggested_path=os.path.dirname(self.dockwidget.mtl_path)))
+
         # call to load MTL file
         self.dockwidget.button_LoadMTL.clicked.connect(self.buttom_load_mtl)
         # call to clear all
@@ -198,9 +209,6 @@ class CloudMasking:
         self.dockwidget.button_InfraredsStack.clicked.connect(lambda: self.set_color_stack("infrareds"))
         # call to process load stack
         self.dockwidget.button_processLoadStack.clicked.connect(self.load_stack)
-        # call to search shape area selector file
-        self.dockwidget.pushButton_ShapeSelector.clicked.connect(self.fileDialog_ShapeSelector)
-        self.dockwidget.pushButton_LoadShapeSelector.clicked.connect(self.load_shape_selector)
         # call to process mask
         self.dockwidget.button_processMask.clicked.connect(self.process_mask)
         # save mask
@@ -297,25 +305,12 @@ class CloudMasking:
         update_process_bar(self.dockwidget.bar_progressLoadStack, 100,
                            self.dockwidget.status_processLoadStack, self.tr(u"DONE"))
 
-    def fileDialog_ShapeSelector(self):
-        """Open QFileDialog for select the shape area file to apply mask
-        """
-        shape_file_path = QFileDialog.getOpenFileName(self.dockwidget, self.tr(u"Select the shape file"),
-                                                      os.path.dirname(self.dockwidget.mtl_path),
-                                                      self.tr(u"Shape files (*.shp);;All files (*.*)"))
-
-        if shape_file_path != '':
-            self.dockwidget.lineEdit_ShapeSelector.setText(shape_file_path)
-
-    def load_shape_selector(self):
-        shape_path = self.dockwidget.lineEdit_ShapeSelector.text()
-        if shape_path != '' and os.path.isfile(shape_path):
-            # Open in QGIS
-            shape_layer = QgsVectorLayer(shape_path, "Shape area ({})".format(os.path.basename(shape_path)), "ogr")
-            if shape_layer.isValid():
-                QgsMapLayerRegistry.instance().addMapLayer(shape_layer)
-            else:
-                self.iface.messageBar().pushMessage("Error", "Shape {} failed to load!".format(os.path.basename(shape_path)))
+    @pyqtSlot()
+    def fileDialog_browse(self, combo_box, dialog_title, dialog_types, layer_type, suggested_path=""):
+        file_path = QFileDialog.getOpenFileName(self.dockwidget, dialog_title, suggested_path, dialog_types)
+        if file_path != '' and os.path.isfile(file_path):
+            # load to qgis and update combobox list
+            load_and_select_filepath_in(combo_box, file_path, layer_type)
 
     @error_handler('process mask')
     def process_mask(self, *args):
@@ -360,7 +355,7 @@ class CloudMasking:
         # set for the shape selector
         if self.dockwidget.checkBox_ShapeSelector.isChecked():
             self.masking_result.clipping_with_shape = True
-            self.masking_result.shape_path = self.dockwidget.lineEdit_ShapeSelector.text()
+            self.masking_result.shape_path = get_file_path_of_layer(self.dockwidget.QCBox_MaskInShapeArea.currentLayer())
             if self.dockwidget.shapeSelector_CutWithShape.isChecked():
                 self.masking_result.crop_to_cutline = True
             else:
@@ -915,7 +910,6 @@ class CloudMasking:
         try:
             self.dockwidget.checkBox_ExtentSelector.setChecked(False)
             self.dockwidget.checkBox_ShapeSelector.setChecked(False)
-            self.dockwidget.lineEdit_ShapeSelector.setText("")
         except: pass
 
         # clear self.dockwidget.tmp_dir

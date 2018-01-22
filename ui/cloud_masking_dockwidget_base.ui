@@ -470,7 +470,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-2021</y>
              <width>710</width>
              <height>3017</height>
             </rect>
@@ -1831,7 +1831,7 @@ You can add multiple values separated by comma</string>
                   <item>
                    <widget class="QLabel" name="label_23">
                     <property name="text">
-                     <string>Select the shape for apply</string>
+                     <string>Select/browse the shape file for apply:</string>
                     </property>
                    </widget>
                   </item>
@@ -1842,19 +1842,19 @@ You can add multiple values separated by comma</string>
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QLineEdit" name="lineEdit_ShapeSelector"/>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="pushButton_ShapeSelector">
-                       <property name="text">
-                        <string>Select...</string>
+                      <widget class="QgsMapLayerComboBox" name="QCBox_MaskInShapeArea">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QPushButton" name="pushButton_LoadShapeSelector">
+                      <widget class="QPushButton" name="button_BrowseShapeArea">
                        <property name="text">
-                        <string>Load...</string>
+                        <string>Browse</string>
                        </property>
                       </widget>
                      </item>
