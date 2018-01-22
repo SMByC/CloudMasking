@@ -470,7 +470,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-2021</y>
+             <y>0</y>
              <width>710</width>
              <height>3017</height>
             </rect>
@@ -1844,7 +1844,7 @@ You can add multiple values separated by comma</string>
                      <item>
                       <widget class="QgsMapLayerComboBox" name="QCBox_MaskInShapeArea">
                        <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                          <horstretch>0</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
@@ -1853,6 +1853,12 @@ You can add multiple values separated by comma</string>
                      </item>
                      <item>
                       <widget class="QPushButton" name="button_BrowseShapeArea">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="text">
                         <string>Browse</string>
                        </property>
@@ -1959,7 +1965,7 @@ You can add multiple values separated by comma</string>
                      <item>
                       <widget class="QgsMapLayerComboBox" name="select_MaskLayer">
                        <property name="sizePolicy">
-                        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                          <horstretch>0</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
@@ -1971,6 +1977,12 @@ You can add multiple values separated by comma</string>
                      </item>
                      <item>
                       <widget class="QPushButton" name="button_SaveMask">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
                        <property name="text">
                         <string>Save mask</string>
                        </property>
