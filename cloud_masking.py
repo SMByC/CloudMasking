@@ -255,6 +255,9 @@ class CloudMasking:
         """
         Only show the cloud mask in combobox for the mask list to apply
         """
+        if not QgsMapLayerRegistry:
+            return
+
         # filtering
         excepted = []
         for layer in QgsMapLayerRegistry.instance().mapLayers().values():
