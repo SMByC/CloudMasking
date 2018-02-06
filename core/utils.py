@@ -5,7 +5,7 @@
                                  A QGIS plugin
  Cloud masking for landsat products using different process suck as fmask
                              -------------------
-        copyright            : (C) 2016-2017 by Xavier Corredor Llano, SMBYC
+        copyright            : (C) 2016-2018 by Xavier Corredor Llano, SMBYC
         email                : xcorredorl@ideam.gov.co
  ***************************************************************************/
 
