@@ -2272,7 +2272,7 @@ You can add multiple values separated by comma</string>
           <cursorShape>WhatsThisCursor</cursorShape>
          </property>
          <property name="toolTip">
-          <string>Open the documentation for CloudMasking</string>
+          <string>Open the CloudMasking documentation</string>
          </property>
          <property name="text">
           <string>Docs</string>
