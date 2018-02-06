@@ -42,6 +42,7 @@ cfg.read(os.path.join(plugin_folder, 'metadata.txt'))
 VERSION = cfg.get('general', 'version')
 HOMEPAGE = cfg.get('general', 'homepage')
 
+
 class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
     # Fmask parameters by default

@@ -101,7 +101,7 @@ class CloudMasking:
     def initGui(self):
         ### Main dockwidget
         # Create action that will start plugin configuration
-        icon_path = ':/plugins/CloudMasking/icon.png'
+        icon_path = ':/plugins/CloudMasking/icons/cloud_masking.svg'
         self.dockable_action = QAction(QIcon(icon_path), self.tr(u'&Cloud Masking'), self.iface.mainWindow())
         # connect the action to the run method
         self.dockable_action.triggered.connect(self.run)
@@ -112,7 +112,7 @@ class CloudMasking:
 
         ### About dialog
         # Create action that will start plugin configuration
-        icon_path = ':/plugins/CloudMasking/gui/about.png'
+        icon_path = ':/plugins/CloudMasking/icons/about.svg'
         self.about_action = QAction(QIcon(icon_path), self.tr(u'About'), self.iface.mainWindow())
         # connect the action to the run method
         self.about_action.triggered.connect(self.about)

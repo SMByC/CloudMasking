@@ -1,11 +1,10 @@
 <RCC>
     <qresource prefix="/plugins/CloudMasking" >
-        <file>icon.png</file>
-        <file>ui/cloud.png</file>
-        <file>ui/shadow.png</file>
-        <file>ui/snow.png</file>
-        <file>ui/water.png</file>
-        <file>gui/about.png</file>
-        <file>gui/cloud_masking.png</file>
+        <file>icons/cloud_masking.svg</file>
+        <file>icons/about.svg</file>
+        <file>icons/cloud.png</file>
+        <file>icons/shadow.png</file>
+        <file>icons/snow.png</file>
+        <file>icons/water.png</file>
     </qresource>
 </RCC>
