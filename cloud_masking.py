@@ -125,7 +125,7 @@ class CloudMasking:
         """Cleanup necessary items here when plugin dockwidget is closed"""
 
         print "** CLOSING CloudMasking"
-        self.clear_all()
+        self.removes_temporary_files()
 
         # disconnects
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
@@ -139,6 +139,9 @@ class CloudMasking:
 
         self.pluginIsActive = False
 
+        from qgis.utils import reloadPlugin
+        reloadPlugin("CloudMasking")
+
     def about(self):
         self.about_dialog.show()
 
@@ -146,7 +149,7 @@ class CloudMasking:
         """Removes the plugin menu item and icon from QGIS GUI."""
 
         print "** UNLOAD CloudMasking"
-        self.clear_all()
+        self.removes_temporary_files()
 
         # Remove the plugin menu item and icon
         self.iface.removePluginMenu(self.menu_name_plugin, self.dockable_action)
@@ -853,8 +856,8 @@ class CloudMasking:
                                          quit_msg, QMessageBox.Yes, QMessageBox.No)
             if reply == QMessageBox.No:
                 return
-        # run clean all
-        self.clear_all()
+        # run clean temp files
+        self.removes_temporary_files()
 
         # run load MTL
         self.dockwidget.load_MTL()
@@ -866,12 +869,14 @@ class CloudMasking:
                                            quit_msg, QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.No:
             return
-        # run clean all
-        self.clear_all()
-        # clean MTL path
-        self.dockwidget.lineEdit_PathMTL.setText('')
+        # run clean temp files
+        self.removes_temporary_files()
 
-    def clear_all(self):
+        self.onClosePlugin()
+        from qgis.utils import plugins
+        plugins["CloudMasking"].run()
+
+    def removes_temporary_files(self):
 
         # message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):
@@ -906,11 +911,6 @@ class CloudMasking:
         for layer_name, layer_loaded in QgsMapLayerRegistry.instance().mapLayers().items():
             if layer_name.startswith("Shape_area__"):
                 QgsMapLayerRegistry.instance().removeMapLayer(layer_loaded)
-        # clear
-        try:
-            self.dockwidget.checkBox_ExtentSelector.setChecked(False)
-            self.dockwidget.checkBox_ShapeSelector.setChecked(False)
-        except: pass
 
         # clear self.dockwidget.tmp_dir
         try:
@@ -918,21 +918,4 @@ class CloudMasking:
             self.dockwidget.tmp_dir.close()
             self.dockwidget.tmp_dir = None
         except: pass
-
-        # clear load bands select stack
-        try:
-            self.dockwidget.SelectBand_R.clear()
-            self.dockwidget.SelectBand_G.clear()
-            self.dockwidget.SelectBand_B.clear()
-        except: pass
-
-        # delete CloudMaskingResult instance
-        try:
-            del self.masking_result
-            self.masking_result = None
-        except:pass
-
-        # restore initial message
-        if isinstance(self.dockwidget, CloudMaskingDockWidget):
-            self.dockwidget.status_LoadedMTL.setText(self.tr(u"No MTL file loaded yet."))
 
