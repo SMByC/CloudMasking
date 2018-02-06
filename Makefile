@@ -46,7 +46,7 @@ PY_FILES = \
 
 UI_FILES = ui/cloud_masking_dockwidget_base.ui
 
-EXTRAS = metadata.txt icon.png
+EXTRAS = metadata.txt icons/cloud_masking.svg
 
 COMPILED_RESOURCE_FILES = resources.py
 

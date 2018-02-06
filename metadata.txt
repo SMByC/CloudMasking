@@ -27,7 +27,7 @@ repository=https://bitbucket.org/smbyc/qgisplugin-cloudmasking
 tags=cloud,masking,landsat,raster
 
 category=Raster
-icon=icon.png
+icon=icons/cloud_masking.svg
 # experimental flag
 experimental=False
 
