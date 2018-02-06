@@ -845,7 +845,7 @@ class CloudMasking:
 
     def buttom_load_mtl(self):
         # check if is the same MTL
-        if self.dockwidget.mtl_path == str(self.dockwidget.lineEdit_PathMTL.text()):
+        if self.dockwidget.mtl_path == self.dockwidget.lineEdit_PathMTL.text():
             return
 
         # first prompt to user if delete the current
