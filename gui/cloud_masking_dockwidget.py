@@ -86,8 +86,8 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def setup_gui(self):
         # plugin info #########
         self.about_dialog = AboutDialog()
-        self.plugin_version.setText(self.tr(u"CloudMasking v{}".format(VERSION)))
-        self.button_about.clicked.connect(self.about_dialog.show)
+        self.QPBtn_PluginInfo.setText(self.tr(u"CloudMasking v{}".format(VERSION)))
+        self.QPBtn_PluginInfo.clicked.connect(self.about_dialog.show)
 
         # find MTL file #########
         self.button_FindMTL.clicked.connect(self.fileDialog_findMTL)

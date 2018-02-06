@@ -1290,7 +1290,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <property name="icon">
                            <iconset>
-                            <normaloff>:/plugins/CloudMasking/ui/cloud.png</normaloff>:/plugins/CloudMasking/ui/cloud.png</iconset>
+                            <normaloff>:/plugins/CloudMasking/icons/cloud.png</normaloff>:/plugins/CloudMasking/icons/cloud.png</iconset>
                           </property>
                           <property name="checked">
                            <bool>true</bool>
@@ -1304,7 +1304,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <property name="icon">
                            <iconset>
-                            <normaloff>:/plugins/CloudMasking/ui/shadow.png</normaloff>:/plugins/CloudMasking/ui/shadow.png</iconset>
+                            <normaloff>:/plugins/CloudMasking/icons/shadow.png</normaloff>:/plugins/CloudMasking/icons/shadow.png</iconset>
                           </property>
                           <property name="checked">
                            <bool>true</bool>
@@ -1318,7 +1318,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <property name="icon">
                            <iconset>
-                            <normaloff>:/plugins/CloudMasking/ui/snow.png</normaloff>:/plugins/CloudMasking/ui/snow.png</iconset>
+                            <normaloff>:/plugins/CloudMasking/icons/snow.png</normaloff>:/plugins/CloudMasking/icons/snow.png</iconset>
                           </property>
                           <property name="checked">
                            <bool>true</bool>
@@ -1332,7 +1332,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <property name="icon">
                            <iconset>
-                            <normaloff>:/plugins/CloudMasking/ui/water.png</normaloff>:/plugins/CloudMasking/ui/water.png</iconset>
+                            <normaloff>:/plugins/CloudMasking/icons/water.png</normaloff>:/plugins/CloudMasking/icons/water.png</iconset>
                           </property>
                          </widget>
                         </item>
@@ -2267,6 +2267,26 @@ You can add multiple values separated by comma</string>
         <number>0</number>
        </property>
        <item>
+        <widget class="QPushButton" name="QPBtn_PluginDocs">
+         <property name="cursor">
+          <cursorShape>WhatsThisCursor</cursorShape>
+         </property>
+         <property name="toolTip">
+          <string>Open the documentation for CloudMasking</string>
+         </property>
+         <property name="text">
+          <string>Docs</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/plugins/CloudMasking/icons/about.svg</normaloff>:/plugins/CloudMasking/icons/about.svg</iconset>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="horizontalSpacer_10">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -2280,43 +2300,24 @@ You can add multiple values separated by comma</string>
         </spacer>
        </item>
        <item>
-        <widget class="QLabel" name="plugin_version">
-         <property name="text">
-          <string>Version</string>
-         </property>
-         <property name="scaledContents">
-          <bool>false</bool>
-         </property>
-         <property name="margin">
-          <number>6</number>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="button_about">
+        <widget class="QPushButton" name="QPBtn_PluginInfo">
          <property name="cursor">
           <cursorShape>WhatsThisCursor</cursorShape>
          </property>
-         <property name="text">
+         <property name="toolTip">
           <string>About</string>
+         </property>
+         <property name="text">
+          <string>CloudMasking version</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>:/plugins/CloudMasking/icons/cloud_masking.svg</normaloff>:/plugins/CloudMasking/icons/cloud_masking.svg</iconset>
          </property>
          <property name="flat">
           <bool>true</bool>
          </property>
         </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_12">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
