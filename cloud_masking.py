@@ -187,6 +187,7 @@ class CloudMasking:
         # set properties to QgsMapLayerComboBox for mask list
         self.dockwidget.select_MaskLayer.setCurrentIndex(-1)
         self.dockwidget.select_MaskLayer.setFilters(QgsMapLayerProxyModel.RasterLayer)
+        self.dockwidget.checkBox_OnlyMaskLayers.clicked.connect(self.updateLayersList_MaskLayer)
         QgsMapLayerRegistry.instance().layersAdded.connect(self.updateLayersList_MaskLayer)
         self.updateLayersList_MaskLayer()
 
@@ -260,9 +261,10 @@ class CloudMasking:
 
         # filtering
         excepted = []
-        for layer in QgsMapLayerRegistry.instance().mapLayers().values():
-            if not layer.name().startswith("Cloud Mask"):
-                excepted.append(layer)
+        if self.dockwidget.checkBox_OnlyMaskLayers.isChecked():
+            for layer in QgsMapLayerRegistry.instance().mapLayers().values():
+                if not layer.name().startswith("Cloud Mask"):
+                    excepted.append(layer)
         # set excepted layers
         self.dockwidget.select_MaskLayer.setExceptedLayerList(excepted)
 
