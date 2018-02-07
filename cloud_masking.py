@@ -269,7 +269,7 @@ class CloudMasking:
         self.dockwidget.select_MaskLayer.setExceptedLayerList(excepted)
 
     def getLayerByName(self, layer_name):
-        for layer in self.canvas.layers():
+        for layer in QgsMapLayerRegistry.instance().mapLayers().values():
             if layer.name() == layer_name:
                 return layer
 
