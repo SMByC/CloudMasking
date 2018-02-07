@@ -10,7 +10,7 @@
 name=Cloud Masking
 description=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7 and 8) products using different process and filters such as Fmask, Blue Band, Cloud QA, Aerosol and Pixel QA.
 about=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7 and 8) products using different process and filters such as Fmask, Blue Band, Cloud QA, Aerosol and Pixel QA.
-version=18.2.6
+version=18.2.7
 qgisMinimumVersion=2.14
 
 author=Xavier Corredor Llano, SMBYC
@@ -21,7 +21,21 @@ tracker=https://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues
 repository=https://bitbucket.org/smbyc/qgisplugin-cloudmasking
 
 # Uncomment the following line and add your changelog:
-# changelog=
+changelog=
+    18.2.7
+    - Fix get layer by name for layers no activated
+    - Restore option for show not only cloud mask in select mask
+    18.2.6
+    - Fix the unicode for MTL file
+    - Improved the remove temporal files and reload plugin
+    - Adjusted the plugin icon and about dialog
+    - Added about button for open the online documentation
+    - Improved the icons/buttons for plugin info
+    - Reordered icons and prefer use svg format
+    - Fixes the horizontal policy for the combobox list and browse button
+    - Refactoring and simplified the selector and load the shape file for made the mask in specific area using QgsMapLayerComboBox
+    - Refactoring and simplified the combobox list for select the mask layer for apply using QgsMapLayerComboBox
+    - Fixed unicode path string in all input/output file dialogs
 
 # Tags are comma separated with spaces allowed
 tags=cloud,masking,landsat,raster
