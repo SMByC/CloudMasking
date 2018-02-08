@@ -38,7 +38,7 @@ changelog=
     - Fixed unicode path string in all input/output file dialogs
 
 # Tags are comma separated with spaces allowed
-tags=cloud,masking,landsat,raster
+tags=cloud,masking,landsat,raster,remote sensing
 
 category=Raster
 icon=icons/cloud_masking.svg
