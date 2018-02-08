@@ -57,7 +57,7 @@
              <x>0</x>
              <y>0</y>
              <width>730</width>
-             <height>1034</height>
+             <height>999</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -471,8 +471,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>710</width>
-             <height>2235</height>
+             <width>605</width>
+             <height>3017</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -1926,8 +1926,8 @@ You can add multiple values separated by comma</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>730</width>
-             <height>1034</height>
+             <width>583</width>
+             <height>747</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2307,6 +2307,11 @@ You can add multiple values separated by comma</string>
        </property>
        <item>
         <widget class="QPushButton" name="QPBtn_PluginDocs">
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
          <property name="cursor">
           <cursorShape>WhatsThisCursor</cursorShape>
          </property>
@@ -2340,6 +2345,11 @@ You can add multiple values separated by comma</string>
        </item>
        <item>
         <widget class="QPushButton" name="QPBtn_PluginInfo">
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
          <property name="cursor">
           <cursorShape>WhatsThisCursor</cursorShape>
          </property>
