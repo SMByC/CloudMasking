@@ -23,6 +23,8 @@ with any other format that supports pyramid layers and statistics
 import os
 import numpy
 from osgeo import gdal
+gdal.UseExceptions()
+from distutils.version import LooseVersion
 from . import cuiprogress
 from .rioserrors import ProcessCancelledError
 
@@ -32,6 +34,13 @@ if (os.getenv('RIOS_HISTOGRAM_IGNORE_RFC40') is None and
         hasattr(gdal.RasterAttributeTable, 'ReadAsArray')):
     haveRFC40 = True
 
+# test if https://trac.osgeo.org/gdal/ticket/6854 has been fixed
+# this allows us to use the rat.SetLinearBinning call rather than metadata
+if hasattr(gdal, '__version__'):
+    # Fail slightly less drastically when running from ReadTheDocs
+    haveLinearBinningFix = LooseVersion(gdal.__version__) >= LooseVersion('2.2.0')
+else:
+    haveLinearBinningFix = False
 
 # When calculating overviews (i.e. pyramid layers), default behaviour
 # is controlled by these
@@ -56,7 +65,7 @@ def progressFunc(value,string,userdata):
     return not userdata.progress.wasCancelled()
   
 # make userdata object with progress and num bands
-class ProgressUserData:
+class ProgressUserData(object):
     pass
 
 def addPyramid(ds, progress, 
@@ -147,6 +156,12 @@ def addStatistics(ds,progress,ignore=None):
     progress.setProgress(0)
     percent = 0
     percentstep = 100.0 / (ds.RasterCount * 2) # 2 steps for each layer
+
+    # flush the cache. The ensures that any unwritten data is 
+    # written to file so we get the right stats. It also 
+    # makes sure any metdata is written on HFA. This means
+    # the LAYER_TYPE setting will be picked up by rat.SetLinearBinning()
+    ds.FlushCache()
   
     for bandnum in range(ds.RasterCount):
         band = ds.GetRasterBand(bandnum + 1)
@@ -170,6 +185,8 @@ def addStatistics(ds,progress,ignore=None):
                 maxval = ignore
                 meanval = ignore
                 stddevval = 0
+            else:
+                raise e
         if not useExceptions:
             gdal.DontUseExceptions()
 
@@ -263,16 +280,21 @@ def addStatistics(ds,progress,ignore=None):
             else:
                 tmpmeta["STATISTICS_MODE"] = repr(int(round(modeval)))
 
-            tmpmeta["STATISTICS_HISTOMIN"] = repr(histmin)
-            tmpmeta["STATISTICS_HISTOMAX"] = repr(histmax)
-            tmpmeta["STATISTICS_HISTONUMBINS"] = repr(histnbins)
-
             if haveRFC40 and ratObj is not None:
                 histIndx, histNew = findOrCreateColumn(ratObj, gdal.GFU_PixelCount, 
                                         "Histogram", gdal.GFT_Real)
                 # write the hist in a single go
                 ratObj.SetRowCount(histnbins)
                 ratObj.WriteArray(hist, histIndx)
+
+                # Use SetLinearBinning function if it has been fixed
+                # in the current version of GDAL
+                if haveLinearBinningFix:
+                    ratObj.SetLinearBinning(histmin, (histCalcMax - histCalcMin) / histnbins)
+                else:
+                    tmpmeta["STATISTICS_HISTOMIN"] = repr(histmin)
+                    tmpmeta["STATISTICS_HISTOMAX"] = repr(histmax)
+                    tmpmeta["STATISTICS_HISTONUMBINS"] = repr(histnbins)
 
                 # The HFA driver still honours the STATISTICS_HISTOBINVALUES
                 # metadata item. If we are recalculating the histogram the old
@@ -282,6 +304,11 @@ def addStatistics(ds,progress,ignore=None):
             else:
                 # old method
                 tmpmeta["STATISTICS_HISTOBINVALUES"] = '|'.join(map(repr,hist)) + '|'
+
+                tmpmeta["STATISTICS_HISTOMIN"] = repr(histmin)
+                tmpmeta["STATISTICS_HISTOMAX"] = repr(histmax)
+                tmpmeta["STATISTICS_HISTONUMBINS"] = repr(histnbins)
+
 
             # estimate the median - bin with the middle number
             middlenum = hist.sum() / 2
@@ -319,10 +346,11 @@ def calcStats(ds,progress=None,ignore=None,
     
     """
     if progress is None:
-        progress = cuiprogress.CUIProgressBar()
+        progress = cuiprogress.SilentProgress()
         
     addStatistics(ds,progress,ignore)
     
     addPyramid(ds, progress, minoverviewdim=minoverviewdim, levels=levels, 
         aggregationType=aggregationType)
 
+    

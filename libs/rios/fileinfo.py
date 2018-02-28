@@ -20,6 +20,8 @@ information in via the otherargs parameter.
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import print_function
 import os
 
 import numpy
@@ -550,3 +552,4 @@ class RatStats(object):
             stats = ColumnStats(band, columnName, includeImageNull, histogramweighted)
             if hasattr(stats, 'mean'):
                 setattr(self, columnName, stats)
+

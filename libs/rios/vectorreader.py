@@ -242,7 +242,7 @@ class VectorReader(object):
         """
         self.vectorContainer = vectorContainer
         if progress is None:
-            self.progress = cuiprogress.CUIProgressBar()
+            self.progress = cuiprogress.SilentProgress()
         else:
             self.progress = progress
 

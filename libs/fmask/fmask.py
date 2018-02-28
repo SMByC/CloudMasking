@@ -217,7 +217,9 @@ def doPotentialCloudFirstPass(fmaskFilenames, fmaskConfig, missingThermal):
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-    
+    #controls.setNumThreads(multiprocessing.cpu_count())
+    #controls.setJobManagerType("multiprocessing")
+
     infiles.toaref = fmaskFilenames.toaRef
     if not missingThermal:
         infiles.thermal = fmaskFilenames.thermal
@@ -476,7 +478,9 @@ def doPotentialCloudSecondPass(fmaskFilenames, fmaskConfig, pass1file,
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-    
+    #controls.setNumThreads(multiprocessing.cpu_count())
+    #controls.setJobManagerType("multiprocessing")
+
     infiles.pass1 = pass1file
     infiles.toaref = fmaskFilenames.toaRef
     if not missingThermal:
@@ -1213,7 +1217,7 @@ def finalizeAll(fmaskFilenames, fmaskConfig, interimCloudmask, interimShadowmask
     controls.setWindowYsize(RIOS_WINDOW_SIZE)
     controls.setOutputDriverName(fmaskConfig.gdalDriverName)
     controls.setCalcStats(False)
-    
+
     if fmaskConfig.cloudBufferSize > 0:
         otherargs.bufferkernel = makeBufferKernel(fmaskConfig.cloudBufferSize)
 
@@ -1285,4 +1289,3 @@ def maskAndBuffer(info, inputs, outputs, otherargs):
     out[water] = OUTCODE_WATER
     out[resetNullmask] = outNullval
     outputs.out = numpy.array([out])
-    

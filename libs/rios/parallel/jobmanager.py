@@ -10,6 +10,10 @@ processing.
 It should also be noted that the 'otherargs' parameter to :func:`rios.applier.apply`
 works for passing data into a user function, but updated data is not passed out at present.
 
+Also, certain functions on the 'info' parameter passed to the user function will not work.
+These are the functions that access the underlying GDAL dataset directly and include, 
+getGDALDatasetFor, getGDALBandFor, getNoDataValueFor and the global_* functions.
+
 The base class is :class:`rios.parallel.jobmanager.JobManager`. This is an abstract base class,
 and must be sub-classed before use. Any sub-class is intended to manage 
 processing of the user function in a set of sub-jobs, farming out 
@@ -301,7 +305,10 @@ class SubprocJobManager(JobManager):
         allInputs = (userFunc, jobInfo)
         allInputsPickled = cloudpickle.dumps(allInputs)
 
-        proc = subprocess.Popen(['rios_subproc.py'], stdin=subprocess.PIPE,
+        subproc = find_executable('rios_subproc.py')
+
+        # make sure we use sys.executable - safer on Windows
+        proc = subprocess.Popen([sys.executable, subproc], stdin=subprocess.PIPE,
             stdout=subprocess.PIPE)
         proc.stdin.write(allInputsPickled)
 

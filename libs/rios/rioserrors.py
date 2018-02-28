@@ -40,7 +40,10 @@ class OutsideImageBoundsError(RiosError):
     "Requested Block is not available"
     
 class GdalWarpNotFoundError(RiosError):
-    "Unable to run gdalwarp"
+    "Unable to find gdalwarp"
+
+class GdalWarpError(RiosError):
+    "Error while running gdalwarp"
     
 class ThematicError(RiosError):
     "File unable to be set to thematic"

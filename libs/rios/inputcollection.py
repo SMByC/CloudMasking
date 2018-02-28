@@ -27,9 +27,13 @@ import subprocess
 from . import imageio
 from . import rioserrors
 from . import pixelgrid
+from .parallel.jobmanager import find_executable
 from osgeo import gdal
 
-GDALWARP = 'gdalwarp'
+if sys.platform == 'win32':
+    GDALWARP = 'gdalwarp.exe'
+else:
+    GDALWARP = 'gdalwarp'
 
 class InputIterator(object):
     """
@@ -174,8 +178,17 @@ class InputCollection(object):
         """
         for f in self.filestoremove:
             if os.path.exists(f):
-                os.remove(f)
-        self.filestoremove = []        
+                try:
+                    os.remove(f)
+                except PermissionError:
+                    # ignore any 'file in use' errors on Windows
+                    # This is only a problem when useVRT=False as we are dealing
+                    # with an actual dataset that cannot be deleted (rather than a VRT
+                    # which can for some reason). Fixing this properly is going to be
+                    # quite hard (the info object and maybe others still hold the
+                    # dataset open) so let's ignore for now.
+                    pass
+        self.filestoremove = []
         
     def __len__(self):
         # see http://docs.python.org/reference/datamodel.html#emulating-container-types
@@ -291,9 +304,17 @@ class InputCollection(object):
         (fileh,temp_image) = tempfile.mkstemp(ext,dir=tempdir)
         os.close(fileh)
           
+        # see if gdalwarp actually exists on the system so we can 
+        # provide a separate error if we can't find it vs there was an error
+        # running it.
+        gdalwarp_path = find_executable(GDALWARP)
+        if gdalwarp_path is None:
+            msg = 'Unable to find %s executable on the system' % GDALWARP
+            raise rioserrors.GdalWarpNotFoundError(msg)
+
         # build the command line for gdalwarp
         # as a list for subprocess - also a bit easier to read
-        cmdList = [GDALWARP]
+        cmdList = [gdalwarp_path]
         
         # source projection prf file
         cmdList.append('-s_srs')
@@ -353,8 +374,19 @@ class InputCollection(object):
                 stderr=self.loggingstream)
 
         if returncode != 0:
-            msg = 'Unable to run gdalwarp'
-            raise rioserrors.GdalWarpNotFoundError(msg)
+            if returncode < 0:
+                # From the subprocess.call help:
+                # A negative value -N indicates that the child was 
+                # terminated by signal N (POSIX only).
+                msg = ("%s was terminated by signal %d. Try setting the "
+                    + "RIOS_NO_VRT_FOR_RESAMPLING environment variable "
+                    + "to '1'") % (GDALWARP, abs(returncode))
+                raise rioserrors.GdalWarpError(msg)
+            else:
+                msg = ("Error while running %s. Try setting the "
+                    + "RIOS_NO_VRT_FOR_RESAMPLING environment variable "
+                    + "to '1'") % GDALWARP
+                raise rioserrors.GdalWarpError(msg)
           
         # open the new temp file
         newds = gdal.Open(temp_image)

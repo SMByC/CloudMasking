@@ -33,7 +33,6 @@ from . import imagewriter
 from . import imageio
 from . import rioserrors
 from . import vectorreader
-from . import cuiprogress
 from . import calcstats
 from . import rat
 from .parallel import jobmanager
@@ -67,6 +66,14 @@ DEFAULT_OVERVIEWAGGREGRATIONTYPE = calcstats.DEFAULT_OVERVIEWAGGREGRATIONTYPE
 # For supporting that automatic color table thing which Sam loves
 DEFAULT_AUTOCOLORTABLETYPE = rat.DEFAULT_AUTOCOLORTABLETYPE
 
+# For deciding if we resample using a VRT or not. VRT is the default
+# and should be used unless there is a real problem with gdalwarp
+# (ie GDAL 2.1.x and NZTM)
+NO_VRT_FOR_RESAMPLING = os.getenv('RIOS_NO_VRT_FOR_RESAMPLING', default='0') != '0'
+"""
+Whether to use VRTs for resampling inputs. Set by RIOS_NO_VRT_FOR_RESAMPLING
+environment variable. Default is True.
+"""
 
 if sys.version_info[0] > 2:
     # hack for Python 3 which uses str instead of basestring
@@ -173,7 +180,7 @@ class ApplierControls(object):
         self.footprint = DEFAULTFOOTPRINT
         self.referenceImage = None
         self.referencePixgrid = None
-        self.progress = cuiprogress.SilentProgress()
+        self.progress = None
         self.creationoptions = None
         self.statscache = None
         self.statsIgnore = 0
@@ -726,12 +733,12 @@ def handleInputResampling(infiles, controls, reader):
     if controls.referenceImage is not None:
         resampleDict = controls.makeResampleDict(infiles.__dict__)
         reader.allowResample(refpath=controls.referenceImage, tempdir=controls.tempdir,
-            resamplemethod=resampleDict, useVRT=True)
+            resamplemethod=resampleDict, useVRT=(not NO_VRT_FOR_RESAMPLING))
     elif controls.referencePixgrid is not None:
         resampleDict = controls.makeResampleDict(infiles.__dict__)
         reader.allowResample(refPixgrid=controls.referencePixgrid, 
             tempdir=controls.tempdir, 
-            resamplemethod=resampleDict, useVRT=True)
+            resamplemethod=resampleDict, useVRT=(not NO_VRT_FOR_RESAMPLING))
 
 
 def writeOutputBlocks(writerdict, outfiles, outputBlocks, controls, info):

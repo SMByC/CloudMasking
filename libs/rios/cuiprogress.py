@@ -95,7 +95,7 @@ class GDALProgressBar(object):
 
 class SilentProgress(object):
     """
-    A progress object which is completely silent.
+    A progress object which is completely silent. 
     """
     def __init__(self):
         pass
@@ -117,3 +117,4 @@ class SilentProgress(object):
         pass
     def displayInfo(self,text):
         pass
+
