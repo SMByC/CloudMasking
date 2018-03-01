@@ -4,7 +4,7 @@ This plugin support two product types of landsat:
 
 ### Level-1 Data Products (raw)
 
-This is a raw Landsat products that can be downloaded from USGS. With that product the plugin only can make the cloud masking using fmask and/or blue-band (see more in [Cloud Filters](cloud_filters.md)).
+This is a raw Landsat products that can be downloaded from USGS in [EarthExplorer](https://earthexplorer.usgs.gov/). With that product the plugin only can make the cloud masking using fmask and/or blue-band (see more in [Cloud Filters](cloud_filters.md)).
 
 ### Higher-Level Data Products (espa)
 
