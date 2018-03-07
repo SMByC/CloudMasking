@@ -16,13 +16,20 @@ There are several ways for make cloud masking automatically, such as apply the d
 The latest sources can be obtained from official repository:
 [https://bitbucket.org/smbyc/qgisplugin-cloudmasking](https://bitbucket.org/smbyc/qgisplugin-cloudmasking)
 
+## The home plugin:
+
+The home plugin in plugins.qgis.org: [http://plugins.qgis.org/plugins/CloudMasking/](http://plugins.qgis.org/plugins/CloudMasking/)
+
 ## Issue Tracker
 
 Issues, ideas and enhancements: [https://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues](https://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues)
 
-## The home plugin:
+## Get involved
 
-The home plugin in plugins.qgis.org: [http://plugins.qgis.org/plugins/CloudMasking/](http://plugins.qgis.org/plugins/CloudMasking/)
+The CloudMasking plugin is open source and you can help in different ways:
+
+* help with developing and/or improve the docs cloning the repository and doing the push request [[1]](https://confluence.atlassian.com/bitbucket/fork-a-teammate-s-repository-774243391.html).
+* or just test it, report issues, ideas and enhancements in the issue tracker.
 
 ***
 

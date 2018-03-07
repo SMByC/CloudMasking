@@ -32,6 +32,12 @@ The home plugin in plugins.qgis.org: [http://plugins.qgis.org/plugins/CloudMaski
 
 Issues, ideas and enhancements: [https://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues](https://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues)
 
+## Get involved
+
+The CloudMasking plugin is open source and you can help in different ways:
+
+* help with developing and/or improve the docs cloning the repository and doing the push request [[1]](https://confluence.atlassian.com/bitbucket/fork-a-teammate-s-repository-774243391.html).
+* or just test it, report issues, ideas and enhancements in the issue tracker.
 
 ***
 
