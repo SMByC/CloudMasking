@@ -66,6 +66,9 @@ In this section you can generate the mask with the filters enabled, there are th
 
 ![](img/how_to_use_06.png)
 
+!!! warning "Only for Fmask process"
+    Some statistics in fmask process are affected by size image, then if you are applying the fmask in a *selected area* or *shape area* the results could have small differences respect to apply *in the whole image*
+
 ### 3a. Select the mask to apply
 
 In this section you must select the mask to apply or save it, there are two checkbox for help to find the mask in the list: `Only activated layers` and `Only mask layers`. You can save the mask selected with the buttom `Save mask`
