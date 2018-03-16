@@ -708,6 +708,7 @@ class CloudMasking:
 
         if mask_outpath != '' and mask_inpath != '':
             # set nodata to valid data (1) and copy to destination
+            # warning: this cause that external load and apply not masked correctly if before not do unset the nodata
             gdal.Translate(mask_outpath, mask_inpath, noData=1)
 
     def fileDialog_SelectPFile(self):
@@ -755,6 +756,11 @@ class CloudMasking:
             update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
                                self.tr(u"Error: Mask file not exists"))
             return
+
+        # fix nodata to null, unset the nodata else the result lost the data in the valid value to mask (1)
+        tmp_mask_file = os.path.join(self.dockwidget.tmp_dir, "tmp_mask_file.tif")
+        gdal.Translate(tmp_mask_file, mask_path, noData="none")
+        mask_path = tmp_mask_file
 
         # get result path
         result_path = self.dockwidget.lineEdit_ResultPath.text()
@@ -837,6 +843,8 @@ class CloudMasking:
         if not self.dockwidget.radioButton_ToParticularFile.isChecked():
             os.remove(self.reflective_stack_file)
         os.remove(inprogress_file)
+        # delete tmp mask file
+        os.remove(tmp_mask_file)
 
         # load into canvas when finished
         if self.dockwidget.checkBox_LoadResult.isChecked():

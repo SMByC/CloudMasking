@@ -22,6 +22,10 @@ repository=https://bitbucket.org/smbyc/qgisplugin-cloudmasking
 
 # Uncomment the following line and add your changelog:
 changelog=
+    18.XX
+    - Updated the Rios and Fmask libs
+    - Fixes and improve the documentation
+    - Fix applying the mask loaded externally unsetting the nodata value before process it
     18.2.7
     - Fix get layer by name for layers no activated
     - Restore option for show not only cloud mask in select mask
