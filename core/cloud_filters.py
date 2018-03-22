@@ -27,7 +27,7 @@ from subprocess import call
 from PyQt4.QtCore import QCoreApplication
 
 # from plugins
-from osgeo.gdal import Translate
+from osgeo import gdal
 
 from CloudMasking.core.utils import get_prefer_name, update_process_bar, binary_combination, check_values_in_image, \
     get_extent
@@ -143,8 +143,8 @@ class CloudMaskingResult(object):
         if self.extent_y2 < in_extent[3]: self.extent_y2 = in_extent[3]
 
         gdal_clip.main(in_file, out_file, [self.extent_x1, self.extent_x2, self.extent_y2, self.extent_y1])
-        # TODO: make this with Translate, but check if the pixes moves after clipping
-        #Translate(out_file, in_file, projWin=[self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2])
+        # TODO: make this with gdal.Translate, but check if the pixes moves after clipping
+        #gdal.Translate(out_file, in_file, projWin=[self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2])
 
     def do_clipping_with_shape(self, stack_file, shape_path, clip_file, crop_to_cutline):
         if crop_to_cutline:
@@ -167,7 +167,7 @@ class CloudMaskingResult(object):
 
         # unset the nodata
         os.remove(img_to_mask)
-        Translate(img_to_mask, img_to_mask.replace(".tif", "1.tif"), noData="none")
+        gdal.Translate(img_to_mask, img_to_mask.replace(".tif", "1.tif"), noData="none")
 
     def do_fmask(self, filters_enabled, min_cloud_size=0, cloud_prob_thresh=0.225, cloud_buffer_size=4,
                  shadow_buffer_size=6, cirrus_prob_ratio=0.04, nir_fill_thresh=0.02, swir2_thresh=0.03,
@@ -440,7 +440,7 @@ class CloudMaskingResult(object):
                                                                                                     nfv=not_filter_values),
                        A=self.cloud_qa_for_process, outfile=tmp_cqa_file, type="Byte", NoDataValue=1)
         # unset the nodata, leave the 1 (valid fields)
-        Translate(self.cloud_qa, tmp_cqa_file, noData="none")
+        gdal.Translate(self.cloud_qa, tmp_cqa_file, noData="none")
         # delete tmp files
         os.remove(tmp_cqa_file)
 
@@ -511,7 +511,7 @@ class CloudMaskingResult(object):
         gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 8*(numpy.any([{fv}], axis=0))".format(fv=filter_values, nfv=not_filter_values),
                        A=self.aerosol_for_process, outfile=tmp_cqa_file, type="Byte", NoDataValue=1)
         # unset the nodata, leave the 1 (valid fields)
-        Translate(self.aerosol, tmp_cqa_file, noData="none")
+        gdal.Translate(self.aerosol, tmp_cqa_file, noData="none")
         # delete tmp files
         os.remove(tmp_cqa_file)
 
@@ -592,7 +592,7 @@ class CloudMaskingResult(object):
         gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 9*(numpy.any([{fv}], axis=0))".format(fv=filter_values, nfv=not_filter_values),
                        A=self.pixel_qa_for_process, outfile=tmp_pqa_file, type="Byte", NoDataValue=1)
         # unset the nodata, leave the 1 (valid fields)
-        Translate(self.pixel_qa, tmp_pqa_file, noData="none")
+        gdal.Translate(self.pixel_qa, tmp_pqa_file, noData="none")
         # delete tmp files
         os.remove(tmp_pqa_file)
 
