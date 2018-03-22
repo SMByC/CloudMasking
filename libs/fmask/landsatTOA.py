@@ -22,6 +22,7 @@ values from USGS to Top of Atmosphere (TOA) reflectance (\*1000).
 from __future__ import print_function, division
 
 import sys
+import platform
 
 import multiprocessing
 import numpy
@@ -190,8 +191,9 @@ def makeTOAReflectance(infile, mtlFile, anglesfile, outfile):
     otherinputs.inNull = imginfo.nodataval[0]
 
     controls = applier.ApplierControls()
-    #controls.setNumThreads(multiprocessing.cpu_count())
-    #controls.setJobManagerType("multiprocessing")
+    if platform.system() in ["Linux", "Darwin"]:
+        controls.setNumThreads(multiprocessing.cpu_count())
+        controls.setJobManagerType("multiprocessing")
 
     controls.progress = cuiprogress.GDALProgressBar()
     controls.setStatsIgnore(otherinputs.outNull)
