@@ -26,10 +26,10 @@ from time import sleep
 from osgeo import gdal
 
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot
-from PyQt4.QtGui import QAction, QIcon, QMessageBox, QApplication, QCursor, QFileDialog
+from PyQt4.QtGui import QAction, QIcon, QMessageBox, QApplication, QCursor, QFileDialog, QListWidgetItem, QSizePolicy
 from PyQt4.QtGui import QCheckBox, QGroupBox, QRadioButton
 from qgis.gui import QgsMessageBar, QgsMapLayerProxyModel
-from qgis.core import QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer
+from qgis.core import QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer, QgsMapLayer
 # Initialize Qt resources from file resources.py
 import resources
 
@@ -129,6 +129,7 @@ class CloudMasking:
 
         # disconnects
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
+        self.canvas.layersChanged.disconnect(self.updateLayersList_MultipleLayerMask)
 
         # remove this statement if dockwidget is to remain
         # for reuse if plugin is reopened
@@ -185,11 +186,21 @@ class CloudMasking:
         self.masking_result = None
         self.color_stack_scene = None
         # set properties to QgsMapLayerComboBox for mask list
-        self.dockwidget.select_MaskLayer.setCurrentIndex(-1)
-        self.dockwidget.select_MaskLayer.setFilters(QgsMapLayerProxyModel.RasterLayer)
-        self.dockwidget.checkBox_OnlyMaskLayers.clicked.connect(self.updateLayersList_MaskLayer)
-        QgsMapLayerRegistry.instance().layersAdded.connect(self.updateLayersList_MaskLayer)
-        self.updateLayersList_MaskLayer()
+        self.dockwidget.select_SingleLayerMask.setCurrentIndex(-1)
+        self.dockwidget.select_SingleLayerMask.setFilters(QgsMapLayerProxyModel.RasterLayer)
+        self.dockwidget.OnlyMaskLayers_SingleMask.clicked.connect(self.updateLayersList_SingleLayerMask)
+        QgsMapLayerRegistry.instance().layersAdded.connect(self.updateLayersList_SingleLayerMask)
+        self.updateLayersList_SingleLayerMask()
+
+        # tabwidget
+        self.update_tab_select_mask(0)
+        self.dockwidget.select_layer_mask.currentChanged.connect(self.update_tab_select_mask)
+        # set properties to list for select multiple layer mask
+        self.updateLayersList_MultipleLayerMask()
+        self.dockwidget.OnlyMaskLayers_MultipleMask.clicked.connect(self.updateLayersList_MultipleLayerMask)
+        self.canvas.layersChanged.connect(self.updateLayersList_MultipleLayerMask)
+        self.dockwidget.QPBtn_SelectAll.clicked.connect(self.selectAll_MultipleLayerMask)
+        self.dockwidget.QPBtn_DeselectAll.clicked.connect(self.deselectAll_MultipleLayerMask)
 
         # set properties to QgsMapLayerComboBox for shape area
         self.dockwidget.QCBox_MaskInShapeArea.setCurrentIndex(-1)
@@ -252,21 +263,45 @@ class CloudMasking:
             return applicator
         return decorate
 
-    def updateLayersList_MaskLayer(self):
-        """
-        Only show the cloud mask in combobox for the mask list to apply
-        """
-        if not QgsMapLayerRegistry:
-            return
+    def update_tab_select_mask(self, current_tab_idx):
+        """Adjust the size tab based on the content"""
+        for tab_idx in range(self.dockwidget.select_layer_mask.count()):
+            if tab_idx != current_tab_idx:
+                self.dockwidget.select_layer_mask.widget(tab_idx).setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        self.dockwidget.select_layer_mask.widget(current_tab_idx).setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        self.dockwidget.select_layer_mask.widget(current_tab_idx).resize(
+            self.dockwidget.select_layer_mask.widget(current_tab_idx).minimumSizeHint())
+        self.dockwidget.select_layer_mask.widget(current_tab_idx).adjustSize()
 
+    def updateLayersList_SingleLayerMask(self):
         # filtering
         excepted = []
-        if self.dockwidget.checkBox_OnlyMaskLayers.isChecked():
-            for layer in QgsMapLayerRegistry.instance().mapLayers().values():
+        if self.dockwidget.OnlyMaskLayers_SingleMask.isChecked():
+            for layer in [l for l in self.iface.legendInterface().layers() if l.type() == QgsMapLayer.RasterLayer]:
                 if not layer.name().startswith("Cloud Mask"):
                     excepted.append(layer)
         # set excepted layers
-        self.dockwidget.select_MaskLayer.setExceptedLayerList(excepted)
+        self.dockwidget.select_SingleLayerMask.setExceptedLayerList(excepted)
+
+    def updateLayersList_MultipleLayerMask(self):
+        # delete items
+        self.dockwidget.select_MultipleLayerMask.clear()
+        # filtering
+        for layer in [l for l in self.iface.legendInterface().layers() if l.type() == QgsMapLayer.RasterLayer]:
+            if self.dockwidget.OnlyMaskLayers_MultipleMask.isChecked() and not layer.name().startswith("Cloud Mask"):
+                continue
+            item = QListWidgetItem(layer.name())
+            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setCheckState(Qt.Unchecked)
+            self.dockwidget.select_MultipleLayerMask.addItem(item)
+
+    def selectAll_MultipleLayerMask(self):
+        for x in range(self.dockwidget.select_MultipleLayerMask.count()):
+            self.dockwidget.select_MultipleLayerMask.item(x).setCheckState(Qt.Checked)
+
+    def deselectAll_MultipleLayerMask(self):
+        for x in range(self.dockwidget.select_MultipleLayerMask.count()):
+            self.dockwidget.select_MultipleLayerMask.item(x).setCheckState(Qt.Unchecked)
 
     def getLayerByName(self, layer_name):
         for layer in QgsMapLayerRegistry.instance().mapLayers().values():
@@ -704,7 +739,7 @@ class CloudMasking:
                                                    os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                                 suggested_filename_mask),
                                                    self.tr(u"Tif files (*.tif);;All files (*.*)"))
-        mask_inpath = unicode(self.getLayerByName(self.dockwidget.select_MaskLayer.currentText()).dataProvider().dataSourceUri())
+        mask_inpath = unicode(self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()).dataProvider().dataSourceUri())
 
         if mask_outpath != '' and mask_inpath != '':
             # set nodata to valid data (1) and copy to destination
@@ -745,7 +780,7 @@ class CloudMasking:
         # get mask layer
         try:
             mask_path = \
-                unicode(self.getLayerByName(self.dockwidget.select_MaskLayer.currentText()).dataProvider().dataSourceUri())
+                unicode(self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()).dataProvider().dataSourceUri())
         except:
             update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
                                self.tr(u"Error: Mask for apply not valid"))
