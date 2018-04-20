@@ -796,25 +796,25 @@ class CloudMasking:
             except:
                 update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
                                    self.tr(u"Not valid mask '{}'".format(layer.name())))
-                return
+                return None, None
 
             # check mask layer
             if not os.path.isfile(mask_path):
                 update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
                                    self.tr(u"Mask file not exists '{}'".format(layer.name())))
-                return
+                return None, None
 
             # fix nodata to null, unset the nodata else the result lost the data in the valid value to mask (1)
-            fd, tmp_mask_file = tempfile.mkstemp(prefix='mask_', suffix='.tif', dir=self.dockwidget.tmp_dir)
+            mask_fd, tmp_mask_file = tempfile.mkstemp(prefix='mask_', suffix='.tif', dir=self.dockwidget.tmp_dir)
             gdal.Translate(tmp_mask_file, mask_path, noData="none")
             mask_path = tmp_mask_file
 
-            return mask_path
+            return mask_fd, mask_path
 
         ## Single mask layer
         if self.dockwidget.select_layer_mask.currentIndex() == 0:
-            mask_path = prepare_mask(self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()))
-            if not mask_path:
+            final_mask_fd, final_mask_path = prepare_mask(self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()))
+            if not final_mask_path:
                 return
 
         ## Multiple mask layer
@@ -826,10 +826,10 @@ class CloudMasking:
                                    self.tr(u"Error: Not mask layers selected to apply"))
                 return
             # prepare
-            masks_paths = [prepare_mask(layer) for layer in layers_selected]
+            masks = [prepare_mask(layer) for layer in layers_selected]
             # merge all mask
-            fd, mask_path = tempfile.mkstemp(prefix='merge_masks_', suffix='.tif', dir=self.dockwidget.tmp_dir)
-            gdal_merge.main(["", "-of", "GTiff", "-o", mask_path, "-n", "1"] + masks_paths)
+            final_mask_fd, final_mask_path = tempfile.mkstemp(prefix='merge_masks_', suffix='.tif', dir=self.dockwidget.tmp_dir)
+            gdal_merge.main(["", "-of", "GTiff", "-o", final_mask_path, "-n", "1"] + [mask[1] for mask in masks])
 
         # get and set stack bands for make layer stack for apply mask
         if self.dockwidget.radioButton_ToRaw_Bands.isChecked() or self.dockwidget.radioButton_ToSR_Bands.isChecked():
@@ -886,18 +886,18 @@ class CloudMasking:
         # stack to mask size
         inprogress_file = self.reflective_stack_file\
             .replace(".tif", "_inprogress.tif").replace(".TIF", "_inprogress.tif")
-        if get_extent(self.reflective_stack_file) != get_extent(mask_path):
-            extent_mask = get_extent(mask_path)
+        if get_extent(self.reflective_stack_file) != get_extent(final_mask_path):
+            extent_mask = get_extent(final_mask_path)
             gdal.Translate(inprogress_file, self.reflective_stack_file, projWin=extent_mask)
             os.remove(self.reflective_stack_file)
             os.rename(inprogress_file, self.reflective_stack_file)
 
         # apply mask to stack
         if self.dockwidget.select_layer_mask.currentIndex() == 0:
-            gdal_calc.Calc(calc="A*(B==1)", A=self.reflective_stack_file, B=mask_path,
+            gdal_calc.Calc(calc="A*(B==1)", A=self.reflective_stack_file, B=final_mask_path,
                            outfile=inprogress_file, allBands='A', overwrite=True)
         if self.dockwidget.select_layer_mask.currentIndex() == 1:
-            gdal_calc.Calc(calc="A*(B==0)", A=self.reflective_stack_file, B=mask_path,
+            gdal_calc.Calc(calc="A*(B==0)", A=self.reflective_stack_file, B=final_mask_path,
                            outfile=inprogress_file, allBands='A', overwrite=True)
 
         # unset the nodata
@@ -908,10 +908,15 @@ class CloudMasking:
             os.remove(self.reflective_stack_file)
         os.remove(inprogress_file)
         # delete tmp mask file
-        os.remove(mask_path)
+        if self.dockwidget.select_layer_mask.currentIndex() == 0:
+            os.close(final_mask_fd)
+            os.remove(final_mask_path)
         if self.dockwidget.select_layer_mask.currentIndex() == 1:
-            for mask in masks_paths:
-                os.remove(mask)
+            os.close(final_mask_fd)
+            os.remove(final_mask_path)
+            for mask_fd, mask_path in masks:
+                os.close(mask_fd)
+                os.remove(mask_path)
         # load into canvas when finished
         if self.dockwidget.checkBox_LoadResult.isChecked():
             # Add to QGIS the result saved
