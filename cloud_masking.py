@@ -647,9 +647,7 @@ class CloudMasking:
         self.masking_result.do_nodata_mask(self.final_cloud_mask_file)
 
         ########################################
-        # Keep the original size if made the
-        # mask in selected area
-
+        # Keep the original size if made the mask in selected area
         if self.dockwidget.checkBox_ExtentSelector.isChecked() and \
            self.dockwidget.widget_ExtentSelector.extentSelector_KeepOriginalSize.isChecked():
             img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
@@ -668,6 +666,14 @@ class CloudMasking:
             gdal.Translate(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file, noData="none")
             os.remove(self.final_cloud_mask_file)
             os.rename(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file)
+
+        ########################################
+        # keep the data outside the shape area as valid data (=1), important for apply several mask
+        if self.dockwidget.checkBox_ShapeSelector.isChecked() and not self.dockwidget.shapeSelector_CutWithShape.isChecked():
+            self.masking_result.clip(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "1.tif"),
+                                     nodata=1, process_bar=False)
+            os.remove(self.final_cloud_mask_file)
+            gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "1.tif"), noData="none")
 
         ########################################
         # Post process mask

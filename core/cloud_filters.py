@@ -112,7 +112,7 @@ class CloudMaskingResult(object):
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
 
-    def clip(self, in_stack_file, out_clipped_file, process_bar=True):
+    def clip(self, in_stack_file, out_clipped_file, nodata=0, process_bar=True):
         """
         Clipping the stack file only if is activated selected area or shape area,
         else return the original image
@@ -129,7 +129,7 @@ class CloudMaskingResult(object):
 
         if self.clipping_with_shape:
             self.do_clipping_with_shape(in_stack_file, os.path.abspath(self.shape_path),
-                                        out_clipped_file, self.crop_to_cutline)
+                                        out_clipped_file, self.crop_to_cutline, nodata)
 
         return out_clipped_file
 
@@ -146,16 +146,14 @@ class CloudMaskingResult(object):
         # TODO: make this with gdal.Translate, but check if the pixes moves after clipping
         #gdal.Translate(out_file, in_file, projWin=[self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2])
 
-    def do_clipping_with_shape(self, stack_file, shape_path, clip_file, crop_to_cutline):
+    def do_clipping_with_shape(self, stack_file, shape_path, clip_file, crop_to_cutline, nodata=0):
         if crop_to_cutline:
             #  -crop_to_cutline
-            return_code = call(
-                'gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline "{}" -dstnodata 0 "{}" "{}"'.
-                    format(shape_path, stack_file, clip_file), shell=True)
+            call('gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline "{}" -dstnodata 0 "{}" "{}"'.
+                 format(shape_path, stack_file, clip_file), shell=True)
         else:
-            return_code = call(
-                'gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline "{}" "{}" "{}"'.
-                    format(shape_path, stack_file, clip_file), shell=True)
+            call('gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline "{}" -dstnodata {} "{}" "{}"'.
+                 format(shape_path, nodata, stack_file, clip_file), shell=True)
 
     def do_nodata_mask(self, img_to_mask):
         band_1 = get_prefer_name(os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_1']))
