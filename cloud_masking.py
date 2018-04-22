@@ -387,8 +387,9 @@ class CloudMasking:
         self.masking_result.cloud_masking_files = []
 
         ########################################
-        # Set the extent selector
-        if self.dockwidget.isExtentAreaSelected:
+        ## Set the extent selector
+        # set for rectangular region
+        if self.dockwidget.checkBox_ExtentSelector.isChecked() and self.dockwidget.isExtentAreaSelected:
             self.masking_result.clipping_extent = True
             self.masking_result.extent_x1 = float(self.dockwidget.widget_ExtentSelector.x1CoordEdit.text())
             self.masking_result.extent_y1 = float(self.dockwidget.widget_ExtentSelector.y1CoordEdit.text())
