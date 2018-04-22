@@ -24,11 +24,10 @@ import tempfile
 from datetime import datetime
 from subprocess import call
 
+from osgeo import gdal
 from PyQt4.QtCore import QCoreApplication
 
 # from plugins
-from osgeo import gdal
-
 from CloudMasking.core.utils import get_prefer_name, update_process_bar, binary_combination, check_values_in_image, \
     get_extent
 from CloudMasking.libs import gdal_merge, gdal_calc, gdal_clip
@@ -147,13 +146,20 @@ class CloudMaskingResult(object):
         #gdal.Translate(out_file, in_file, projWin=[self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2])
 
     def do_clipping_with_shape(self, stack_file, shape_path, clip_file, crop_to_cutline, nodata=0):
+        # first cut to shape area extent
+        shape_extent = [self.shape_extent.xMinimum(), self.shape_extent.xMaximum(),
+                        self.shape_extent.yMinimum(), self.shape_extent.yMaximum()]
+        stack_file_trimmed = os.path.join(self.tmp_dir, "stack_file_trimmed.tif")
+        gdal_clip.main(stack_file, stack_file_trimmed, shape_extent)
+
         if crop_to_cutline:
             #  -crop_to_cutline
             call('gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline "{}" -dstnodata 0 "{}" "{}"'.
-                 format(shape_path, stack_file, clip_file), shell=True)
+                 format(shape_path, stack_file_trimmed, clip_file), shell=True)
         else:
             call('gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline "{}" -dstnodata {} "{}" "{}"'.
-                 format(shape_path, nodata, stack_file, clip_file), shell=True)
+                 format(shape_path, nodata, stack_file_trimmed, clip_file), shell=True)
+        os.remove(stack_file_trimmed)
 
     def do_nodata_mask(self, img_to_mask):
         band_1 = get_prefer_name(os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_1']))

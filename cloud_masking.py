@@ -30,7 +30,7 @@ from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt,
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QApplication, QCursor, QFileDialog, QListWidgetItem, QSizePolicy
 from PyQt4.QtGui import QCheckBox, QGroupBox, QRadioButton
 from qgis.gui import QgsMessageBar, QgsMapLayerProxyModel
-from qgis.core import QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer, QgsMapLayer
+from qgis.core import QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer, QgsMapLayer, QgsCoordinateTransform
 # Initialize Qt resources from file resources.py
 import resources
 
@@ -400,6 +400,13 @@ class CloudMasking:
         # set for the shape selector
         if self.dockwidget.checkBox_ShapeSelector.isChecked():
             self.masking_result.clipping_with_shape = True
+            self.masking_result.shape_layer = self.dockwidget.QCBox_MaskInShapeArea.currentLayer()
+            # get and save trim extent of shapefile for clip
+            canvas_crs = self.canvas.mapRenderer().destinationCrs()
+            shape_crs = self.masking_result.shape_layer.crs()
+            shape_canvas_transform = QgsCoordinateTransform(shape_crs, canvas_crs)
+            self.masking_result.shape_extent = shape_canvas_transform.transform(self.masking_result.shape_layer.extent())
+
             self.masking_result.shape_path = get_file_path_of_layer(self.dockwidget.QCBox_MaskInShapeArea.currentLayer())
             if self.dockwidget.shapeSelector_CutWithShape.isChecked():
                 self.masking_result.crop_to_cutline = True
