@@ -57,7 +57,7 @@
              <x>0</x>
              <y>0</y>
              <width>730</width>
-             <height>1000</height>
+             <height>1036</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -472,7 +472,7 @@
              <x>0</x>
              <y>0</y>
              <width>710</width>
-             <height>3015</height>
+             <height>2235</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -1927,7 +1927,7 @@ You can add multiple values separated by comma</string>
              <x>0</x>
              <y>0</y>
              <width>730</width>
-             <height>1000</height>
+             <height>1036</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2140,17 +2140,11 @@ You can add multiple values separated by comma</string>
                    </item>
                    <item>
                     <widget class="QListWidget" name="select_MultipleLayerMask">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
+                     <property name="alternatingRowColors">
+                      <bool>true</bool>
                      </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>16777215</width>
-                       <height>200</height>
-                      </size>
+                     <property name="selectionMode">
+                      <enum>QAbstractItemView::NoSelection</enum>
                      </property>
                     </widget>
                    </item>
