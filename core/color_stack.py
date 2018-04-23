@@ -46,7 +46,7 @@ class ColorStack(object):
         self.process_status = None
         self.process_bar = None
         # set base name
-        self.base_name = "RGB bands: {}-{}-{}".format(*bands)
+        self.base_name = "RGB ({}-{}-{})".format(*bands)
 
         # get file names
         self.color_bands = [
@@ -68,7 +68,7 @@ class ColorStack(object):
     def load_color_stack(self):
         """Add to QGIS the color stack file
         """
-        self.color_stack_rlayer = QgsRasterLayer(self.color_stack_file, self.base_name +
-                                                 " " + self.mtl_file['LANDSAT_SCENE_ID'])
+        self.color_stack_rlayer = QgsRasterLayer(self.color_stack_file, self.base_name + " " +
+                                                 self.mtl_file['DATE_ACQUIRED'] + " " + self.mtl_file['LANDSAT_SCENE_ID'])
         QgsMapLayerRegistry.instance().addMapLayer(self.color_stack_rlayer)
 
