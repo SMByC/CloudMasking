@@ -10,8 +10,9 @@
 name=Cloud Masking
 description=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7 and 8) products using different process and filters such as Fmask, Blue Band, Cloud QA, Aerosol and Pixel QA.
 about=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7 and 8) products using different process and filters such as Fmask, Blue Band, Cloud QA, Aerosol and Pixel QA.
-version=18.2.7
+version=18.4.23
 qgisMinimumVersion=2.14
+qgisMaximumVersion=2.99
 
 author=Xavier Corredor Llano, SMBYC
 email=xcorredorl@ideam.gov.co
@@ -22,10 +23,16 @@ repository=https://bitbucket.org/smbyc/qgisplugin-cloudmasking
 
 # Uncomment the following line and add your changelog:
 changelog=
-    18.XX
+    18.4.23
+    - Implemented the possibility to select multiple mask layers to apply
+    - Clipping the stack in the trimmed extent when is applying with only shape area
+    - Fix keep the data outside the shape area as valid data (=1), important for apply several mask
+    - Fix marking the data (as 255 value) outside the shapefile or selected area if option is selected
+    - Fix error clipping when switch masking between rectangular and shape region
     - Updated the Rios and Fmask libs
     - Fixes and improve the documentation
     - Fix applying the mask loaded externally unsetting the nodata value before process it
+    - Enable parallel for some process in fmask only in Linux and Mac
     18.2.7
     - Fix get layer by name for layers no activated
     - Restore option for show not only cloud mask in select mask
