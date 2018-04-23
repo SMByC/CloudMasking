@@ -680,7 +680,31 @@ class CloudMasking:
             self.masking_result.clip(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "1.tif"),
                                      nodata=1, process_bar=False)
             os.remove(self.final_cloud_mask_file)
+            # expand to original extent
+            img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                                                    self.dockwidget.mtl_file['FILE_NAME_BAND_1']))
+            extent = get_extent(img_path)
+            gdal.Translate(self.final_cloud_mask_file.replace(".tif", "2.tif"), self.final_cloud_mask_file.replace(".tif", "1.tif"),
+                           projWin=extent, noData=1)
+            os.remove(self.final_cloud_mask_file.replace(".tif", "1.tif"))
+            # unset the nodata
+            gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "2.tif"), noData="none")
+            os.remove(self.final_cloud_mask_file.replace(".tif", "2.tif"))
+        ########################################
+        # Delete data outside the shapefile or selected area, as 255 value
+        if (self.dockwidget.checkBox_ShapeSelector.isChecked() and self.dockwidget.shapeSelector_CutWithShape.isChecked()) or \
+           (self.dockwidget.checkBox_ExtentSelector.isChecked() and not self.dockwidget.widget_ExtentSelector.extentSelector_KeepOriginalSize.isChecked()):
+            # expand to original extent
+            img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                                                    self.dockwidget.mtl_file['FILE_NAME_BAND_1']))
+            extent = get_extent(img_path)
+            gdal.Translate(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file,
+                           projWin=extent, noData=255)
+            os.remove(self.final_cloud_mask_file)
+            # unset the nodata
             gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "1.tif"), noData="none")
+            # only left the final file
+            os.remove(self.final_cloud_mask_file.replace(".tif", "1.tif"))
 
         ########################################
         # Post process mask
