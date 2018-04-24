@@ -727,6 +727,10 @@ class CloudMasking:
         if self.dockwidget.checkBox_CloudQA.isChecked():
             if os.path.isfile(self.masking_result.cloud_qa_clip_file):
                 os.remove(self.masking_result.cloud_qa_clip_file)
+        # from aerosol
+        if self.dockwidget.checkBox_Aerosol.isChecked():
+            if os.path.isfile(self.masking_result.aerosol_clip_file):
+                os.remove(self.masking_result.aerosol_clip_file)
         # from Pixel QA
         if self.dockwidget.checkBox_PixelQA.isChecked():
             if os.path.isfile(self.masking_result.pixel_qa_clip_file):
