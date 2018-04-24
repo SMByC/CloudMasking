@@ -171,7 +171,8 @@ class CloudMaskingResult(object):
 
         # unset the nodata
         os.remove(img_to_mask)
-        os.remove(band_from_mask)
+        if os.path.isfile(os.path.join(self.tmp_dir, "band_from_mask.tif")):
+            os.remove(os.path.join(self.tmp_dir, "band_from_mask.tif"))
         gdal.Translate(img_to_mask, img_to_mask.replace(".tif", "1.tif"), noData="none")
 
     def do_fmask(self, filters_enabled, min_cloud_size=0, cloud_prob_thresh=0.225, cloud_buffer_size=4,
