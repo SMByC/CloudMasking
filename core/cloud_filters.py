@@ -147,10 +147,10 @@ class CloudMaskingResult(object):
 
     def do_clipping_with_shape(self, stack_file, shape_path, clip_file, crop_to_cutline, nodata=0):
         # first cut to shape area extent
-        shape_extent = [self.shape_extent.xMinimum(), self.shape_extent.xMaximum(),
-                        self.shape_extent.yMinimum(), self.shape_extent.yMaximum()]
+        shape_extent = [self.shape_extent.xMinimum(), self.shape_extent.yMaximum(),
+                        self.shape_extent.xMaximum(), self.shape_extent.yMinimum()]
         stack_file_trimmed = os.path.join(self.tmp_dir, "stack_file_trimmed.tif")
-        gdal_clip.main(stack_file, stack_file_trimmed, shape_extent)
+        gdal.Translate(stack_file_trimmed, stack_file, projWin=shape_extent)
 
         if crop_to_cutline:
             #  -crop_to_cutline
