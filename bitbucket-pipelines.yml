@@ -4,4 +4,4 @@ pipelines:
     - step:
         script:
           - pip2 install pytest
-          - pytest2 -v -s
+          - pytest -v -s
