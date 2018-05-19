@@ -2,6 +2,9 @@ image: python:2.7.15
 pipelines:
   default:
     - step:
+        caches:
+          - pip2
         script:
           - pip2 install pytest
+          - ls -l
           - pytest -v -s

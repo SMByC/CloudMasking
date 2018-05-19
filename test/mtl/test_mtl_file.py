@@ -89,7 +89,7 @@ real_mtl = {'REFLECTANCE_MINIMUM_BAND_9': -0.09998, 'THERMAL_LINES': 7731.0, 'EA
             'RADIANCE_MAXIMUM_BAND_3': 733.33051}
 
 
-def test_load_mtl_file():
+def test_load_mtl_file(python_path_project):
     mtl_file = os.path.abspath("test/mtl/LC08_L1TP_007059_20161115_20170318_01_T2_MTL.txt")
     mtl = mtl2dict(mtl_file)
 
