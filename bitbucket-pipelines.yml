@@ -3,7 +3,7 @@ pipelines:
   default:
     - step:
         caches:
-          - pip2
+          - pip
         script:
           - pip2 install pytest
           - ls -l
