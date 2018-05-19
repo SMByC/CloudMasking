@@ -1,7 +1,5 @@
 import os
 
-from CloudMasking.core.cloud_masking_utils import mtl2dict
-
 real_mtl = {'REFLECTANCE_MINIMUM_BAND_9': -0.09998, 'THERMAL_LINES': 7731.0, 'EARTH_SUN_DISTANCE': 0.988947,
             'SCENE_CENTER_TIME': '15:07:42.0386660Z', 'CORNER_LL_PROJECTION_Y_PRODUCT': 43500.0,
             'REFLECTANCE_ADD_BAND_6': -0.1, 'REQUEST_ID': '0501703173371_00009',
@@ -90,6 +88,8 @@ real_mtl = {'REFLECTANCE_MINIMUM_BAND_9': -0.09998, 'THERMAL_LINES': 7731.0, 'EA
 
 
 def test_load_mtl_file():
+    from CloudMasking.core.cloud_masking_utils import mtl2dict
+
     mtl_file = os.path.abspath("test/mtl/LC08_L1TP_007059_20161115_20170318_01_T2_MTL.txt")
     mtl = mtl2dict(mtl_file)
 
