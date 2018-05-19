@@ -6,5 +6,4 @@ pipelines:
           - pip
         script:
           - pip2 install pytest
-          - ls -l
           - pytest -v -s
