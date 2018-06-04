@@ -3,7 +3,7 @@
 #
 # Cloud masking using different process suck as fmask
 #							 -------------------
-#		copyright			: (C) 2016-2018 by Xavier Corredor Llano, SMBYC
+#		copyright			: (C) 2016-2018 by Xavier Corredor Llano, SMByC
 #		email				: xcorredorl@ideam.gov.co
 # ***************************************************************************/
 #
