@@ -30,8 +30,8 @@ from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication,
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QFileDialog, QListWidgetItem, QSizePolicy
 from qgis.PyQt.QtGui import QIcon, QCursor
 from qgis.PyQt.QtWidgets import QCheckBox, QGroupBox, QRadioButton
-from qgis.gui import QgsMessageBar, QgsMapLayerProxyModel
-from qgis.core import QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer, QgsMapLayer, QgsCoordinateTransform
+from qgis.gui import QgsMessageBar
+from qgis.core import QgsMessageLog, QgsProject, QgsRasterLayer, QgsMapLayer, QgsCoordinateTransform, QgsMapLayerProxyModel
 # Initialize Qt resources from file resources.py
 from . import resources
 
@@ -191,7 +191,7 @@ class CloudMasking(object):
         self.dockwidget.select_SingleLayerMask.setCurrentIndex(-1)
         self.dockwidget.select_SingleLayerMask.setFilters(QgsMapLayerProxyModel.RasterLayer)
         self.dockwidget.OnlyMaskLayers_SingleMask.clicked.connect(self.updateLayersList_SingleLayerMask)
-        QgsMapLayerRegistry.instance().layersAdded.connect(self.updateLayersList_SingleLayerMask)
+        QgsProject.instance().layersAdded.connect(self.updateLayersList_SingleLayerMask)
         self.updateLayersList_SingleLayerMask()
 
         # tabwidget
@@ -306,7 +306,7 @@ class CloudMasking(object):
             self.dockwidget.select_MultipleLayerMask.item(x).setCheckState(Qt.Unchecked)
 
     def getLayerByName(self, layer_name):
-        for layer in QgsMapLayerRegistry.instance().mapLayers().values():
+        for layer in QgsProject.instance().mapLayers().values():
             if layer.name() == layer_name:
                 return layer
 
@@ -754,7 +754,7 @@ class CloudMasking(object):
         else:
             masking_result_name = self.tr(u"Cloud Mask ({})".format(datetime.now().strftime('%H:%M:%S')))
         self.cloud_mask_rlayer = QgsRasterLayer(self.final_cloud_mask_file, masking_result_name)
-        QgsMapLayerRegistry.instance().addMapLayer(self.cloud_mask_rlayer)
+        QgsProject.instance().addMapLayer(self.cloud_mask_rlayer)
 
         # Set symbology (thematic color and name) for new raster layer
         symbology = {
@@ -964,7 +964,7 @@ class CloudMasking(object):
             # Add to QGIS the result saved
             result_qgis_name = self.dockwidget.mtl_file['LANDSAT_SCENE_ID']
             result_rlayer = QgsRasterLayer(result_path, os.path.basename(result_path))
-            QgsMapLayerRegistry.instance().addMapLayer(result_rlayer)
+            QgsProject.instance().addMapLayer(result_rlayer)
 
         update_process_bar(self.dockwidget.bar_processApplyMask, 100, self.dockwidget.status_processApplyMask,
                            self.tr(u"DONE"))
@@ -1019,7 +1019,7 @@ class CloudMasking(object):
         except: pass
 
         # unload all layers instances from Qgis saved in tmp dir
-        layers_loaded = QgsMapLayerRegistry.instance().mapLayers().values()
+        layers_loaded = QgsProject.instance().mapLayers().values()
         try:
             d = self.dockwidget.tmp_dir
             files_in_tmp_dir = [os.path.join(d, f) for f in os.listdir(d)
@@ -1031,12 +1031,12 @@ class CloudMasking(object):
             for layer_loaded in layers_loaded:
                 if file_tmp == layer_loaded.dataProvider().dataSourceUri():
                     layersToRemove.append(layer_loaded)
-        QgsMapLayerRegistry.instance().removeMapLayers(layersToRemove)
+        QgsProject.instance().removeMapLayers(layersToRemove)
 
         # unload shape area if exists
-        for layer_name, layer_loaded in QgsMapLayerRegistry.instance().mapLayers().items():
+        for layer_name, layer_loaded in QgsProject.instance().mapLayers().items():
             if layer_name.startswith("Shape_area__"):
-                QgsMapLayerRegistry.instance().removeMapLayer(layer_loaded)
+                QgsProject.instance().removeMapLayer(layer_loaded)
 
         # clear self.dockwidget.tmp_dir
         try:

@@ -21,7 +21,7 @@
 import os
 import tempfile
 
-from qgis.core import QgsMapLayerRegistry, QgsRasterLayer
+from qgis.core import QgsProject, QgsRasterLayer
 
 # from plugins
 from CloudMasking.core.utils import get_prefer_name
@@ -70,5 +70,5 @@ class ColorStack(object):
         """
         self.color_stack_rlayer = QgsRasterLayer(self.color_stack_file, self.base_name + " " +
                                                  self.mtl_file['DATE_ACQUIRED'] + " " + self.mtl_file['LANDSAT_SCENE_ID'])
-        QgsMapLayerRegistry.instance().addMapLayer(self.color_stack_rlayer)
+        QgsProject.instance().addMapLayer(self.color_stack_rlayer)
 

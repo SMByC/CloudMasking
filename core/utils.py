@@ -19,20 +19,22 @@
  ***************************************************************************/
 """
 import os
-from qgis.core import QgsMapLayerRegistry, QgsRasterShader, QgsColorRampShader, QgsSingleBandPseudoColorRenderer, \
+from osgeo import gdal
+from numpy import intersect1d
+
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QColor, QCursor
+from qgis.PyQt.QtWidgets import QApplication
+from qgis.core import QgsProject, QgsRasterShader, QgsColorRampShader, QgsSingleBandPseudoColorRenderer, \
     QgsRasterRange, QgsRasterLayer, QgsVectorLayer
 from qgis.utils import iface
-from osgeo import gdal
-from qgis.PyQt import QtGui
-from qgis.PyQt.QtCore import Qt
-from numpy import intersect1d
 
 
 def unload_layer_in_qgis(layer_path):
-    layers_loaded = QgsMapLayerRegistry.instance().mapLayers().values()
+    layers_loaded = QgsProject.instance().mapLayers().values()
     for layer_loaded in layers_loaded:
         if layer_path == layer_loaded.dataProvider().dataSourceUri().split('|layerid')[0]:
-            QgsMapLayerRegistry.instance().removeMapLayer(layer_loaded)
+            QgsProject.instance().removeMapLayer(layer_loaded)
 
 
 def load_layer_in_qgis(file_path, layer_type):
@@ -51,7 +53,7 @@ def load_layer_in_qgis(file_path, layer_type):
             layer = QgsVectorLayer(file_path, filename, "ogr")
     # load
     if layer.isValid():
-        QgsMapLayerRegistry.instance().addMapLayer(layer)
+        QgsProject.instance().addMapLayer(layer)
     else:
         iface.messageBar().pushMessage("CloudMasking", "Error, {} is not a valid {} file!"
                                        .format(os.path.basename(file_path), layer_type))
@@ -59,7 +61,7 @@ def load_layer_in_qgis(file_path, layer_type):
 
 
 def get_layer_by_name(layer_name):
-    layer = QgsMapLayerRegistry.instance().mapLayersByName(layer_name)
+    layer = QgsProject.instance().mapLayersByName(layer_name)
     if layer:
         return layer[0]
 
@@ -125,15 +127,15 @@ def apply_symbology(rlayer, symbology, symbology_enabled, transparent=255):
         # Color ramp item - color, label, value
         color_ramp_item = QgsColorRampShader.ColorRampItem(
             value,
-            QtGui.QColor(color[0], color[1], color[2], color[3]),
+            QColor(color[0], color[1], color[2], color[3]),
             name
         )
         color_ramp_item_list.append(color_ramp_item)
 
     # Add the NoData symbology
-    color_ramp_item_list.append(QgsColorRampShader.ColorRampItem(255, QtGui.QColor(70, 70, 70, 255), "No Data"))
+    color_ramp_item_list.append(QgsColorRampShader.ColorRampItem(255, QColor(70, 70, 70, 255), "No Data"))
     # Add the valid data, no masked
-    color_ramp_item_list.append(QgsColorRampShader.ColorRampItem(1, QtGui.QColor(0, 0, 0, 0), "No Masked"))
+    color_ramp_item_list.append(QgsColorRampShader.ColorRampItem(1, QColor(0, 0, 0, 0), "No Masked"))
     # After getting list of color ramp items
     color_ramp_shader.setColorRampItemList(color_ramp_item_list)
     # Exact color ramp
@@ -170,24 +172,24 @@ def update_process_bar(bar_inst=None, bar=None, status_inst=None, status=None):
         # set bar value
         bar = int(bar)
         bar_inst.setValue(bar)
-        QtGui.QApplication.processEvents()
+        QApplication.processEvents()
 
     if status_inst is not None and status is not None:
         # set status
         status_inst.setText(str(status))
-        QtGui.QApplication.processEvents()
+        QApplication.processEvents()
 
     if bar is not None and 0 < bar < 100:
         # set mouse wait
-        cursor = QtGui.QApplication.overrideCursor()
+        cursor = QApplication.overrideCursor()
         if cursor is None or cursor == 0:
-            QtGui.QApplication.setOverrideCursor(QtGui.QCursor(Qt.WaitCursor))
-        QtGui.QApplication.processEvents()
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        QApplication.processEvents()
 
     if bar is not None and (bar == 100 or bar == 0):
         # restore mouse
-        QtGui.QApplication.restoreOverrideCursor()
-        QtGui.QApplication.processEvents()
+        QApplication.restoreOverrideCursor()
+        QApplication.processEvents()
 
 
 def binary_combination(binary, fix_bits=None):

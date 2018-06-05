@@ -23,10 +23,10 @@ import os
 import tempfile
 import webbrowser
 
-from qgis.PyQt import QtGui, uic, QtCore
+from qgis.PyQt import uic, QtCore
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.utils import iface
-from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog, QDockWidget
 
 # from plugins
 from CloudMasking.core import cloud_masking_utils
@@ -44,7 +44,7 @@ VERSION = cfg.get('general', 'version')
 HOMEPAGE = cfg.get('general', 'homepage')
 
 
-class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
+class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
 
     # Fmask parameters by default
     cloud_prob_thresh = 0.225
@@ -261,7 +261,7 @@ class CloudMaskingDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def fileDialog_findMTL(self):
         """Open QFileDialog to find a MTL file
         """
-        dialog_mtl_path = QtGui.QFileDialog.getOpenFileName(self, self.tr(u"Select the MTL file"),
+        dialog_mtl_path = QFileDialog.getOpenFileName(self, self.tr(u"Select the MTL file"),
                                                             "", self.tr(u"MTL files (*MTL.txt);;All files (*.*)"))
         if dialog_mtl_path != '':
             self.lineEdit_PathMTL.setText(dialog_mtl_path)

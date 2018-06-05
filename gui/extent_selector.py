@@ -19,10 +19,10 @@
 
 import os
 from qgis.PyQt import uic
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QWidget
-from qgis.PyQt.QtGui import QColor
-from qgis.core import QgsPoint, QgsRectangle, QGis
+from qgis.core import QgsPointXY, QgsRectangle, Qgis
 from qgis.gui import QgsMapTool, QgsMapToolEmitPoint, QgsRubberBand
 
 plugin_folder = os.path.dirname(os.path.dirname(__file__))
@@ -91,8 +91,8 @@ class ExtentSelector(QWidget, FORM_CLASS):
 
     def isCoordsValid(self):
         try:
-            QgsPoint(float(self.x1CoordEdit.text()), float(self.y1CoordEdit.text()))
-            QgsPoint(float(self.x2CoordEdit.text()), float(self.y2CoordEdit.text()))
+            QgsPointXY(float(self.x1CoordEdit.text()), float(self.y1CoordEdit.text()))
+            QgsPointXY(float(self.x2CoordEdit.text()), float(self.y2CoordEdit.text()))
         except ValueError:
             return False
 
@@ -101,8 +101,8 @@ class ExtentSelector(QWidget, FORM_CLASS):
     def coordsChanged(self):
         rect = None
         if self.isCoordsValid():
-            point1 = QgsPoint(float(self.x1CoordEdit.text()), float(self.y1CoordEdit.text()))
-            point2 = QgsPoint(float(self.x2CoordEdit.text()), float(self.y2CoordEdit.text()))
+            point1 = QgsPointXY(float(self.x1CoordEdit.text()), float(self.y1CoordEdit.text()))
+            point2 = QgsPointXY(float(self.x2CoordEdit.text()), float(self.y2CoordEdit.text()))
             rect = QgsRectangle(point1, point2)
 
         self.setExtent(rect)
@@ -131,7 +131,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
         self.canvas = canvas
         QgsMapToolEmitPoint.__init__(self, self.canvas)
 
-        self.rubberBand = QgsRubberBand(self.canvas, QGis.Polygon)
+        self.rubberBand = QgsRubberBand(self.canvas, Qgis.Polygon)
         self.rubberBand.setColor(QColor(255, 0, 0, 100))
         self.rubberBand.setWidth(2)
 
@@ -140,7 +140,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
     def reset(self):
         self.startPoint = self.endPoint = None
         self.isEmittingPoint = False
-        self.rubberBand.reset(QGis.Polygon)
+        self.rubberBand.reset(Qgis.Polygon)
 
     def canvasPressEvent(self, e):
         self.startPoint = self.toMapCoordinates(e.pos())
@@ -161,14 +161,14 @@ class RectangleMapTool(QgsMapToolEmitPoint):
         self.showRect(self.startPoint, self.endPoint)
 
     def showRect(self, startPoint, endPoint):
-        self.rubberBand.reset(QGis.Polygon)
+        self.rubberBand.reset(Qgis.Polygon)
         if startPoint.x() == endPoint.x() or startPoint.y() == endPoint.y():
             return
 
-        point1 = QgsPoint(startPoint.x(), startPoint.y())
-        point2 = QgsPoint(startPoint.x(), endPoint.y())
-        point3 = QgsPoint(endPoint.x(), endPoint.y())
-        point4 = QgsPoint(endPoint.x(), startPoint.y())
+        point1 = QgsPointXY(startPoint.x(), startPoint.y())
+        point2 = QgsPointXY(startPoint.x(), endPoint.y())
+        point3 = QgsPointXY(endPoint.x(), endPoint.y())
+        point4 = QgsPointXY(endPoint.x(), startPoint.y())
 
         self.rubberBand.addPoint(point1, False)
         self.rubberBand.addPoint(point2, False)
@@ -191,8 +191,8 @@ class RectangleMapTool(QgsMapToolEmitPoint):
         if rect is None:
             self.reset()
         else:
-            self.startPoint = QgsPoint(rect.xMaximum(), rect.yMaximum())
-            self.endPoint = QgsPoint(rect.xMinimum(), rect.yMinimum())
+            self.startPoint = QgsPointXY(rect.xMaximum(), rect.yMaximum())
+            self.endPoint = QgsPointXY(rect.xMinimum(), rect.yMinimum())
             self.showRect(self.startPoint, self.endPoint)
         return True
 
