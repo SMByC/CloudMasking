@@ -23,8 +23,8 @@ from qgis.core import QgsMapLayerRegistry, QgsRasterShader, QgsColorRampShader, 
     QgsRasterRange, QgsRasterLayer, QgsVectorLayer
 from qgis.utils import iface
 from osgeo import gdal
-from PyQt4 import QtGui
-from PyQt4.QtCore import Qt
+from qgis.PyQt import QtGui
+from qgis.PyQt.QtCore import Qt
 from numpy import intersect1d
 
 
@@ -79,7 +79,7 @@ def load_and_select_filepath_in(combo_box, file_path, layer_type="any"):
 
 def get_file_path_of_layer(layer):
     try:
-        return unicode(layer.dataProvider().dataSourceUri().split('|layerid')[0])
+        return str(layer.dataProvider().dataSourceUri().split('|layerid')[0])
     except:
         return None
 

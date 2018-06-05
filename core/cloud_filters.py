@@ -25,7 +25,7 @@ from datetime import datetime
 from subprocess import call
 
 from osgeo import gdal
-from PyQt4.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication
 
 # from plugins
 from CloudMasking.core.utils import get_prefer_name, update_process_bar, binary_combination, check_values_in_image, \

@@ -154,7 +154,7 @@ def names_to_fileinfos( names ):
     return file_infos
 
 # *****************************************************************************
-class file_info:
+class file_info(object):
     """A class holding information about a GDAL file."""
 
     def init_from_name(self, filename):

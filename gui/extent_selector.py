@@ -18,7 +18,7 @@
 """
 
 import os
-from PyQt4 import uic
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QWidget
 from qgis.PyQt.QtGui import QColor
@@ -111,10 +111,10 @@ class ExtentSelector(QWidget, FORM_CLASS):
         rect = self.getExtent()
         self.blockSignals(True)
         if rect is not None:
-            self.x1CoordEdit.setText(unicode(rect.xMinimum()))
-            self.x2CoordEdit.setText(unicode(rect.xMaximum()))
-            self.y1CoordEdit.setText(unicode(rect.yMaximum()))
-            self.y2CoordEdit.setText(unicode(rect.yMinimum()))
+            self.x1CoordEdit.setText(str(rect.xMinimum()))
+            self.x2CoordEdit.setText(str(rect.xMaximum()))
+            self.y1CoordEdit.setText(str(rect.yMaximum()))
+            self.y2CoordEdit.setText(str(rect.yMinimum()))
         else:
             self.x1CoordEdit.clear()
             self.x2CoordEdit.clear()

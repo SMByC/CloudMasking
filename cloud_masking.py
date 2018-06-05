@@ -26,13 +26,14 @@ from datetime import datetime
 from time import sleep
 from osgeo import gdal
 
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot
-from PyQt4.QtGui import QAction, QIcon, QMessageBox, QApplication, QCursor, QFileDialog, QListWidgetItem, QSizePolicy
-from PyQt4.QtGui import QCheckBox, QGroupBox, QRadioButton
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot
+from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QFileDialog, QListWidgetItem, QSizePolicy
+from qgis.PyQt.QtGui import QIcon, QCursor
+from qgis.PyQt.QtWidgets import QCheckBox, QGroupBox, QRadioButton
 from qgis.gui import QgsMessageBar, QgsMapLayerProxyModel
 from qgis.core import QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer, QgsMapLayer, QgsCoordinateTransform
 # Initialize Qt resources from file resources.py
-import resources
+from . import resources
 
 from CloudMasking.core import cloud_filters, color_stack
 from CloudMasking.core.utils import apply_symbology, get_prefer_name, update_process_bar, get_extent, \
@@ -42,7 +43,7 @@ from CloudMasking.gui.cloud_masking_dockwidget import CloudMaskingDockWidget
 from CloudMasking.gui.about_dialog import AboutDialog
 
 
-class CloudMasking:
+class CloudMasking(object):
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
@@ -73,7 +74,7 @@ class CloudMasking:
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-        print "** INITIALIZING CloudMasking"
+        print("** INITIALIZING CloudMasking")
 
         self.menu_name_plugin = self.tr(u"&Cloud masking for Landsat products")
         self.pluginIsActive = False
@@ -125,7 +126,7 @@ class CloudMasking:
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed"""
 
-        print "** CLOSING CloudMasking"
+        print("** CLOSING CloudMasking")
         self.removes_temporary_files()
 
         # disconnects
@@ -150,7 +151,7 @@ class CloudMasking:
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
 
-        print "** UNLOAD CloudMasking"
+        print("** UNLOAD CloudMasking")
         self.removes_temporary_files()
 
         # Remove the plugin menu item and icon
@@ -351,7 +352,7 @@ class CloudMasking:
 
     @pyqtSlot()
     def fileDialog_browse(self, combo_box, dialog_title, dialog_types, layer_type, suggested_path=""):
-        file_path = QFileDialog.getOpenFileName(self.dockwidget, dialog_title, suggested_path, dialog_types)
+        file_path, _, _ = QFileDialog.getOpenFileName(self.dockwidget, dialog_title, suggested_path, dialog_types)
         if file_path != '' and os.path.isfile(file_path):
             # load to qgis and update combobox list
             load_and_select_filepath_in(combo_box, file_path, layer_type)
@@ -778,11 +779,11 @@ class CloudMasking:
         """Open QFileDialog for save mask file
         """
         suggested_filename_mask = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Mask.tif"
-        mask_outpath = QFileDialog.getSaveFileName(self.dockwidget, self.tr(u"Save mask file"),
+        mask_outpath, _, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr(u"Save mask file"),
                                                    os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                                 suggested_filename_mask),
                                                    self.tr(u"Tif files (*.tif);;All files (*.*)"))
-        mask_inpath = unicode(self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()).dataProvider().dataSourceUri())
+        mask_inpath = str(self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()).dataProvider().dataSourceUri())
 
         if mask_outpath != '' and mask_inpath != '':
             # set nodata to valid data (1) and copy to destination
@@ -792,7 +793,7 @@ class CloudMasking:
     def fileDialog_SelectPFile(self):
         """Open QFileDialog for select particular file to apply mask
         """
-        p_file_path = QFileDialog.getOpenFileName(self.dockwidget, self.tr(u"Select particular file to apply mask"),
+        p_file_path, _, _ = QFileDialog.getOpenFileName(self.dockwidget, self.tr(u"Select particular file to apply mask"),
                                                   os.path.dirname(self.dockwidget.mtl_path),
                                                   self.tr(u"Tif files (*.tif);;All files (*.*)"))
 
@@ -807,7 +808,7 @@ class CloudMasking:
         else:
             suggested_filename_result = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Enmask.tif"
 
-        result_path = QFileDialog.getSaveFileName(self.dockwidget, self.tr(u"Save result"),
+        result_path, _, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr(u"Save result"),
                                                   os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                                suggested_filename_result),
                                                   self.tr(u"Tif files (*.tif);;All files (*.*)"))
@@ -833,8 +834,7 @@ class CloudMasking:
         def prepare_mask(layer):
             # get mask layer
             try:
-                mask_path = \
-                    unicode(layer.dataProvider().dataSourceUri())
+                mask_path = str(layer.dataProvider().dataSourceUri())
             except:
                 update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
                                    self.tr(u"Not valid mask '{}'".format(layer.name())))

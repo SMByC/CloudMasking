@@ -19,8 +19,8 @@ def set_qgis_in_pythonpath():
 
 
 @pytest.fixture()
-def init_qgis():
+def init_qgis(set_qgis_in_pythonpath):
     import qgis
-    from qgis_interface import QgisInterface
+    from .qgis_interface import QgisInterface
     iface = QgisInterface(None)
     return iface

@@ -18,15 +18,15 @@
  *                                                                         *
  ***************************************************************************/
 """
-import ConfigParser
+import configparser
 import os
 import tempfile
 import webbrowser
 
-from PyQt4 import QtGui, uic, QtCore
-from PyQt4.QtCore import pyqtSignal
+from qgis.PyQt import QtGui, uic, QtCore
+from qgis.PyQt.QtCore import pyqtSignal
 from qgis.utils import iface
-from PyQt4.QtGui import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
 
 # from plugins
 from CloudMasking.core import cloud_masking_utils
@@ -38,7 +38,7 @@ plugin_folder = os.path.dirname(os.path.dirname(__file__))
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     plugin_folder, 'ui', 'cloud_masking_dockwidget_base.ui'))
 
-cfg = ConfigParser.SafeConfigParser()
+cfg = configparser.ConfigParser()
 cfg.read(os.path.join(plugin_folder, 'metadata.txt'))
 VERSION = cfg.get('general', 'version')
 HOMEPAGE = cfg.get('general', 'homepage')

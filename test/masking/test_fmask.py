@@ -13,5 +13,5 @@ def test_only_fmask_default(init_qgis):
     iface = init_qgis
     dockwidget = CloudMasking(iface)
 
-    print dockwidget
+    print(dockwidget)
     pass
