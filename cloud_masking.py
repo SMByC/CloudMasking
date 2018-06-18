@@ -76,7 +76,7 @@ class CloudMasking(object):
 
         print("** INITIALIZING CloudMasking")
 
-        self.menu_name_plugin = self.tr(u"&Cloud masking for Landsat products")
+        self.menu_name_plugin = self.tr("&Cloud masking for Landsat products")
         self.pluginIsActive = False
         self.dockwidget = None
 
@@ -104,7 +104,7 @@ class CloudMasking(object):
         ### Main dockwidget
         # Create action that will start plugin configuration
         icon_path = ':/plugins/CloudMasking/icons/cloud_masking.svg'
-        self.dockable_action = QAction(QIcon(icon_path), self.tr(u'&Cloud Masking'), self.iface.mainWindow())
+        self.dockable_action = QAction(QIcon(icon_path), self.tr('&Cloud Masking'), self.iface.mainWindow())
         # connect the action to the run method
         self.dockable_action.triggered.connect(self.run)
 
@@ -115,7 +115,7 @@ class CloudMasking(object):
         ### About dialog
         # Create action that will start plugin configuration
         icon_path = ':/plugins/CloudMasking/icons/about.svg'
-        self.about_action = QAction(QIcon(icon_path), self.tr(u'About'), self.iface.mainWindow())
+        self.about_action = QAction(QIcon(icon_path), self.tr('About'), self.iface.mainWindow())
         # connect the action to the run method
         self.about_action.triggered.connect(self.about)
         # Add toolbar button and menu item
@@ -210,8 +210,8 @@ class CloudMasking(object):
         # call to browse the shape area for make mask inside it
         self.dockwidget.button_BrowseShapeArea.clicked.connect(lambda: self.fileDialog_browse(
             self.dockwidget.QCBox_MaskInShapeArea,
-            dialog_title=self.tr(u"Select the shape file"),
-            dialog_types=self.tr(u"Shape files (*.shp);;All files (*.*)"),
+            dialog_title=self.tr("Select the shape file"),
+            dialog_types=self.tr("Shape files (*.shp);;All files (*.*)"),
             layer_type="vector", suggested_path=os.path.dirname(self.dockwidget.mtl_path)))
 
         # call to load MTL file
@@ -335,7 +335,7 @@ class CloudMasking(object):
     @error_handler('load stack')
     def load_stack(self, *args):
         update_process_bar(self.dockwidget.bar_progressLoadStack, 40,
-                           self.dockwidget.status_processLoadStack, self.tr(u"Loading stack..."))
+                           self.dockwidget.status_processLoadStack, self.tr("Loading stack..."))
         bands = []
         bands.append(int(self.dockwidget.SelectBand_R.currentText()))
         bands.append(int(self.dockwidget.SelectBand_G.currentText()))
@@ -348,7 +348,7 @@ class CloudMasking(object):
         self.color_stack_scene.do_color_stack()
         self.color_stack_scene.load_color_stack()
         update_process_bar(self.dockwidget.bar_progressLoadStack, 100,
-                           self.dockwidget.status_processLoadStack, self.tr(u"DONE"))
+                           self.dockwidget.status_processLoadStack, self.tr("DONE"))
 
     @pyqtSlot()
     def fileDialog_browse(self, combo_box, dialog_title, dialog_types, layer_type, suggested_path=""):
@@ -371,7 +371,7 @@ class CloudMasking(object):
             not self.dockwidget.checkBox_Aerosol.isChecked() and
             not self.dockwidget.checkBox_PixelQA.isChecked()):
             self.dockwidget.status_processMask.setText(
-                self.tr(u"Error: no filters enabled for apply"))
+                self.tr("Error: no filters enabled for apply"))
             return
 
         # create the masking result instance if not exist
@@ -419,17 +419,17 @@ class CloudMasking(object):
         # check extent area selector and shape file
         if self.dockwidget.checkBox_ExtentSelector.isChecked() and not self.dockwidget.isExtentAreaSelected:
             self.dockwidget.status_processMask.setText(
-                self.tr(u"Error: not area selected in canvas"))
+                self.tr("Error: not area selected in canvas"))
             return
 
         if self.dockwidget.checkBox_ShapeSelector.isChecked():
             if not self.masking_result.shape_path:
                 self.dockwidget.status_processMask.setText(
-                    self.tr(u"Error: not shape file defined"))
+                    self.tr("Error: not shape file defined"))
                 return
             if not os.path.isfile(self.masking_result.shape_path):
                 self.dockwidget.status_processMask.setText(
-                    self.tr(u"Error: shape file not exists"))
+                    self.tr("Error: shape file not exists"))
                 return
 
         ########################################
@@ -501,13 +501,13 @@ class CloudMasking(object):
                         cloud_qa_svalues = []
                 except:
                     self.dockwidget.status_processMask.setText(
-                        self.tr(u"Error: setting the specific values in Cloud QA"))
+                        self.tr("Error: setting the specific values in Cloud QA"))
                     return
 
                 # check is not selected any Cloud QA filter
                 if not any(checked_items.values()) and not cloud_qa_svalues:
                     self.dockwidget.status_processMask.setText(
-                        self.tr(u"Error: no filters selected in Cloud QA"))
+                        self.tr("Error: no filters selected in Cloud QA"))
                     return
 
                 self.masking_result.do_cloud_qa_l457(self.dockwidget.cloud_qa_file, checked_items, cloud_qa_svalues)
@@ -550,13 +550,13 @@ class CloudMasking(object):
                         aerosol_svalues = []
                 except:
                     self.dockwidget.status_processMask.setText(
-                        self.tr(u"Error: setting the specific values in Aerosol"))
+                        self.tr("Error: setting the specific values in Aerosol"))
                     return
 
                 # check is not selected any Aerosol filter
                 if not any(checked_items.values()) and not aerosol_svalues:
                     self.dockwidget.status_processMask.setText(
-                        self.tr(u"Error: no filters selected in Aerosol"))
+                        self.tr("Error: no filters selected in Aerosol"))
                     return
 
                 self.masking_result.do_aerosol_l8(self.dockwidget.aerosol_file, checked_items, aerosol_svalues)
@@ -605,13 +605,13 @@ class CloudMasking(object):
                     pixel_qa_svalues = []
             except:
                 self.dockwidget.status_processMask.setText(
-                    self.tr(u"Error: setting the specific values in Pixel QA"))
+                    self.tr("Error: setting the specific values in Pixel QA"))
                 return
 
             # check is not selected any Pixel QA filter
             if not any(checked_items.values()) and not pixel_qa_svalues:
                 self.dockwidget.status_processMask.setText(
-                    self.tr(u"Error: no filters selected in Pixel QA"))
+                    self.tr("Error: no filters selected in Pixel QA"))
                 return
 
             self.masking_result.do_pixel_qa(self.dockwidget.pixel_qa_file, checked_items, pixel_qa_svalues)
@@ -748,11 +748,11 @@ class CloudMasking(object):
 
         # Add to QGIS the reflectance stack file and cloud file
         if self.masking_result.clipping_extent:
-            masking_result_name = self.tr(u"Cloud Mask in area ({})".format(datetime.now().strftime('%H:%M:%S')))
+            masking_result_name = self.tr("Cloud Mask in area ({})".format(datetime.now().strftime('%H:%M:%S')))
         elif self.dockwidget.checkBox_ShapeSelector.isChecked():
-            masking_result_name = self.tr(u"Cloud Mask in shape ({})".format(datetime.now().strftime('%H:%M:%S')))
+            masking_result_name = self.tr("Cloud Mask in shape ({})".format(datetime.now().strftime('%H:%M:%S')))
         else:
-            masking_result_name = self.tr(u"Cloud Mask ({})".format(datetime.now().strftime('%H:%M:%S')))
+            masking_result_name = self.tr("Cloud Mask ({})".format(datetime.now().strftime('%H:%M:%S')))
         self.cloud_mask_rlayer = QgsRasterLayer(self.final_cloud_mask_file, masking_result_name)
         QgsProject.instance().addMapLayer(self.cloud_mask_rlayer)
 
@@ -779,10 +779,10 @@ class CloudMasking(object):
         """Open QFileDialog for save mask file
         """
         suggested_filename_mask = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Mask.tif"
-        mask_outpath, _, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr(u"Save mask file"),
+        mask_outpath, _, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr("Save mask file"),
                                                    os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                                 suggested_filename_mask),
-                                                   self.tr(u"Tif files (*.tif);;All files (*.*)"))
+                                                   self.tr("Tif files (*.tif);;All files (*.*)"))
         mask_inpath = str(self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()).dataProvider().dataSourceUri())
 
         if mask_outpath != '' and mask_inpath != '':
@@ -793,9 +793,9 @@ class CloudMasking(object):
     def fileDialog_SelectPFile(self):
         """Open QFileDialog for select particular file to apply mask
         """
-        p_file_path, _, _ = QFileDialog.getOpenFileName(self.dockwidget, self.tr(u"Select particular file to apply mask"),
+        p_file_path, _, _ = QFileDialog.getOpenFileName(self.dockwidget, self.tr("Select particular file to apply mask"),
                                                   os.path.dirname(self.dockwidget.mtl_path),
-                                                  self.tr(u"Tif files (*.tif);;All files (*.*)"))
+                                                  self.tr("Tif files (*.tif);;All files (*.*)"))
 
         if p_file_path != '':
             self.dockwidget.lineEdit_ParticularFile.setText(p_file_path)
@@ -808,10 +808,10 @@ class CloudMasking(object):
         else:
             suggested_filename_result = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Enmask.tif"
 
-        result_path, _, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr(u"Save result"),
+        result_path, _, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr("Save result"),
                                                   os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                                suggested_filename_result),
-                                                  self.tr(u"Tif files (*.tif);;All files (*.*)"))
+                                                  self.tr("Tif files (*.tif);;All files (*.*)"))
 
         if result_path != '':
             self.dockwidget.lineEdit_ResultPath.setText(result_path)
@@ -820,7 +820,7 @@ class CloudMasking(object):
     def apply_mask(self, *args):
         # init progress bar
         update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
-                           self.tr(u"Preparing the mask files..."))
+                           self.tr("Preparing the mask files..."))
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))  # mouse wait
 
@@ -828,7 +828,7 @@ class CloudMasking(object):
         result_path = self.dockwidget.lineEdit_ResultPath.text()
         if result_path is None or result_path == '':
             update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
-                               self.tr(u"Error: Not selected file for save"))
+                               self.tr("Error: Not selected file for save"))
             return
 
         def prepare_mask(layer):
@@ -837,13 +837,13 @@ class CloudMasking(object):
                 mask_path = str(layer.dataProvider().dataSourceUri())
             except:
                 update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
-                                   self.tr(u"Not valid mask '{}'".format(layer.name())))
+                                   self.tr("Not valid mask '{}'".format(layer.name())))
                 return None, None
 
             # check mask layer
             if not os.path.isfile(mask_path):
                 update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
-                                   self.tr(u"Mask file not exists '{}'".format(layer.name())))
+                                   self.tr("Mask file not exists '{}'".format(layer.name())))
                 return None, None
 
             # fix nodata to null, unset the nodata else the result lost the data in the valid value to mask (1)
@@ -865,7 +865,7 @@ class CloudMasking(object):
             layers_selected = [self.getLayerByName(item.text()) for item in items if item.checkState() == Qt.Checked]
             if not layers_selected:
                 update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
-                                   self.tr(u"Error: Not mask layers selected to apply"))
+                                   self.tr("Error: Not mask layers selected to apply"))
                 return
             # prepare
             masks = [prepare_mask(layer) for layer in layers_selected]
@@ -876,14 +876,14 @@ class CloudMasking(object):
         # get and set stack bands for make layer stack for apply mask
         if self.dockwidget.radioButton_ToRaw_Bands.isChecked() or self.dockwidget.radioButton_ToSR_Bands.isChecked():
             update_process_bar(self.dockwidget.bar_processApplyMask, 20, self.dockwidget.status_processApplyMask,
-                               self.tr(u"Making the stack bands..."))
+                               self.tr("Making the stack bands..."))
 
             reflectance_bands = self.dockwidget.lineEdit_StackBands.text()
             try:
                 reflectance_bands = [int(x) for x in reflectance_bands.split(',')]
             except:
                 update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
-                                   self.tr(u"Error: Invalid stack bands"))
+                                   self.tr("Error: Invalid stack bands"))
                 return
 
         ## Select the stack or file to apply mask
@@ -904,12 +904,12 @@ class CloudMasking(object):
             # check if exists
             if not os.path.isfile(self.reflective_stack_file):
                 update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
-                                   self.tr(u"Error: The particular file not exists"))
+                                   self.tr("Error: The particular file not exists"))
                 return
             # only tif
             if not self.reflective_stack_file.endswith((".tif", ".TIF")):
                 update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
-                                   self.tr(u"Error: The particular file should be tif"))
+                                   self.tr("Error: The particular file should be tif"))
                 return
 
         # make stack to apply mask in tmp file
@@ -921,7 +921,7 @@ class CloudMasking(object):
                              self.reflective_stack_file] + stack_bands)
 
         update_process_bar(self.dockwidget.bar_processApplyMask, 50, self.dockwidget.status_processApplyMask,
-                           self.tr(u"Applying mask..."))
+                           self.tr("Applying mask..."))
 
         # check images size if is different, this mean that the mask is a selected area
         # and "keep the original image size" is not selected. Then resize the reflective
@@ -967,7 +967,7 @@ class CloudMasking(object):
             QgsProject.instance().addMapLayer(result_rlayer)
 
         update_process_bar(self.dockwidget.bar_processApplyMask, 100, self.dockwidget.status_processApplyMask,
-                           self.tr(u"DONE"))
+                           self.tr("DONE"))
 
     def buttom_load_mtl(self):
         # check if is the same MTL
@@ -1007,7 +1007,7 @@ class CloudMasking(object):
         # message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):
             self.dockwidget.tabWidget.setCurrentWidget(self.dockwidget.tab_OL)  # focus first tab
-            self.dockwidget.status_LoadedMTL.setText(self.tr(u"Cleaning temporal files ..."))
+            self.dockwidget.status_LoadedMTL.setText(self.tr("Cleaning temporal files ..."))
             self.dockwidget.status_LoadedMTL.repaint()
             QApplication.processEvents()
             sleep(0.3)

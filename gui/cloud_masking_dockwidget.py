@@ -87,7 +87,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
     def setup_gui(self):
         # plugin info #########
         self.about_dialog = AboutDialog()
-        self.QPBtn_PluginInfo.setText(self.tr(u"CloudMasking v{}".format(VERSION)))
+        self.QPBtn_PluginInfo.setText(self.tr("CloudMasking v{}".format(VERSION)))
         self.QPBtn_PluginInfo.clicked.connect(self.about_dialog.show)
         self.QPBtn_PluginDocs.clicked.connect(lambda: webbrowser.open("https://smbyc.bitbucket.io/qgisplugins/cloudmasking"))
 
@@ -96,7 +96,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         # load MTL: this is called from cloud_masking
         # MTL info
         self.status_LoadedMTL.setChecked(False)
-        self.status_LoadedMTL.setText(self.tr(u"No MTL file loaded yet."))
+        self.status_LoadedMTL.setText(self.tr("No MTL file loaded yet."))
         self.status_LoadedMTL.clicked.connect(self.onlyread)
 
         # FMask filters #########
@@ -261,8 +261,8 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
     def fileDialog_findMTL(self):
         """Open QFileDialog to find a MTL file
         """
-        dialog_mtl_path = QFileDialog.getOpenFileName(self, self.tr(u"Select the MTL file"),
-                                                            "", self.tr(u"MTL files (*MTL.txt);;All files (*.*)"))
+        dialog_mtl_path = QFileDialog.getOpenFileName(self, self.tr("Select the MTL file"),
+                                                            "", self.tr("MTL files (*MTL.txt);;All files (*.*)"))
         if dialog_mtl_path != '':
             self.lineEdit_PathMTL.setText(dialog_mtl_path)
 
@@ -274,7 +274,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
 
         # check if MTL exist
         if not os.path.isfile(self.mtl_path):
-            self.status_LoadedMTL.setText(self.tr(u"Error: File not exist"))
+            self.status_LoadedMTL.setText(self.tr("Error: File not exist"))
             self.unload_MTL()
             return
 
@@ -290,7 +290,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             if 'METADATA_L1_FILE_NAME' in self.mtl_file:
                 self.mtl_file['LANDSAT_SCENE_ID'] = self.mtl_file['METADATA_L1_FILE_NAME'].split('_MTL.txt')[0]
         except:
-            self.status_LoadedMTL.setText(self.tr(u"Error: Cannot parse MTL file"))
+            self.status_LoadedMTL.setText(self.tr("Error: Cannot parse MTL file"))
             self.unload_MTL()
             return
 
@@ -327,7 +327,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
                            "are in the same location as the MTL file.".format(os.path.basename(file_path))
                 QMessageBox.question(self, 'Problem while Loading the new MTL...',
                                              msg, QMessageBox.Ok)
-                self.status_LoadedMTL.setText(self.tr(u"Error: Not raw landsat files"))
+                self.status_LoadedMTL.setText(self.tr("Error: Not raw landsat files"))
                 self.unload_MTL()
                 return
 

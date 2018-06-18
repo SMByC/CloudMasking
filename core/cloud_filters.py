@@ -121,7 +121,7 @@ class CloudMaskingResult(object):
 
         if process_bar:
             update_process_bar(self.process_bar, 24, self.process_status,
-                               self.tr(u"Clipping the reflective stack..."))
+                               self.tr("Clipping the reflective stack..."))
 
         if self.clipping_extent:
             self.do_clipping_extent(in_stack_file, out_clipped_file)
@@ -187,7 +187,7 @@ class CloudMaskingResult(object):
 
         if not os.path.isfile(self.reflective_stack_file):
             update_process_bar(self.process_bar, 10, self.process_status,
-                               self.tr(u"Making reflective bands stack..."))
+                               self.tr("Making reflective bands stack..."))
 
             gdal_merge.main(["", "-separate", "-of", "GTiff", "-o",
                              self.reflective_stack_file] + self.reflective_bands)
@@ -200,7 +200,7 @@ class CloudMaskingResult(object):
 
         if not os.path.isfile(self.thermal_stack_file):
             update_process_bar(self.process_bar, 20, self.process_status,
-                               self.tr(u"Making thermal bands stack..."))
+                               self.tr("Making thermal bands stack..."))
 
             gdal_merge.main(["", "-separate", "-of", "GTiff", "-o",
                              self.thermal_stack_file] + self.thermal_bands)
@@ -225,7 +225,7 @@ class CloudMaskingResult(object):
         self.angles_file = os.path.join(self.tmp_dir, "angles.tif")
 
         update_process_bar(self.process_bar, 30, self.process_status,
-                           self.tr(u"Making fmask angles file..."))
+                           self.tr("Making fmask angles file..."))
 
         mtlInfo = config.readMTLFile(self.mtl_path)
 
@@ -248,7 +248,7 @@ class CloudMaskingResult(object):
         self.saturationmask_file = os.path.join(self.tmp_dir, "saturationmask.tif")
 
         update_process_bar(self.process_bar, 40, self.process_status,
-                           self.tr(u"Making saturation mask file..."))
+                           self.tr("Making saturation mask file..."))
 
         if self.landsat_version == 4:
             sensor = config.FMASK_LANDSAT47
@@ -275,7 +275,7 @@ class CloudMaskingResult(object):
         self.toa_file = os.path.join(self.tmp_dir, "toa.tif")
 
         update_process_bar(self.process_bar, 50, self.process_status,
-                           self.tr(u"Making top of Atmosphere ref..."))
+                           self.tr("Making top of Atmosphere ref..."))
 
         landsatTOA.makeTOAReflectance(self.reflective_stack_for_process, self.mtl_path,
                                       self.angles_file, self.toa_file)
@@ -289,7 +289,7 @@ class CloudMaskingResult(object):
         self.cloud_fmask_file = os.path.join(self.tmp_dir, "cloud_fmask_{}.tif".format(datetime.now().strftime('%H%M%S')))
 
         update_process_bar(self.process_bar, 70, self.process_status,
-                           self.tr(u"Making cloud mask with fmask..."))
+                           self.tr("Making cloud mask with fmask..."))
 
         # 1040nm thermal band should always be the first (or only) band in a
         # stack of Landsat thermal bands
@@ -362,13 +362,13 @@ class CloudMaskingResult(object):
 
         ### ending fmask process
         update_process_bar(self.process_bar, 100, self.process_status,
-                           self.tr(u"DONE"))
+                           self.tr("DONE"))
 
     def do_blue_band(self, bb_threshold):
         # tmp file for cloud
         self.cloud_bb_file = os.path.join(self.tmp_dir, "cloud_bb_{}.tif".format(datetime.now().strftime('%H%M%S')))
         update_process_bar(self.process_bar, 50, self.process_status,
-                           self.tr(u"Making the blue band filter..."))
+                           self.tr("Making the blue band filter..."))
 
         ########################################
         # select the Blue Band
@@ -397,13 +397,13 @@ class CloudMaskingResult(object):
 
         ### ending process
         update_process_bar(self.process_bar, 100, self.process_status,
-                           self.tr(u"DONE"))
+                           self.tr("DONE"))
 
     def do_cloud_qa_l457(self, cloud_qa_file, checked_items, specific_values=[]):
         # tmp file for cloud
         self.cloud_qa = os.path.join(self.tmp_dir, "cloud_qa_{}.tif".format(datetime.now().strftime('%H%M%S')))
         update_process_bar(self.process_bar, 50, self.process_status,
-                           self.tr(u"Making the Cloud QA filter..."))
+                           self.tr("Making the Cloud QA filter..."))
 
         ########################################
         # clipping the QA Mask (only if is activated selected area or shape area)
@@ -455,13 +455,13 @@ class CloudMaskingResult(object):
 
         ### ending process
         update_process_bar(self.process_bar, 100, self.process_status,
-                           self.tr(u"DONE"))
+                           self.tr("DONE"))
 
     def do_aerosol_l8(self, aerosol_file, checked_items, specific_values=[]):
         # tmp file for cloud
         self.aerosol = os.path.join(self.tmp_dir, "aerosol_{}.tif".format(datetime.now().strftime('%H%M%S')))
         update_process_bar(self.process_bar, 50, self.process_status,
-                           self.tr(u"Making the Aerosol filter..."))
+                           self.tr("Making the Aerosol filter..."))
 
         ########################################
         # clipping the QA Mask (only if is activated selected area or shape area)
@@ -526,7 +526,7 @@ class CloudMaskingResult(object):
 
         ### ending process
         update_process_bar(self.process_bar, 100, self.process_status,
-                           self.tr(u"DONE"))
+                           self.tr("DONE"))
 
     def do_pixel_qa(self, pixel_qa_file, checked_items, specific_values=[]):
         """
@@ -535,7 +535,7 @@ class CloudMaskingResult(object):
         # tmp file for Pixel QA
         self.pixel_qa = os.path.join(self.tmp_dir, "pixel_qa_{}.tif".format(datetime.now().strftime('%H%M%S')))
         update_process_bar(self.process_bar, 50, self.process_status,
-                           self.tr(u"Making the Pixel QA filter..."))
+                           self.tr("Making the Pixel QA filter..."))
 
         ########################################
         # clipping the QA Mask (only if is activated selected area or shape area)
@@ -607,4 +607,4 @@ class CloudMaskingResult(object):
 
         ### ending process
         update_process_bar(self.process_bar, 100, self.process_status,
-                           self.tr(u"DONE"))
+                           self.tr("DONE"))
