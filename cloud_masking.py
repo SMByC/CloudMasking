@@ -30,8 +30,8 @@ from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication,
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QFileDialog, QListWidgetItem, QSizePolicy
 from qgis.PyQt.QtGui import QIcon, QCursor
 from qgis.PyQt.QtWidgets import QCheckBox, QGroupBox, QRadioButton
-from qgis.gui import QgsMessageBar
-from qgis.core import QgsMessageLog, QgsProject, QgsRasterLayer, QgsMapLayer, QgsCoordinateTransform, QgsMapLayerProxyModel
+from qgis.core import QgsMessageLog, QgsProject, QgsRasterLayer, QgsMapLayer, QgsCoordinateTransform, \
+    QgsMapLayerProxyModel, Qgis
 # Initialize Qt resources from file resources.py
 from . import resources
 
@@ -251,7 +251,7 @@ class CloudMasking(object):
                     msg_error = "An error has occurred in '{0}': {1}. " \
                                 "See more in Qgis log message.".format(func_name, e)
                     self.iface.messageBar().pushMessage("Error", msg_error,
-                                                        level=QgsMessageBar.CRITICAL, duration=0)
+                                                        level=Qgis.Critical, duration=0)
 
                     # message in log
                     msg_error = "\n################## ERROR IN CLOUD MASKING PLUGIN:"
@@ -403,7 +403,7 @@ class CloudMasking(object):
             self.masking_result.clipping_with_shape = True
             self.masking_result.shape_layer = self.dockwidget.QCBox_MaskInShapeArea.currentLayer()
             # get and save trim extent of shapefile for clip
-            canvas_crs = self.canvas.mapRenderer().destinationCrs()
+            canvas_crs = self.canvas.mapSettings().destinationCrs()
             shape_crs = self.masking_result.shape_layer.crs()
             shape_canvas_transform = QgsCoordinateTransform(shape_crs, canvas_crs)
             self.masking_result.shape_extent = shape_canvas_transform.transform(self.masking_result.shape_layer.extent())
