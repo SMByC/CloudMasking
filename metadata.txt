@@ -1,18 +1,11 @@
-# This file contains metadata for your plugin. Since 
-# version 2.0 of QGIS this is the proper way to supply 
-# information about a plugin. The old method of 
-# embedding metadata in __init__.py will 
-# is no longer supported since version 2.0.
-
-# This file should be included when you package your plugin.# Mandatory items:
-
 [general]
 name=Cloud Masking
 description=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7 and 8) products using different process and filters such as Fmask, Blue Band, Cloud QA, Aerosol and Pixel QA.
 about=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7 and 8) products using different process and filters such as Fmask, Blue Band, Cloud QA, Aerosol and Pixel QA.
-version=18.4.24
-qgisMinimumVersion=2.14
-qgisMaximumVersion=2.99
+
+version=18.x
+qgisMinimumVersion=3.0
+qgisMaximumVersion=3.99
 
 author=Xavier Corredor Llano, SMByC
 email=xcorredorl@ideam.gov.co
@@ -21,21 +14,17 @@ homepage=https://smbyc.bitbucket.io/qgisplugins/cloudmasking
 tracker=https://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues
 repository=https://bitbucket.org/smbyc/qgisplugin-cloudmasking
 
-# Uncomment the following line and add your changelog:
 changelog=
     18.X
+    - Migrate to Qgis 3, Python 3 and Qt5
     - Implemented the PyTest and Pipeline with some test
 
     Previous versions:
     - All commits in: https://bitbucket.org/smbyc/qgisplugin-cloudmasking/commits/all
 
-# Tags are comma separated with spaces allowed
 tags=cloud,masking,landsat,raster,remote sensing
 
 category=Raster
 icon=icons/cloud_masking.svg
-# experimental flag
 experimental=False
-
-# deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
