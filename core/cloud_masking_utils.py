@@ -32,7 +32,7 @@ def mtl2dict(filename, to_float=True):
     mtl = {}
 
     # Open filename with context manager
-    with open(filename, 'rb') as f:
+    with open(filename, 'r') as f:
         # Read all lines in file
         for line in f.readlines():
             # Split KEY = VALUE entries
