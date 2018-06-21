@@ -785,8 +785,8 @@ class CloudMasking(object):
                         enable_symbology,
                         transparent=[])
         # Refresh layer symbology
-        model = self.iface.layerTreeView().model()
-        model.refreshLayerLegend(self.cloud_mask_rlayer)
+        layer_node = QgsProject.instance().layerTreeRoot().findLayer(self.cloud_mask_rlayer)
+        self.iface.layerTreeView().layerTreeModel().refreshLayerLegend(layer_node)
 
     def fileDialog_saveMask(self):
         """Open QFileDialog for save mask file
