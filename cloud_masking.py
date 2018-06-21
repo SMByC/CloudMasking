@@ -121,7 +121,7 @@ class CloudMasking(object):
         # Add toolbar button and menu item
         self.iface.addPluginToMenu(self.menu_name_plugin, self.about_action)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
 
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed"""
@@ -159,7 +159,7 @@ class CloudMasking(object):
         self.iface.removePluginMenu(self.menu_name_plugin, self.about_action)
         self.iface.removeToolBarIcon(self.dockable_action)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
 
     def run(self):
         """Run method that loads and starts the plugin"""
@@ -167,7 +167,7 @@ class CloudMasking(object):
         if not self.pluginIsActive:
             self.pluginIsActive = True
 
-            #print "** STARTING CloudMasking"
+            # print "** STARTING CloudMasking"
 
             # dockwidget may not exist if:
             #    first run of plugin
@@ -263,14 +263,17 @@ class CloudMasking(object):
                     QgsMessageLog.logMessage(msg_error)
 
             return applicator
+
         return decorate
 
     def update_tab_select_mask(self, current_tab_idx):
         """Adjust the size tab based on the content"""
         for tab_idx in range(self.dockwidget.select_layer_mask.count()):
             if tab_idx != current_tab_idx:
-                self.dockwidget.select_layer_mask.widget(tab_idx).setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-        self.dockwidget.select_layer_mask.widget(current_tab_idx).setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+                self.dockwidget.select_layer_mask.widget(tab_idx).setSizePolicy(QSizePolicy.Ignored,
+                                                                                QSizePolicy.Ignored)
+        self.dockwidget.select_layer_mask.widget(current_tab_idx).setSizePolicy(QSizePolicy.Preferred,
+                                                                                QSizePolicy.Preferred)
         self.dockwidget.select_layer_mask.widget(current_tab_idx).resize(
             self.dockwidget.select_layer_mask.widget(current_tab_idx).minimumSizeHint())
         self.dockwidget.select_layer_mask.widget(current_tab_idx).adjustSize()
@@ -279,7 +282,7 @@ class CloudMasking(object):
         # filtering
         excepted = []
         if self.dockwidget.OnlyMaskLayers_SingleMask.isChecked():
-            for layer in [l for l in self.iface.legendInterface().layers() if l.type() == QgsMapLayer.RasterLayer]:
+            for layer in [l for l in QgsProject.instance().mapLayers().values() if l.type() == QgsMapLayer.RasterLayer]:
                 if not layer.name().startswith("Cloud Mask"):
                     excepted.append(layer)
         # set excepted layers
@@ -289,7 +292,7 @@ class CloudMasking(object):
         # delete items
         self.dockwidget.select_MultipleLayerMask.clear()
         # filtering
-        for layer in [l for l in self.iface.legendInterface().layers() if l.type() == QgsMapLayer.RasterLayer]:
+        for layer in [l for l in QgsProject.instance().mapLayers().values() if l.type() == QgsMapLayer.RasterLayer]:
             if self.dockwidget.OnlyMaskLayers_MultipleMask.isChecked() and not layer.name().startswith("Cloud Mask"):
                 continue
             item = QListWidgetItem(layer.name())
@@ -352,7 +355,7 @@ class CloudMasking(object):
 
     @pyqtSlot()
     def fileDialog_browse(self, combo_box, dialog_title, dialog_types, layer_type, suggested_path=""):
-        file_path, _, _ = QFileDialog.getOpenFileName(self.dockwidget, dialog_title, suggested_path, dialog_types)
+        file_path, _ = QFileDialog.getOpenFileName(self.dockwidget, dialog_title, suggested_path, dialog_types)
         if file_path != '' and os.path.isfile(file_path):
             # load to qgis and update combobox list
             load_and_select_filepath_in(combo_box, file_path, layer_type)
@@ -366,17 +369,17 @@ class CloudMasking(object):
 
         # check if any filters has been enabled before process
         if (not self.dockwidget.checkBox_FMask.isChecked() and
-            not self.dockwidget.checkBox_BlueBand.isChecked() and
-            not self.dockwidget.checkBox_CloudQA.isChecked() and
-            not self.dockwidget.checkBox_Aerosol.isChecked() and
-            not self.dockwidget.checkBox_PixelQA.isChecked()):
+                not self.dockwidget.checkBox_BlueBand.isChecked() and
+                not self.dockwidget.checkBox_CloudQA.isChecked() and
+                not self.dockwidget.checkBox_Aerosol.isChecked() and
+                not self.dockwidget.checkBox_PixelQA.isChecked()):
             self.dockwidget.status_processMask.setText(
                 self.tr("Error: no filters enabled for apply"))
             return
 
         # create the masking result instance if not exist
         if (not isinstance(self.masking_result, cloud_filters.CloudMaskingResult) or
-            not self.masking_result.landsat_scene == self.dockwidget.mtl_file['LANDSAT_SCENE_ID']):
+                not self.masking_result.landsat_scene == self.dockwidget.mtl_file['LANDSAT_SCENE_ID']):
             # create a new instance of cloud masking result
             self.masking_result = cloud_filters.CloudMaskingResult(self.dockwidget.mtl_path,
                                                                    self.dockwidget.mtl_file,
@@ -406,9 +409,11 @@ class CloudMasking(object):
             canvas_crs = self.canvas.mapSettings().destinationCrs()
             shape_crs = self.masking_result.shape_layer.crs()
             shape_canvas_transform = QgsCoordinateTransform(shape_crs, canvas_crs)
-            self.masking_result.shape_extent = shape_canvas_transform.transform(self.masking_result.shape_layer.extent())
+            self.masking_result.shape_extent = shape_canvas_transform.transform(
+                self.masking_result.shape_layer.extent())
 
-            self.masking_result.shape_path = get_file_path_of_layer(self.dockwidget.QCBox_MaskInShapeArea.currentLayer())
+            self.masking_result.shape_path = get_file_path_of_layer(
+                self.dockwidget.QCBox_MaskInShapeArea.currentLayer())
             if self.dockwidget.shapeSelector_CutWithShape.isChecked():
                 self.masking_result.crop_to_cutline = True
             else:
@@ -571,7 +576,7 @@ class CloudMasking(object):
 
             # one bit items selected
             if self.dockwidget.landsat_version in [4, 5, 7]:
-                pixel_qa_items_1b = ["Fill-nodata (bit 0)","Water (bit 2)", "Cloud Shadow (bit 3)",
+                pixel_qa_items_1b = ["Fill-nodata (bit 0)", "Water (bit 2)", "Cloud Shadow (bit 3)",
                                      "Snow (bit 4)", "Cloud (bit 5)"]
             if self.dockwidget.landsat_version in [8]:
                 pixel_qa_items_1b = ["Fill-nodata (bit 0)", "Water (bit 2)", "Cloud Shadow (bit 3)",
@@ -646,7 +651,8 @@ class CloudMasking(object):
             self.final_cloud_mask_file = os.path.join(self.dockwidget.tmp_dir,
                                                       "cloud_blended_{}.tif".format(datetime.now().strftime('%H%M%S')))
             gdal_calc.Calc(calc="A*(A>1)+B*logical_and(A==1,B>1)+C*logical_and(logical_and(A==1,B==1),C>1)"
-                           "+D*logical_and(logical_and(A==1,B==1),C==1)", outfile=self.final_cloud_mask_file,
+                                "+D*logical_and(logical_and(A==1,B==1),C==1)",
+                           outfile=self.final_cloud_mask_file,
                            A=self.masking_result.cloud_masking_files[0], B=self.masking_result.cloud_masking_files[1],
                            C=self.masking_result.cloud_masking_files[2], D=self.masking_result.cloud_masking_files[3])
 
@@ -657,7 +663,7 @@ class CloudMasking(object):
         ########################################
         # Keep the original size if made the mask in selected area
         if self.dockwidget.checkBox_ExtentSelector.isChecked() and \
-           self.dockwidget.widget_ExtentSelector.extentSelector_KeepOriginalSize.isChecked():
+                self.dockwidget.widget_ExtentSelector.extentSelector_KeepOriginalSize.isChecked():
             img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                     self.dockwidget.mtl_file['FILE_NAME_BAND_1']))
             extent = get_extent(img_path)
@@ -666,12 +672,14 @@ class CloudMasking(object):
                            projWin=extent, noData=1)
             os.remove(self.final_cloud_mask_file)
             # unset the nodata, leave the 1 (valid fields)
-            gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "1.tif"), noData="none")
+            gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "1.tif"),
+                           noData="none")
             # only left the final file
             os.remove(self.final_cloud_mask_file.replace(".tif", "1.tif"))
         else:
             # unset the nodata
-            gdal.Translate(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file, noData="none")
+            gdal.Translate(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file,
+                           noData="none")
             os.remove(self.final_cloud_mask_file)
             os.rename(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file)
 
@@ -685,11 +693,13 @@ class CloudMasking(object):
             img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                     self.dockwidget.mtl_file['FILE_NAME_BAND_1']))
             extent = get_extent(img_path)
-            gdal.Translate(self.final_cloud_mask_file.replace(".tif", "2.tif"), self.final_cloud_mask_file.replace(".tif", "1.tif"),
+            gdal.Translate(self.final_cloud_mask_file.replace(".tif", "2.tif"),
+                           self.final_cloud_mask_file.replace(".tif", "1.tif"),
                            projWin=extent, noData=1)
             os.remove(self.final_cloud_mask_file.replace(".tif", "1.tif"))
             # unset the nodata
-            gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "2.tif"), noData="none")
+            gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "2.tif"),
+                           noData="none")
             os.remove(self.final_cloud_mask_file.replace(".tif", "2.tif"))
         ########################################
         # Delete data outside the shapefile or selected area, as 255 value
@@ -703,7 +713,8 @@ class CloudMasking(object):
                            projWin=extent, noData=255)
             os.remove(self.final_cloud_mask_file)
             # unset the nodata
-            gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "1.tif"), noData="none")
+            gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "1.tif"),
+                           noData="none")
             # only left the final file
             os.remove(self.final_cloud_mask_file.replace(".tif", "1.tif"))
 
@@ -773,17 +784,19 @@ class CloudMasking(object):
                         enable_symbology,
                         transparent=[])
         # Refresh layer symbology
-        self.iface.legendInterface().refreshLayerSymbology(self.cloud_mask_rlayer)
+        model = self.iface.layerTreeView().model()
+        model.refreshLayerLegend(self.cloud_mask_rlayer)
 
     def fileDialog_saveMask(self):
         """Open QFileDialog for save mask file
         """
         suggested_filename_mask = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Mask.tif"
-        mask_outpath, _, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr("Save mask file"),
-                                                   os.path.join(os.path.dirname(self.dockwidget.mtl_path),
-                                                                suggested_filename_mask),
-                                                   self.tr("Tif files (*.tif);;All files (*.*)"))
-        mask_inpath = str(self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()).dataProvider().dataSourceUri())
+        mask_outpath, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr("Save mask file"),
+                                                      os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                                                                   suggested_filename_mask),
+                                                      self.tr("Tif files (*.tif);;All files (*.*)"))
+        mask_inpath = str(
+            self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()).dataProvider().dataSourceUri())
 
         if mask_outpath != '' and mask_inpath != '':
             # set nodata to valid data (1) and copy to destination
@@ -793,9 +806,9 @@ class CloudMasking(object):
     def fileDialog_SelectPFile(self):
         """Open QFileDialog for select particular file to apply mask
         """
-        p_file_path, _, _ = QFileDialog.getOpenFileName(self.dockwidget, self.tr("Select particular file to apply mask"),
-                                                  os.path.dirname(self.dockwidget.mtl_path),
-                                                  self.tr("Tif files (*.tif);;All files (*.*)"))
+        p_file_path, _ = QFileDialog.getOpenFileName(self.dockwidget, self.tr("Select particular file to apply mask"),
+                                                     os.path.dirname(self.dockwidget.mtl_path),
+                                                     self.tr("Tif files (*.tif);;All files (*.*)"))
 
         if p_file_path != '':
             self.dockwidget.lineEdit_ParticularFile.setText(p_file_path)
@@ -808,10 +821,10 @@ class CloudMasking(object):
         else:
             suggested_filename_result = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Enmask.tif"
 
-        result_path, _, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr("Save result"),
-                                                  os.path.join(os.path.dirname(self.dockwidget.mtl_path),
-                                                               suggested_filename_result),
-                                                  self.tr("Tif files (*.tif);;All files (*.*)"))
+        result_path, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr("Save result"),
+                                                     os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                                                                  suggested_filename_result),
+                                                     self.tr("Tif files (*.tif);;All files (*.*)"))
 
         if result_path != '':
             self.dockwidget.lineEdit_ResultPath.setText(result_path)
@@ -855,13 +868,15 @@ class CloudMasking(object):
 
         ## Single mask layer
         if self.dockwidget.select_layer_mask.currentIndex() == 0:
-            final_mask_fd, final_mask_path = prepare_mask(self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()))
+            final_mask_fd, final_mask_path = prepare_mask(
+                self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()))
             if not final_mask_path:
                 return
 
         ## Multiple mask layer
         if self.dockwidget.select_layer_mask.currentIndex() == 1:
-            items = [self.dockwidget.select_MultipleLayerMask.item(i) for i in range(self.dockwidget.select_MultipleLayerMask.count())]
+            items = [self.dockwidget.select_MultipleLayerMask.item(i) for i in
+                     range(self.dockwidget.select_MultipleLayerMask.count())]
             layers_selected = [self.getLayerByName(item.text()) for item in items if item.checkState() == Qt.Checked]
             if not layers_selected:
                 update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
@@ -870,7 +885,8 @@ class CloudMasking(object):
             # prepare
             masks = [prepare_mask(layer) for layer in layers_selected]
             # merge all mask
-            final_mask_fd, final_mask_path = tempfile.mkstemp(prefix='merge_masks_', suffix='.tif', dir=self.dockwidget.tmp_dir)
+            final_mask_fd, final_mask_path = tempfile.mkstemp(prefix='merge_masks_', suffix='.tif',
+                                                              dir=self.dockwidget.tmp_dir)
             gdal_merge.main(["", "-of", "GTiff", "-o", final_mask_path, "-n", "1"] + [mask[1] for mask in masks])
 
         # get and set stack bands for make layer stack for apply mask
@@ -889,7 +905,8 @@ class CloudMasking(object):
         ## Select the stack or file to apply mask
         # reflectance stack, normal bands (_bands and _B)
         if self.dockwidget.radioButton_ToRaw_Bands.isChecked():
-            stack_bands = [os.path.join(os.path.dirname(self.dockwidget.mtl_path), self.dockwidget.mtl_file['FILE_NAME_BAND_' + str(N)])
+            stack_bands = [os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                                        self.dockwidget.mtl_file['FILE_NAME_BAND_' + str(N)])
                            for N in reflectance_bands]
             stack_bands = [get_prefer_name(file_path) for file_path in stack_bands]
         # SR reflectance stack if are available (_sr_bands)
@@ -926,7 +943,7 @@ class CloudMasking(object):
         # check images size if is different, this mean that the mask is a selected area
         # and "keep the original image size" is not selected. Then resize the reflective
         # stack to mask size
-        inprogress_file = self.reflective_stack_file\
+        inprogress_file = self.reflective_stack_file \
             .replace(".tif", "_inprogress.tif").replace(".TIF", "_inprogress.tif")
         if get_extent(self.reflective_stack_file) != get_extent(final_mask_path):
             extent_mask = get_extent(final_mask_path)
@@ -992,7 +1009,7 @@ class CloudMasking(object):
         # first prompt
         quit_msg = "Are you sure you want to clean all: delete unsaved masks, clean tmp files, unload processed images?"
         reply = QMessageBox.question(self.dockwidget, 'Cleaning all for the current MTL file...',
-                                           quit_msg, QMessageBox.Yes, QMessageBox.No)
+                                     quit_msg, QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.No:
             return
         # run clean temp files
@@ -1016,7 +1033,8 @@ class CloudMasking(object):
         try:
             self.dockwidget.unload_MTL()
             self.dockwidget.widget_ExtentSelector.stop()
-        except: pass
+        except:
+            pass
 
         # unload all layers instances from Qgis saved in tmp dir
         layers_loaded = QgsProject.instance().mapLayers().values()
@@ -1024,7 +1042,8 @@ class CloudMasking(object):
             d = self.dockwidget.tmp_dir
             files_in_tmp_dir = [os.path.join(d, f) for f in os.listdir(d)
                                 if os.path.isfile(os.path.join(d, f))]
-        except: files_in_tmp_dir = []
+        except:
+            files_in_tmp_dir = []
 
         layersToRemove = []
         for file_tmp in files_in_tmp_dir:
@@ -1043,5 +1062,5 @@ class CloudMasking(object):
             shutil.rmtree(self.dockwidget.tmp_dir, ignore_errors=True)
             self.dockwidget.tmp_dir.close()
             self.dockwidget.tmp_dir = None
-        except: pass
-
+        except:
+            pass

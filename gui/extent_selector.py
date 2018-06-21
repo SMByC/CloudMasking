@@ -22,7 +22,7 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QWidget
-from qgis.core import QgsPointXY, QgsRectangle, Qgis
+from qgis.core import QgsPointXY, QgsRectangle, Qgis, QgsWkbTypes
 from qgis.gui import QgsMapTool, QgsMapToolEmitPoint, QgsRubberBand
 
 plugin_folder = os.path.dirname(os.path.dirname(__file__))
@@ -125,13 +125,15 @@ class ExtentSelector(QWidget, FORM_CLASS):
 
 
 class RectangleMapTool(QgsMapToolEmitPoint):
+
     rectangleCreated = pyqtSignal()
+    deactivated = pyqtSignal()
 
     def __init__(self, canvas):
         self.canvas = canvas
         QgsMapToolEmitPoint.__init__(self, self.canvas)
 
-        self.rubberBand = QgsRubberBand(self.canvas, Qgis.Polygon)
+        self.rubberBand = QgsRubberBand(self.canvas,  QgsWkbTypes.PolygonGeometry)
         self.rubberBand.setColor(QColor(255, 0, 0, 100))
         self.rubberBand.setWidth(2)
 
@@ -140,7 +142,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
     def reset(self):
         self.startPoint = self.endPoint = None
         self.isEmittingPoint = False
-        self.rubberBand.reset(Qgis.Polygon)
+        self.rubberBand.reset(QgsWkbTypes.PolygonGeometry)
 
     def canvasPressEvent(self, e):
         self.startPoint = self.toMapCoordinates(e.pos())
@@ -151,7 +153,8 @@ class RectangleMapTool(QgsMapToolEmitPoint):
 
     def canvasReleaseEvent(self, e):
         self.isEmittingPoint = False
-        self.rectangleCreated.emit()
+        if self.rectangle() is not None:
+            self.rectangleCreated.emit()
 
     def canvasMoveEvent(self, e):
         if not self.isEmittingPoint:
@@ -161,7 +164,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
         self.showRect(self.startPoint, self.endPoint)
 
     def showRect(self, startPoint, endPoint):
-        self.rubberBand.reset(Qgis.Polygon)
+        self.rubberBand.reset(QgsWkbTypes.PolygonGeometry)
         if startPoint.x() == endPoint.x() or startPoint.y() == endPoint.y():
             return
 
@@ -173,13 +176,15 @@ class RectangleMapTool(QgsMapToolEmitPoint):
         self.rubberBand.addPoint(point1, False)
         self.rubberBand.addPoint(point2, False)
         self.rubberBand.addPoint(point3, False)
-        self.rubberBand.addPoint(point4, True)  # true to update canvas
+        # true to update canvas
+        self.rubberBand.addPoint(point4, True)
         self.rubberBand.show()
 
     def rectangle(self):
         if self.startPoint is None or self.endPoint is None:
             return None
-        elif self.startPoint.x() == self.endPoint.x() or self.startPoint.y() == self.endPoint.y():
+        elif self.startPoint.x() == self.endPoint.x() or \
+                self.startPoint.y() == self.endPoint.y():
             return None
 
         return QgsRectangle(self.startPoint, self.endPoint)

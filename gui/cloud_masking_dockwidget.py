@@ -45,7 +45,6 @@ HOMEPAGE = cfg.get('general', 'homepage')
 
 
 class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
-
     # Fmask parameters by default
     cloud_prob_thresh = 0.225
     cloud_buffer = 4
@@ -89,7 +88,8 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.about_dialog = AboutDialog()
         self.QPBtn_PluginInfo.setText(self.tr("CloudMasking v{}".format(VERSION)))
         self.QPBtn_PluginInfo.clicked.connect(self.about_dialog.show)
-        self.QPBtn_PluginDocs.clicked.connect(lambda: webbrowser.open("https://smbyc.bitbucket.io/qgisplugins/cloudmasking"))
+        self.QPBtn_PluginDocs.clicked.connect(
+            lambda: webbrowser.open("https://smbyc.bitbucket.io/qgisplugins/cloudmasking"))
 
         # find MTL file #########
         self.button_FindMTL.clicked.connect(self.fileDialog_findMTL)
@@ -204,10 +204,12 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         # shape and selected area start hidden
         self.widget_ExtentSelector.setHidden(True)
         self.widget_ShapeSelector.setHidden(True)
+
         # connections
         def selector(widget_from, widget_to):
             if widget_from.isChecked():
                 widget_to.setChecked(False)
+
         self.checkBox_ExtentSelector.toggled.connect(
             lambda: selector(self.checkBox_ExtentSelector, self.checkBox_ShapeSelector))
         self.checkBox_ShapeSelector.toggled.connect(
@@ -236,9 +238,10 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
 
     ### SpinBox and Slider float connections (Qslider(int) with QdoubleSpinBox(float))
     def update_spinbox(self, spinbox, value, multiplier):
-        spinbox.setValue(value/float(multiplier))
+        spinbox.setValue(value / float(multiplier))
+
     def update_slider(self, slider, value, multiplier):
-        slider.setValue(value*multiplier)
+        slider.setValue(value * multiplier)
 
     ### Extent selector widget
     def switchClippingMode(self):
@@ -247,11 +250,13 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         else:
             self.widget_ExtentSelector.stop()
         self.checkRun()
+
     def checkRun(self):
         if self.checkBox_ExtentSelector.isChecked():
             self.isExtentAreaSelected = self.widget_ExtentSelector.isCoordsValid()
         else:
             self.isExtentAreaSelected = False
+
     def extentChanged(self):
         self.activateWindow()
         self.raise_()
@@ -261,8 +266,8 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
     def fileDialog_findMTL(self):
         """Open QFileDialog to find a MTL file
         """
-        dialog_mtl_path = QFileDialog.getOpenFileName(self, self.tr("Select the MTL file"),
-                                                            "", self.tr("MTL files (*MTL.txt);;All files (*.*)"))
+        dialog_mtl_path, _ = QFileDialog.getOpenFileName(self, self.tr("Select the MTL file"),
+                                                         "", self.tr("MTL files (*MTL.txt);;All files (*.*)"))
         if dialog_mtl_path != '':
             self.lineEdit_PathMTL.setText(dialog_mtl_path)
 
@@ -286,7 +291,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             # normalize metadata for old MLT format (old Landsat 4 and 5)
             if 'BAND1_FILE_NAME' in self.mtl_file:
                 for N in [1, 2, 3, 4, 5, 7, 6]:
-                    self.mtl_file['FILE_NAME_BAND_' + str(N)] = self.mtl_file['BAND'+str(N)+'_FILE_NAME']
+                    self.mtl_file['FILE_NAME_BAND_' + str(N)] = self.mtl_file['BAND' + str(N) + '_FILE_NAME']
             if 'METADATA_L1_FILE_NAME' in self.mtl_file:
                 self.mtl_file['LANDSAT_SCENE_ID'] = self.mtl_file['METADATA_L1_FILE_NAME'].split('_MTL.txt')[0]
         except:
@@ -301,12 +306,12 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         if self.landsat_version in [4, 5]:
             # get the reflective file names bands
             reflective_and_thermal_bands = [
-                os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_'+str(N)])
+                os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_' + str(N)])
                 for N in [1, 2, 3, 4, 5, 7, 6]]
         if self.landsat_version in [7]:
             # get the reflective file names bands
             reflective_and_thermal_bands = [
-                os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_'+str(N)])
+                os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_' + str(N)])
                 for N in [1, 2, 3, 4, 5, 7]]
             reflective_and_thermal_bands += [
                 os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_6_VCID_' + str(N)])
@@ -314,7 +319,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         if self.landsat_version in [8]:
             # get the reflective file names bands
             reflective_and_thermal_bands = [
-                os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_'+str(N)])
+                os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_' + str(N)])
                 for N in [1, 2, 3, 4, 5, 6, 7, 9, 10, 11]]
 
         # set the prefer file name band for process
@@ -324,9 +329,9 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         for file_path in reflective_and_thermal_bands:
             if not os.path.isfile(file_path):
                 msg = "The file {} not exists, is necessary that the raw bands _bandN.tif or _BN.TIF of Landsat " \
-                           "are in the same location as the MTL file.".format(os.path.basename(file_path))
+                      "are in the same location as the MTL file.".format(os.path.basename(file_path))
                 QMessageBox.question(self, 'Problem while Loading the new MTL...',
-                                             msg, QMessageBox.Ok)
+                                     msg, QMessageBox.Ok)
                 self.status_LoadedMTL.setText(self.tr("Error: Not raw landsat files"))
                 self.unload_MTL()
                 return
@@ -391,8 +396,9 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         if self.landsat_version in [4, 5, 7]:
             self.frame_CloudQA_L457.setVisible(True)
             self.cloud_qa_file = os.path.join(os.path.dirname(self.mtl_path),
-                                         self.mtl_file['FILE_NAME_BAND_1'].replace(self.mtl_file['FILE_NAME_BAND_1'].split("_")[-1],
-                                                                                   "sr_cloud_qa.tif"))
+                                              self.mtl_file['FILE_NAME_BAND_1'].replace(
+                                                  self.mtl_file['FILE_NAME_BAND_1'].split("_")[-1],
+                                                  "sr_cloud_qa.tif"))
             # check Cloud QA files
             if os.path.isfile(self.cloud_qa_file):
                 self.checkBox_CloudQA.setEnabled(True)
@@ -408,8 +414,9 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         if self.landsat_version in [8]:
             self.frame_Aerosol_L8.setVisible(True)
             self.aerosol_file = os.path.join(os.path.dirname(self.mtl_path),
-                                         self.mtl_file['FILE_NAME_BAND_1'].replace(self.mtl_file['FILE_NAME_BAND_1'].split("_")[-1],
-                                                                                   "sr_aerosol.tif"))
+                                             self.mtl_file['FILE_NAME_BAND_1'].replace(
+                                                 self.mtl_file['FILE_NAME_BAND_1'].split("_")[-1],
+                                                 "sr_aerosol.tif"))
             # check Aerosol file
             if os.path.isfile(self.aerosol_file):
                 self.checkBox_Aerosol.setEnabled(True)
@@ -427,7 +434,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         # search and check pixel QA file
         self.pixel_qa_file = os.path.join(os.path.dirname(self.mtl_path),
                                           self.mtl_file['FILE_NAME_BAND_1'].replace(
-                                             self.mtl_file['FILE_NAME_BAND_1'].split("_")[-1], "pixel_qa.tif"))
+                                              self.mtl_file['FILE_NAME_BAND_1'].split("_")[-1], "pixel_qa.tif"))
         # check pixel QA file exists
         if os.path.isfile(self.pixel_qa_file):
             self.checkBox_PixelQA.setEnabled(True)
@@ -476,4 +483,3 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         # Load stack and clear all #########
         self.button_ClearAll.setEnabled(False)
         self.groupBox_LoadStacks.setEnabled(False)
-
