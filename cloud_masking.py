@@ -132,6 +132,7 @@ class CloudMasking(object):
         # disconnects
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
         self.canvas.layersChanged.disconnect(self.updateLayersList_MultipleLayerMask)
+        QgsProject.instance().layersAdded.disconnect(self.updateLayersList_SingleLayerMask)
 
         # remove this statement if dockwidget is to remain
         # for reuse if plugin is reopened
@@ -1045,12 +1046,12 @@ class CloudMasking(object):
         except:
             files_in_tmp_dir = []
 
-        layersToRemove = []
+        layers_to_remove = []
         for file_tmp in files_in_tmp_dir:
             for layer_loaded in layers_loaded:
                 if file_tmp == layer_loaded.dataProvider().dataSourceUri():
-                    layersToRemove.append(layer_loaded)
-        QgsProject.instance().removeMapLayers(layersToRemove)
+                    layers_to_remove.append(layer_loaded.id())
+        QgsProject.instance().removeMapLayers(layers_to_remove)
 
         # unload shape area if exists
         for layer_name, layer_loaded in QgsProject.instance().mapLayers().items():
