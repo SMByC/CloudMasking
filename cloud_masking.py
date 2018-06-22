@@ -409,7 +409,7 @@ class CloudMasking(object):
             # get and save trim extent of shapefile for clip
             canvas_crs = self.canvas.mapSettings().destinationCrs()
             shape_crs = self.masking_result.shape_layer.crs()
-            shape_canvas_transform = QgsCoordinateTransform(shape_crs, canvas_crs)
+            shape_canvas_transform = QgsCoordinateTransform(shape_crs, canvas_crs, QgsProject.instance())
             self.masking_result.shape_extent = shape_canvas_transform.transform(
                 self.masking_result.shape_layer.extent())
 
