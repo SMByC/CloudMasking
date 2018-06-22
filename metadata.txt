@@ -17,7 +17,7 @@ repository=https://bitbucket.org/smbyc/qgisplugin-cloudmasking
 changelog=
     18.X
     - Migrate to Qgis 3, Python 3 and Qt5
-    - Implemented the PyTest and Pipeline with some test
+    - Added support to use a memory/scratch layer for mask inside it
 
     Previous versions:
     - All commits in: https://bitbucket.org/smbyc/qgisplugin-cloudmasking/commits/all
