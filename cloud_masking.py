@@ -30,7 +30,7 @@ from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt,
 from PyQt4.QtGui import QAction, QIcon, QMessageBox, QApplication, QCursor, QFileDialog, QListWidgetItem, QSizePolicy
 from PyQt4.QtGui import QCheckBox, QGroupBox, QRadioButton
 from qgis.gui import QgsMessageBar, QgsMapLayerProxyModel
-from qgis.core import QgsMessageLog, QgsMapLayerRegistry, QgsRasterLayer, QgsMapLayer, QgsCoordinateTransform
+from qgis.core import *
 # Initialize Qt resources from file resources.py
 import resources
 
@@ -408,6 +408,15 @@ class CloudMasking:
             self.masking_result.shape_extent = shape_canvas_transform.transform(self.masking_result.shape_layer.extent())
 
             self.masking_result.shape_path = get_file_path_of_layer(self.dockwidget.QCBox_MaskInShapeArea.currentLayer())
+
+            # check if the shape is a memory layer, then save and used it
+            if self.masking_result.shape_path.startswith("memory"):
+                mem_layer = self.dockwidget.QCBox_MaskInShapeArea.currentLayer()
+                tmp_memory_fd, tmp_memory_file = tempfile.mkstemp(prefix='memory_layer_', suffix='.gpkg', dir=self.dockwidget.tmp_dir)
+                QgsVectorFileWriter.writeAsVectorFormat(mem_layer, tmp_memory_file, "UTF-8", mem_layer.crs(), "GPKG")
+                os.close(tmp_memory_fd)
+                self.masking_result.shape_path = tmp_memory_file
+
             if self.dockwidget.shapeSelector_CutWithShape.isChecked():
                 self.masking_result.crop_to_cutline = True
             else:
@@ -710,6 +719,11 @@ class CloudMasking:
         # Post process mask
 
         # delete unused output
+        # if memory/scratch layer was used
+        if self.dockwidget.checkBox_ShapeSelector.isChecked() and \
+                get_file_path_of_layer(self.dockwidget.QCBox_MaskInShapeArea.currentLayer()).startswith("memory"):
+            if os.path.isfile(tmp_memory_file):
+                os.remove(tmp_memory_file)
         # from fmask
         if self.dockwidget.checkBox_FMask.isChecked():
             os.remove(self.masking_result.angles_file)
