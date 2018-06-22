@@ -495,8 +495,9 @@ class CloudMasking(object):
                 cloud_qa_items_1b = ["Dark Dense Vegetation (bit 0)", "Cloud (bit 1)", "Cloud Shadow (bit 2)",
                                      "Adjacent to cloud (bit 3)", "Snow (bit 4)", "Water (bit 5)"]
                 for checkbox in self.dockwidget.widget_CloudQA_L457_bits.findChildren(QCheckBox):
-                    if checkbox.text() in cloud_qa_items_1b:
-                        checked_items[checkbox.text()] = checkbox.isChecked()
+                    item = checkbox.text().replace("&", "")
+                    if item in cloud_qa_items_1b:
+                        checked_items[item] = checkbox.isChecked()
 
                 # set and check the specific decimal values
                 try:
@@ -531,21 +532,24 @@ class CloudMasking(object):
                 aerosol_items_1b = ["Aerosol Retrieval - Valid (bit 1)", "Aerosol Retrieval - Interpolated (bit 2)",
                                     "Water Pixel (bit 3)"]
                 for checkbox in self.dockwidget.widget_Aerosol_bits.findChildren(QCheckBox):
-                    if checkbox.text() in aerosol_items_1b:
-                        checked_items[checkbox.text()] = checkbox.isChecked()
+                    item = checkbox.text().replace("&", "")
+                    if item in aerosol_items_1b:
+                        checked_items[item] = checkbox.isChecked()
 
                 # two bits items selected
                 aerosol_items_2b = ["Aerosol Content (bits 6-7)"]
                 levels = ["Climatology content", "Low content", "Average content", "High content"]
 
                 for groupbox in self.dockwidget.widget_Aerosol_bits.findChildren(QGroupBox):
-                    if groupbox.title() in aerosol_items_2b and groupbox.isChecked():
+                    group_item = groupbox.title().replace("&", "")
+                    if group_item in aerosol_items_2b and groupbox.isChecked():
                         levels_selected = []
                         for radiobutton in groupbox.findChildren(QRadioButton):
-                            if radiobutton.text() in levels and radiobutton.isChecked():
-                                levels_selected.append(radiobutton.text())
+                            check_item = radiobutton.text().replace("&", "")
+                            if check_item in levels and radiobutton.isChecked():
+                                levels_selected.append(check_item)
                         if levels_selected:
-                            checked_items[groupbox.title()] = levels_selected
+                            checked_items[group_item] = levels_selected
 
                 # set and check the specific decimal values
                 try:
@@ -583,8 +587,9 @@ class CloudMasking(object):
                 pixel_qa_items_1b = ["Fill-nodata (bit 0)", "Water (bit 2)", "Cloud Shadow (bit 3)",
                                      "Snow (bit 4)", "Cloud (bit 5)", "Terrain Occlusion (bit 10)"]
             for checkbox in self.dockwidget.widget_PixelQA_bits.findChildren(QCheckBox):
-                if checkbox.text() in pixel_qa_items_1b:
-                    checked_items[checkbox.text()] = checkbox.isChecked()
+                item = checkbox.text().replace("&", "")
+                if item in pixel_qa_items_1b:
+                    checked_items[item] = checkbox.isChecked()
 
             # two bits items selected
             if self.dockwidget.landsat_version in [4, 5, 7]:
@@ -594,13 +599,15 @@ class CloudMasking(object):
             levels = ["0% None", "0-33% Low", "34-66% Medium", "67-100% High"]
 
             for groupbox in self.dockwidget.widget_PixelQA_bits.findChildren(QGroupBox):
-                if groupbox.title() in pixel_qa_items_2b and groupbox.isChecked():
+                group_item = groupbox.title().replace("&", "")
+                if group_item in pixel_qa_items_2b and groupbox.isChecked():
                     levels_selected = []
                     for radiobutton in groupbox.findChildren(QRadioButton):
-                        if radiobutton.text() in levels and radiobutton.isChecked():
-                            levels_selected.append(radiobutton.text())
+                        check_item = radiobutton.text().replace("&", "")
+                        if check_item in levels and radiobutton.isChecked():
+                            levels_selected.append(check_item)
                     if levels_selected:
-                        checked_items[groupbox.title()] = levels_selected
+                        checked_items[group_item] = levels_selected
 
             # set and check the specific decimal values
             try:

@@ -209,7 +209,7 @@ def binary_combination(binary, fix_bits=None):
     for i in range(1 << n):
         s = bin(i)[2:]
         s = '0'*(n-len(s))+s
-        bit_string = map(int, list(s))
+        bit_string = list(map(int, list(s)))
         if all([bit_string[fb] == int(binary[fb]) for fb in fix_bits]):
             bit_string = [str(x) for x in bit_string]
             yield int("".join(bit_string), 2)
