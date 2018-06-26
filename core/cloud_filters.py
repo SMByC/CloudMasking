@@ -154,11 +154,11 @@ class CloudMaskingResult(object):
 
         if crop_to_cutline:
             #  -crop_to_cutline
-            call('gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline "{}" -dstnodata 0 "{}" "{}"'.
-                 format(shape_path, stack_file_trimmed, clip_file), shell=True)
+            call('gdalwarp -multi -wo NUM_THREADS=ALL_CPUS --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline "{}" '
+                 '-dstnodata 0 "{}" "{}"'.format(shape_path, stack_file_trimmed, clip_file), shell=True)
         else:
-            call('gdalwarp --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline "{}" -dstnodata {} "{}" "{}"'.
-                 format(shape_path, nodata, stack_file_trimmed, clip_file), shell=True)
+            call('gdalwarp -multi -wo NUM_THREADS=ALL_CPUS --config GDALWARP_IGNORE_BAD_CUTLINE YES -cutline "{}" '
+                 '-dstnodata {} "{}" "{}"'.format(shape_path, nodata, stack_file_trimmed, clip_file), shell=True)
         os.remove(stack_file_trimmed)
 
     def do_nodata_mask(self, img_to_mask):
