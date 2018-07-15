@@ -218,9 +218,8 @@ def doPotentialCloudFirstPass(fmaskFilenames, fmaskConfig, missingThermal):
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-    if platform.system() in ["Linux", "Darwin"]:
-        controls.setNumThreads(multiprocessing.cpu_count())
-        controls.setJobManagerType("multiprocessing")
+    controls.setNumThreads(multiprocessing.cpu_count())
+    controls.setJobManagerType("multiprocessing")
 
     infiles.toaref = fmaskFilenames.toaRef
     if not missingThermal:
@@ -480,9 +479,8 @@ def doPotentialCloudSecondPass(fmaskFilenames, fmaskConfig, pass1file,
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-    if platform.system() in ["Linux", "Darwin"]:
-        controls.setNumThreads(multiprocessing.cpu_count())
-        controls.setJobManagerType("multiprocessing")
+    controls.setNumThreads(multiprocessing.cpu_count())
+    controls.setJobManagerType("multiprocessing")
 
     infiles.pass1 = pass1file
     infiles.toaref = fmaskFilenames.toaRef
@@ -592,9 +590,8 @@ def doCloudLayerFinalPass(fmaskFilenames, fmaskConfig, pass1file, pass2file,
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-    if platform.system() in ["Linux", "Darwin"]:
-        controls.setNumThreads(multiprocessing.cpu_count())
-        controls.setJobManagerType("multiprocessing")
+    controls.setNumThreads(multiprocessing.cpu_count())
+    controls.setJobManagerType("multiprocessing")
 
     infiles.pass1 = pass1file
     infiles.pass2 = pass2file
@@ -757,9 +754,8 @@ def make3Dclouds(fmaskFilenames, fmaskConfig, clumps, numClumps, missingThermal)
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-    if platform.system() in ["Linux", "Darwin"]:
-        controls.setNumThreads(multiprocessing.cpu_count())
-        controls.setJobManagerType("multiprocessing")
+    controls.setNumThreads(multiprocessing.cpu_count())
+    controls.setJobManagerType("multiprocessing")
 
     # if we have thermal, run against that 
     # otherwise we are just 
@@ -1208,9 +1204,8 @@ def finalizeAll(fmaskFilenames, fmaskConfig, interimCloudmask, interimShadowmask
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-    if platform.system() in ["Linux", "Darwin"]:
-        controls.setNumThreads(multiprocessing.cpu_count())
-        controls.setJobManagerType("multiprocessing")
+    controls.setNumThreads(multiprocessing.cpu_count())
+    controls.setJobManagerType("multiprocessing")
 
     infiles.cloud = interimCloudmask
     infiles.shadow = interimShadowmask
