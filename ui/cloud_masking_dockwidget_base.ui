@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>&amp;Cloud Masking</string>
+   <string>Cloud Masking</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
@@ -2437,6 +2437,9 @@ You can add multiple values separated by comma</string>
          <property name="toolTip">
           <string>Open the CloudMasking documentation</string>
          </property>
+         <property name="styleSheet">
+          <string notr="true">font-size: 9pt;</string>
+         </property>
          <property name="text">
           <string>Docs</string>
          </property>
@@ -2474,6 +2477,9 @@ You can add multiple values separated by comma</string>
          </property>
          <property name="toolTip">
           <string>About</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font-size: 9pt;</string>
          </property>
          <property name="text">
           <string>CloudMasking version</string>
