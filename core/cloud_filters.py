@@ -30,7 +30,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 # from plugins
 from CloudMasking.core.utils import get_prefer_name, update_process_bar, binary_combination, check_values_in_image, \
     get_extent
-from CloudMasking.libs import gdal_merge, gdal_calc, gdal_clip
+from CloudMasking.libs import gdal_merge, gdal_calc
 
 # adding the libs plugin path
 libs_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), "libs")
@@ -141,9 +141,7 @@ class CloudMaskingResult(object):
         if self.extent_x2 > in_extent[2]: self.extent_x2 = in_extent[2]
         if self.extent_y2 < in_extent[3]: self.extent_y2 = in_extent[3]
 
-        gdal_clip.main(in_file, out_file, [self.extent_x1, self.extent_x2, self.extent_y2, self.extent_y1])
-        # TODO: make this with gdal.Translate, but check if the pixes moves after clipping
-        #gdal.Translate(out_file, in_file, projWin=[self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2])
+        gdal.Translate(out_file, in_file, projWin=[self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2])
 
     def do_clipping_with_shape(self, stack_file, shape_path, clip_file, crop_to_cutline, nodata=0):
         # first cut to shape area extent
