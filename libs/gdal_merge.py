@@ -495,10 +495,7 @@ def main(argv=None):
     if band_type is None:
         band_type = file_infos[0].band_type
 
-    # Try opening as an existing file.
-    gdal.PushErrorHandler('CPLQuietErrorHandler')
-    t_fh = gdal.Open(out_file, gdal.GA_Update)
-    gdal.PopErrorHandler()
+    t_fh = None
 
     # Create output file if it does not already exist.
     if t_fh is None:
