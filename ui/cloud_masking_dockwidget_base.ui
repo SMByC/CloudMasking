@@ -2023,7 +2023,7 @@ You can add multiple values separated by comma</string>
                   <item>
                    <widget class="QCheckBox" name="shapeSelector_CutWithShape">
                     <property name="text">
-                     <string>Delete data outside the shape</string>
+                     <string>Mask the data outside the shape</string>
                     </property>
                    </widget>
                   </item>
