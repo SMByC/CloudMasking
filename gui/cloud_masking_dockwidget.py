@@ -23,7 +23,8 @@ import os
 import tempfile
 import webbrowser
 
-from qgis.PyQt import uic, QtCore
+from PyQt5.QtCore import pyqtSlot
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.utils import iface
 from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog, QDockWidget
@@ -229,7 +230,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.widget_ApplyToFile.setHidden(True)
 
     # radiobutton status MTL
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def onlyread(self):
         if self.status_LoadedMTL.isChecked():
             self.status_LoadedMTL.setChecked(False)
@@ -262,7 +263,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.raise_()
         self.checkRun()
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def fileDialog_findMTL(self):
         """Open QFileDialog to find a MTL file
         """
@@ -271,7 +272,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         if dialog_mtl_path != '':
             self.lineEdit_PathMTL.setText(dialog_mtl_path)
 
-    @QtCore.pyqtSlot()
+    @pyqtSlot()
     def load_MTL(self):
         """Load a new MTL file currently specified in QLineEdit"""
 
