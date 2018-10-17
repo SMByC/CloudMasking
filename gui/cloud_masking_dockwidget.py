@@ -258,6 +258,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         else:
             self.isExtentAreaSelected = False
 
+    @pyqtSlot()
     def extentChanged(self):
         self.activateWindow()
         self.raise_()
