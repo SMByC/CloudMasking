@@ -33,14 +33,7 @@ import sys
 from scipy.ndimage import grey_erosion, grey_dilation, minimum_filter
 
 # load _fillminima
-is_64bits = sys.maxsize > 2**32
-if is_64bits:
-    if sys.platform == "darwin":
-        from CloudMasking.libs.fmask.ios64 import _fillminima
-    else:
-        from . import _fillminima
-else:
-    from CloudMasking.libs.fmask.lib32 import _fillminima
+from CloudMasking.libs.fmask import _fillminima
 
 
 def fillMinima(img, nullval, boundaryval):
