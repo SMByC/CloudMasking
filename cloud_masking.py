@@ -1086,3 +1086,7 @@ class CloudMasking(object):
             self.dockwidget.tmp_dir = None
         except:
             pass
+
+        # clear qgis main canvas
+        self.iface.mapCanvas().clearCache()
+        self.iface.mapCanvas().refresh()
