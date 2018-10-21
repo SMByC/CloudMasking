@@ -332,7 +332,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             if not os.path.isfile(file_path):
                 msg = "The file {} not exists, is necessary that the raw bands _bandN.tif or _BN.TIF of Landsat " \
                       "are in the same location as the MTL file.".format(os.path.basename(file_path))
-                QMessageBox.question(self, 'Problem while Loading the new MTL...',
+                QMessageBox.question(None, 'Problem while Loading the new MTL...',
                                      msg, QMessageBox.Ok)
                 self.status_LoadedMTL.setText(self.tr("Error: Not raw landsat files"))
                 self.unload_MTL()
