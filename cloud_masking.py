@@ -816,7 +816,7 @@ class CloudMasking(object):
         mask_outpath, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr("Save mask file"),
                                                       os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                                    suggested_filename_mask),
-                                                      self.tr("Tif files (*.tif);;All files (*.*)"))
+                                                      self.tr("GeoTiff files (*.tif);;All files (*.*)"))
         mask_inpath = str(
             self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()).dataProvider().dataSourceUri())
 
@@ -830,7 +830,7 @@ class CloudMasking(object):
         """
         p_file_path, _ = QFileDialog.getOpenFileName(self.dockwidget, self.tr("Select particular file to apply mask"),
                                                      os.path.dirname(self.dockwidget.mtl_path),
-                                                     self.tr("Tif files (*.tif);;All files (*.*)"))
+                                                     self.tr("GeoTiff files (*.tif);;All files (*.*)"))
 
         if p_file_path != '':
             self.dockwidget.lineEdit_ParticularFile.setText(p_file_path)
@@ -846,7 +846,7 @@ class CloudMasking(object):
         result_path, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr("Save result"),
                                                      os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                                   suggested_filename_result),
-                                                     self.tr("Tif files (*.tif);;All files (*.*)"))
+                                                     self.tr("GeoTiff files (*.tif);;All files (*.*)"))
 
         if result_path != '':
             self.dockwidget.lineEdit_ResultPath.setText(result_path)
