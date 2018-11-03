@@ -1077,7 +1077,7 @@ class CloudMasking(object):
         # unload shape area if exists
         for layer_name, layer_loaded in QgsProject.instance().mapLayers().items():
             if layer_name.startswith("Shape_area__"):
-                QgsProject.instance().removeMapLayer(layer_loaded)
+                QgsProject.instance().removeMapLayer(layer_loaded.id())
 
         # clear self.dockwidget.tmp_dir
         try:
