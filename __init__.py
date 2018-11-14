@@ -20,8 +20,8 @@
  This script initializes the plugin, making it known to QGIS.
 """
 import os
-from distutils.core import run_setup
-from shutil import copy
+from shutil import copy, rmtree
+from setuptools.sandbox import run_setup
 
 
 def fmask_libs():
@@ -48,6 +48,8 @@ def fmask_libs():
                         copy(os.path.join(root, f), os.path.join(plugin_folder, 'libs', 'fmask', '_valueindexes.so'))
                     if f.startswith("_valueindexes") and f.endswith(".pyd"):
                         copy(os.path.join(root, f), os.path.join(plugin_folder, 'libs', 'fmask', '_valueindexes.pyd'))
+        rmtree(os.path.join(fmask_libs, "build"), ignore_errors=True)
+        rmtree(os.path.join(fmask_libs, "temp"), ignore_errors=True)
 
 
 # noinspection PyPep8Naming

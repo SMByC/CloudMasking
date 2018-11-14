@@ -18,7 +18,6 @@
 import os
 import sys
 import glob
-import fmask
 
 # If we fail to import the numpy version of setup(), still try to proceed, as it is possibly
 # because we are being run by ReadTheDocs, and so we just need to be able to generate documentation. 
@@ -58,7 +57,7 @@ if sys.platform == 'win32' or INCLUDE_WINDOWS_BAT:
     
 # do the setup
 setup( name = 'python-fmask',
-        version = fmask.__version__,
+        version = 0.1,
         description = 'Module to implement the fmask cloud masking algorithm (Zhu, Wang & Woodcock 2015)',
         author = 'Neil Flood',
         author_email = 'neil.flood@dsiti.qld.gov.au',
@@ -76,4 +75,4 @@ setup( name = 'python-fmask',
           'Programming Language :: Python :: 3.4',
           'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6'])
-          
+
