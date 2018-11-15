@@ -1057,5 +1057,10 @@ class CloudMasking:
             shutil.rmtree(self.dockwidget.tmp_dir, ignore_errors=True)
             self.dockwidget.tmp_dir.close()
             self.dockwidget.tmp_dir = None
-        except: pass
+        except:
+            pass
+
+        # clear qgis main canvas
+        self.iface.mapCanvas().clearCache()
+        self.iface.mapCanvas().refresh()
 
