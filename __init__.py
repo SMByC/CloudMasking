@@ -21,33 +21,63 @@
 """
 import os
 from shutil import copy, rmtree
-from setuptools.sandbox import run_setup
+from subprocess import call
 
 
 def fmask_libs():
+    plugin_folder = os.path.dirname(__file__)
+    fmask_path = os.path.join(plugin_folder, 'libs', 'fmask')
     try:
-        from CloudMasking.libs.fmask import _fillminima, _valueindexes
+        try:
+            from CloudMasking.libs.fmask import _fillminima, _valueindexes
+        except:
+            import sys, platform
+            is_64bits = sys.maxsize > 2 ** 32
+            if is_64bits:
+                if sys.version_info[0:2] == (3, 7):  # py37
+                    if platform.system() == "Windows":
+                        from CloudMasking.libs.fmask.win64_py37 import _fillminima, _valueindexes
+                        copy(os.path.join(fmask_path, 'win64_py37', '_fillminima.pyd'), fmask_path)
+                        copy(os.path.join(fmask_path, 'win64_py37', '_valueindexes.pyd'), fmask_path)
+                    if platform.system() == "Linux":
+                        from CloudMasking.libs.fmask.lin64_py37 import _fillminima, _valueindexes
+                        copy(os.path.join(fmask_path, 'lin64_py37', '_fillminima.so'), fmask_path)
+                        copy(os.path.join(fmask_path, 'lin64_py37', '_valueindexes.so'), fmask_path)
+                elif sys.version_info[0:2] == (3, 6):  # py36
+                    if platform.system() == "Darwin":
+                        from CloudMasking.libs.fmask.ios64_py36 import _fillminima, _valueindexes
+                        copy(os.path.join(fmask_path, 'ios64_py36', '_fillminima.so'), fmask_path)
+                        copy(os.path.join(fmask_path, 'ios64_py36', '_valueindexes.so'), fmask_path)
+                    if platform.system() == "Linux":
+                        from CloudMasking.libs.fmask.lin64_py36 import _fillminima, _valueindexes
+                        copy(os.path.join(fmask_path, 'lin64_py36', '_fillminima.so'), fmask_path)
+                        copy(os.path.join(fmask_path, 'lin64_py36', '_valueindexes.so'), fmask_path)
+                    if platform.system() == "Windows":
+                        from CloudMasking.libs.fmask.win64_py36 import _fillminima, _valueindexes
+                        copy(os.path.join(fmask_path, 'win64_py36', '_fillminima.pyd'), fmask_path)
+                        copy(os.path.join(fmask_path, 'win64_py36', '_valueindexes.pyd'), fmask_path)
+            else:
+                if platform.system() == "Windows":
+                    from CloudMasking.libs.fmask.win32_py36 import _fillminima, _valueindexes
+                    copy(os.path.join(fmask_path, 'win32_py36', '_fillminima.pyd'), fmask_path)
+                    copy(os.path.join(fmask_path, 'win32_py36', '_valueindexes.pyd'), fmask_path)
     except:
         # plugin path
         print("BUILDING libs for CloudMasking plugin...")
-        plugin_folder = os.path.dirname(__file__)
-        fmask_libs = os.path.join(plugin_folder, 'libs', 'fmask', 'libs')
-
-        os.chdir(fmask_libs)
-        run_setup('setup.py', ['build_ext'])
-
+        fmask_libs = os.path.join(fmask_path, 'libs')
+        call(['python3', 'setup.py', 'build_ext'], cwd=fmask_libs)
         # search and copy
         for root, dirs, files in os.walk(os.path.join(fmask_libs, "build")):
             if len(files) != 0:
                 for f in files:
                     if f.startswith("_fillminima") and f.endswith(".so"):
-                        copy(os.path.join(root, f), os.path.join(plugin_folder, 'libs', 'fmask', '_fillminima.so'))
+                        copy(os.path.join(root, f), os.path.join(fmask_path, '_fillminima.so'))
                     if f.startswith("_fillminima") and f.endswith(".pyd"):
-                        copy(os.path.join(root, f), os.path.join(plugin_folder, 'libs', 'fmask', '_fillminima.pyd'))
+                        copy(os.path.join(root, f), os.path.join(fmask_path, '_fillminima.pyd'))
                     if f.startswith("_valueindexes") and f.endswith(".so"):
-                        copy(os.path.join(root, f), os.path.join(plugin_folder, 'libs', 'fmask', '_valueindexes.so'))
+                        copy(os.path.join(root, f), os.path.join(fmask_path, '_valueindexes.so'))
                     if f.startswith("_valueindexes") and f.endswith(".pyd"):
-                        copy(os.path.join(root, f), os.path.join(plugin_folder, 'libs', 'fmask', '_valueindexes.pyd'))
+                        copy(os.path.join(root, f), os.path.join(fmask_path, '_valueindexes.pyd'))
         rmtree(os.path.join(fmask_libs, "build"), ignore_errors=True)
         rmtree(os.path.join(fmask_libs, "temp"), ignore_errors=True)
 

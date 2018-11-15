@@ -21,12 +21,7 @@ import glob
 
 # If we fail to import the numpy version of setup(), still try to proceed, as it is possibly
 # because we are being run by ReadTheDocs, and so we just need to be able to generate documentation. 
-try:
-    from numpy.distutils.core import setup, Extension
-    withExtensions = True
-except ImportError:
-    from distutils.core import setup
-    withExtensions = False
+from numpy.distutils.core import setup, Extension
 
 # When building the sdist on Linux we want the extra .bat
 # files that are need for the Windows install. 
@@ -35,19 +30,14 @@ INCLUDE_WINDOWS_BAT = int(os.getenv('FMASK_INCLUDEBAT', '0')) > 0
 # use the latest numpy API
 NUMPY_MACROS = ('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')
 
-if withExtensions:
-    # This is for a normal build
-    fillminimaC = Extension(name='_fillminima', 
-                define_macros=[NUMPY_MACROS],
-                sources=['src/fillminima.c'])
-    valueIndexesC = Extension(name='_valueindexes',
-                define_macros=[NUMPY_MACROS],
-                sources=['src/valueindexes.c'])
-    extensionsList = [fillminimaC, valueIndexesC]
-else:
-    # This would be for a ReadTheDocs build. 
-    from distutils.core import setup
-    extensionsList = []
+# This is for a normal build
+fillminimaC = Extension(name='_fillminima',
+            define_macros=[NUMPY_MACROS],
+            sources=['src/fillminima.c'])
+valueIndexesC = Extension(name='_valueindexes',
+            define_macros=[NUMPY_MACROS],
+            sources=['src/valueindexes.c'])
+extensionsList = [fillminimaC, valueIndexesC]
 
 scriptList = glob.glob("bin/*.py")
 if sys.platform == 'win32' or INCLUDE_WINDOWS_BAT:
