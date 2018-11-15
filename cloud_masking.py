@@ -992,7 +992,7 @@ class CloudMasking:
         # process and load a new MTL file
         if self.dockwidget.status_LoadedMTL.isChecked():
             quit_msg = "Are you sure you want to clean all the old MTL and load the new MTL file?"
-            reply = QMessageBox.question(self.dockwidget, 'Loading the new MTL...',
+            reply = QMessageBox.question(None, 'Loading the new MTL...',
                                          quit_msg, QMessageBox.Yes, QMessageBox.No)
             if reply == QMessageBox.No:
                 return
@@ -1005,7 +1005,7 @@ class CloudMasking:
     def buttom_clear_all(self):
         # first prompt
         quit_msg = "Are you sure you want to clean all: delete unsaved masks, clean tmp files, unload processed images?"
-        reply = QMessageBox.question(self.dockwidget, 'Cleaning all for the current MTL file...',
+        reply = QMessageBox.question(None, 'Cleaning all for the current MTL file...',
                                            quit_msg, QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.No:
             return
