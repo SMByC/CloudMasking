@@ -23,9 +23,8 @@ import os
 import tempfile
 import webbrowser
 
-from PyQt5.QtCore import pyqtSlot
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtCore import pyqtSignal, pyqtSlot
 from qgis.utils import iface
 from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog, QDockWidget
 
