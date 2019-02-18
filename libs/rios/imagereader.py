@@ -155,7 +155,10 @@ class ImageReader(object):
             # the standard InputCollection. 
             imageList = []
             self.layerselectionList = []
-            for name in imageContainer.keys():
+            # The image names, in a fixed order, so that everything can use the same order. 
+            self.imagenamesOrdered = sorted(imageContainer.keys())
+            
+            for name in self.imagenamesOrdered:
                 filename = imageContainer[name]
                 if isinstance(filename, list):
                     # We have actually been given a list of filenames, so tack then all on to the imageList
@@ -310,7 +313,7 @@ class ImageReader(object):
             else:
                 # create a list out of the dictionary in the same way as the constructor does
                 resamplemethodlist = []
-                for name in resamplemethod.keys():
+                for name in self.imagenamesOrdered:
                     method = resamplemethod[name]
                     if isinstance(method, list):
                         # We have actually been given a list of method, so tack then all on to the resamplemethodlist
@@ -494,7 +497,7 @@ class ImageReader(object):
             # to the constructor and return a dictionary
             blockDict = {}
             i = 0
-            for name in self.imageContainer.keys():
+            for name in self.imagenamesOrdered:
                 filename = self.imageContainer[name]
                 if isinstance(filename, list):
                     listLen = len(filename)
