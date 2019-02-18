@@ -351,12 +351,7 @@ class ImageReader(object):
         be passed in case it is not to be derived from the images
         to be read or is different from that passed to allowResample
         """
-    
-        # if resampled has happened then they should all match
-        if not self.inputs.checkAllMatch():
-            msg = 'Inputs do not match - must enable resampling'
-            raise rioserrors.ResampleNeededError(msg)
-        
+
         if workingGrid is None:
             # set the working grid based on the footprint
             self.workingGrid = self.inputs.findWorkingRegion(self.footprint)
