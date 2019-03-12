@@ -4,7 +4,8 @@ site_author: Xavier Corredor Llano, SMByC-IDEAM
 site_favicon: img/favicon.png
 site_url: https://smbyc.bitbucket.io/qgisplugins/cloudmasking
 repo_url: https://bitbucket.org/smbyc/qgisplugin-cloudmasking
-theme: mkdocs
+theme:
+  name: mkdocs
 extra_css:
     - css/extra.css
 markdown_extensions:
@@ -12,9 +13,9 @@ markdown_extensions:
   - admonition
   - toc:
       permalink: true
-pages:
-- Home: index.md
-#- Feature: features.md
-- Installation: installation.md
-- How to use: how_to_use.md
-- Cloud Filters: cloud_filters.md
+  - sane_lists
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - How to use: how_to_use.md
+  - Cloud Filters: cloud_filters.md
