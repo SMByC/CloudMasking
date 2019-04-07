@@ -23,7 +23,7 @@ import os
 import sys
 import copy
 import numpy
-from osgeo import gdal
+
 from . import imageio
 from . import inputcollection
 from . import readerinfo
@@ -274,7 +274,7 @@ class ImageReader(object):
 
     def allowResample(self, resamplemethod="near", refpath=None, refgeotrans=None, 
             refproj=None, refNCols=None, refNRows=None, refPixgrid=None, 
-            tempdir='.', useVRT=False):
+            tempdir='.', useVRT=False, allowOverviewsGdalwarp=False):
         """
         By default, resampling is disabled (all datasets must
         match). Calling this enables it. 
@@ -334,7 +334,8 @@ class ImageReader(object):
 
         try:   
             # resample all in collection to reference
-            self.inputs.resampleAllToReference(self.footprint, resamplemethodlist, tempdir, useVRT)
+            self.inputs.resampleAllToReference(self.footprint, resamplemethodlist, tempdir, useVRT,
+                allowOverviewsGdalwarp)
         finally:
             # if the user interrupted, then ensure all temp
             # files removed.
@@ -351,7 +352,12 @@ class ImageReader(object):
         be passed in case it is not to be derived from the images
         to be read or is different from that passed to allowResample
         """
-
+    
+        # if resampled has happened then they should all match
+        if not self.inputs.checkAllMatch():
+            msg = 'Inputs do not match - must enable resampling'
+            raise rioserrors.ResampleNeededError(msg)
+        
         if workingGrid is None:
             # set the working grid based on the footprint
             self.workingGrid = self.inputs.findWorkingRegion(self.footprint)

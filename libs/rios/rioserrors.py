@@ -102,3 +102,5 @@ class JobMgrError(RiosError):
 class ColorTableGenerationError(RiosError):
     "Error generating a color table"
 
+class PermissionError(RiosError):
+    "Error due to permissions on temp files"

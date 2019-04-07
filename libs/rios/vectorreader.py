@@ -22,7 +22,6 @@ ImageReader and ImageWriter classes.
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import os
-import sys
 import tempfile
 import subprocess
 from .imagewriter import DEFAULTDRIVERNAME
@@ -281,7 +280,8 @@ class VectorReader(object):
                 # Fill raster with vector null value
                 for i in range(numLayers):
                     band = outds.GetRasterBand(i+1)
-                    band.Fill(vector.nullval)
+                    # Must be passed a float due to way SWIG bindings work
+                    band.Fill(float(vector.nullval))
 
                 progress.setLabelText("Rasterizing...")
                 err = gdal.RasterizeLayer(outds, [1], veclayer, burn_values=[vector.burnvalue], 

@@ -370,7 +370,7 @@ class VectorLayerInfo(object):
         
         lyrDefn = lyr.GetLayerDefn()
         self.fieldCount = lyrDefn.GetFieldCount()
-        fieldDefnList = [lyrDefn.GetFieldDefn(i) for i in range(self.fieldCount)]
+        fieldDefnList = [lyrDefn.GetFieldDefn(ii) for ii in range(self.fieldCount)]
         self.fieldNames = [fd.GetName() for fd in fieldDefnList]
         self.fieldTypes = [fd.GetType() for fd in fieldDefnList]
         self.fieldTypeNames = [fd.GetTypeName() for fd in fieldDefnList]

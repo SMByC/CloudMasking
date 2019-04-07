@@ -150,6 +150,7 @@ class ApplierControls(object):
         * **numThreads**      Number of parallel threads used for processing each image block
         * **jobManagerType**  Which :class:`rios.parallel.jobmanager.JobManager` sub-class to use for parallel processing (by name)
         * **autoColorTableType** Type of color table to be automatically added to thematic output rasters
+        * **allowOverviewsGdalwarp** Allow use of overviews in input resample (dangerous, do not use)
     
     Options relating to vector input files
         * **burnvalue**       Value to burn into raster from vector
@@ -196,6 +197,7 @@ class ApplierControls(object):
         self.numThreads = 1
         self.jobManagerType = os.getenv('RIOS_DFLT_JOBMGRTYPE', default=None)
         self.autoColorTableType = DEFAULT_AUTOCOLORTABLETYPE
+        self.allowOverviewsGdalwarp = False
 
         # Vector fields
         self.burnvalue = 1
@@ -557,6 +559,29 @@ class ApplierControls(object):
         
         """
         self.setOptionForImagename('autoColorTableType', imagename, autoColorTableType)
+    
+    def setAllowOverviewsGdalwarp(self, allowOverviewsGdalwarp):
+        """
+        This option is provided purely for testing purposes, and it is recommended 
+        that this never be used operationally. 
+        
+        In GDAL >= 2.0, the default behaviour of gdalwarp was modified so that it
+        will use overviews during a resample to a lower resolution. By default, 
+        RIOS now switches this off again (by giving gdalwarp the '-ovr NONE' 
+        switch), as this is very unreliable behaviour. Overviews can be 
+        calculated by many different methods, and the user of the 
+        file cannot tell how they were done. 
+        
+        In order to allow users to assess the damage done by this, we provide
+        this option to allow resampling to use overviews. This also allows
+        compatibility with versions of RIOS which did not switch it off, before 
+        we discovered that it was happening. To allow this, set this parameter
+        to True, otherwise it defaults to False. 
+        
+        We strongly recommend against allowing gdalwarp to use overviews. 
+        
+        """
+        self.allowOverviewsGdalwarp = allowOverviewsGdalwarp
 
 
 def apply(userFunction, infiles, outfiles, otherArgs=None, controls=None):
@@ -733,12 +758,14 @@ def handleInputResampling(infiles, controls, reader):
     if controls.referenceImage is not None:
         resampleDict = controls.makeResampleDict(infiles.__dict__)
         reader.allowResample(refpath=controls.referenceImage, tempdir=controls.tempdir,
-            resamplemethod=resampleDict, useVRT=(not NO_VRT_FOR_RESAMPLING))
+            resamplemethod=resampleDict, useVRT=(not NO_VRT_FOR_RESAMPLING),
+            allowOverviewsGdalwarp=controls.allowOverviewsGdalwarp)
     elif controls.referencePixgrid is not None:
         resampleDict = controls.makeResampleDict(infiles.__dict__)
         reader.allowResample(refPixgrid=controls.referencePixgrid, 
             tempdir=controls.tempdir, 
-            resamplemethod=resampleDict, useVRT=(not NO_VRT_FOR_RESAMPLING))
+            resamplemethod=resampleDict, useVRT=(not NO_VRT_FOR_RESAMPLING),
+            allowOverviewsGdalwarp=controls.allowOverviewsGdalwarp)
 
 
 def writeOutputBlocks(writerdict, outfiles, outputBlocks, controls, info):

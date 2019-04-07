@@ -24,6 +24,8 @@ of the inputs it has and deal with resampling.
 import os
 import sys
 import subprocess
+from distutils.version import LooseVersion
+
 from . import imageio
 from . import rioserrors
 from . import pixelgrid
@@ -180,7 +182,7 @@ class InputCollection(object):
             if os.path.exists(f):
                 try:
                     os.remove(f)
-                except PermissionError:
+                except rioserrors.PermissionError:
                     # ignore any 'file in use' errors on Windows
                     # This is only a problem when useVRT=False as we are dealing
                     # with an actual dataset that cannot be deleted (rather than a VRT
@@ -252,7 +254,8 @@ class InputCollection(object):
             raise rioserrors.ParameterError(msg)
             
 
-    def resampleToReference(self, ds, nullValList, workingRegion, resamplemethod, tempdir='.', useVRT=False):
+    def resampleToReference(self, ds, nullValList, workingRegion, resamplemethod, 
+            tempdir='.', useVRT=False, allowOverviewsGdalwarp=False):
         """
         Resamples any inputs that do not match the reference, to the 
         reference image. 
@@ -316,6 +319,10 @@ class InputCollection(object):
         # as a list for subprocess - also a bit easier to read
         cmdList = [gdalwarp_path]
         
+        if LooseVersion(gdal.__version__) >= LooseVersion('2.0'):
+            if not allowOverviewsGdalwarp:
+                cmdList.extend(['-ovr', 'NONE'])
+        
         # source projection prf file
         cmdList.append('-s_srs')
         cmdList.append(src_prf)
@@ -365,7 +372,7 @@ class InputCollection(object):
         self.filestoremove.append(temp_image)
         self.filestoremove.append(src_prf)
         self.filestoremove.append(dest_prf)
-          
+
         # run the command using subprocess
         # send any output to our self.loggingstream
         # - this is the main advantage over os.system()
@@ -398,7 +405,8 @@ class InputCollection(object):
         return newds
         
             
-    def resampleAllToReference(self, footprint, resamplemethodlist, tempdir='.', useVRT=False):
+    def resampleAllToReference(self, footprint, resamplemethodlist, tempdir='.', useVRT=False,
+            allowOverviewsGdalwarp=False):
         """
         Reamples all datasets that don't match the reference to the
         same as the reference.
@@ -438,7 +446,8 @@ class InputCollection(object):
                 nullVals = self.nullValList[count]
 
                 resamplemethod = resamplemethodlist[count]
-                newds = self.resampleToReference(ds, nullVals, workingRegion, resamplemethod, tempdir, useVRT)
+                newds = self.resampleToReference(ds, nullVals, workingRegion, resamplemethod, 
+                    tempdir, useVRT, allowOverviewsGdalwarp)
                 
                 # stash the new temp dataset as our input item
                 self.datasetList[count] = newds
