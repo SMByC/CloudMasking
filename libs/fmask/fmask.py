@@ -32,7 +32,7 @@ as fmask.fmask.OUTCODE_*
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
+# as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -233,6 +233,10 @@ def doPotentialCloudFirstPass(fmaskFilenames, fmaskConfig, missingThermal):
     (fd, outfiles.pass1) = tempfile.mkstemp(prefix='pass1', dir=fmaskConfig.tempDir, 
                                 suffix=fmaskConfig.defaultExtension)
     os.close(fd)
+    if (fmaskConfig.sensor == config.FMASK_SENTINEL2) and fmaskConfig.sen2displacementTest:
+        # needs overlap because of focalVariance
+        overlap = int((fmaskConfig.sen2cdiWindow - 1) / 2)
+        controls.setOverlap(overlap)
     controls.setWindowXsize(RIOS_WINDOW_SIZE)
     controls.setWindowYsize(RIOS_WINDOW_SIZE)
     controls.setReferenceImage(infiles.toaref)
@@ -261,14 +265,21 @@ def doPotentialCloudFirstPass(fmaskFilenames, fmaskConfig, missingThermal):
     if fmaskConfig.sensor == config.FMASK_LANDSAT47:
         nullBandNdx = [config.BAND_BLUE, config.BAND_GREEN, config.BAND_RED, config.BAND_NIR, 
             config.BAND_SWIR1, config.BAND_SWIR2]
+
     elif fmaskConfig.sensor == config.FMASK_LANDSAT8:
         nullBandNdx = [config.BAND_BLUE, config.BAND_GREEN, config.BAND_RED, config.BAND_NIR, 
             config.BAND_SWIR1, config.BAND_SWIR2, config.BAND_CIRRUS]
+
     elif fmaskConfig.sensor == config.FMASK_SENTINEL2:
         # For Sentinel-2, only use the visible bands to define the null mask. This is because ESA
         # are leaving a lot of spurious nulls in their imagery, most particularly in the IR bands
         # and the cirrus band. 
         nullBandNdx = [config.BAND_BLUE, config.BAND_GREEN, config.BAND_RED]
+
+    else:
+        msg = 'Unknown sensor'
+        raise fmaskerrors.FmaskParameterError(msg)
+
     otherargs.bandsForRefNull = numpy.array([fmaskConfig.bands[i] for i in nullBandNdx])
 
     applier.apply(potentialCloudFirstPass, infiles, outfiles, otherargs, controls=controls)
@@ -334,7 +345,8 @@ def potentialCloudFirstPass(info, inputs, outputs, otherargs):
     for n in [blue, green, red]:
         whiteness = whiteness + numpy.absolute((ref[n] - meanVis) / meanVis)
 
-    whitenessTest = (whiteness < fmaskConfig.Eqn2WhitenessThresh)
+    # Modified as per Frantz 2015, corresponding to his "darkness test" - make this a parameter......
+    whitenessTest = ((whiteness < fmaskConfig.Eqn2WhitenessThresh) & (meanVis > 0.15))
     
     # Haze test, equation 3
     hazeTest = ((ref[blue] - 0.5 * ref[red] - 0.08) > 0)
@@ -358,6 +370,17 @@ def potentialCloudFirstPass(info, inputs, outputs, otherargs):
     # Equation 6. Potential cloud pixels (first pass)
     pcp = basicTest & whitenessTest & hazeTest & b45test
     
+    # If Sentinel-2, we can use the Frantz 2018 displacement test
+    if (fmaskConfig.sensor == config.FMASK_SENTINEL2) and fmaskConfig.sen2displacementTest:
+        (ratio8a8, ratio8a7, v8a8, v8a7, cdi) = calcCDI(ref, fmaskConfig, otherargs.refBands)
+        selection = pcp & (cdi < -0.5)
+        # erode selection with 1 px
+        selection = scipy.ndimage.binary_erosion(selection)
+        # region grow within (cdi < -0.25)
+        rg_mask = pcp & (cdi < -0.25)
+        selection = scipy.ndimage.binary_dilation(selection, mask=rg_mask, iterations=0)
+        pcp[~selection] = False
+
     # Include cirrusBandTest, from 2015 paper. Zhu et al. are not clear whether it is
     # supposed to be combined with previous tests using AND or OR, so I tried both
     # and picked what seemed best. 
@@ -604,6 +627,7 @@ def doCloudLayerFinalPass(fmaskFilenames, fmaskConfig, pass1file, pass2file,
     otherargs.Tlow = Tlow
     otherargs.thermalInfo = fmaskConfig.thermalInfo
     otherargs.minCloudSize = fmaskConfig.minCloudSize_pixels
+    otherargs.sensor = fmaskConfig.sensor
 
     (fd, outfiles.cloudmask) = tempfile.mkstemp(prefix='interimcloud', 
         dir=fmaskConfig.tempDir, suffix=fmaskConfig.defaultExtension)
@@ -631,8 +655,8 @@ def cloudFinalPass(info, inputs, outputs, otherargs):
     Final pass of cloud mask layer
     """
     nullmask = inputs.pass1[4].astype(numpy.bool)
-    pcp = inputs.pass1[0]
-    waterTest = inputs.pass1[1]
+    pcp = inputs.pass1[0].astype(numpy.bool)
+    waterTest = inputs.pass1[1].astype(numpy.bool)
     notWater = numpy.logical_not(waterTest)
     notWater[nullmask] = False
     wCloud_prob = inputs.pass2[0] / PROB_SCALE
@@ -646,7 +670,13 @@ def cloudFinalPass(info, inputs, outputs, otherargs):
     
     cloudmask1 = pcp & waterTest & (wCloud_prob>0.5)
     cloudmask2 = pcp & notWater & (lCloud_prob>landThreshold)
-    cloudmask3 = (lCloud_prob > 0.99) & notWater
+    # according to [Zhu 2015] the lCloudprob > 0.99 test should be removed.
+    # For now I only disabled it for S2, because it gives a lot of false
+    # positives due to missing a thermal band.
+    if (otherargs.sensor == config.FMASK_SENTINEL2):
+        cloudmask3 = numpy.zeros(cloudmask1.shape, dtype=numpy.bool)
+    else:
+        cloudmask3 = (lCloud_prob > 0.99) & notWater
     if Tlow is not None:
         cloudmask4 = (bt < (Tlow-35))
     else:
@@ -1295,3 +1325,36 @@ def maskAndBuffer(info, inputs, outputs, otherargs):
     out[water] = OUTCODE_WATER
     out[resetNullmask] = outNullval
     outputs.out = numpy.array([out])
+
+
+def focalVariance(img, winSize):
+    """
+    Calculate the focal variance of the given 2-d image, over a moving window of
+    size winSize pixels.
+
+    """
+    img32 = img.astype(numpy.float32)
+    focalMean = uniform_filter(img32, size=winSize)
+    meanSq = uniform_filter(img32**2, size=winSize)
+    variance = meanSq - focalMean**2
+    return variance
+
+
+def calcCDI(ref, fmaskConfig, refBands):
+    """
+    Calculate the Cloud Displacement Index, as per Frantz et al (2018).
+    """
+    # Equations 5 & 6
+    ratio8a8 = ref[refBands[config.BAND_NIR]] / ref[refBands[config.BAND_S2CDI_NIR8A]]
+    ratio8a7 = ref[refBands[config.BAND_S2CDI_NIR7]] / ref[refBands[config.BAND_S2CDI_NIR8A]]
+
+    # Equation 7
+    v8a8 = focalVariance(ratio8a8, fmaskConfig.sen2cdiWindow)
+    v8a7 = focalVariance(ratio8a7, fmaskConfig.sen2cdiWindow)
+    
+    # Mask out where we would divide by zero
+    cdi = numpy.zeros(v8a7.shape, dtype=numpy.float32)
+    divOK = ((v8a7 + v8a8) != 0)
+    cdi[divOK] = (v8a7[divOK] - v8a8[divOK]) / (v8a7[divOK] + v8a8[divOK])
+
+    return (ratio8a8, ratio8a7, v8a8, v8a7, cdi)

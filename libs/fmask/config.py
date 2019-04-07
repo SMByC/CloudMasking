@@ -7,7 +7,7 @@ for the fmask function.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
+# as published by the Free Software Foundation; either version 3
 # of the License, or (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -54,6 +54,15 @@ BAND_SWIR1 = 5
 #: ~2200nm
 BAND_SWIR2 = 6
 
+# These bands are used only for the Sentinel-2 Cloud Displacement Index code. They
+# are NIR bands, with slightly different look angles, and used as per Frantz et al 2017.
+#: ~865nm
+BAND_S2CDI_NIR8A = 7
+#: ~783nm
+BAND_S2CDI_NIR7 = 8
+
+BAND_WATERVAPOUR = 9
+
 class FmaskConfig(object):
     """
     Class that contains the configuration parameters of the fmask
@@ -91,6 +100,10 @@ class FmaskConfig(object):
     # GDAL driver for final output file
     gdalDriverName = applier.DEFAULTDRIVERNAME
     
+    # Do we do the Sentinel-2 Cloud Displacement Test ?
+    sen2displacementTest = False
+    sen2cdiWindow = 7
+
     def __init__(self, sensor):
         """
         Pass in the sensor (one of: FMASK_LANDSAT47, FMASK_LANDSAT8 or
@@ -111,7 +124,8 @@ class FmaskConfig(object):
         elif sensor == FMASK_SENTINEL2:
             # Assumes the input stack has ALL bands, in their numeric order (with 8A after 8)
             self.bands = {BAND_BLUE:1, BAND_GREEN:2, BAND_RED:3, BAND_NIR:7,
-                    BAND_SWIR1:11, BAND_SWIR2:12, BAND_CIRRUS:10}
+                    BAND_SWIR1:11, BAND_SWIR2:12, BAND_WATERVAPOUR:9, BAND_CIRRUS:10,
+                    BAND_S2CDI_NIR7:6, BAND_S2CDI_NIR8A:8}
         else:
             msg = 'unrecognised sensor'
             raise fmaskerrors.FmaskParameterError(msg)
@@ -334,6 +348,14 @@ class FmaskConfig(object):
         
         """
         self.Eqn19NIRFillThresh = thresh
+    
+    def setSen2displacementTest(self, useDisplacementTest):
+        """
+        Set whether or not to use the Frantz (2018) parallax displacement test
+        to remove false clouds. Pass True if the test is desired, False otherwise. 
+        
+        """
+        self.sen2displacementTest = useDisplacementTest
     
     def setGdalDriverName(self, driverName):
         """
