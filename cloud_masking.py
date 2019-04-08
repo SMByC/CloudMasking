@@ -37,7 +37,7 @@ from . import resources
 
 from CloudMasking.core import cloud_filters, color_stack
 from CloudMasking.core.utils import apply_symbology, get_prefer_name, update_process_bar, get_extent, \
-    load_and_select_filepath_in, get_file_path_of_layer
+    load_and_select_filepath_in, get_file_path_of_layer, get_nodata_value_from_file
 from CloudMasking.libs import gdal_calc, gdal_merge
 from CloudMasking.gui.cloud_masking_dockwidget import CloudMaskingDockWidget
 from CloudMasking.gui.about_dialog import AboutDialog
@@ -925,6 +925,7 @@ class CloudMasking(object):
                 return
 
         ## Select the stack or file to apply mask
+        NoDataValue = None
         # reflectance stack, normal bands (_bands and _B)
         if self.dockwidget.radioButton_ToRaw_Bands.isChecked():
             stack_bands = [os.path.join(os.path.dirname(self.dockwidget.mtl_path),
@@ -950,6 +951,8 @@ class CloudMasking(object):
                 update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
                                    self.tr("Error: The particular file should be tif"))
                 return
+            # set the NoDataValue from the external file
+            NoDataValue = get_nodata_value_from_file(self.reflective_stack_file)
 
         # make stack to apply mask in tmp file
         if self.dockwidget.radioButton_ToRaw_Bands.isChecked() or self.dockwidget.radioButton_ToSR_Bands.isChecked():
@@ -969,20 +972,20 @@ class CloudMasking(object):
             .replace(".tif", "_inprogress.tif").replace(".TIF", "_inprogress.tif")
         if get_extent(self.reflective_stack_file) != get_extent(final_mask_path):
             extent_mask = get_extent(final_mask_path)
-            gdal.Translate(inprogress_file, self.reflective_stack_file, projWin=extent_mask)
+            gdal.Translate(inprogress_file, self.reflective_stack_file, projWin=extent_mask, noData=NoDataValue)
             os.remove(self.reflective_stack_file)
             os.rename(inprogress_file, self.reflective_stack_file)
 
         # apply mask to stack
         if self.dockwidget.select_layer_mask.currentIndex() == 0:
             gdal_calc.Calc(calc="A*(B==1)", A=self.reflective_stack_file, B=final_mask_path,
-                           outfile=inprogress_file, allBands='A', overwrite=True)
+                           outfile=inprogress_file, allBands='A', overwrite=True, NoDataValue=NoDataValue)
         if self.dockwidget.select_layer_mask.currentIndex() == 1:
             gdal_calc.Calc(calc="A*(B==0)", A=self.reflective_stack_file, B=final_mask_path,
-                           outfile=inprogress_file, allBands='A', overwrite=True)
+                           outfile=inprogress_file, allBands='A', overwrite=True, NoDataValue=NoDataValue)
 
         # unset the nodata
-        gdal.Translate(result_path, inprogress_file, noData="none")
+        gdal.Translate(result_path, inprogress_file, noData=NoDataValue if NoDataValue is not None else "none")
 
         # clean
         if not self.dockwidget.radioButton_ToParticularFile.isChecked():

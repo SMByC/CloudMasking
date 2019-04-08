@@ -236,3 +236,7 @@ def get_extent(img_path):
 
     return [round(minx), round(maxy), round(maxx), round(miny)]
 
+
+def get_nodata_value_from_file(img_path):
+    src_ds = gdal.Open(img_path)
+    return src_ds.GetRasterBand(1).GetNoDataValue()
