@@ -18,16 +18,78 @@
  *                                                                         *
  ***************************************************************************/
 """
+import functools
 import os
+import traceback
+
 from osgeo import gdal
 from numpy import intersect1d
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QCursor
-from qgis.PyQt.QtWidgets import QApplication
+from qgis.PyQt.QtWidgets import QApplication, QMessageBox, QPushButton
 from qgis.core import QgsProject, QgsRasterShader, QgsColorRampShader, QgsSingleBandPseudoColorRenderer, \
-    QgsRasterRange, QgsRasterLayer, QgsVectorLayer
+    QgsRasterRange, QgsRasterLayer, QgsVectorLayer, Qgis
 from qgis.utils import iface
+
+
+
+def error_handler(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as err:
+            # restore mouse
+            QApplication.restoreOverrideCursor()
+            QApplication.processEvents()
+
+            # select the message bar
+            msg_bar = iface.messageBar()
+            msg_bar.clearWidgets()
+
+            # message in status bar with details
+            def details_message_box(error, more_details):
+                msgBox = QMessageBox()
+                msgBox.setWindowTitle("CloudMasking - Error handler")
+                msgBox.setText("<i>{}</i>".format(error))
+                msgBox.setInformativeText("If you consider this as an error of cloud masking, report it in "
+                                          "<a href='https://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues'>issue tracker</a>")
+                msgBox.setDetailedText(more_details)
+                msgBox.setTextFormat(Qt.RichText)
+                msgBox.setStandardButtons(QMessageBox.Ok)
+                msgBox.exec()
+                del msgBox
+
+            msg_error = "Ups! an error has occurred in cloud masking plugin"
+            widget = msg_bar.createMessage("CloudMasking", msg_error)
+            error = err
+            more_details = traceback.format_exc()
+
+            button = QPushButton(widget)
+            button.setText("Show details...")
+            button.pressed.connect(lambda: details_message_box(error, more_details))
+            widget.layout().addWidget(button)
+
+            msg_bar.pushWidget(widget, level=Qgis.Warning, duration=20)
+
+    return wrapper
+
+
+def wait_process(func):
+    @error_handler
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        # mouse wait
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        # do
+        obj_returned = func(*args, **kwargs)
+        # restore mouse
+        QApplication.restoreOverrideCursor()
+        QApplication.processEvents()
+        # finally return the object by f
+        return obj_returned
+    return wrapper
 
 
 def unload_layer_in_qgis(layer_path):
@@ -177,18 +239,6 @@ def update_process_bar(bar_inst=None, bar=None, status_inst=None, status=None):
     if status_inst is not None and status is not None:
         # set status
         status_inst.setText(str(status))
-        QApplication.processEvents()
-
-    if bar is not None and 0 < bar < 100:
-        # set mouse wait
-        cursor = QApplication.overrideCursor()
-        if cursor is None or cursor == 0:
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        QApplication.processEvents()
-
-    if bar is not None and (bar == 100 or bar == 0):
-        # restore mouse
-        QApplication.restoreOverrideCursor()
         QApplication.processEvents()
 
 

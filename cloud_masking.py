@@ -21,7 +21,6 @@
 import os.path
 import shutil
 import tempfile
-import traceback
 from datetime import datetime
 from time import sleep
 from osgeo import gdal
@@ -30,14 +29,14 @@ from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication,
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QFileDialog, QListWidgetItem, QSizePolicy
 from qgis.PyQt.QtGui import QIcon, QCursor
 from qgis.PyQt.QtWidgets import QCheckBox, QGroupBox, QRadioButton
-from qgis.core import QgsMessageLog, QgsProject, QgsRasterLayer, QgsMapLayer, QgsCoordinateTransform, \
-    QgsMapLayerProxyModel, Qgis, QgsVectorFileWriter
+from qgis.core import QgsProject, QgsRasterLayer, QgsMapLayer, QgsCoordinateTransform, \
+    QgsMapLayerProxyModel, QgsVectorFileWriter
 # Initialize Qt resources from file resources.py
 from . import resources
 
 from CloudMasking.core import cloud_filters, color_stack
 from CloudMasking.core.utils import apply_symbology, get_prefer_name, update_process_bar, get_extent, \
-    load_and_select_filepath_in, get_file_path_of_layer, get_nodata_value_from_file
+    load_and_select_filepath_in, get_file_path_of_layer, get_nodata_value_from_file, wait_process, error_handler
 from CloudMasking.libs import gdal_calc, gdal_merge
 from CloudMasking.gui.cloud_masking_dockwidget import CloudMaskingDockWidget
 from CloudMasking.gui.about_dialog import AboutDialog
@@ -238,35 +237,6 @@ class CloudMasking(object):
         # button for Apply Mask
         self.dockwidget.button_processApplyMask.clicked.connect(self.apply_mask)
 
-    def error_handler(func_name):
-        def decorate(f):
-            def applicator(self, *args, **kwargs):
-                try:
-                    f(self, *args, **kwargs)
-                except Exception as e:
-                    # restore mouse
-                    QApplication.restoreOverrideCursor()
-                    QApplication.processEvents()
-
-                    # message in status bar
-                    msg_error = "An error has occurred in '{0}': {1}. " \
-                                "See more in Qgis log message.".format(func_name, e)
-                    self.iface.messageBar().pushMessage("Error", msg_error,
-                                                        level=Qgis.Critical, duration=0)
-
-                    # message in log
-                    msg_error = "\n################## ERROR IN CLOUD MASKING PLUGIN:"
-                    msg_error += "\nAn error has occurred in '{0}': {1}\n".format(func_name, e)
-                    msg_error += traceback.format_exc()
-                    msg_error += "\nPlease report the error in:\n" \
-                                 "\thttps://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues"
-                    msg_error += "\n################## END REPORT"
-                    QgsMessageLog.logMessage(msg_error)
-
-            return applicator
-
-        return decorate
-
     def update_tab_select_mask(self, current_tab_idx):
         """Adjust the size tab based on the content"""
         for tab_idx in range(self.dockwidget.select_layer_mask.count()):
@@ -336,7 +306,7 @@ class CloudMasking(object):
         self.dockwidget.SelectBand_G.setCurrentIndex(self.dockwidget.reflectance_bands.index(bands[1]))
         self.dockwidget.SelectBand_B.setCurrentIndex(self.dockwidget.reflectance_bands.index(bands[2]))
 
-    @error_handler('load stack')
+    @wait_process
     def load_stack(self, *args):
         update_process_bar(self.dockwidget.bar_progressLoadStack, 40,
                            self.dockwidget.status_processLoadStack, self.tr("Loading stack..."))
@@ -361,7 +331,7 @@ class CloudMasking(object):
             # load to qgis and update combobox list
             load_and_select_filepath_in(combo_box, file_path, layer_type)
 
-    @error_handler('process mask')
+    @wait_process
     def process_mask(self, *args):
         """Make the process
         """
@@ -851,13 +821,11 @@ class CloudMasking(object):
         if result_path != '':
             self.dockwidget.lineEdit_ResultPath.setText(result_path)
 
-    @error_handler('apply mask')
+    @wait_process
     def apply_mask(self, *args):
         # init progress bar
         update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
                            self.tr("Preparing the mask files..."))
-
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))  # mouse wait
 
         # get result path
         result_path = self.dockwidget.lineEdit_ResultPath.text()
@@ -1011,6 +979,7 @@ class CloudMasking(object):
         update_process_bar(self.dockwidget.bar_processApplyMask, 100, self.dockwidget.status_processApplyMask,
                            self.tr("DONE"))
 
+    @error_handler
     def buttom_load_mtl(self):
         # check if is the same MTL
         if self.dockwidget.mtl_path == self.dockwidget.lineEdit_PathMTL.text():
@@ -1030,6 +999,7 @@ class CloudMasking(object):
         # run load MTL
         self.dockwidget.load_MTL()
 
+    @wait_process
     def buttom_clear_all(self):
         # first prompt
         quit_msg = "Are you sure you want to clean all: delete unsaved masks, clean tmp files, unload processed images?"
@@ -1045,7 +1015,6 @@ class CloudMasking(object):
         plugins["CloudMasking"].run()
 
     def removes_temporary_files(self):
-
         # message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):
             self.dockwidget.tabWidget.setCurrentWidget(self.dockwidget.tab_OL)  # focus first tab
