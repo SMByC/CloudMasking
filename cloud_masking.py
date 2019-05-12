@@ -208,7 +208,7 @@ class CloudMasking(object):
         self.dockwidget.QCBox_MaskInShapeArea.setCurrentIndex(-1)
         self.dockwidget.QCBox_MaskInShapeArea.setFilters(QgsMapLayerProxyModel.VectorLayer)
         # call to browse the shape area for make mask inside it
-        self.dockwidget.button_BrowseShapeArea.clicked.connect(lambda: self.fileDialog_browse(
+        self.dockwidget.button_BrowseShapeArea.clicked.connect(lambda: self.browser_dialog_to_load_file(
             self.dockwidget.QCBox_MaskInShapeArea,
             dialog_title=self.tr("Select the shape file"),
             file_filters=self.tr("Shape files (*.shp);;All files (*.*)"),
@@ -325,7 +325,7 @@ class CloudMasking(object):
                            self.dockwidget.status_processLoadStack, self.tr("DONE"))
 
     @pyqtSlot()
-    def fileDialog_browse(self, combo_box, dialog_title, file_filters, suggested_path=""):
+    def browser_dialog_to_load_file(self, combo_box, dialog_title, file_filters, suggested_path=""):
         file_path, _ = QFileDialog.getOpenFileName(self.dockwidget, dialog_title, suggested_path, file_filters)
         if file_path != '' and os.path.isfile(file_path):
             # load to qgis and update combobox list
