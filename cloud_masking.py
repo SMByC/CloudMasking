@@ -211,8 +211,8 @@ class CloudMasking(object):
         self.dockwidget.button_BrowseShapeArea.clicked.connect(lambda: self.fileDialog_browse(
             self.dockwidget.QCBox_MaskInShapeArea,
             dialog_title=self.tr("Select the shape file"),
-            dialog_types=self.tr("Shape files (*.shp);;All files (*.*)"),
-            layer_type="vector", suggested_path=os.path.dirname(self.dockwidget.mtl_path)))
+            file_filters=self.tr("Shape files (*.shp);;All files (*.*)"),
+            suggested_path=os.path.dirname(self.dockwidget.mtl_path)))
 
         # call to load MTL file
         self.dockwidget.button_LoadMTL.clicked.connect(self.buttom_load_mtl)
@@ -325,11 +325,11 @@ class CloudMasking(object):
                            self.dockwidget.status_processLoadStack, self.tr("DONE"))
 
     @pyqtSlot()
-    def fileDialog_browse(self, combo_box, dialog_title, dialog_types, layer_type, suggested_path=""):
-        file_path, _ = QFileDialog.getOpenFileName(self.dockwidget, dialog_title, suggested_path, dialog_types)
+    def fileDialog_browse(self, combo_box, dialog_title, file_filters, suggested_path=""):
+        file_path, _ = QFileDialog.getOpenFileName(self.dockwidget, dialog_title, suggested_path, file_filters)
         if file_path != '' and os.path.isfile(file_path):
             # load to qgis and update combobox list
-            load_and_select_filepath_in(combo_box, file_path, layer_type)
+            load_and_select_filepath_in(combo_box, file_path)
 
     @wait_process
     def process_mask(self, *args):
