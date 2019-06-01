@@ -119,15 +119,20 @@ def load_layer(file_path, name=None, add_to_legend=True):
 def unload_layer(layer_path):
     layers_loaded = QgsProject.instance().mapLayers().values()
     for layer_loaded in layers_loaded:
-        if hasattr(layer_loaded, "dataProvider"):
-            if layer_path == layer_loaded.dataProvider().dataSourceUri().split('|layerid')[0]:
-                QgsProject.instance().removeMapLayer(layer_loaded.id())
+        if layer_path == get_file_path_of_layer(layer_loaded):
+            QgsProject.instance().removeMapLayer(layer_loaded.id())
 
 
 def get_layer_by_name(layer_name):
     layer = QgsProject.instance().mapLayersByName(layer_name)
     if layer:
         return layer[0]
+
+
+def get_file_path_of_layer(layer):
+    if layer and layer.isValid():
+        return os.path.realpath(layer.source())
+    return ""
 
 
 def load_and_select_filepath_in(combo_box, file_path):
@@ -141,13 +146,6 @@ def load_and_select_filepath_in(combo_box, file_path):
     combo_box.setCurrentIndex(selected_index)
 
     return get_layer_by_name(filename)
-
-
-def get_file_path_of_layer(layer):
-    try:
-        return str(layer.dataProvider().dataSourceUri().split('|layerid')[0])
-    except:
-        return None
 
 
 def get_prefer_name(file_path):

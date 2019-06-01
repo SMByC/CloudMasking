@@ -787,8 +787,7 @@ class CloudMasking(object):
                                                       os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                                    suggested_filename_mask),
                                                       self.tr("GeoTiff files (*.tif);;All files (*.*)"))
-        mask_inpath = str(
-            self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()).dataProvider().dataSourceUri())
+        mask_inpath = self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()).source()
 
         if mask_outpath != '' and mask_inpath != '':
             # set nodata to valid data (1) and copy to destination
@@ -837,7 +836,7 @@ class CloudMasking(object):
         def prepare_mask(layer):
             # get mask layer
             try:
-                mask_path = str(layer.dataProvider().dataSourceUri())
+                mask_path = get_file_path_of_layer(layer)
             except:
                 update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
                                    self.tr("Not valid mask '{}'".format(layer.name())))
@@ -1042,7 +1041,7 @@ class CloudMasking(object):
         layers_to_remove = []
         for file_tmp in files_in_tmp_dir:
             for layer_loaded in layers_loaded:
-                if file_tmp == layer_loaded.dataProvider().dataSourceUri():
+                if file_tmp == get_file_path_of_layer(layer_loaded):
                     layers_to_remove.append(layer_loaded.id())
         QgsProject.instance().removeMapLayers(layers_to_remove)
 
