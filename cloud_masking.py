@@ -215,9 +215,9 @@ class CloudMasking(object):
             suggested_path=os.path.dirname(self.dockwidget.mtl_path)))
 
         # call to load MTL file
-        self.dockwidget.button_LoadMTL.clicked.connect(self.buttom_load_mtl)
+        self.dockwidget.button_LoadMTL.clicked.connect(self.button_load_mtl)
         # call to clear all
-        self.dockwidget.button_ClearAll.clicked.connect(self.buttom_clear_all)
+        self.dockwidget.button_ClearAll.clicked.connect(self.button_clear_all)
         # call to load natural color stack
         self.dockwidget.button_NaturalColorStack.clicked.connect(lambda: self.set_color_stack("natural_color"))
         # call to load false color stack
@@ -979,7 +979,7 @@ class CloudMasking(object):
                            self.tr("DONE"))
 
     @error_handler
-    def buttom_load_mtl(self):
+    def button_load_mtl(self):
         # check if is the same MTL
         if self.dockwidget.mtl_path == self.dockwidget.lineEdit_PathMTL.text():
             return
@@ -999,7 +999,7 @@ class CloudMasking(object):
         self.dockwidget.load_MTL()
 
     @wait_process
-    def buttom_clear_all(self):
+    def button_clear_all(self):
         # first prompt
         quit_msg = "Are you sure you want to clean all: delete unsaved masks, clean tmp files, unload processed images?"
         reply = QMessageBox.question(None, 'Cleaning all for the current MTL file...',

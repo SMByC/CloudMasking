@@ -33,7 +33,6 @@ from qgis.core import QgsProject, QgsRasterShader, QgsColorRampShader, QgsSingle
 from qgis.utils import iface
 
 
-
 def error_handler(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
