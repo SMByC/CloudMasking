@@ -14,7 +14,7 @@ There are several ways for make cloud masking automatically, such as apply the d
 ## Source code
 
 The latest sources can be obtained from official repository:
-[https://bitbucket.org/smbyc/qgisplugin-cloudmasking](https://bitbucket.org/smbyc/qgisplugin-cloudmasking)
+[https://github.com/SMByC/CloudMasking](https://github.com/SMByC/CloudMasking)
 
 ## The home plugin:
 
@@ -22,7 +22,7 @@ The home plugin in plugins.qgis.org: [https://plugins.qgis.org/plugins/CloudMask
 
 ## Issue Tracker
 
-Issues, ideas and enhancements: [https://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues](https://bitbucket.org/smbyc/qgisplugin-cloudmasking/issues)
+Issues, ideas and enhancements: [https://github.com/SMByC/CloudMasking/issues](https://github.com/SMByC/CloudMasking/issues)
 
 ## Get involved
 
