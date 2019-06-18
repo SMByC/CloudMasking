@@ -215,7 +215,7 @@ class CloudMasking(object):
             suggested_path=os.path.dirname(self.dockwidget.mtl_path)))
 
         # call to load MTL file
-        self.dockwidget.button_LoadMTL.clicked.connect(self.button_load_mtl)
+        self.dockwidget.button_LoadMTL.clicked.connect(lambda: self.button_load_mtl())
         # call to clear all
         self.dockwidget.button_ClearAll.clicked.connect(self.button_clear_all)
         # call to load natural color stack
@@ -978,6 +978,7 @@ class CloudMasking(object):
         update_process_bar(self.dockwidget.bar_processApplyMask, 100, self.dockwidget.status_processApplyMask,
                            self.tr("DONE"))
 
+    @pyqtSlot()
     @error_handler
     def button_load_mtl(self):
         # check if is the same MTL
