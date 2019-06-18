@@ -30,15 +30,18 @@ The home plugin in plugins.qgis.org: [https://plugins.qgis.org/plugins/CloudMask
 
 Issues, ideas and enhancements: [https://github.com/SMByC/CloudMasking/issues](https://github.com/SMByC/CloudMasking/issues)
 
-## Get involved
+## About us
 
-The CloudMasking plugin is open source and you can help in different ways:
+CloudMasking was developing, designed and implemented by the Group of Forest and Carbon Monitoring System (SMByC), operated by the Institute of Hydrology, Meteorology and Environmental Studies (IDEAM) - Colombia.
 
-* help with developing and/or improve the docs cloning the repository and doing the push request ([howto](https://confluence.atlassian.com/bitbucket/fork-a-teammate-s-repository-774243391.html)).
-* or just test it, report issues, ideas and enhancements in the issue tracker.
+Author and developer: *Xavier Corredor Ll.*  
+Theoretical support, tester and product verification: SMByC-PDI group
 
-***
+### Contact
 
-Copyright (C) Xavier Corredor Llano <xcorredorl@ideam.gov.co>  
-Sistema de Monitoreo de Bosques y Carbono (SMByC) and FAO  
-General Public License - GPLv3
+Xavier Corredor Ll.: *xcorredorl (a) ideam.gov.co*  
+SMByC: *smbyc (a) ideam.gov.co*
+
+## License
+
+CloudMasking is a free/libre software and is licensed under the GNU General Public License.
