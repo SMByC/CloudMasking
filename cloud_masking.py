@@ -210,8 +210,8 @@ class CloudMasking(object):
         # call to browse the shape area for make mask inside it
         self.dockwidget.button_BrowseShapeArea.clicked.connect(lambda: self.browser_dialog_to_load_file(
             self.dockwidget.QCBox_MaskInShapeArea,
-            dialog_title=self.tr("Select the shape file"),
-            file_filters=self.tr("Shape files (*.shp);;All files (*.*)"),
+            dialog_title=self.tr("Select the vector file"),
+            file_filters=self.tr("Vector files (*.gpkg *.shp);;All files (*.*)"),
             suggested_path=os.path.dirname(self.dockwidget.mtl_path)))
 
         # call to load MTL file

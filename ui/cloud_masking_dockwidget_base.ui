@@ -1857,7 +1857,7 @@ You can add multiple values separated by comma</string>
                   <item>
                    <widget class="QCheckBox" name="checkBox_ShapeSelector">
                     <property name="text">
-                     <string>In only shape file</string>
+                     <string>In only polygon layer</string>
                     </property>
                    </widget>
                   </item>
@@ -2101,7 +2101,7 @@ You can add multiple values separated by comma</string>
                   <item>
                    <widget class="QLabel" name="label_23">
                     <property name="text">
-                     <string>Select/browse the shape file for apply:</string>
+                     <string>Select/browse the polygon layer for apply:</string>
                     </property>
                    </widget>
                   </item>
@@ -2149,7 +2149,7 @@ You can add multiple values separated by comma</string>
                   <item>
                    <widget class="QCheckBox" name="shapeSelector_CutWithShape">
                     <property name="text">
-                     <string>Mask the data outside the shape</string>
+                     <string>Mask the data outside the polygons</string>
                     </property>
                    </widget>
                   </item>
