@@ -1848,16 +1848,16 @@ You can add multiple values separated by comma</string>
                    <number>0</number>
                   </property>
                   <item>
-                   <widget class="QCheckBox" name="checkBox_ExtentSelector">
+                   <widget class="QCheckBox" name="checkBox_AOISelector">
                     <property name="text">
-                     <string>In only selected area</string>
+                     <string>In only areas of interest</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QCheckBox" name="checkBox_ShapeSelector">
                     <property name="text">
-                     <string>In only shape area</string>
+                     <string>In only shape file</string>
                     </property>
                    </widget>
                   </item>
@@ -1865,7 +1865,133 @@ You can add multiple values separated by comma</string>
                 </widget>
                </item>
                <item row="1" column="0">
-                <widget class="ExtentSelector" name="widget_ExtentSelector" native="true"/>
+                <widget class="QWidget" name="widget_AOISelector" native="true">
+                 <layout class="QVBoxLayout" name="verticalLayout_35">
+                  <property name="leftMargin">
+                   <number>12</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>12</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_17">
+                    <property name="toolTip">
+                     <string>Use min and max value of all pixels inside areas of interest for fill from/to range values</string>
+                    </property>
+                    <property name="text">
+                     <string>Use the mouse to draw the polygons on canvas:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QWidget" name="widget_27" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_28">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <spacer name="horizontalSpacer_13">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item>
+                      <widget class="QToolButton" name="AOI_Picker">
+                       <property name="text">
+                        <string>AOI picker</string>
+                       </property>
+                       <property name="icon">
+                        <iconset>
+                         <normaloff>:/plugins/CloudMasking/icons/aoi_picker.svg</normaloff>:/plugins/CloudMasking/icons/aoi_picker.svg</iconset>
+                       </property>
+                       <property name="toolButtonStyle">
+                        <enum>Qt::ToolButtonTextBesideIcon</enum>
+                       </property>
+                       <property name="autoRaise">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QToolButton" name="UndoAOI">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="toolTip">
+                        <string>Undo the last AOI created</string>
+                       </property>
+                       <property name="icon">
+                        <iconset>
+                         <normaloff>:/plugins/CloudMasking/icons/undo.svg</normaloff>:/plugins/CloudMasking/icons/undo.svg</iconset>
+                       </property>
+                       <property name="toolButtonStyle">
+                        <enum>Qt::ToolButtonIconOnly</enum>
+                       </property>
+                       <property name="autoRaise">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QToolButton" name="DeleteAllAOI">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="toolTip">
+                        <string>Delete all AOI</string>
+                       </property>
+                       <property name="icon">
+                        <iconset>
+                         <normaloff>:/plugins/CloudMasking/icons/trash.svg</normaloff>:/plugins/CloudMasking/icons/trash.svg</iconset>
+                       </property>
+                       <property name="toolButtonStyle">
+                        <enum>Qt::ToolButtonIconOnly</enum>
+                       </property>
+                       <property name="autoRaise">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_16">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
                </item>
                <item row="3" column="0">
                 <widget class="QFrame" name="frame">
@@ -1961,13 +2087,13 @@ You can add multiple values separated by comma</string>
                 <widget class="QWidget" name="widget_ShapeSelector" native="true">
                  <layout class="QVBoxLayout" name="verticalLayout_31">
                   <property name="leftMargin">
-                   <number>10</number>
+                   <number>12</number>
                   </property>
                   <property name="topMargin">
                    <number>0</number>
                   </property>
                   <property name="rightMargin">
-                   <number>10</number>
+                   <number>12</number>
                   </property>
                   <property name="bottomMargin">
                    <number>0</number>
@@ -2735,12 +2861,6 @@ You can add multiple values separated by comma</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ExtentSelector</class>
-   <extends>QWidget</extends>
-   <header>CloudMasking.gui.extent_selector</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header>qgis.gui</header>
@@ -2877,9 +2997,9 @@ You can add multiple values separated by comma</string>
    </hints>
   </connection>
   <connection>
-   <sender>checkBox_ExtentSelector</sender>
+   <sender>checkBox_AOISelector</sender>
    <signal>toggled(bool)</signal>
-   <receiver>widget_ExtentSelector</receiver>
+   <receiver>widget_AOISelector</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">

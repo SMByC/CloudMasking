@@ -24,7 +24,10 @@ import tempfile
 import webbrowser
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import pyqtSignal, pyqtSlot
+from qgis.PyQt.QtCore import pyqtSignal, pyqtSlot, QTimer, Qt
+from qgis.core import QgsWkbTypes, QgsFeature, edit, QgsVectorLayer
+from qgis.gui import QgsMapTool, QgsRubberBand, QgsMapToolPan
+from qgis.PyQt.QtGui import QColor
 from qgis.utils import iface
 from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog, QDockWidget
 
@@ -76,10 +79,10 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         # Setup default MTL file
         self.mtl_path = os.getcwd()  # path to MTL file
         self.mtl_file = None  # dict with all parameters of MTL file
-        self.isExtentAreaSelected = False
 
     def closeEvent(self, event):
-        self.widget_ExtentSelector.stop()
+        self.delete_all_aoi()
+        self.restart_map_tool()
         self.closingPlugin.emit()
         event.accept()
 
@@ -202,26 +205,32 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
 
         # Generate the cloud mask #########
         # shape and selected area start hidden
-        self.widget_ExtentSelector.setHidden(True)
+        self.widget_AOISelector.setHidden(True)
         self.widget_ShapeSelector.setHidden(True)
 
-        # connections
+        # show/hide blocks in only aoi or shape file
         def selector(widget_from, widget_to):
             if widget_from.isChecked():
                 widget_to.setChecked(False)
 
-        self.checkBox_ExtentSelector.toggled.connect(
-            lambda: selector(self.checkBox_ExtentSelector, self.checkBox_ShapeSelector))
+        self.checkBox_AOISelector.toggled.connect(
+            lambda: selector(self.checkBox_AOISelector, self.checkBox_ShapeSelector))
         self.checkBox_ShapeSelector.toggled.connect(
-            lambda: selector(self.checkBox_ShapeSelector, self.checkBox_ExtentSelector))
+            lambda: selector(self.checkBox_ShapeSelector, self.checkBox_AOISelector))
+
+        # AOI picker
+        self.AOI_Picker.clicked.connect(
+            lambda: self.canvas.setMapTool(PickerAOIPointTool(self), clean=True))
+        self.UndoAOI.clicked.connect(self.undo_aoi)
+        self.DeleteAllAOI.clicked.connect(self.delete_all_aoi)
+        self.pan_zoom_tool = QgsMapToolPan(self.canvas)
+        self.rubber_bands = []
+        self.tmp_rubber_band = []
+        # init temporal AOI layer
+        self.aoi_features = None
 
         # Extent selector widget #########
-        # set the extent selector
-        self.widget_ExtentSelector.setCanvas(self.canvas)
-        # connections
-        self.widget_ExtentSelector.newExtentDefined.connect(self.extentChanged)
-        self.widget_ExtentSelector.selectionStarted.connect(self.checkRun)
-        self.checkBox_ExtentSelector.toggled.connect(self.switchClippingMode)
+        self.checkBox_AOISelector.toggled.connect(self.switchClippingMode)
 
         # Apply and save #########
         # start hidden
@@ -245,23 +254,9 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
 
     ### Extent selector widget
     def switchClippingMode(self):
-        if self.checkBox_ExtentSelector.isChecked():
-            self.widget_ExtentSelector.start()
-        else:
-            self.widget_ExtentSelector.stop()
-        self.checkRun()
-
-    def checkRun(self):
-        if self.checkBox_ExtentSelector.isChecked():
-            self.isExtentAreaSelected = self.widget_ExtentSelector.isCoordsValid()
-        else:
-            self.isExtentAreaSelected = False
-
-    @pyqtSlot()
-    def extentChanged(self):
-        self.activateWindow()
-        self.raise_()
-        self.checkRun()
+        if not self.checkBox_AOISelector.isChecked():
+            self.delete_all_aoi()
+            self.restart_map_tool()
 
     @pyqtSlot()
     def fileDialog_findMTL(self):
@@ -484,3 +479,127 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         # Load stack and clear all #########
         self.button_ClearAll.setEnabled(False)
         self.groupBox_LoadStacks.setEnabled(False)
+
+    def restart_map_tool(self):
+        # action pan and zoom
+        self.canvas.setMapTool(self.pan_zoom_tool, clean=True)
+
+    @pyqtSlot()
+    def undo_aoi(self):
+        # delete feature
+        features_ids = [f.id() for f in self.aoi_features.getFeatures()]
+        with edit(self.aoi_features):
+            self.aoi_features.deleteFeature(features_ids[-1])
+        # delete rubber bands
+        self.rubber_bands.pop().reset(QgsWkbTypes.PolygonGeometry)
+        self.tmp_rubber_band.pop().reset(QgsWkbTypes.PolygonGeometry)
+        # update
+        if len(list(self.aoi_features.getFeatures())) > 0:
+            self.aoi_changes()
+        else:  # empty
+            self.delete_all_aoi()
+
+    @pyqtSlot()
+    def delete_all_aoi(self):
+        # clear/reset all rubber bands
+        for rubber_band in self.rubber_bands + self.tmp_rubber_band:
+            rubber_band.reset(QgsWkbTypes.PolygonGeometry)
+        self.rubber_bands = []
+        self.tmp_rubber_band = []
+        # remove all features in aoi
+        if self.aoi_features is not None:
+            self.aoi_features.dataProvider().truncate()
+            self.aoi_features = None
+        # disable undo delete buttons
+        self.UndoAOI.setEnabled(False)
+        self.DeleteAllAOI.setEnabled(False)
+
+    @pyqtSlot()
+    def aoi_changes(self, new_feature=None):
+        """Actions after added each polygon in the AOI"""
+        # update AOI
+        if new_feature is not None:
+            if self.aoi_features is None:
+                self.aoi_features = QgsVectorLayer(
+                    "Polygon?crs=" + iface.mapCanvas().mapSettings().destinationCrs().toWkt(), "aoi", "memory")
+            with edit(self.aoi_features):
+                self.aoi_features.addFeature(new_feature)
+        # enable undo and delete buttons
+        self.UndoAOI.setEnabled(True)
+        self.DeleteAllAOI.setEnabled(True)
+
+
+class PickerAOIPointTool(QgsMapTool):
+    def __init__(self, dockwidget):
+        QgsMapTool.__init__(self, dockwidget.canvas)
+        self.dockwidget = dockwidget
+        # set rubber band style
+        color = QColor("red")
+        color.setAlpha(70)
+        # create the main polygon rubber band
+        self.rubber_band = QgsRubberBand(dockwidget.canvas, QgsWkbTypes.PolygonGeometry)
+        self.rubber_band.setColor(color)
+        self.rubber_band.setWidth(3)
+        # create the mouse/tmp polygon rubber band, this is main rubber band + current mouse position
+        self.tmp_rubber_band = QgsRubberBand(dockwidget.canvas, QgsWkbTypes.PolygonGeometry)
+        self.tmp_rubber_band.setColor(color)
+        self.tmp_rubber_band.setWidth(3)
+        self.tmp_rubber_band.setLineStyle(Qt.DotLine)
+
+    def finish_drawing(self):
+        self.rubber_band = None
+        self.tmp_rubber_band = None
+        # restart point tool
+        self.clean()
+        self.dockwidget.canvas.unsetMapTool(self)
+        self.dockwidget.restart_map_tool()
+
+    def canvasMoveEvent(self, event):
+        if self.tmp_rubber_band is None:
+            return
+        if self.tmp_rubber_band and self.tmp_rubber_band.numberOfVertices():
+            x = event.pos().x()
+            y = event.pos().y()
+            point = self.dockwidget.canvas.getCoordinateTransform().toMapCoordinates(x, y)
+            self.tmp_rubber_band.removeLastPoint()
+            self.tmp_rubber_band.addPoint(point)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Backspace or event.key() == Qt.Key_Delete:
+            self.rubber_band.removeLastPoint()
+            self.tmp_rubber_band.removeLastPoint()
+        if event.key() == Qt.Key_Escape:
+            self.rubber_band.reset(QgsWkbTypes.PolygonGeometry)
+            self.tmp_rubber_band.reset(QgsWkbTypes.PolygonGeometry)
+
+    def canvasPressEvent(self, event):
+        if self.rubber_band is None:
+            self.finish_drawing()
+            return
+        # new point on polygon
+        if event.button() == Qt.LeftButton:
+            x = event.pos().x()
+            y = event.pos().y()
+            point = self.dockwidget.canvas.getCoordinateTransform().toMapCoordinates(x, y)
+            self.rubber_band.addPoint(point)
+            self.tmp_rubber_band.addPoint(point)
+        # save polygon
+        if event.button() == Qt.RightButton:
+            if self.rubber_band and self.rubber_band.numberOfVertices():
+                if self.rubber_band.numberOfVertices() < 3:
+                    self.finish_drawing()
+                    return
+                self.tmp_rubber_band.removeLastPoint()
+                new_feature = QgsFeature()
+                new_feature.setGeometry(self.rubber_band.asGeometry())
+                self.dockwidget.rubber_bands.append(self.rubber_band)
+                self.dockwidget.tmp_rubber_band.append(self.tmp_rubber_band)
+                self.rubber_band = None
+                self.tmp_rubber_band = None
+                self.finish_drawing()
+                # add the new feature and update the statistics
+                self.dockwidget.aoi_changes(new_feature)
+
+    def keyReleaseEvent(self, event):
+        if event.key() in [Qt.Key_Up, Qt.Key_Down, Qt.Key_Right, Qt.Key_Left, Qt.Key_PageUp, Qt.Key_PageDown]:
+            QTimer.singleShot(10, self.dockwidget.render_widget.parent_view.canvas_changed)

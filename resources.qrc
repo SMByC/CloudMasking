@@ -6,5 +6,8 @@
         <file>icons/shadow.png</file>
         <file>icons/snow.png</file>
         <file>icons/water.png</file>
+        <file>icons/aoi_picker.svg</file>
+        <file>icons/undo.svg</file>
+        <file>icons/trash.svg</file>
     </qresource>
 </RCC>

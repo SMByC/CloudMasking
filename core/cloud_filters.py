@@ -22,15 +22,17 @@
 import os, sys
 import tempfile
 from datetime import datetime
+from pathlib import Path
 from subprocess import call
 
 from osgeo import gdal
-from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsRasterLayer
+from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsRasterLayer, \
+    QgsVectorFileWriter
 from qgis.PyQt.QtCore import QCoreApplication, QFileInfo
 
 # from plugins
 from CloudMasking.core.utils import get_prefer_name, update_process_bar, binary_combination, check_values_in_image, \
-    get_extent, get_layer_by_name
+    get_extent, get_layer_by_name, get_file_path_of_layer, load_layer, unload_layer
 from CloudMasking.libs import gdal_merge, gdal_calc
 
 # adding the libs plugin path
@@ -61,7 +63,7 @@ class CloudMaskingResult(object):
         self.process_status = None
         self.process_bar = None
         # set initial clipping status
-        self.clipping_extent = False
+        self.clipping_with_aoi = False
         self.clipping_with_shape = False
         # save all result files of cloud masking
         self.cloud_masking_files = []
@@ -117,15 +119,21 @@ class CloudMaskingResult(object):
         Clipping the stack file only if is activated selected area or shape area,
         else return the original image
         """
-        if not self.clipping_extent and not self.clipping_with_shape:
+        if not self.clipping_with_aoi and not self.clipping_with_shape:
             return in_stack_file
 
         if process_bar:
             update_process_bar(self.process_bar, 24, self.process_status,
                                self.tr("Clipping the reflective stack..."))
 
-        if self.clipping_extent:
-            self.do_clipping_extent(in_stack_file, out_clipped_file)
+        if self.clipping_with_aoi:
+            tmp_memory_file = Path(tempfile.gettempdir(), "memory_layer_aoi.gpkg")
+            QgsVectorFileWriter.writeAsVectorFormat(self.aoi_features, str(tmp_memory_file), "System", self.aoi_features.crs(), "GPKG")
+            load_layer(str(tmp_memory_file), add_to_legend=False)
+            self.do_clipping_with_shape(in_stack_file, str(tmp_memory_file),
+                                        out_clipped_file, False, nodata)
+            unload_layer(str(tmp_memory_file))
+            tmp_memory_file.unlink()
 
         if self.clipping_with_shape:
             self.do_clipping_with_shape(in_stack_file, os.path.abspath(self.shape_path),

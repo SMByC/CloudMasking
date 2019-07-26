@@ -364,14 +364,11 @@ class CloudMasking(object):
         ########################################
         ## Set the extent selector
         # set for rectangular region
-        if self.dockwidget.checkBox_ExtentSelector.isChecked() and self.dockwidget.isExtentAreaSelected:
-            self.masking_result.clipping_extent = True
-            self.masking_result.extent_x1 = float(self.dockwidget.widget_ExtentSelector.x1CoordEdit.text())
-            self.masking_result.extent_y1 = float(self.dockwidget.widget_ExtentSelector.y1CoordEdit.text())
-            self.masking_result.extent_x2 = float(self.dockwidget.widget_ExtentSelector.x2CoordEdit.text())
-            self.masking_result.extent_y2 = float(self.dockwidget.widget_ExtentSelector.y2CoordEdit.text())
+        if self.dockwidget.checkBox_AOISelector.isChecked():
+            self.masking_result.clipping_with_aoi = True
+            self.masking_result.aoi_features = self.dockwidget.aoi_features
         else:
-            self.masking_result.clipping_extent = False
+            self.masking_result.clipping_with_aoi = False
         # set for the shape selector
         if self.dockwidget.checkBox_ShapeSelector.isChecked():
             self.masking_result.clipping_with_shape = True
@@ -402,9 +399,10 @@ class CloudMasking(object):
             self.masking_result.clipping_with_shape = False
 
         # check extent area selector and shape file
-        if self.dockwidget.checkBox_ExtentSelector.isChecked() and not self.dockwidget.isExtentAreaSelected:
+        if self.dockwidget.checkBox_AOISelector.isChecked() and (self.dockwidget.aoi_features is None \
+           or not self.dockwidget.aoi_features.hasFeatures()):
             self.dockwidget.status_processMask.setText(
-                self.tr("Error: not area selected in canvas"))
+                self.tr("Error: no AOI drawn in canvas"))
             return
 
         if self.dockwidget.checkBox_ShapeSelector.isChecked():
@@ -644,35 +642,9 @@ class CloudMasking(object):
                            C=self.masking_result.cloud_masking_files[2], D=self.masking_result.cloud_masking_files[3])
 
         ########################################
-        # mask the nodata value as 255 value
-        self.masking_result.do_nodata_mask(self.final_cloud_mask_file)
-
-        ########################################
-        # Keep the original size if made the mask in selected area
-        if self.dockwidget.checkBox_ExtentSelector.isChecked() and \
-                self.dockwidget.widget_ExtentSelector.extentSelector_KeepOriginalSize.isChecked():
-            img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
-                                                    self.dockwidget.mtl_file['FILE_NAME_BAND_1']))
-            extent = get_extent(img_path)
-            # expand
-            gdal.Translate(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file,
-                           projWin=extent, noData=1)
-            os.remove(self.final_cloud_mask_file)
-            # unset the nodata, leave the 1 (valid fields)
-            gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "1.tif"),
-                           noData="none")
-            # only left the final file
-            os.remove(self.final_cloud_mask_file.replace(".tif", "1.tif"))
-        else:
-            # unset the nodata
-            gdal.Translate(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file,
-                           noData="none")
-            os.remove(self.final_cloud_mask_file)
-            os.rename(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file)
-
-        ########################################
         # keep the data outside the shape area as valid data (=1), important for apply several mask
-        if self.dockwidget.checkBox_ShapeSelector.isChecked() and not self.dockwidget.shapeSelector_CutWithShape.isChecked():
+        if (self.dockwidget.checkBox_ShapeSelector.isChecked() and not self.dockwidget.shapeSelector_CutWithShape.isChecked()) or \
+                self.dockwidget.checkBox_AOISelector.isChecked():
             self.masking_result.clip(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "1.tif"),
                                      nodata=1, process_bar=False)
             os.remove(self.final_cloud_mask_file)
@@ -688,10 +660,13 @@ class CloudMasking(object):
             gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "2.tif"),
                            noData="none")
             os.remove(self.final_cloud_mask_file.replace(".tif", "2.tif"))
+        else:
+            # mask the nodata value as 255 value
+            self.masking_result.do_nodata_mask(self.final_cloud_mask_file)
+
         ########################################
         # Delete data outside the shapefile or selected area, as 255 value
-        if (self.dockwidget.checkBox_ShapeSelector.isChecked() and self.dockwidget.shapeSelector_CutWithShape.isChecked()) or \
-           (self.dockwidget.checkBox_ExtentSelector.isChecked() and not self.dockwidget.widget_ExtentSelector.extentSelector_KeepOriginalSize.isChecked()):
+        if self.dockwidget.checkBox_ShapeSelector.isChecked() and self.dockwidget.shapeSelector_CutWithShape.isChecked():
             # expand to original extent
             img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                     self.dockwidget.mtl_file['FILE_NAME_BAND_1']))
@@ -746,11 +721,11 @@ class CloudMasking(object):
                 os.remove(cloud_masking_file)
 
         # hide the extent selector
-        if self.dockwidget.checkBox_ExtentSelector.isChecked():
-            self.dockwidget.checkBox_ExtentSelector.setChecked(False)
+        if self.dockwidget.checkBox_AOISelector.isChecked():
+            self.dockwidget.checkBox_AOISelector.setChecked(False)
 
         # Add to QGIS the reflectance stack file and cloud file
-        if self.masking_result.clipping_extent:
+        if self.masking_result.clipping_with_aoi:
             masking_result_name = self.tr("Cloud Mask in area ({})".format(datetime.now().strftime('%H:%M:%S')))
         elif self.dockwidget.checkBox_ShapeSelector.isChecked():
             masking_result_name = self.tr("Cloud Mask in shape ({})".format(datetime.now().strftime('%H:%M:%S')))
@@ -1026,7 +1001,8 @@ class CloudMasking(object):
         # unload MTL file and extent selector
         try:
             self.dockwidget.unload_MTL()
-            self.dockwidget.widget_ExtentSelector.stop()
+            self.dockwidget.delete_all_aoi()
+            self.dockwidget.restart_map_tool()
         except:
             pass
 
