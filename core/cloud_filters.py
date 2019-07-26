@@ -136,9 +136,14 @@ class CloudMaskingResult(object):
             tmp_memory_file.unlink()
 
         if self.clipping_with_shape:
-            self.do_clipping_with_shape(in_stack_file, os.path.abspath(self.shape_path),
-                                        out_clipped_file, self.crop_to_cutline, nodata)
-
+            if not get_layer_by_name(os.path.splitext(os.path.basename(self.shape_path))[0]):
+                load_layer(self.shape_path, add_to_legend=False)
+                self.do_clipping_with_shape(in_stack_file, os.path.abspath(self.shape_path),
+                                            out_clipped_file, self.crop_to_cutline, nodata)
+                unload_layer(self.shape_path)
+            else:
+                self.do_clipping_with_shape(in_stack_file, os.path.abspath(self.shape_path),
+                                            out_clipped_file, self.crop_to_cutline, nodata)
         return out_clipped_file
 
     def do_clipping_extent(self, in_file, out_file):

@@ -384,7 +384,7 @@ class CloudMasking(object):
                 self.dockwidget.QCBox_MaskInShapeArea.currentLayer())
 
             # check if the shape is a memory layer, then save and used it
-            if self.masking_result.shape_path.startswith("memory"):
+            if not os.path.isfile(self.masking_result.shape_path):
                 mem_layer = self.dockwidget.QCBox_MaskInShapeArea.currentLayer()
                 tmp_memory_fd, tmp_memory_file = tempfile.mkstemp(prefix='memory_layer_', suffix='.gpkg', dir=self.dockwidget.tmp_dir)
                 QgsVectorFileWriter.writeAsVectorFormat(mem_layer, tmp_memory_file, "UTF-8", mem_layer.crs(), "GPKG")
@@ -686,7 +686,7 @@ class CloudMasking(object):
         # delete unused output
         # if memory/scratch layer was used
         if self.dockwidget.checkBox_ShapeSelector.isChecked() and \
-                get_file_path_of_layer(self.dockwidget.QCBox_MaskInShapeArea.currentLayer()).startswith("memory"):
+                not os.path.isfile(get_file_path_of_layer(self.dockwidget.QCBox_MaskInShapeArea.currentLayer())):
             if os.path.isfile(tmp_memory_file):
                 os.remove(tmp_memory_file)
         # from fmask
