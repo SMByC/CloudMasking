@@ -133,8 +133,10 @@ class CloudMasking(object):
 
         # disconnects
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
-        self.canvas.layersChanged.disconnect(self.updateLayersList_MultipleLayerMask)
         QgsProject.instance().layersAdded.disconnect(self.updateLayersList_SingleLayerMask)
+        QgsProject.instance().layersRemoved.disconnect(self.updateLayersList_SingleLayerMask)
+        QgsProject.instance().layersAdded.disconnect(self.updateLayersList_MultipleLayerMask)
+        QgsProject.instance().layersRemoved.disconnect(self.updateLayersList_MultipleLayerMask)
 
         # remove this statement if dockwidget is to remain
         # for reuse if plugin is reopened
@@ -195,6 +197,7 @@ class CloudMasking(object):
         self.dockwidget.select_SingleLayerMask.setFilters(QgsMapLayerProxyModel.RasterLayer)
         self.dockwidget.OnlyMaskLayers_SingleMask.clicked.connect(self.updateLayersList_SingleLayerMask)
         QgsProject.instance().layersAdded.connect(self.updateLayersList_SingleLayerMask)
+        QgsProject.instance().layersRemoved.connect(self.updateLayersList_SingleLayerMask)
         self.updateLayersList_SingleLayerMask()
 
         # tabwidget
@@ -203,7 +206,8 @@ class CloudMasking(object):
         # set properties to list for select multiple layer mask
         self.updateLayersList_MultipleLayerMask()
         self.dockwidget.OnlyMaskLayers_MultipleMask.clicked.connect(self.updateLayersList_MultipleLayerMask)
-        self.canvas.layersChanged.connect(self.updateLayersList_MultipleLayerMask)
+        QgsProject.instance().layersAdded.connect(self.updateLayersList_MultipleLayerMask)
+        QgsProject.instance().layersRemoved.connect(self.updateLayersList_MultipleLayerMask)
         self.dockwidget.QPBtn_SelectAll.clicked.connect(self.selectAll_MultipleLayerMask)
         self.dockwidget.QPBtn_DeselectAll.clicked.connect(self.deselectAll_MultipleLayerMask)
 
