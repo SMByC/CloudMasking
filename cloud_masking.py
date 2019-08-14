@@ -19,9 +19,11 @@
  ***************************************************************************/
 """
 import os.path
+import platform
 import shutil
 import tempfile
 from datetime import datetime
+from subprocess import call
 from time import sleep
 from osgeo import gdal
 
@@ -30,7 +32,8 @@ from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QFileDialog,
 from qgis.PyQt.QtGui import QIcon, QCursor
 from qgis.PyQt.QtWidgets import QCheckBox, QGroupBox, QRadioButton
 from qgis.core import QgsProject, QgsRasterLayer, QgsMapLayer, QgsCoordinateTransform, \
-    QgsMapLayerProxyModel, QgsVectorFileWriter
+    QgsMapLayerProxyModel, QgsVectorFileWriter, Qgis
+from qgis.utils import iface
 # Initialize Qt resources from file resources.py
 from . import resources
 
@@ -228,8 +231,10 @@ class CloudMasking(object):
         self.dockwidget.button_processLoadStack.clicked.connect(self.load_stack)
         # call to process mask
         self.dockwidget.button_processMask.clicked.connect(self.process_mask)
-        # save mask
-        self.dockwidget.button_SaveMask.clicked.connect(self.fileDialog_saveMask)
+        # save simple mask
+        self.dockwidget.button_SimpleSaveMask.clicked.connect(self.fileDialog_exportSimpleMask)
+        # save multi mask
+        self.dockwidget.button_MultiSaveMask.clicked.connect(self.fileDialog_exportMultiMask)
         # select result
         self.dockwidget.button_SelectResult.clicked.connect(self.fileDialog_SaveResult)
         # select result
@@ -754,20 +759,63 @@ class CloudMasking(object):
         layer_node = QgsProject.instance().layerTreeRoot().findLayer(self.cloud_mask_rlayer)
         self.iface.layerTreeView().layerTreeModel().refreshLayerLegend(layer_node)
 
-    def fileDialog_saveMask(self):
+    def fileDialog_exportSimpleMask(self):
         """Open QFileDialog for save mask file
         """
         suggested_filename_mask = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Mask.tif"
-        mask_outpath, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr("Save mask file"),
+        mask_outpath, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr("Export the mask file"),
                                                       os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                                    suggested_filename_mask),
                                                       self.tr("GeoTiff files (*.tif);;All files (*.*)"))
         mask_inpath = self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()).source()
 
         if mask_outpath != '' and mask_inpath != '':
-            # set nodata to valid data (1) and copy to destination
-            # warning: this cause that external load and apply not masked correctly if before not do unset the nodata
-            gdal.Translate(mask_outpath, mask_inpath, noData=1)
+            cmd = ['gdal_calc' if platform.system() == 'Windows' else 'gdal_calc.py', '--quiet', '--overwrite',
+                   '--calc "0*(A==1)+1*(A>1)"', '-A {}'.format(mask_inpath), '--outfile "{}"'.format(mask_outpath),
+                   '--NoDataValue=0', '--type="Byte"', '--co COMPRESS=PACKBITS']
+            return_code = call(" ".join(cmd), shell=True)
+            if return_code != 0:
+                iface.messageBar().pushMessage("Error during saving the combined mask file", level=Qgis.Critical)
+            else:
+                iface.messageBar().pushMessage("Combined mask file saved successfully", level=Qgis.Success)
+
+    def fileDialog_exportMultiMask(self):
+        """Open QFileDialog for save mask file
+        """
+        suggested_filename_mask = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Mask.tif"
+        mask_outpath, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr("Export the mask file"),
+                                                      os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                                                                   suggested_filename_mask),
+                                                      self.tr("GeoTiff files (*.tif);;All files (*.*)"))
+
+        mask_inpath = self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()).source()
+
+        items = [self.dockwidget.select_MultipleLayerMask.item(i) for i in
+                 range(self.dockwidget.select_MultipleLayerMask.count())]
+        layers_selected = [self.getLayerByName(item.text()) for item in items if item.checkState() == Qt.Checked]
+
+        if not layers_selected:
+            iface.messageBar().pushMessage(self.tr("Error: Not mask layers selected to apply"), level=Qgis.Warning)
+            return
+
+        if mask_outpath != '':
+            alpha_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
+                          "T", "U", "V", "W", "X", "Y", "Z"]
+            input_files = {alpha_list[x]: get_file_path_of_layer(f) for x, f in
+                           enumerate(layers_selected)}
+            filter_ones = ",".join([alpha_list[x] + "==1" for x in range(len(layers_selected))])
+            filter_zeros = ",".join([alpha_list[x] + ">1" for x in range(len(layers_selected))])
+
+            cmd = ['gdal_calc' if platform.system() == 'Windows' else 'gdal_calc.py', '--quiet', '--overwrite',
+                   '--calc "0*(numpy.all([{filter_ones}], axis=0)) + 1*(numpy.any([{filter_zeros}], axis=0))"'
+                       .format(filter_zeros=filter_zeros, filter_ones=filter_ones),
+                   '--outfile "{}"'.format(mask_outpath), '--NoDataValue=0', '--type="Byte"', '--co COMPRESS=PACKBITS'] + \
+                  ['-{} "{}"'.format(letter, filepath) for letter, filepath in input_files.items()]
+            return_code = call(" ".join(cmd), shell=True)
+            if return_code != 0:
+                iface.messageBar().pushMessage("Error during saving the combined mask file", level=Qgis.Critical)
+            else:
+                iface.messageBar().pushMessage("Combined mask file saved successfully", level=Qgis.Success)
 
     def fileDialog_SelectPFile(self):
         """Open QFileDialog for select particular file to apply mask

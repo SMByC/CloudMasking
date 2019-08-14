@@ -2316,7 +2316,7 @@ You can add multiple values separated by comma</string>
                    </item>
                    <item>
                     <widget class="QWidget" name="widget_9" native="true">
-                     <layout class="QHBoxLayout" name="horizontalLayout_11">
+                     <layout class="QGridLayout" name="gridLayout_4">
                       <property name="leftMargin">
                        <number>0</number>
                       </property>
@@ -2329,7 +2329,33 @@ You can add multiple values separated by comma</string>
                       <property name="bottomMargin">
                        <number>0</number>
                       </property>
-                      <item>
+                      <item row="1" column="1">
+                       <widget class="QPushButton" name="button_SimpleSaveMask">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="toolTip">
+                         <string>Export the combined mask, it is (0 = no mask) and (1 = mask)</string>
+                        </property>
+                        <property name="text">
+                         <string>Export mask</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="0">
+                       <widget class="QLabel" name="label_30">
+                        <property name="text">
+                         <string>Export the combined mask:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="0" colspan="2">
                        <widget class="QgsMapLayerComboBox" name="select_SingleLayerMask">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
@@ -2339,19 +2365,6 @@ You can add multiple values separated by comma</string>
                         </property>
                         <property name="frame">
                          <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QPushButton" name="button_SaveMask">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="text">
-                         <string>Save mask</string>
                         </property>
                        </widget>
                       </item>
@@ -2461,6 +2474,38 @@ You can add multiple values separated by comma</string>
                      <property name="selectionMode">
                       <enum>QAbstractItemView::NoSelection</enum>
                      </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QWidget" name="widget_28" native="true">
+                     <layout class="QHBoxLayout" name="horizontalLayout_11">
+                      <item>
+                       <widget class="QLabel" name="label_31">
+                        <property name="text">
+                         <string>Export the combined mask:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="button_MultiSaveMask">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="toolTip">
+                         <string>Export the combined mask of all mask selected, it is (0 = no mask) and (1 = mask)</string>
+                        </property>
+                        <property name="text">
+                         <string>Export mask</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
                     </widget>
                    </item>
                   </layout>
