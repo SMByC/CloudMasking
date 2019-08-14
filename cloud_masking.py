@@ -767,7 +767,7 @@ class CloudMasking(object):
                                                       os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                                    suggested_filename_mask),
                                                       self.tr("GeoTiff files (*.tif);;All files (*.*)"))
-        mask_inpath = self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()).source()
+        mask_inpath = get_file_path_of_layer(self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()))
 
         if mask_outpath != '' and mask_inpath != '':
             cmd = ['gdal_calc' if platform.system() == 'Windows' else 'gdal_calc.py', '--quiet', '--overwrite',
@@ -787,8 +787,6 @@ class CloudMasking(object):
                                                       os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                                    suggested_filename_mask),
                                                       self.tr("GeoTiff files (*.tif);;All files (*.*)"))
-
-        mask_inpath = self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()).source()
 
         items = [self.dockwidget.select_MultipleLayerMask.item(i) for i in
                  range(self.dockwidget.select_MultipleLayerMask.count())]
