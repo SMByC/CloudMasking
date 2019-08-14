@@ -782,12 +782,7 @@ class CloudMasking(object):
     def fileDialog_exportMultiMask(self):
         """Open QFileDialog for save mask file
         """
-        suggested_filename_mask = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Mask.tif"
-        mask_outpath, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr("Export the mask file"),
-                                                      os.path.join(os.path.dirname(self.dockwidget.mtl_path),
-                                                                   suggested_filename_mask),
-                                                      self.tr("GeoTiff files (*.tif);;All files (*.*)"))
-
+        # define the mask layers
         items = [self.dockwidget.select_MultipleLayerMask.item(i) for i in
                  range(self.dockwidget.select_MultipleLayerMask.count())]
         layers_selected = [self.getLayerByName(item.text()) for item in items if item.checkState() == Qt.Checked]
@@ -795,6 +790,13 @@ class CloudMasking(object):
         if not layers_selected:
             iface.messageBar().pushMessage(self.tr("Error: Not mask layers selected to apply"), level=Qgis.Warning)
             return
+
+        # define the output file
+        suggested_filename_mask = self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] + "_Mask.tif"
+        mask_outpath, _ = QFileDialog.getSaveFileName(self.dockwidget, self.tr("Export the mask file"),
+                                                      os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                                                                   suggested_filename_mask),
+                                                      self.tr("GeoTiff files (*.tif);;All files (*.*)"))
 
         if mask_outpath != '':
             alpha_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
