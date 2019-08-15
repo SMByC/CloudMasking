@@ -20,7 +20,7 @@ This is a raw Landsat products that can be downloaded from USGS in [EarthExplore
 
 It have more processed Landsat products with more bands to be make the quality control and masking, that can be downloaded from [ESPA](https://espa.cr.usgs.gov/ordering/now). With that product the plugin can make the cloud masking using all filters (see more in [Cloud Filters](cloud_filters.md)).
 
-!!! note "Important!"
+> *Important:* 
     When you're downloading the images from the form on the ESPA page, with the Surface Reflectance you also need to download the input products and metadata:
     ![](img/espa_products_needed.png)
 
@@ -66,7 +66,7 @@ In this section you can generate the mask with the filters enabled, there are th
 
 ![](img/how_to_use_06.png)
 
-!!! warning "Only for Fmask process"
+> *Warning:* 
     Some statistics in fmask process are affected by size image, then if you are applying the fmask in a *selected area* or *shape area* the results could have small differences respect to apply *in the whole image*
 
 ### 3a. Select the mask to apply
@@ -111,7 +111,7 @@ There are available four filters in the plugin, depend of the Landsat version or
 
 ![](img/filters_layers_L8.png)
 
-!!! warning "For Old ESPA version"
+> *Warning:* 
     If you want masking for old ESPA version, this plugin continue developing in branch repository, see [installation](installation.md#espa-format-version) for more information about it.
 
 **Pixel values for the cloud mask:**
@@ -212,3 +212,19 @@ In the plugin is implemented this filter bit a bit (only the useful bits) and yo
 ![](img/filter_pixel_qa_l8.png)
 
 When multiple bits are selected (and/or specific values) the plugin marked all pixels for each bit selected individually (and not the unique value which these represent together). For example, if cloud (bit 5) and cloud confidence 67-100% (bits 6-7) is selected, first market all pixels that have cloud (bit 5 as 1) regardless of the other values, after do the same with cloud confidence 67-100%.
+
+## About us
+
+CloudMasking was developing, designed and implemented by the Group of Forest and Carbon Monitoring System (SMByC), operated by the Institute of Hydrology, Meteorology and Environmental Studies (IDEAM) - Colombia.
+
+Author and developer: *Xavier Corredor Ll.*  
+Theoretical support, tester and product verification: SMByC-PDI group
+
+### Contact
+
+Xavier Corredor Ll.: *xcorredorl (a) ideam.gov.co*  
+SMByC: *smbyc (a) ideam.gov.co*
+
+## License
+
+CloudMasking is a free/libre software and is licensed under the GNU General Public License.
