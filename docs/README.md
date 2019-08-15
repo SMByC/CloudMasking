@@ -111,9 +111,6 @@ There are available four filters in the plugin, depend of the Landsat version or
 
 ![](img/filters_layers_L8.png)
 
-> *Warning:* 
-    If you want masking for old ESPA version, this plugin continue developing in branch repository, see [installation](installation.md#espa-format-version) for more information about it.
-
 **Pixel values for the cloud mask:**
 
 | Mask         | Pixel Value | Available for                  |
