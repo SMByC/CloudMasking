@@ -763,6 +763,7 @@ class CloudMasking(object):
         layer_node = QgsProject.instance().layerTreeRoot().findLayer(self.cloud_mask_rlayer)
         self.iface.layerTreeView().layerTreeModel().refreshLayerLegend(layer_node)
 
+    @wait_process
     def fileDialog_exportSimpleMask(self):
         """Open QFileDialog for save mask file
         """
@@ -783,6 +784,7 @@ class CloudMasking(object):
             else:
                 iface.messageBar().pushMessage("Combined mask file saved successfully", level=Qgis.Success)
 
+    @wait_process
     def fileDialog_exportMultiMask(self):
         """Open QFileDialog for save mask file
         """
