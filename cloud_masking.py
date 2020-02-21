@@ -729,10 +729,6 @@ class CloudMasking(object):
             if cloud_masking_file != self.final_cloud_mask_file:
                 os.remove(cloud_masking_file)
 
-        # hide the extent selector
-        if self.dockwidget.checkBox_AOISelector.isChecked():
-            self.dockwidget.checkBox_AOISelector.setChecked(False)
-
         # Add to QGIS the reflectance stack file and cloud file
         if self.masking_result.clipping_with_aoi:
             masking_result_name = self.tr("Cloud Mask in area ({})".format(datetime.now().strftime('%H:%M:%S')))
