@@ -27,7 +27,7 @@ from subprocess import call
 from time import sleep
 from osgeo import gdal
 
-from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot, QObject
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QFileDialog, QListWidgetItem, QSizePolicy
 from qgis.PyQt.QtGui import QIcon, QCursor
 from qgis.PyQt.QtWidgets import QCheckBox, QGroupBox, QRadioButton
@@ -45,7 +45,7 @@ from CloudMasking.gui.cloud_masking_dockwidget import CloudMaskingDockWidget
 from CloudMasking.gui.about_dialog import AboutDialog
 
 
-class CloudMasking(object):
+class CloudMasking:
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
@@ -224,7 +224,7 @@ class CloudMasking(object):
         # call to load MTL file
         self.dockwidget.button_LoadMTL.clicked.connect(lambda: self.button_load_mtl())
         # call to clear all
-        self.dockwidget.button_ClearAll.clicked.connect(self.button_clear_all)
+        self.dockwidget.button_ClearAll.clicked.connect(lambda: self.button_clear_all())
         # call to load natural color stack
         self.dockwidget.button_NaturalColorStack.clicked.connect(lambda: self.set_color_stack("natural_color"))
         # call to load false color stack
@@ -232,19 +232,19 @@ class CloudMasking(object):
         # call to load infrareds stack
         self.dockwidget.button_InfraredsStack.clicked.connect(lambda: self.set_color_stack("infrareds"))
         # call to process load stack
-        self.dockwidget.button_processLoadStack.clicked.connect(self.load_stack)
+        self.dockwidget.button_processLoadStack.clicked.connect(lambda: self.load_stack())
         # call to process mask
-        self.dockwidget.button_processMask.clicked.connect(self.process_mask)
+        self.dockwidget.button_processMask.clicked.connect(lambda: self.process_mask())
         # save simple mask
-        self.dockwidget.button_SimpleSaveMask.clicked.connect(self.fileDialog_exportSimpleMask)
+        self.dockwidget.button_SimpleSaveMask.clicked.connect(lambda: self.fileDialog_exportSimpleMask())
         # save multi mask
-        self.dockwidget.button_MultiSaveMask.clicked.connect(self.fileDialog_exportMultiMask)
+        self.dockwidget.button_MultiSaveMask.clicked.connect(lambda: self.fileDialog_exportMultiMask())
         # select result
         self.dockwidget.button_SelectResult.clicked.connect(self.fileDialog_SaveResult)
         # select result
         self.dockwidget.button_SelectPFile.clicked.connect(self.fileDialog_SelectPFile)
         # button for Apply Mask
-        self.dockwidget.button_processApplyMask.clicked.connect(self.apply_mask)
+        self.dockwidget.button_processApplyMask.clicked.connect(lambda: self.apply_mask())
 
     def update_tab_select_mask(self, current_tab_idx):
         """Adjust the size tab based on the content"""
@@ -316,7 +316,7 @@ class CloudMasking(object):
         self.dockwidget.SelectBand_B.setCurrentIndex(self.dockwidget.reflectance_bands.index(bands[2]))
 
     @wait_process
-    def load_stack(self, *args):
+    def load_stack(self):
         update_process_bar(self.dockwidget.bar_progressLoadStack, 40,
                            self.dockwidget.status_processLoadStack, self.tr("Loading stack..."))
         bands = []
@@ -341,7 +341,7 @@ class CloudMasking(object):
             load_and_select_filepath_in(combo_box, file_path)
 
     @wait_process
-    def process_mask(self, *args):
+    def process_mask(self):
         """Make the process
         """
         # initialize the symbology
@@ -846,7 +846,7 @@ class CloudMasking(object):
             self.dockwidget.lineEdit_ResultPath.setText(result_path)
 
     @wait_process
-    def apply_mask(self, *args):
+    def apply_mask(self):
         # init progress bar
         update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
                            self.tr("Preparing the mask files..."))
@@ -1024,7 +1024,7 @@ class CloudMasking(object):
         # run load MTL
         self.dockwidget.load_MTL()
 
-    @wait_process
+    @pyqtSlot()
     def button_clear_all(self):
         # first prompt
         quit_msg = "Are you sure you want to clean all: delete unsaved masks, clean tmp files, unload processed images?"
@@ -1039,6 +1039,7 @@ class CloudMasking(object):
         from qgis.utils import plugins
         plugins["CloudMasking"].run()
 
+    @wait_process
     def removes_temporary_files(self):
         # message
         if isinstance(self.dockwidget, CloudMaskingDockWidget):
