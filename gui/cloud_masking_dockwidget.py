@@ -219,13 +219,14 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             lambda: selector(self.checkBox_ShapeSelector, self.checkBox_AOISelector))
 
         # AOI picker
+        self.VisibleAOI.clicked.connect(self.visible_aoi)
         self.AOI_Picker.clicked.connect(
             lambda: self.canvas.setMapTool(PickerAOIPointTool(self), clean=True))
         self.UndoAOI.clicked.connect(self.undo_aoi)
         self.DeleteAllAOI.clicked.connect(self.delete_all_aoi)
         self.pan_zoom_tool = QgsMapToolPan(self.canvas)
         self.rubber_bands = []
-        self.tmp_rubber_band = []
+        self.tmp_rubber_bands = []
         # init temporal AOI layer
         self.aoi_features = None
 
@@ -485,6 +486,30 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.canvas.setMapTool(self.pan_zoom_tool, clean=True)
 
     @pyqtSlot()
+    def visible_aoi(self):
+        # first clean all rubber bands
+        [rubber_band.reset() for rubber_band in self.rubber_bands]
+        [rubber_band.reset() for rubber_band in self.tmp_rubber_bands]
+        self.rubber_bands = []
+        self.tmp_rubber_bands = []
+
+        if self.VisibleAOI.isChecked() and self.aoi_features is not None:
+            for feat in self.aoi_features.getFeatures():
+                color = QColor("red")
+                color.setAlpha(70)
+                rubber_band = QgsRubberBand(self.canvas, QgsWkbTypes.PolygonGeometry)
+                rubber_band.setToGeometry(feat.geometry())
+                rubber_band.setColor(color)
+                rubber_band.setWidth(3)
+                self.rubber_bands.append(rubber_band)
+                tmp_rubber_band = QgsRubberBand(self.canvas, QgsWkbTypes.PolygonGeometry)
+                tmp_rubber_band.setToGeometry(feat.geometry())
+                tmp_rubber_band.setColor(color)
+                tmp_rubber_band.setWidth(3)
+                tmp_rubber_band.setLineStyle(Qt.DotLine)
+                self.tmp_rubber_bands.append(tmp_rubber_band)
+
+    @pyqtSlot()
     def undo_aoi(self):
         # delete feature
         features_ids = [f.id() for f in self.aoi_features.getFeatures()]
@@ -492,7 +517,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             self.aoi_features.deleteFeature(features_ids[-1])
         # delete rubber bands
         self.rubber_bands.pop().reset(QgsWkbTypes.PolygonGeometry)
-        self.tmp_rubber_band.pop().reset(QgsWkbTypes.PolygonGeometry)
+        self.tmp_rubber_bands.pop().reset(QgsWkbTypes.PolygonGeometry)
         # update
         if len(list(self.aoi_features.getFeatures())) > 0:
             self.aoi_changes()
@@ -502,10 +527,10 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
     @pyqtSlot()
     def delete_all_aoi(self):
         # clear/reset all rubber bands
-        for rubber_band in self.rubber_bands + self.tmp_rubber_band:
+        for rubber_band in self.rubber_bands + self.tmp_rubber_bands:
             rubber_band.reset(QgsWkbTypes.PolygonGeometry)
         self.rubber_bands = []
-        self.tmp_rubber_band = []
+        self.tmp_rubber_bands = []
         # remove all features in aoi
         if self.aoi_features is not None:
             self.aoi_features.dataProvider().truncate()
@@ -515,15 +540,15 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.DeleteAllAOI.setEnabled(False)
 
     @pyqtSlot()
-    def aoi_changes(self, new_feature=None):
+    def aoi_changes(self, new_features=None):
         """Actions after added each polygon in the AOI"""
         # update AOI
-        if new_feature is not None:
+        if new_features is not None:
             if self.aoi_features is None:
                 self.aoi_features = QgsVectorLayer(
                     "Polygon?crs=" + iface.mapCanvas().mapSettings().destinationCrs().toWkt(), "aoi", "memory")
             with edit(self.aoi_features):
-                self.aoi_features.addFeature(new_feature)
+                self.aoi_features.addFeatures(new_features)
         # enable undo and delete buttons
         self.UndoAOI.setEnabled(True)
         self.DeleteAllAOI.setEnabled(True)
@@ -593,12 +618,12 @@ class PickerAOIPointTool(QgsMapTool):
                 new_feature = QgsFeature()
                 new_feature.setGeometry(self.rubber_band.asGeometry())
                 self.dockwidget.rubber_bands.append(self.rubber_band)
-                self.dockwidget.tmp_rubber_band.append(self.tmp_rubber_band)
+                self.dockwidget.tmp_rubber_bands.append(self.tmp_rubber_band)
                 self.rubber_band = None
                 self.tmp_rubber_band = None
                 self.finish_drawing()
                 # add the new feature and update the statistics
-                self.dockwidget.aoi_changes(new_feature)
+                self.dockwidget.aoi_changes([new_feature])
 
     def keyReleaseEvent(self, event):
         if event.key() in [Qt.Key_Up, Qt.Key_Down, Qt.Key_Right, Qt.Key_Left, Qt.Key_PageUp, Qt.Key_PageDown]:

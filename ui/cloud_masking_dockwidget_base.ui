@@ -1918,6 +1918,32 @@ You can add multiple values separated by comma</string>
                       </spacer>
                      </item>
                      <item>
+                      <widget class="QToolButton" name="VisibleAOI">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
+                       <property name="toolTip">
+                        <string>Show or hide the AOI created</string>
+                       </property>
+                       <property name="icon">
+                        <iconset>
+                         <normaloff>:/plugins/CloudMasking/icons/visible.svg</normaloff>:/plugins/CloudMasking/icons/visible.svg</iconset>
+                       </property>
+                       <property name="checkable">
+                        <bool>true</bool>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
+                       </property>
+                       <property name="toolButtonStyle">
+                        <enum>Qt::ToolButtonIconOnly</enum>
+                       </property>
+                       <property name="autoRaise">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
                       <widget class="QToolButton" name="AOI_Picker">
                        <property name="text">
                         <string>AOI picker</string>

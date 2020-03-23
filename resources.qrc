@@ -9,5 +9,6 @@
         <file>icons/aoi_picker.svg</file>
         <file>icons/undo.svg</file>
         <file>icons/trash.svg</file>
+        <file>icons/visible.svg</file>
     </qresource>
 </RCC>
