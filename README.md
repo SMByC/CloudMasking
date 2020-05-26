@@ -12,6 +12,8 @@ Read more in: [https://smbyc.github.io/CloudMasking](https://smbyc.github.io/Clo
 
 There are several ways for make cloud masking automatically, such as apply the default fmask band or cloud filter using a fixed pixel values in the QA bands. But these "by default" bands and values are not always good, and their efficiency varies in different regions and depends to a great extent on the type of terrain, vegetation or environmental conditions. The purpose of the plugin is to make cloud masking very personalized and configurable to perform the best possible masking by combining and using of various bands and filters.
 
+If you want masking in a bulk process I recommend use [python-fmask](www.pythonfmask.org) (but it is only fmask)
+
 ## Installation
 
 The plugin can be installed using the QGIS Plugin Manager, go into Qgis to `Plugins` menu and `Manage and install plugins`, in `All` section search for `CloudMasking`.
@@ -44,3 +46,6 @@ SMByC: *smbyc (a) ideam.gov.co*
 ## License
 
 CloudMasking is a free/libre software and is licensed under the GNU General Public License.
+
+
+[www.pythonfmask.org]: www.pythonfmask.org
