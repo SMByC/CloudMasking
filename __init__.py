@@ -35,6 +35,10 @@ def fmask_libs():
         is_64bits = sys.maxsize > 2 ** 32
         if is_64bits:
             if sys.version_info[0:2] == (3, 7):  # py37
+                if platform.system() == "Darwin":
+                    from CloudMasking.libs.fmask.ios64_py37 import _fillminima, _valueindexes
+                    copy(os.path.join(fmask_path, 'ios64_py37', '_fillminima.so'), fmask_path)
+                    copy(os.path.join(fmask_path, 'ios64_py37', '_valueindexes.so'), fmask_path)
                 if platform.system() == "Windows":
                     from CloudMasking.libs.fmask.win64_py37 import _fillminima, _valueindexes
                     copy(os.path.join(fmask_path, 'win64_py37', '_fillminima.pyd'), fmask_path)
