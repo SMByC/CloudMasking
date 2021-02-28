@@ -151,6 +151,7 @@ class ApplierControls(object):
         * **jobManagerType**  Which :class:`rios.parallel.jobmanager.JobManager` sub-class to use for parallel processing (by name)
         * **autoColorTableType** Type of color table to be automatically added to thematic output rasters
         * **allowOverviewsGdalwarp** Allow use of overviews in input resample (dangerous, do not use)
+        * **approxStats**       Allow approx stats (much faster)
     
     Options relating to vector input files
         * **burnvalue**       Value to burn into raster from vector
@@ -198,6 +199,7 @@ class ApplierControls(object):
         self.jobManagerType = os.getenv('RIOS_DFLT_JOBMGRTYPE', default=None)
         self.autoColorTableType = DEFAULT_AUTOCOLORTABLETYPE
         self.allowOverviewsGdalwarp = False
+        self.approxStats = False
 
         # Vector fields
         self.burnvalue = 1
@@ -582,6 +584,15 @@ class ApplierControls(object):
         
         """
         self.allowOverviewsGdalwarp = allowOverviewsGdalwarp
+    
+    def setApproxStats(self, approxStats):
+        """
+        Set boolean value of approxStats attribute. This modifies the behaviour of
+        calcStats by forcing it to use the pyramid layers during stats generation
+        (much faster but only provides approximate values, not recommended for
+        thematic rasters)
+        """
+        self.approxStats = approxStats
 
 
 def apply(userFunction, infiles, outfiles, otherArgs=None, controls=None):
@@ -735,7 +746,8 @@ def closeOutputImages(writerdict, outfiles, controls):
                 overviewLevels=controls.getOptionForImagename('overviewLevels', name),
                 overviewMinDim=controls.getOptionForImagename('overviewMinDim', name), 
                 overviewAggType=controls.getOptionForImagename('overviewAggType', name),
-                autoColorTableType=controls.getOptionForImagename('autoColorTableType', name))
+                autoColorTableType=controls.getOptionForImagename('autoColorTableType', name),
+                approx_ok=controls.getOptionForImagename('approxStats', name))
 
 
 def updateProgress(controls, info, lastpercent):

@@ -26,6 +26,7 @@ reference grid.
 
 from . import imageio
 from . import rioserrors
+from . import fileinfo
 from osgeo import osr
 from osgeo import gdal
 
@@ -219,7 +220,11 @@ class PixelGridDefn(object):
         of image.
         """
         srSelf = osr.SpatialReference(str(self.projection))
-        transform = osr.CoordinateTransformation(srSelf, otherspatialref)
+        fileinfo.preventGdal3axisSwap(srSelf)
+        # Make a private copy of the other SR, to avoid damaging what they gave us. 
+        otherspatialrefCopy = osr.SpatialReference(wkt=otherspatialref.ExportToWkt())
+        fileinfo.preventGdal3axisSwap(otherspatialrefCopy)
+        transform = osr.CoordinateTransformation(srSelf, otherspatialrefCopy)
 
         xtol = pixtolerance * self.xRes
         ytol = pixtolerance * self.yRes
@@ -257,7 +262,9 @@ class PixelGridDefn(object):
         
         """
         srSelf = osr.SpatialReference(str(self.projection))
+        fileinfo.preventGdal3axisSwap(srSelf)
         srTarget = osr.SpatialReference(str(targetGrid.projection))
+        fileinfo.preventGdal3axisSwap(srTarget)
         t = osr.CoordinateTransformation(srSelf, srTarget)
         
         (tl_x, tl_y, z) = t.TransformPoint(self.xMin, self.yMax)

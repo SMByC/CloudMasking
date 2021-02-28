@@ -319,9 +319,8 @@ class InputCollection(object):
         # as a list for subprocess - also a bit easier to read
         cmdList = [gdalwarp_path]
         
-        if LooseVersion(gdal.__version__) >= LooseVersion('2.0'):
-            if not allowOverviewsGdalwarp:
-                cmdList.extend(['-ovr', 'NONE'])
+        if not allowOverviewsGdalwarp:
+            cmdList.extend(['-ovr', 'NONE'])
         
         # source projection prf file
         cmdList.append('-s_srs')

@@ -49,9 +49,6 @@ from osgeo import gdal
 from . import rat
 from . import rioserrors
 
-# Test whether we have access to the GDAL RFC40 facilities
-haveRFC40 = hasattr(gdal.RasterAttributeTable, 'ReadAsArray')
-
 # Some constants relating to how we control the length of the output RAT (RCM = Row Count Method)
 RCM_EQUALS_INPUT = 0
 "Same as input"
@@ -134,11 +131,6 @@ def apply(userFunc, inRats, outRats, otherargs=None, controls=None):
     rowCount = controls.rowCount
     if rowCount is None:
         rowCount = allGdalHandles.getRowCount()
-
-    # If we can't read partial blocks, then set the block length to 
-    # rowCount, i.e. there will be only one block. 
-    if not haveRFC40:
-        controls.setBlockLength(rowCount)
 
     # The current state of processing, i.e. where are we up to as 
     # we progress through the table(s)
@@ -473,12 +465,8 @@ class RatBlockAssociation(object):
         if key not in self.Z__cache:
             gdalRat = self.Z__gdalHandles.gdalRat
             colNdx = self.Z__gdalHandles.columnNdxByName[columnName]
-            if haveRFC40:
-                dataBlock = gdalRat.ReadAsArray(colNdx, start=self.Z__state.startrow, 
+            dataBlock = gdalRat.ReadAsArray(colNdx, start=self.Z__state.startrow, 
                     length=self.Z__state.blockLen)
-            else:
-                gdalBand = self.Z__gdalHandles.band
-                dataBlock = rat.readColumnFromBand(gdalBand, columnName)
             self.Z__cache[key] = dataBlock
         value = self.Z__cache[key]
         return value
@@ -525,28 +513,24 @@ class RatBlockAssociation(object):
                     len(dataBlock), rowsToWrite)
                 raise rioserrors.RatBlockLengthError(msg)
 
-            if haveRFC40:
-                # Check if the column needs to be created
-                if columnName not in self.Z__gdalHandles.columnNdxByName:
-                    columnType = rat.inferColumnType(dataBlock)
-                    columnUsage = self.getUsage(columnName)
-                    gdalRat.CreateColumn(columnName, columnType, columnUsage)
-                    # Work out the new column index
-                    columnNdx = gdalRat.GetColumnCount() - 1
-                    self.Z__gdalHandles.columnNdxByName[columnName] = columnNdx
-                
-                # Write the block of data into the RAT column
-                columnNdx = self.Z__gdalHandles.columnNdxByName[columnName]
-                if len(dataBlock) > 0:
-                    if gdalRat.GetRowCount() < self.Z__outputRowCount+rowsToWrite:
-                        newOutputRowCount = self.guessNewRowCount(rowsToWrite, controls, state)
-                        gdalRat.SetRowCount(newOutputRowCount)
-                        
-                    gdalRat.WriteArray(dataBlock, columnNdx, self.Z__outputRowCount)
-                # There may be a problem with HFA Byte arrays, if we don't end up writing 256 rows....
-            else:
-                gdalBand = self.Z__gdalHandles.band
-                rat.writeColumnToBand(gdalBand, columnName, dataBlock)
+            # Check if the column needs to be created
+            if columnName not in self.Z__gdalHandles.columnNdxByName:
+                columnType = rat.inferColumnType(dataBlock)
+                columnUsage = self.getUsage(columnName)
+                gdalRat.CreateColumn(columnName, columnType, columnUsage)
+                # Work out the new column index
+                columnNdx = gdalRat.GetColumnCount() - 1
+                self.Z__gdalHandles.columnNdxByName[columnName] = columnNdx
+
+            # Write the block of data into the RAT column
+            columnNdx = self.Z__gdalHandles.columnNdxByName[columnName]
+            if len(dataBlock) > 0:
+                if gdalRat.GetRowCount() < self.Z__outputRowCount+rowsToWrite:
+                    newOutputRowCount = self.guessNewRowCount(rowsToWrite, controls, state)
+                    gdalRat.SetRowCount(newOutputRowCount)
+
+                gdalRat.WriteArray(dataBlock, columnNdx, self.Z__outputRowCount)
+            # There may be a problem with HFA Byte arrays, if we don't end up writing 256 rows....
         
         # Increment Z__outputRowCount, without triggering __setattr__. 
         object.__setattr__(self, 'Z__outputRowCount', self.Z__outputRowCount + rowsToWrite)

@@ -82,19 +82,6 @@ class Vector(object):
             if fieldidx == -1:
                 raise rioserrors.VectorAttributeError("Attribute does not exist in file: %s" % attribute)
 
-        # check they have passed a polygon type
-        validtypes = [ogr.wkbMultiPolygon,ogr.wkbMultiPolygon25D,ogr.wkbPolygon,ogr.wkbPolygon25D]
-        if layerdefn.GetGeomType() not in validtypes:
-            gdalVersion = None
-            if hasattr(gdal, '__version__'):
-                gdalVersion = gdal.__version__
-            # This seems to be the only way to reliably deal with 
-            # GDAL 1.10.0 < 1.9.0 comparisons...
-            from distutils.version import LooseVersion
-            if gdalVersion is None or LooseVersion(gdalVersion) < LooseVersion('1.9.0'):
-                raise rioserrors.VectorGeometryTypeError("Can only rasterize polygon types "+
-                    "with this version of gdal. Need gdal version >= 1.9.0")
-
         # apply the attribute filter if passed
         if filter is not None:
             self.layer.SetAttributeFilter(filter)     

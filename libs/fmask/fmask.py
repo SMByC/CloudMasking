@@ -141,14 +141,14 @@ def doFmask(fmaskFilenames, fmaskConfig):
         fmaskConfig.setShadowBufferSize(3)
     
     if fmaskConfig.verbose: print("Cloud layer, pass 1")
-    (pass1file, Twater, Tlow, Thigh, NIR_17) = doPotentialCloudFirstPass(
+    (pass1file, Twater, Tlow, Thigh, NIR_17, nonNullCount) = doPotentialCloudFirstPass(
         fmaskFilenames, fmaskConfig, missingThermal)
     if fmaskConfig.verbose: print("  Twater=", Twater, "Tlow=", Tlow, "Thigh=", Thigh, "NIR_17=", 
-        NIR_17)
+        NIR_17, "nonNullCount=", nonNullCount)
     
     if fmaskConfig.verbose: print("Cloud layer, pass 2")
     (pass2file, landThreshold) = doPotentialCloudSecondPass(fmaskFilenames, 
-        fmaskConfig, pass1file, Twater, Tlow, Thigh, missingThermal)
+        fmaskConfig, pass1file, Twater, Tlow, Thigh, missingThermal, nonNullCount)
     if fmaskConfig.verbose: print("  landThreshold=", landThreshold)
 
     if fmaskConfig.verbose: print("Cloud layer, pass 3")
@@ -258,6 +258,7 @@ def doPotentialCloudFirstPass(fmaskFilenames, fmaskConfig, missingThermal):
         otherargs.thermalNull = thermalImgInfo.nodataval[0]
         if otherargs.thermalNull is None:
             otherargs.thermalNull = 0
+    otherargs.nonNullCount = 0
     
     # Which reflective bands do we use to make a null mask. The numbers being set here 
     # are zero-based index numbers for use as array indexes. It should be just all bands, 
@@ -294,7 +295,7 @@ def doPotentialCloudFirstPass(fmaskFilenames, fmaskConfig, missingThermal):
         # Not enough land to work this out, so guess a low value. 
         b4_17 = 0.01
     
-    return (outfiles.pass1, Twater, Tlow, Thigh, b4_17)
+    return (outfiles.pass1, Twater, Tlow, Thigh, b4_17, otherargs.nonNullCount)
 
 
 def potentialCloudFirstPass(info, inputs, outputs, otherargs):
@@ -345,8 +346,7 @@ def potentialCloudFirstPass(info, inputs, outputs, otherargs):
     for n in [blue, green, red]:
         whiteness = whiteness + numpy.absolute((ref[n] - meanVis) / meanVis)
 
-    # Modified as per Frantz 2015, corresponding to his "darkness test" - make this a parameter......
-    whitenessTest = ((whiteness < fmaskConfig.Eqn2WhitenessThresh) & (meanVis > 0.15))
+    whitenessTest = (whiteness < fmaskConfig.Eqn2WhitenessThresh)
     
     # Haze test, equation 3
     hazeTest = ((ref[blue] - 0.5 * ref[red] - 0.08) > 0)
@@ -442,6 +442,7 @@ def potentialCloudFirstPass(info, inputs, outputs, otherargs):
         otherargs.clearLandBT_hist = accumHist(otherargs.clearLandBT_hist, scaledBT[clearLand])
     scaledB4 = (ref[nir] * B4_SCALE).astype(numpy.uint8)
     otherargs.clearLandB4_hist = accumHist(otherargs.clearLandB4_hist, scaledB4[clearLand])
+    otherargs.nonNullCount += numpy.count_nonzero(~nullmask)
 
 
 def accumHist(counts, vals):
@@ -495,7 +496,7 @@ def calcBTthresholds(otherargs):
 PROB_SCALE = 100.0
 
 def doPotentialCloudSecondPass(fmaskFilenames, fmaskConfig, pass1file, 
-                Twater, Tlow, Thigh, missingThermal):
+                Twater, Tlow, Thigh, missingThermal, nonNullCount):
     """
     Second pass for potential cloud layer
     """
@@ -531,7 +532,13 @@ def doPotentialCloudSecondPass(fmaskFilenames, fmaskConfig, pass1file,
     applier.apply(potentialCloudSecondPass, infiles, outfiles, otherargs, controls=controls)
     
     # Equation 17
-    landThreshold = scoreatpcnt(otherargs.lCloudProb_hist, 82.5)
+    # Need at least 3% of nonnull pixels as clear land for this to be reliable. 
+    minPixelsReqd = 0.03 * nonNullCount
+    if otherargs.lCloudProb_hist.sum() < minPixelsReqd:
+        # Almost no clear land pixels
+        landThreshold = None
+    else:
+        landThreshold = scoreatpcnt(otherargs.lCloudProb_hist, 82.5)
     if landThreshold is not None:
         landThreshold = landThreshold / PROB_SCALE + fmaskConfig.Eqn17CloudProbThresh
     else:
@@ -1298,32 +1305,21 @@ def maskAndBuffer(info, inputs, outputs, otherargs):
     # Buffer the cloud
     if hasattr(otherargs, 'bufferkernel'):
         cloud = maximum_filter(cloud, footprint=otherargs.bufferkernel)
-
-    # Mask the shadow, against the buffered cloud, and the nullmask
-    shadow[cloud] = False
     
-    # Mask the snow against the cloud and shadow
-    mask = cloud | shadow
-    snow[mask] = False
-    
-    # Mask the water against the cloud, shadow and snow
-    mask = cloud | shadow | snow
-    water[mask] = False
-    
-    # now convert these masks to 0 - null
+    # now convert these masks to
+    # 0 - null
     # 1 - not null and not mask
     # 2 - cloud
     # 3 - cloud shadow
     # 4 - snow
     # 5 - water
-    outNullval = OUTCODE_NULL
-    out = numpy.zeros(cloud.shape, dtype=numpy.uint8)
-    out.fill(OUTCODE_CLEAR)
-    out[cloud] = OUTCODE_CLOUD
-    out[shadow] = OUTCODE_SHADOW
-    out[snow] = OUTCODE_SNOW
+    out = numpy.full(cloud.shape, fill_value=OUTCODE_CLEAR, dtype=numpy.uint8)
     out[water] = OUTCODE_WATER
-    out[resetNullmask] = outNullval
+    out[snow] = OUTCODE_SNOW
+    out[shadow] = OUTCODE_SHADOW
+    out[cloud] = OUTCODE_CLOUD
+    out[resetNullmask] = OUTCODE_NULL
+    
     outputs.out = numpy.array([out])
 
 

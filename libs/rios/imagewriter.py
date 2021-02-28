@@ -386,18 +386,26 @@ class ImageWriter(object):
     def close(self, calcStats=False, statsIgnore=None, progress=None, omitPyramids=False,
             overviewLevels=calcstats.DEFAULT_OVERVIEWLEVELS,
             overviewMinDim=calcstats.DEFAULT_MINOVERVIEWDIM, 
-            overviewAggType=None, autoColorTableType=rat.DEFAULT_AUTOCOLORTABLETYPE):
+            overviewAggType=None, autoColorTableType=rat.DEFAULT_AUTOCOLORTABLETYPE,
+            approx_ok=False):
         """
         Closes the open dataset
         """
+        if statsIgnore is not None:
+            # This also gets set inside addStatistics. That is a 
+            # historical anomaly. This is the correct place to do it. 
+            calcstats.setNullValue(self.ds, statsIgnore)
+
         if calcStats:
             from .cuiprogress import SilentProgress
             if progress is None:
                 progress = SilentProgress()
-            calcstats.addStatistics(self.ds, progress, statsIgnore)
+            
             if not omitPyramids:
                 calcstats.addPyramid(self.ds, progress, minoverviewdim=overviewMinDim,
                     levels=overviewLevels, aggregationType=overviewAggType)
+
+            calcstats.addStatistics(self.ds, progress, statsIgnore, approx_ok=approx_ok) 
         
         self.ds.FlushCache()
         del self.ds
@@ -420,32 +428,25 @@ class ImageWriter(object):
         imgInfo = fileinfo.ImageInfo(self.filename)
         if imgInfo.layerType == "thematic":
             imgStats = fileinfo.ImageFileStats(self.filename)
-            ds = None
-            if calcstats.haveRFC40:
-                ds = gdal.Open(self.filename, gdal.GA_Update)
+            ds = gdal.Open(self.filename, gdal.GA_Update)
 
             for i in range(imgInfo.rasterCount):
-                numEntries = imgStats[i].max + 1
+                numEntries = int(imgStats[i].max + 1)
                 clrTbl = rat.genColorTable(numEntries, autoColorTableType)
-                if not calcstats.haveRFC40:
-                    rat.setColorTable(self.filename, clrTbl, layernum=i+1)
-                else:
-                    # If we have the RFC40 facilities, then use them to write the colour table, 
-                    # because otherwise Sam will get cross with me. 
-                    band = ds.GetRasterBand(i+1)
-                    ratObj = band.GetDefaultRAT()
-                    redIdx, redNew = calcstats.findOrCreateColumn(ratObj, gdal.GFU_Red, "Red", gdal.GFT_Integer)
-                    greenIdx, greenNew = calcstats.findOrCreateColumn(ratObj, gdal.GFU_Green, "Green", gdal.GFT_Integer)
-                    blueIdx, blueNew = calcstats.findOrCreateColumn(ratObj, gdal.GFU_Blue, "Blue", gdal.GFT_Integer)
-                    alphaIdx, alphaNew = calcstats.findOrCreateColumn(ratObj, gdal.GFU_Alpha, "Alpha", gdal.GFT_Integer)
-                    # were any of these not already existing?
-                    if redNew or greenNew or blueNew or alphaNew:
-                        ratObj.WriteArray(clrTbl[:, 0], redIdx)
-                        ratObj.WriteArray(clrTbl[:, 1], greenIdx)
-                        ratObj.WriteArray(clrTbl[:, 2], blueIdx)
-                        ratObj.WriteArray(clrTbl[:, 3], alphaIdx)
-                    if not ratObj.ChangesAreWrittenToFile():
-                        band.SetDefaultRAT(ratObj)
+                band = ds.GetRasterBand(i+1)
+                ratObj = band.GetDefaultRAT()
+                redIdx, redNew = calcstats.findOrCreateColumn(ratObj, gdal.GFU_Red, "Red", gdal.GFT_Integer)
+                greenIdx, greenNew = calcstats.findOrCreateColumn(ratObj, gdal.GFU_Green, "Green", gdal.GFT_Integer)
+                blueIdx, blueNew = calcstats.findOrCreateColumn(ratObj, gdal.GFU_Blue, "Blue", gdal.GFT_Integer)
+                alphaIdx, alphaNew = calcstats.findOrCreateColumn(ratObj, gdal.GFU_Alpha, "Alpha", gdal.GFT_Integer)
+                # were any of these not already existing?
+                if redNew or greenNew or blueNew or alphaNew:
+                    ratObj.WriteArray(clrTbl[:, 0], redIdx)
+                    ratObj.WriteArray(clrTbl[:, 1], greenIdx)
+                    ratObj.WriteArray(clrTbl[:, 2], blueIdx)
+                    ratObj.WriteArray(clrTbl[:, 3], alphaIdx)
+                if not ratObj.ChangesAreWrittenToFile():
+                    band.SetDefaultRAT(ratObj)
 
     def doubleCheckCreationOptions(self, drivername, creationoptions):
         """
