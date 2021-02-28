@@ -546,7 +546,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         if new_features is not None:
             if self.aoi_features is None:
                 self.aoi_features = QgsVectorLayer(
-                    "Polygon?crs=" + iface.mapCanvas().mapSettings().destinationCrs().toWkt(), "aoi", "memory")
+                    "MultiPolygon?crs=" + iface.mapCanvas().mapSettings().destinationCrs().toWkt(), "aoi", "memory")
             with edit(self.aoi_features):
                 self.aoi_features.addFeatures(new_features)
         # enable undo and delete buttons
