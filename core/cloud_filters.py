@@ -129,19 +129,20 @@ class CloudMaskingResult(object):
         if self.clipping_with_aoi:
             with tempfile.NamedTemporaryFile(suffix=".gpkg") as tmp:
                 QgsVectorFileWriter.writeAsVectorFormat(self.aoi_features, tmp.name, "System", self.aoi_features.crs(), "GPKG")
-                load_layer(tmp.name, add_to_legend=False)
-                self.do_clipping_with_shape(in_stack_file, tmp.name,
+                shape_layer = load_layer(tmp.name, add_to_legend=False)
+                self.do_clipping_with_shape(in_stack_file, shape_layer, tmp.name,
                                             out_clipped_file, False, nodata)
                 unload_layer(tmp.name)
 
         if self.clipping_with_shape:
-            if not get_layer_by_name(os.path.splitext(os.path.basename(self.shape_path))[0]):
-                load_layer(self.shape_path, add_to_legend=False)
-                self.do_clipping_with_shape(in_stack_file, os.path.abspath(self.shape_path),
+            shape_layer = get_layer_by_name(os.path.splitext(os.path.basename(self.shape_path))[0])
+            if shape_layer is None:
+                shape_layer = load_layer(self.shape_path, add_to_legend=False)
+                self.do_clipping_with_shape(in_stack_file, shape_layer, os.path.abspath(self.shape_path),
                                             out_clipped_file, self.crop_to_cutline, nodata)
                 unload_layer(self.shape_path)
             else:
-                self.do_clipping_with_shape(in_stack_file, os.path.abspath(self.shape_path),
+                self.do_clipping_with_shape(in_stack_file, shape_layer, os.path.abspath(self.shape_path),
                                             out_clipped_file, self.crop_to_cutline, nodata)
         return out_clipped_file
 
@@ -156,11 +157,11 @@ class CloudMaskingResult(object):
 
         gdal.Translate(out_file, in_file, projWin=[self.extent_x1, self.extent_y1, self.extent_x2, self.extent_y2])
 
-    def do_clipping_with_shape(self, stack_file, shape_path, clip_file, crop_to_cutline, nodata=0):
+    def do_clipping_with_shape(self, stack_file, shape_layer, shape_path, clip_file, crop_to_cutline, nodata=0):
         # first cut to shape area extent
         stack_file_trimmed = os.path.join(self.tmp_dir, "stack_file_trimmed.tif")
         stack_layer = QgsRasterLayer(stack_file, QFileInfo(stack_file).baseName())
-        shape_layer = get_layer_by_name(os.path.splitext(os.path.basename(shape_path))[0])
+
         # create convert coordinates
         crsSrc = QgsCoordinateReferenceSystem(shape_layer.crs())
         crsDest = QgsCoordinateReferenceSystem(stack_layer.crs())
