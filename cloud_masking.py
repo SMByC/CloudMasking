@@ -772,8 +772,8 @@ class CloudMasking:
 
         if mask_outpath != '' and mask_inpath != '':
             cmd = ['gdal_calc' if platform.system() == 'Windows' else 'gdal_calc.py', '--quiet', '--overwrite',
-                   '--calc "0*(A==1)+1*(A>1)"', '-A {}'.format(mask_inpath), '--outfile "{}"'.format(mask_outpath),
-                   '--NoDataValue=0', '--type="Byte"', '--co COMPRESS=PACKBITS']
+                   '--calc "1*(A==1)+0*(A>1)"', '-A {}'.format(mask_inpath), '--outfile "{}"'.format(mask_outpath),
+                   '--NoDataValue=1', '--type="Byte"', '--co COMPRESS=PACKBITS']
             return_code = call(" ".join(cmd), shell=True)
             if return_code != 0:
                 iface.messageBar().pushMessage("Error during saving the combined mask file", level=Qgis.Critical)
@@ -809,9 +809,9 @@ class CloudMasking:
             filter_zeros = ",".join([alpha_list[x] + ">1" for x in range(len(layers_selected))])
 
             cmd = ['gdal_calc' if platform.system() == 'Windows' else 'gdal_calc.py', '--quiet', '--overwrite',
-                   '--calc "0*(numpy.all([{filter_ones}], axis=0)) + 1*(numpy.any([{filter_zeros}], axis=0))"'
+                   '--calc "1*(numpy.all([{filter_ones}], axis=0)) + 0*(numpy.any([{filter_zeros}], axis=0))"'
                        .format(filter_zeros=filter_zeros, filter_ones=filter_ones),
-                   '--outfile "{}"'.format(mask_outpath), '--NoDataValue=0', '--type="Byte"', '--co COMPRESS=PACKBITS'] + \
+                   '--outfile "{}"'.format(mask_outpath), '--NoDataValue=1', '--type="Byte"', '--co COMPRESS=PACKBITS'] + \
                   ['-{} "{}"'.format(letter, filepath) for letter, filepath in input_files.items()]
             return_code = call(" ".join(cmd), shell=True)
             if return_code != 0:
@@ -899,9 +899,14 @@ class CloudMasking:
             # prepare
             masks = [prepare_mask(layer) for layer in layers_selected]
             # merge all mask
-            final_mask_fd, final_mask_path = tempfile.mkstemp(prefix='merge_masks_', suffix='.tif',
-                                                              dir=self.dockwidget.tmp_dir)
-            gdal_merge.main(["", "-of", "GTiff", "-o", final_mask_path, "-n", "1"] + [mask[1] for mask in masks])
+            final_mask_fd1, final_mask_path1 = tempfile.mkstemp(prefix='merge_masks_', suffix='.tif', dir=self.dockwidget.tmp_dir)
+            gdal_merge.main(["", "-of", "GTiff", "-o", final_mask_path1, "-n", "1", "-a_nodata", "1"] + [mask[1] for mask in masks])
+
+            # unset the nodata
+            final_mask_fd, final_mask_path = tempfile.mkstemp(prefix='merge_masks_', suffix='.tif', dir=self.dockwidget.tmp_dir)
+            gdal.Translate(final_mask_path, final_mask_path1, noData="none")
+            os.close(final_mask_fd1)
+            os.remove(final_mask_path1)
 
         # get and set stack bands for make layer stack for apply mask
         if self.dockwidget.radioButton_ToRaw_Bands.isChecked() or self.dockwidget.radioButton_ToSR_Bands.isChecked():
@@ -969,12 +974,8 @@ class CloudMasking:
             os.rename(inprogress_file, self.reflective_stack_file)
 
         # apply mask to stack
-        if self.dockwidget.select_layer_mask.currentIndex() == 0:
-            gdal_calc.Calc(calc="A*(B==1)", A=self.reflective_stack_file, B=final_mask_path,
-                           outfile=inprogress_file, allBands='A', overwrite=True, NoDataValue=NoDataValue)
-        if self.dockwidget.select_layer_mask.currentIndex() == 1:
-            gdal_calc.Calc(calc="A*(B==0)", A=self.reflective_stack_file, B=final_mask_path,
-                           outfile=inprogress_file, allBands='A', overwrite=True, NoDataValue=NoDataValue)
+        gdal_calc.Calc(calc="A*(B==1)", A=self.reflective_stack_file, B=final_mask_path,
+                       outfile=inprogress_file, allBands='A', overwrite=True, NoDataValue=NoDataValue)
 
         # unset the nodata
         gdal.Translate(result_path, inprogress_file, noData=NoDataValue if NoDataValue is not None else "none")
