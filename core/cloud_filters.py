@@ -20,6 +20,7 @@
 """
 
 import os, sys
+import platform
 import tempfile
 from datetime import datetime
 from pathlib import Path
@@ -473,14 +474,12 @@ class CloudMaskingResult(object):
 
         ########################################
         # do QA Mask filter
-        tmp_cqa_file = os.path.join(self.tmp_dir, "cloud_qa.tif")
         gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 7*(numpy.any([{fv}], axis=0))".format(fv=filter_values,
                                                                                                     nfv=not_filter_values),
-                       A=self.cloud_qa_for_process, outfile=tmp_cqa_file, type="Byte", NoDataValue=1)
+                       A=self.cloud_qa_for_process, outfile=self.cloud_qa, type="Byte", NoDataValue=1)
         # unset the nodata, leave the 1 (valid fields)
-        gdal.Translate(self.cloud_qa, tmp_cqa_file, noData="none")
-        # delete tmp files
-        os.remove(tmp_cqa_file)
+        cmd = ['gdal_edit' if platform.system() == 'Windows' else 'gdal_edit.py', '"{}"'.format(self.cloud_qa), '-unsetnodata']
+        call(" ".join(cmd), shell=True)
 
         # save final result of masking
         self.cloud_masking_files.append(self.cloud_qa)
@@ -545,13 +544,13 @@ class CloudMaskingResult(object):
 
         ########################################
         # do QA Mask filter
-        tmp_cqa_file = os.path.join(self.tmp_dir, "aerosol.tif")
         gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 8*(numpy.any([{fv}], axis=0))".format(fv=filter_values, nfv=not_filter_values),
-                       A=self.aerosol_for_process, outfile=tmp_cqa_file, type="Byte", NoDataValue=1)
-        # unset the nodata, leave the 1 (valid fields)
-        gdal.Translate(self.aerosol, tmp_cqa_file, noData="none")
-        # delete tmp files
-        os.remove(tmp_cqa_file)
+                       A=self.aerosol_for_process, outfile=self.aerosol, type="Byte", NoDataValue=1)
+
+        # unset nodata
+        cmd = ['gdal_edit' if platform.system() == 'Windows' else 'gdal_edit.py',
+               '"{}"'.format(self.aerosol), '-unsetnodata']
+        call(" ".join(cmd), shell=True)
 
         # save final result of masking
         self.cloud_masking_files.append(self.aerosol)
@@ -626,13 +625,13 @@ class CloudMaskingResult(object):
 
         ########################################
         # do QA Mask filter
-        tmp_pqa_file = os.path.join(self.tmp_dir, "pixel_qa.tif")
         gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 9*(numpy.any([{fv}], axis=0))".format(fv=filter_values, nfv=not_filter_values),
-                       A=self.pixel_qa_for_process, outfile=tmp_pqa_file, type="Byte", NoDataValue=1)
-        # unset the nodata, leave the 1 (valid fields)
-        gdal.Translate(self.pixel_qa, tmp_pqa_file, noData="none")
-        # delete tmp files
-        os.remove(tmp_pqa_file)
+                       A=self.pixel_qa_for_process, outfile=self.pixel_qa, type="Byte", NoDataValue=1)
+
+        # unset nodata
+        cmd = ['gdal_edit' if platform.system() == 'Windows' else 'gdal_edit.py',
+               '"{}"'.format(self.pixel_qa), '-unsetnodata']
+        call(" ".join(cmd), shell=True)
 
         # save final result of masking
         self.cloud_masking_files.append(self.pixel_qa)
