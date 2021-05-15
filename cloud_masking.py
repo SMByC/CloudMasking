@@ -661,14 +661,15 @@ class CloudMasking:
             img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                     self.dockwidget.mtl_file['FILE_NAME_BAND_1']))
             extent = get_extent(img_path)
-            gdal.Translate(self.final_cloud_mask_file.replace(".tif", "2.tif"),
+            gdal.Translate(self.final_cloud_mask_file,
                            self.final_cloud_mask_file.replace(".tif", "1.tif"),
                            projWin=extent, noData=1)
             os.remove(self.final_cloud_mask_file.replace(".tif", "1.tif"))
-            # unset the nodata
-            gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "2.tif"),
-                           noData="none")
-            os.remove(self.final_cloud_mask_file.replace(".tif", "2.tif"))
+
+            # unset nodata
+            cmd = ['gdal_edit' if platform.system() == 'Windows' else 'gdal_edit.py',
+                   '"{}"'.format(self.final_cloud_mask_file), '-unsetnodata']
+            call(" ".join(cmd), shell=True)
         else:
             # mask the nodata value as 255 value
             self.masking_result.do_nodata_mask(self.final_cloud_mask_file)
@@ -683,11 +684,12 @@ class CloudMasking:
             gdal.Translate(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file,
                            projWin=extent, noData=255)
             os.remove(self.final_cloud_mask_file)
-            # unset the nodata
-            gdal.Translate(self.final_cloud_mask_file, self.final_cloud_mask_file.replace(".tif", "1.tif"),
-                           noData="none")
-            # only left the final file
-            os.remove(self.final_cloud_mask_file.replace(".tif", "1.tif"))
+            os.rename(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file)
+
+            # unset nodata
+            cmd = ['gdal_edit' if platform.system() == 'Windows' else 'gdal_edit.py',
+                   '"{}"'.format(self.final_cloud_mask_file), '-unsetnodata']
+            call(" ".join(cmd), shell=True)
 
         ########################################
         # Post process mask
@@ -874,15 +876,15 @@ class CloudMasking:
                 return None, None
 
             # fix nodata to null, unset the nodata else the result lost the data in the valid value to mask (1)
-            mask_fd, tmp_mask_file = tempfile.mkstemp(prefix='mask_', suffix='.tif', dir=self.dockwidget.tmp_dir)
-            gdal.Translate(tmp_mask_file, mask_path, noData="none")
-            mask_path = tmp_mask_file
+            cmd = ['gdal_edit' if platform.system() == 'Windows' else 'gdal_edit.py',
+                   '"{}"'.format(mask_path), '-unsetnodata']
+            call(" ".join(cmd), shell=True)
 
-            return mask_fd, mask_path
+            return mask_path
 
         ## Single mask layer
         if self.dockwidget.select_layer_mask.currentIndex() == 0:
-            final_mask_fd, final_mask_path = prepare_mask(
+            final_mask_path = prepare_mask(
                 self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()))
             if not final_mask_path:
                 return
@@ -896,17 +898,14 @@ class CloudMasking:
                 update_process_bar(self.dockwidget.bar_processApplyMask, 0, self.dockwidget.status_processApplyMask,
                                    self.tr("Error: Not mask layers selected to apply"))
                 return
-            # prepare
-            masks = [prepare_mask(layer) for layer in layers_selected]
             # merge all mask
-            final_mask_fd1, final_mask_path1 = tempfile.mkstemp(prefix='merge_masks_', suffix='.tif', dir=self.dockwidget.tmp_dir)
-            gdal_merge.main(["", "-of", "GTiff", "-o", final_mask_path1, "-n", "1", "-a_nodata", "1"] + [mask[1] for mask in masks])
-
-            # unset the nodata
             final_mask_fd, final_mask_path = tempfile.mkstemp(prefix='merge_masks_', suffix='.tif', dir=self.dockwidget.tmp_dir)
-            gdal.Translate(final_mask_path, final_mask_path1, noData="none")
-            os.close(final_mask_fd1)
-            os.remove(final_mask_path1)
+            gdal_merge.main(["", "-of", "GTiff", "-o", final_mask_path, "-n", "1", "-a_nodata", "1"] + [prepare_mask(layer) for layer in layers_selected])
+
+            # unset nodata
+            cmd = ['gdal_edit' if platform.system() == 'Windows' else 'gdal_edit.py',
+                   '"{}"'.format(final_mask_path), '-unsetnodata']
+            call(" ".join(cmd), shell=True)
 
         # get and set stack bands for make layer stack for apply mask
         if self.dockwidget.radioButton_ToRaw_Bands.isChecked() or self.dockwidget.radioButton_ToSR_Bands.isChecked():
@@ -965,9 +964,9 @@ class CloudMasking:
         # check images size if is different, this mean that the mask is a selected area
         # and "keep the original image size" is not selected. Then resize the reflective
         # stack to mask size
-        inprogress_file = self.reflective_stack_file \
-            .replace(".tif", "_inprogress.tif").replace(".TIF", "_inprogress.tif")
         if get_extent(self.reflective_stack_file) != get_extent(final_mask_path):
+            inprogress_file = self.reflective_stack_file \
+                .replace(".tif", "_inprogress.tif").replace(".TIF", "_inprogress.tif")
             extent_mask = get_extent(final_mask_path)
             gdal.Translate(inprogress_file, self.reflective_stack_file, projWin=extent_mask, noData=NoDataValue)
             os.remove(self.reflective_stack_file)
@@ -975,25 +974,24 @@ class CloudMasking:
 
         # apply mask to stack
         gdal_calc.Calc(calc="A*(B==1)", A=self.reflective_stack_file, B=final_mask_path,
-                       outfile=inprogress_file, allBands='A', overwrite=True, NoDataValue=NoDataValue)
-
-        # unset the nodata
-        gdal.Translate(result_path, inprogress_file, noData=NoDataValue if NoDataValue is not None else "none")
+                       outfile=result_path, allBands='A', overwrite=True, NoDataValue=NoDataValue)
 
         # clean
         if not self.dockwidget.radioButton_ToParticularFile.isChecked():
             os.remove(self.reflective_stack_file)
-        os.remove(inprogress_file)
+
+        # unset nodata
+        if NoDataValue is None:
+            cmd = ['gdal_edit' if platform.system() == 'Windows' else 'gdal_edit.py',
+                   '"{}"'.format(result_path), '-unsetnodata']
+            call(" ".join(cmd), shell=True)
+
         # delete tmp mask file
         if self.dockwidget.select_layer_mask.currentIndex() == 0:
-            os.close(final_mask_fd)
             os.remove(final_mask_path)
         if self.dockwidget.select_layer_mask.currentIndex() == 1:
             os.close(final_mask_fd)
             os.remove(final_mask_path)
-            for mask_fd, mask_path in masks:
-                os.close(mask_fd)
-                os.remove(mask_path)
         # load into canvas when finished
         if self.dockwidget.checkBox_LoadResult.isChecked():
             # Add to QGIS the result saved
