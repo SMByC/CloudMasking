@@ -195,14 +195,14 @@ class CloudMaskingResult(object):
 
         band_from_mask = self.clip(band_1, os.path.join(self.tmp_dir, "band_from_mask.tif"), process_bar=False)
 
-        gdal_calc.Calc(calc="A*(B>0)+255*logical_or(B==0,A==0)", outfile=img_to_mask.replace(".tif", "1.tif"),
-                       A=img_to_mask, B=band_from_mask, NoDataValue=255)
+        cmd = ['gdal_calc' if platform.system() == 'Windows' else 'gdal_calc.py', '--quiet', '--overwrite',
+               '--calc "A*(B>0)+255*logical_or(B==0,A==0)"', '-A {}'.format(img_to_mask), '-B {}'.format(band_from_mask),
+               '--NoDataValue=None', '--outfile "{}"'.format(img_to_mask)]
+        call(" ".join(cmd), shell=True)
 
-        # unset the nodata
-        os.remove(img_to_mask)
-        if os.path.isfile(os.path.join(self.tmp_dir, "band_from_mask.tif")):
-            os.remove(os.path.join(self.tmp_dir, "band_from_mask.tif"))
-        gdal.Translate(img_to_mask, img_to_mask.replace(".tif", "1.tif"), noData="none")
+        # unset nodata
+        cmd = ['gdal_edit' if platform.system() == 'Windows' else 'gdal_edit.py', '"{}"'.format(img_to_mask), '-unsetnodata']
+        call(" ".join(cmd), shell=True)
 
     def do_fmask(self, filters_enabled, min_cloud_size=0, cloud_prob_thresh=0.225, cloud_buffer_size=4,
                  shadow_buffer_size=6, cirrus_prob_ratio=0.04, nir_fill_thresh=0.02, swir2_thresh=0.03,
