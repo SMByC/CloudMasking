@@ -418,8 +418,11 @@ class CloudMaskingResult(object):
 
         ########################################
         # do blue band filter
-        gdal_calc.Calc(calc="1*(A<{threshold})+6*(A>={threshold})".format(threshold=bb_threshold),
-                       A=self.blue_band_for_process, outfile=self.cloud_bb_file, type="Byte")
+        cmd = ['gdal_calc' if platform.system() == 'Windows' else 'gdal_calc.py', '--quiet', '--overwrite',
+               '--calc "1*(A<{threshold})+6*(A>={threshold})"'.format(threshold=bb_threshold),
+               '-A {}'.format(self.blue_band_for_process), '--outfile "{}"'.format(self.cloud_bb_file),
+               '--type="Byte"', '--co COMPRESS=PACKBITS']
+        call(" ".join(cmd), shell=True)
 
         # save final result of masking
         self.cloud_masking_files.append(self.cloud_bb_file)
