@@ -3,7 +3,7 @@ name=Cloud Masking
 description=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7 and 8) products using different process and filters such as Fmask, Blue Band, Cloud QA, Aerosol and Pixel QA.
 about=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7 and 8) products using different process and filters such as Fmask, Blue Band, Cloud QA, Aerosol and Pixel QA.
 
-version=21.5.16
+version=21.5.16.1
 qgisMinimumVersion=3.0
 qgisMaximumVersion=3.99
 
@@ -19,7 +19,7 @@ changelog=
     - Fix export mask with layers with different extents
     - Fix nodata in calc process
     - Fix temporal file for AOI picker on Win
-    21.5.15.1:
+    21.5.15:
     - Fixes some problems exporting simple and multi mask while it is using external mask files
     - Improved the AOI show/hide functionality
     - Fix show/hide the AOI button
