@@ -255,9 +255,12 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
 
     ### Extent selector widget
     def switchClippingMode(self):
-        if not self.checkBox_AOISelector.isChecked():
-            self.delete_all_aoi()
-            self.restart_map_tool()
+        if self.checkBox_AOISelector.isChecked():
+            self.VisibleAOI.setChecked(True)
+            self.visible_aoi()
+        elif self.VisibleAOI.isChecked():
+            self.VisibleAOI.setChecked(False)
+            self.visible_aoi()
 
     @pyqtSlot()
     def fileDialog_findMTL(self):
@@ -554,6 +557,9 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.UndoAOI.setEnabled(True)
         self.DeleteAllAOI.setEnabled(True)
         self.VisibleAOI.setEnabled(True)
+        if not self.VisibleAOI.isChecked():
+            self.VisibleAOI.setChecked(True)
+            self.visible_aoi()
 
 
 class PickerAOIPointTool(QgsMapTool):
