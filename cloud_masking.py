@@ -773,9 +773,14 @@ class CloudMasking:
         mask_inpath = get_file_path_of_layer(self.getLayerByName(self.dockwidget.select_SingleLayerMask.currentText()))
 
         if mask_outpath != '' and mask_inpath != '':
+            # unset nodata
+            cmd = ['gdal_edit' if platform.system() == 'Windows' else 'gdal_edit.py',
+                   '"{}"'.format(mask_inpath), '-unsetnodata']
+            call(" ".join(cmd), shell=True)
+
             cmd = ['gdal_calc' if platform.system() == 'Windows' else 'gdal_calc.py', '--quiet', '--overwrite',
-                   '--calc "1*(A==1)+0*(A>1)"', '-A {}'.format(mask_inpath), '--outfile "{}"'.format(mask_outpath),
-                   '--NoDataValue=1', '--type="Byte"', '--co COMPRESS=PACKBITS']
+                   '--calc "1*(A==1)+0*(A!=1)"', '-A {}'.format(mask_inpath), '--outfile "{}"'.format(mask_outpath),
+                   '--type="Byte"', '--co COMPRESS=PACKBITS']
             return_code = call(" ".join(cmd), shell=True)
             if return_code != 0:
                 iface.messageBar().pushMessage("Error during saving the combined mask file", level=Qgis.Critical)
@@ -803,18 +808,24 @@ class CloudMasking:
                                                       self.tr("GeoTiff files (*.tif);;All files (*.*)"))
 
         if mask_outpath != '':
+            # unset nodata for all mask layers, else the calc doesn't work
+            for l in layers_selected:
+                cmd = ['gdal_edit' if platform.system() == 'Windows' else 'gdal_edit.py',
+                       '"{}"'.format(get_file_path_of_layer(l)), '-unsetnodata']
+                call(" ".join(cmd), shell=True)
+
             alpha_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
                           "T", "U", "V", "W", "X", "Y", "Z"]
             input_files = {alpha_list[x]: get_file_path_of_layer(f) for x, f in
                            enumerate(layers_selected)}
             filter_ones = ",".join([alpha_list[x] + "==1" for x in range(len(layers_selected))])
-            filter_zeros = ",".join([alpha_list[x] + ">1" for x in range(len(layers_selected))])
 
             cmd = ['gdal_calc' if platform.system() == 'Windows' else 'gdal_calc.py', '--quiet', '--overwrite',
-                   '--calc "1*(numpy.all([{filter_ones}], axis=0)) + 0*(numpy.any([{filter_zeros}], axis=0))"'
-                       .format(filter_zeros=filter_zeros, filter_ones=filter_ones),
-                   '--outfile "{}"'.format(mask_outpath), '--NoDataValue=1', '--type="Byte"', '--co COMPRESS=PACKBITS'] + \
+                   '--calc "1*(numpy.all([{filter_ones}], axis=0)) + 0*(~numpy.all([{filter_ones}], axis=0))"'
+                       .format(filter_ones=filter_ones),
+                   '--outfile "{}"'.format(mask_outpath), '--type="Byte"', '--co COMPRESS=PACKBITS'] + \
                   ['-{} "{}"'.format(letter, filepath) for letter, filepath in input_files.items()]
+
             return_code = call(" ".join(cmd), shell=True)
             if return_code != 0:
                 iface.messageBar().pushMessage("Error during saving the combined mask file", level=Qgis.Critical)
