@@ -2423,7 +2423,10 @@ You can add multiple values separated by comma</string>
                    <item>
                     <widget class="QLabel" name="label_4">
                      <property name="text">
-                      <string>Select the cloud mask layers (one or more) for apply:</string>
+                      <string>Select the layers to combine and apply or export the mask (you can use external mask files here, the rule is: 1 is valid data and all values different to 1 as considered as masks)</string>
+                     </property>
+                     <property name="wordWrap">
+                      <bool>true</bool>
                      </property>
                     </widget>
                    </item>
