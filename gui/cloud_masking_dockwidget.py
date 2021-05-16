@@ -538,6 +538,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         # disable undo delete buttons
         self.UndoAOI.setEnabled(False)
         self.DeleteAllAOI.setEnabled(False)
+        self.VisibleAOI.setEnabled(False)
 
     @pyqtSlot()
     def aoi_changes(self, new_features=None):
@@ -552,6 +553,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         # enable undo and delete buttons
         self.UndoAOI.setEnabled(True)
         self.DeleteAllAOI.setEnabled(True)
+        self.VisibleAOI.setEnabled(True)
 
 
 class PickerAOIPointTool(QgsMapTool):
