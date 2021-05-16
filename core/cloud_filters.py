@@ -128,12 +128,12 @@ class CloudMaskingResult(object):
                                self.tr("Clipping the reflective stack..."))
 
         if self.clipping_with_aoi:
-            with tempfile.NamedTemporaryFile(suffix=".gpkg") as tmp:
-                QgsVectorFileWriter.writeAsVectorFormat(self.aoi_features, tmp.name, "System", self.aoi_features.crs(), "GPKG")
-                shape_layer = load_layer(tmp.name, add_to_legend=False)
-                self.do_clipping_with_shape(in_stack_file, shape_layer, tmp.name,
-                                            out_clipped_file, False, nodata)
-                unload_layer(tmp.name)
+            tmp_aoi = os.path.join(self.tmp_dir, "aoi_tmp.gpkg")
+            QgsVectorFileWriter.writeAsVectorFormat(self.aoi_features, tmp_aoi, "System", self.aoi_features.crs(), "GPKG")
+            shape_layer = load_layer(tmp_aoi, add_to_legend=False)
+            self.do_clipping_with_shape(in_stack_file, shape_layer, tmp_aoi, out_clipped_file, False, nodata)
+            unload_layer(tmp_aoi)
+            os.remove(tmp_aoi)
 
         if self.clipping_with_shape:
             shape_layer = get_layer_by_name(os.path.splitext(os.path.basename(self.shape_path))[0])
