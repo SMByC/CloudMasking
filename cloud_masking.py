@@ -808,29 +808,44 @@ class CloudMasking:
                                                       self.tr("GeoTiff files (*.tif);;All files (*.*)"))
 
         if mask_outpath != '':
-            # unset nodata for all mask layers, else the calc doesn't work
-            for l in layers_selected:
-                cmd = ['gdal_edit' if platform.system() == 'Windows' else 'gdal_edit.py',
-                       '"{}"'.format(get_file_path_of_layer(l)), '-unsetnodata']
-                call(" ".join(cmd), shell=True)
-
             alpha_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
                           "T", "U", "V", "W", "X", "Y", "Z"]
-            input_files = {alpha_list[x]: get_file_path_of_layer(f) for x, f in
-                           enumerate(layers_selected)}
-            filter_ones = ",".join([alpha_list[x] + "==1" for x in range(len(layers_selected))])
+            base_ext = get_extent(get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                                                               self.dockwidget.mtl_file['FILE_NAME_BAND_1'])))
+            input_files = {}
+            tmp_adj_list = []
+            # prepare the layer to base extent
+            for x, layer in enumerate(layers_selected):
+                ext = layer.extent()
+                layer_ext = [round(ext.xMinimum()), round(ext.yMaximum()), round(ext.xMaximum()), round(ext.yMinimum())]
+                if layer_ext == base_ext:
+                    input_files[alpha_list[x]] = get_file_path_of_layer(layer)
+                else:
+                    tmp_adj = os.path.join(self.dockwidget.tmp_dir, "tmp_adj{}.tif".format(x))
+                    gdal.Translate(tmp_adj, get_file_path_of_layer(layer), projWin=base_ext, noData=1)
+                    input_files[alpha_list[x]] = tmp_adj
+                    tmp_adj_list.append(tmp_adj)
 
+                # unset nodata for all mask layers, else the calc doesn't work
+                cmd = ['gdal_edit' if platform.system() == 'Windows' else 'gdal_edit.py',
+                       '"{}"'.format(input_files[alpha_list[x]]), '-unsetnodata']
+                call(" ".join(cmd), shell=True)
+
+            filter_ones = ",".join([alpha_list[x] + "==1" for x in range(len(layers_selected))])
             cmd = ['gdal_calc' if platform.system() == 'Windows' else 'gdal_calc.py', '--quiet', '--overwrite',
                    '--calc "1*(numpy.all([{filter_ones}], axis=0)) + 0*(~numpy.all([{filter_ones}], axis=0))"'
                        .format(filter_ones=filter_ones),
                    '--outfile "{}"'.format(mask_outpath), '--type="Byte"', '--co COMPRESS=PACKBITS'] + \
                   ['-{} "{}"'.format(letter, filepath) for letter, filepath in input_files.items()]
-
             return_code = call(" ".join(cmd), shell=True)
+
             if return_code != 0:
                 iface.messageBar().pushMessage("Error during saving the combined mask file", level=Qgis.Critical)
             else:
                 iface.messageBar().pushMessage("Combined mask file saved successfully", level=Qgis.Success)
+
+            for tmp_f in tmp_adj_list:
+                os.remove(tmp_f)
 
     def fileDialog_SelectPFile(self):
         """Open QFileDialog for select particular file to apply mask
