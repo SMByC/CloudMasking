@@ -198,7 +198,7 @@ class CloudMaskingResult(object):
 
         cmd = ['gdal_calc' if platform.system() == 'Windows' else 'gdal_calc.py', '--quiet', '--overwrite',
                '--calc "A*(B>0)+255*logical_or(B==0,A==0)"', '-A {}'.format(img_to_mask), '-B {}'.format(band_from_mask),
-               '--NoDataValue=None', '--outfile "{}"'.format(img_to_mask)]
+               '--outfile "{}"'.format(img_to_mask)]
         call(" ".join(cmd), shell=True)
 
         # unset nodata
