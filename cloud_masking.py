@@ -1013,11 +1013,10 @@ class CloudMasking:
             call(" ".join(cmd), shell=True)
 
         # delete tmp mask file
-        if self.dockwidget.select_layer_mask.currentIndex() == 0:
-            os.remove(final_mask_path)
         if self.dockwidget.select_layer_mask.currentIndex() == 1:
             os.close(final_mask_fd)
             os.remove(final_mask_path)
+
         # load into canvas when finished
         if self.dockwidget.checkBox_LoadResult.isChecked():
             # Add to QGIS the result saved
