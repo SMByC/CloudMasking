@@ -401,7 +401,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.label_CloudQA_FileStatus.setVisible(False)
         self.widget_CloudQA_L457.setHidden(True)
         # search and check Cloud QA files
-        if self.landsat_version in [4, 5, 7]:
+        if self.landsat_version in [4, 5, 7] and self.collection == 1:
             self.frame_CloudQA_L457.setVisible(True)
             self.cloud_qa_file = os.path.join(os.path.dirname(self.mtl_path),
                                               self.mtl_file['FILE_NAME_BAND_1'].replace(
