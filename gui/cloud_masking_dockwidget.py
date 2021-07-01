@@ -203,6 +203,12 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.groupBox_CirrusConfidence.setHidden(True)
         self.PixelQA_TerrainO_mask.setHidden(True)
 
+        # QA Band C2 filter #########
+        # start hidden
+        self.QABandC2_FileStatus.setVisible(False)
+        self.checkBox_QABandC2.setChecked(False)
+        self.widget_QABandC2.setHidden(True)
+
         # Generate the cloud mask #########
         # shape and selected area start hidden
         self.widget_AOISelector.setHidden(True)
@@ -288,6 +294,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             self.mtl_file = cloud_masking_utils.mtl2dict(self.mtl_path)
             # get the landsat version
             self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'][-1])
+            self.collection = int(self.mtl_file['COLLECTION_NUMBER'])
             # normalize metadata for old MLT format (old Landsat 4 and 5)
             if 'BAND1_FILE_NAME' in self.mtl_file:
                 for N in [1, 2, 3, 4, 5, 7, 6]:
@@ -411,7 +418,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.frame_Aerosol_L8.setHidden(True)
         self.checkBox_Aerosol.setChecked(False)
         self.label_Aerosol_FileStatus.setVisible(False)
-        if self.landsat_version in [8]:
+        if self.landsat_version in [8] and self.collection == 1:
             self.frame_Aerosol_L8.setVisible(True)
             self.aerosol_file = os.path.join(os.path.dirname(self.mtl_path),
                                              self.mtl_file['FILE_NAME_BAND_1'].replace(
@@ -432,9 +439,12 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.groupBox_CirrusConfidence.setHidden(True)
         self.PixelQA_TerrainO_mask.setHidden(True)
         # search and check pixel QA file
-        self.pixel_qa_file = os.path.join(os.path.dirname(self.mtl_path),
-                                          self.mtl_file['FILE_NAME_BAND_1'].replace(
-                                              self.mtl_file['FILE_NAME_BAND_1'].split("_")[-1], "pixel_qa.tif"))
+        self.pixel_qa_file = ""
+        if self.collection == 1:
+            self.frame_PixelQA.setVisible(True)
+            self.pixel_qa_file = os.path.join(os.path.dirname(self.mtl_path),
+                                              self.mtl_file['FILE_NAME_BAND_1'].replace(
+                                                  self.mtl_file['FILE_NAME_BAND_1'].split("_")[-1], "pixel_qa.tif"))
         # check pixel QA file exists
         if os.path.isfile(self.pixel_qa_file):
             self.checkBox_PixelQA.setEnabled(True)
@@ -443,8 +453,30 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
                 self.groupBox_CirrusConfidence.setVisible(True)
                 self.PixelQA_TerrainO_mask.setVisible(True)
         else:
-            self.PixelQA_FileStatus.setVisible(True)
-            self.checkBox_PixelQA.setEnabled(False)
+            if self.collection == 1:
+                self.PixelQA_FileStatus.setVisible(True)
+                self.checkBox_PixelQA.setEnabled(False)
+            if self.collection == 2:
+                self.frame_PixelQA.setHidden(True)
+
+        #### QA Band C2 adjusts
+        # hidden blocks and unchecked
+        self.QABandC2_FileStatus.setVisible(False)
+        self.checkBox_QABandC2.setChecked(False)
+        self.widget_QABandC2.setHidden(True)
+        self.qabandc2_file = ""
+        # check Band C2 file exists
+        if self.collection == 1:
+            self.frame_QA_Band_C2.setHidden(True)
+        if self.collection == 2:
+            self.frame_QA_Band_C2.setVisible(True)
+            self.qabandc2_file = get_prefer_name(os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_1']))\
+                .replace("B1.TIF", "QA_PIXEL.TIF")
+            if os.path.isfile(self.qabandc2_file):
+                self.checkBox_QABandC2.setEnabled(True)
+            else:
+                self.QABandC2_FileStatus.setVisible(True)
+                self.checkBox_QABandC2.setEnabled(False)
 
         #### Enable apply to SR reflectance stack if are available
         exists_sr_files = \
