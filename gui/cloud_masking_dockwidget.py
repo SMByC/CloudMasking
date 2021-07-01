@@ -348,7 +348,8 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.tmp_dir = tempfile.mkdtemp()
         # MTL info
         self.status_LoadedMTL.setChecked(True)
-        self.status_LoadedMTL.setText(self.mtl_file['LANDSAT_SCENE_ID'] + ' (L{})'.format(self.landsat_version))
+        self.status_LoadedMTL.setText(self.mtl_file['LANDSAT_SCENE_ID']
+                                      + ' (L{}) (C{})'.format(self.landsat_version, self.collection))
 
         #### activate, load and adjust UI
         self.activate_UI()
