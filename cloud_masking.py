@@ -619,10 +619,10 @@ class CloudMasking:
             enable_symbology[7] = True
 
         ########################################
-        # QA Band C2 L8 filter
+        # QA Band C2 filter
 
         if self.dockwidget.checkBox_QABandC2.isChecked():
-            if self.dockwidget.landsat_version in [8]:
+            if self.dockwidget.landsat_version in [4, 5, 7, 8]:
                 checked_items = {}
 
                 # one bit items selected
@@ -667,11 +667,9 @@ class CloudMasking:
                         self.tr("Error: no filters selected in QA Band"))
                     return
 
-                self.masking_result.do_qabandc2_l8(self.dockwidget.qabandc2_file, checked_items, qaband_svalues)
+                self.masking_result.do_qaband_c2(self.dockwidget.qabandc2_file, checked_items, qaband_svalues)
 
             enable_symbology[7] = True
-
-
 
         ########################################
         # Blended cloud masking files

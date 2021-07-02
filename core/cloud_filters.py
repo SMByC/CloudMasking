@@ -643,7 +643,7 @@ class CloudMaskingResult(object):
                            self.tr("DONE"))
 
 
-    def do_qabandc2_l8(self, qabandc2_file, checked_items, specific_values=[]):
+    def do_qaband_c2(self, qabandc2_file, checked_items, specific_values=[]):
         """
         http://landsat.usgs.gov/qualityband.php
         """
