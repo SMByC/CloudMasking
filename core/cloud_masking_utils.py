@@ -45,6 +45,20 @@ def mtl2dict(filename, to_float=True):
             key = key_value[0].strip()
             value = key_value[1].strip('"')
 
+            # not overwrite these variables
+            if key == "PROCESSING_LEVEL" and "PROCESSING_LEVEL" in mtl:
+                continue
+
+            # storage surface reflectance products (C2) in a different variables
+            if ("GROUP" in mtl and mtl["GROUP"] == "PRODUCT_CONTENTS" and
+                "COLLECTION_NUMBER" in mtl and mtl["COLLECTION_NUMBER"] == 2 and
+                key.startswith("FILE_NAME_BAND_")):
+
+                if mtl["LANDSAT_PRODUCT_ID"].startswith(("LE7", "LE07")) and key == "FILE_NAME_BAND_ST_B6":
+                    key = "FILE_NAME_BAND_SR_6"
+                else:
+                    key = key.replace("FILE_NAME_BAND_", "FILE_NAME_BAND_SR_")
+
             # Try to convert to float
             if to_float is True:
                 try:
@@ -53,5 +67,9 @@ def mtl2dict(filename, to_float=True):
                     pass
             # add to dict
             mtl[key] = value
+
+        # fix Landsat 7 band 6 variable
+        if "FILE_NAME_BAND_6_VCID_1" in mtl:
+            mtl["FILE_NAME_BAND_6"] = mtl["FILE_NAME_BAND_6_VCID_1"]
 
     return mtl

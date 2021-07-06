@@ -106,6 +106,8 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         # start hidden
         self.widget_FMask.setHidden(True)
         self.widget_FMask_advanced.setHidden(True)
+        self.FMask_FileStatus.setHidden(True)
+        self.checkBox_FMask.setChecked(False)
         # Synchronize the slider with the spin box
         # Cloud probability threshold
         self.horizontalSlider_CPT.valueChanged.connect(
@@ -175,6 +177,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         # Blue Band threshold #########
         # start hidden
         self.widget_BlueBand.setHidden(True)
+        self.checkBox_BlueBand.setChecked(False)
         # Synchronize the slider with the spin box
         self.horizontalSlider_BB.sliderMoved.connect(self.doubleSpinBox_BB.setValue)
         self.doubleSpinBox_BB.valueChanged.connect(self.horizontalSlider_BB.setValue)
@@ -185,6 +188,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.label_CloudQA_FileStatus.setHidden(True)
         self.frame_CloudQA_L457.setHidden(True)
         self.widget_CloudQA_L457.setHidden(True)
+        self.checkBox_CloudQA.setChecked(False)
 
         # Aerosol L8 filter #########
         # start hidden
@@ -192,6 +196,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.label_Aerosol_FileStatus.setHidden(True)
         self.widget_Aerosol_L8.setHidden(True)
         self.widget_Aerosol_Content.setHidden(True)
+        self.checkBox_Aerosol.setChecked(False)
 
         # Pixel QA filter #########
         # start hidden
@@ -202,12 +207,14 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         # only for landsat 8
         self.groupBox_CirrusConfidence.setHidden(True)
         self.PixelQA_TerrainO_mask.setHidden(True)
+        self.checkBox_PixelQA.setChecked(False)
 
         # QA Band C2 filter #########
         # start hidden
         self.QABandC2_FileStatus.setVisible(False)
         self.checkBox_QABandC2.setChecked(False)
         self.widget_QABandC2.setHidden(True)
+        self.checkBox_QABandC2.setChecked(False)
 
         # Generate the cloud mask #########
         # shape and selected area start hidden
@@ -241,7 +248,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
 
         # Apply and save #########
         # start hidden
-        self.radioButton_ToSR_Bands.setHidden(True)
+        self.radioButton_ToSR_Bands.setEnabled(False)
         self.widget_ApplyToFile.setHidden(True)
 
     # radiobutton status MTL
@@ -295,6 +302,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             # get the landsat version
             self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'][-1])
             self.collection = int(self.mtl_file['COLLECTION_NUMBER'])
+            self.processing_level = self.mtl_file['PROCESSING_LEVEL'][0:2]
             # normalize metadata for old MLT format (old Landsat 4 and 5)
             if 'BAND1_FILE_NAME' in self.mtl_file:
                 for N in [1, 2, 3, 4, 5, 7, 6]:
@@ -333,15 +341,12 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         reflective_and_thermal_bands = [get_prefer_name(file_path) for file_path in reflective_and_thermal_bands]
 
         # check if reflective_and_thermal_bands exists
+        self.FMask_FileStatus.setHidden(True)
+        self.frame_FMask.setEnabled(True)
         for file_path in reflective_and_thermal_bands:
             if not os.path.isfile(file_path):
-                msg = "The file {} not exists, is necessary that the raw bands _bandN.tif or _BN.TIF of Landsat " \
-                      "are in the same location as the MTL file.".format(os.path.basename(file_path))
-                QMessageBox.question(None, 'Problem while Loading the new MTL...',
-                                     msg, QMessageBox.Ok)
-                self.status_LoadedMTL.setText(self.tr("Error: Not raw landsat files"))
-                self.unload_MTL()
-                return
+                self.FMask_FileStatus.setVisible(True)
+                self.frame_FMask.setEnabled(False)
 
         #### Process post MTL loaded (If we load it okay)
         # tmp dir for process this MTL
@@ -471,21 +476,45 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             self.frame_QA_Band_C2.setHidden(True)
         if self.collection == 2:
             self.frame_QA_Band_C2.setVisible(True)
-            self.qabandc2_file = get_prefer_name(os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_1']))\
-                .replace("B1.TIF", "QA_PIXEL.TIF")
+            if self.processing_level == "L1":
+                self.qabandc2_file = \
+                    get_prefer_name(os.path.join(os.path.dirname(self.mtl_path),
+                                                                 self.mtl_file['FILE_NAME_BAND_1'])).replace("B1.TIF", "QA_PIXEL.TIF")
+            if self.processing_level == "L2":
+                self.qabandc2_file = \
+                    get_prefer_name(os.path.join(os.path.dirname(self.mtl_path),
+                                                                 self.mtl_file['FILE_NAME_BAND_SR_1'])).replace("SR_B1.TIF", "QA_PIXEL.TIF")
             if os.path.isfile(self.qabandc2_file):
                 self.checkBox_QABandC2.setEnabled(True)
             else:
                 self.QABandC2_FileStatus.setVisible(True)
                 self.checkBox_QABandC2.setEnabled(False)
 
+        #### Enable apply to raw stack if are available
+        exists_raw_files = [os.path.isfile(get_prefer_name(os.path.join(os.path.dirname(self.mtl_path),
+                                                                        self.mtl_file['FILE_NAME_BAND_' + str(N)])))
+                            for N in self.reflectance_bands]
+
+        if all(exists_raw_files):
+            self.radioButton_ToRaw_Bands.setEnabled(True)
+            self.radioButton_ToRaw_Bands.setChecked(True)
+        else:
+            self.radioButton_ToRaw_Bands.setEnabled(False)
+
         #### Enable apply to SR reflectance stack if are available
         exists_sr_files = \
             [os.path.isfile(f) for f in [os.path.join(os.path.dirname(self.mtl_path),
                 self.mtl_file['FILE_NAME_BAND_' + str(N)].replace("_B", "_sr_band").replace(".TIF", ".tif"))
                 for N in self.reflectance_bands]]
+
+        if not all(exists_sr_files):
+            # check if exist SR C2 files
+            exists_sr_files = \
+                [os.path.isfile(os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_SR_' + str(N)]))
+                 for N in self.reflectance_bands]
+
         if all(exists_sr_files):
-            self.radioButton_ToSR_Bands.setVisible(True)
+            self.radioButton_ToSR_Bands.setEnabled(True)
             self.radioButton_ToSR_Bands.setChecked(True)
 
         #### Set the stack bands by default in stack to apply
@@ -509,7 +538,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         # deactivate save and apply box
         self.groupBox_SelectMask.setEnabled(False)
         self.groupBox_ApplyMask.setEnabled(False)
-        self.radioButton_ToSR_Bands.setHidden(True)
+        self.radioButton_ToSR_Bands.setEnabled(False)
         self.radioButton_ToRaw_Bands.setChecked(True)
         self.widget_ApplyToFile.setHidden(True)
 

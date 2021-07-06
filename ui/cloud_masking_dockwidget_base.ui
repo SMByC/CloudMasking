@@ -539,22 +539,6 @@
                   <enum>QFrame::Raised</enum>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
-                  <item row="0" column="0">
-                   <widget class="QCheckBox" name="checkBox_FMask">
-                    <property name="font">
-                     <font>
-                      <weight>50</weight>
-                      <bold>false</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>FMask</string>
-                    </property>
-                    <property name="checked">
-                     <bool>false</bool>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="1" column="0">
                    <widget class="QWidget" name="widget_FMask" native="true">
                     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1046,6 +1030,60 @@
                     </layout>
                    </widget>
                   </item>
+                  <item row="0" column="0">
+                   <widget class="QWidget" name="widget_31" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_30">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QCheckBox" name="checkBox_FMask">
+                       <property name="font">
+                        <font>
+                         <weight>50</weight>
+                         <bold>false</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>FMask</string>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="FMask_FileStatus">
+                       <property name="text">
+                        <string>(Raw bands from level 1 not found)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_15">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
@@ -1372,9 +1410,6 @@ You can add multiple values separated by comma</string>
                   <item>
                    <widget class="QWidget" name="widget_16" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_13">
-                     <property name="spacing">
-                      <number>0</number>
-                     </property>
                      <property name="leftMargin">
                       <number>0</number>
                      </property>
@@ -1541,9 +1576,6 @@ You can add multiple values separated by comma</string>
                   <item>
                    <widget class="QWidget" name="widget_15" native="true">
                     <layout class="QHBoxLayout" name="horizontalLayout_24">
-                     <property name="spacing">
-                      <number>0</number>
-                     </property>
                      <property name="leftMargin">
                       <number>0</number>
                      </property>

@@ -714,6 +714,9 @@ class CloudMasking:
             # expand to original extent
             img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                     self.dockwidget.mtl_file['FILE_NAME_BAND_1']))
+            if not os.path.exists(img_path):
+                img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                                                        self.dockwidget.mtl_file['FILE_NAME_BAND_SR_1']))
             extent = get_extent(img_path)
             gdal.Translate(self.final_cloud_mask_file,
                            self.final_cloud_mask_file.replace(".tif", "1.tif"),
@@ -734,6 +737,9 @@ class CloudMasking:
             # expand to original extent
             img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                                                     self.dockwidget.mtl_file['FILE_NAME_BAND_1']))
+            if not os.path.exists(img_path):
+                img_path = get_prefer_name(os.path.join(os.path.dirname(self.dockwidget.mtl_path),
+                                                        self.dockwidget.mtl_file['FILE_NAME_BAND_SR_1']))
             extent = get_extent(img_path)
             gdal.Translate(self.final_cloud_mask_file.replace(".tif", "1.tif"), self.final_cloud_mask_file,
                            projWin=extent, noData=255)
@@ -1014,6 +1020,10 @@ class CloudMasking:
                 [os.path.join(os.path.dirname(self.dockwidget.mtl_path),
                     self.dockwidget.mtl_file['FILE_NAME_BAND_' + str(N)].replace("_B", "_sr_band").replace(".TIF", ".tif"))
                     for N in reflectance_bands]
+            if not all([os.path.isfile(f) for f in stack_bands]):
+                stack_bands = \
+                    [os.path.join(os.path.dirname(self.dockwidget.mtl_path), self.dockwidget.mtl_file['FILE_NAME_BAND_SR_' + str(N)])
+                        for N in reflectance_bands]
         # select particular file for apply mask
         if self.dockwidget.radioButton_ToParticularFile.isChecked():
             self.reflective_stack_file = self.dockwidget.lineEdit_ParticularFile.text()

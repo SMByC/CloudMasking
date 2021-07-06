@@ -56,6 +56,12 @@ class ColorStack(object):
         # set the prefer file name band for process
         self.color_bands = [get_prefer_name(file_path) for file_path in self.color_bands]
 
+        # when the raw bands not exits user the SR (C2)
+        if False in [os.path.exists(layer) for layer in self.color_bands]:
+            self.color_bands = [
+                os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_SR_' + str(N)])
+                for N in bands]
+
     def do_color_stack(self):
 
         # tmp file for color bands stack
