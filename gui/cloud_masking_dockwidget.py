@@ -305,10 +305,12 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
                 self.collection = int(self.mtl_file['COLLECTION_NUMBER'])
             else:
                 self.collection = 1
+                self.mtl_file['COLLECTION_NUMBER'] = 1
             if 'PROCESSING_LEVEL' in self.mtl_file:
                 self.processing_level = self.mtl_file['PROCESSING_LEVEL'][0:2]
             else:
                 self.processing_level = "L1"
+                self.mtl_file['PROCESSING_LEVEL'] = "L1"
             # normalize metadata for old MLT format (old Landsat 4 and 5)
             if 'BAND1_FILE_NAME' in self.mtl_file:
                 for N in [1, 2, 3, 4, 5, 7, 6]:
