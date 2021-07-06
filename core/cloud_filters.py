@@ -407,16 +407,17 @@ class CloudMaskingResult(object):
         if self.landsat_version in [4, 5, 7]:
             # get the reflective file names bands
             self.blue_band_file = os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_1'])
+            # fix file name
+            self.blue_band_file = get_prefer_name(self.blue_band_file)
             if not os.path.exists(self.blue_band_file):
                 self.blue_band_file = os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_SR_1'])
         if self.landsat_version in [8]:
             # get the reflective file names bands
             self.blue_band_file = os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_2'])
+            # fix file name
+            self.blue_band_file = get_prefer_name(self.blue_band_file)
             if not os.path.exists(self.blue_band_file):
                 self.blue_band_file = os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_SR_2'])
-
-        # fix file name
-        self.blue_band_file = get_prefer_name(self.blue_band_file)
 
         ########################################
         # clipping the Blue Band (only if is activated selected area or shape area)
