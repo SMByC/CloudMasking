@@ -500,8 +500,13 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             self.radioButton_ToRaw_Bands.setChecked(True)
         else:
             self.radioButton_ToRaw_Bands.setEnabled(False)
+            if self.collection == 2:
+                self.horizontalSlider_BB.setMaximum(40000)
+                self.horizontalSlider_BB.setValue(self.bb_threshold_L8)
+                self.doubleSpinBox_BB.setMaximum(40000)
+                self.doubleSpinBox_BB.setValue(self.bb_threshold_L8)
 
-        #### Enable apply to SR reflectance stack if are available
+        #### Enable apply to SR reflectance stack if they are available
         exists_sr_files = \
             [os.path.isfile(f) for f in [os.path.join(os.path.dirname(self.mtl_path),
                 self.mtl_file['FILE_NAME_BAND_' + str(N)].replace("_B", "_sr_band").replace(".TIF", ".tif"))
