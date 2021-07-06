@@ -301,7 +301,10 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             self.mtl_file = cloud_masking_utils.mtl2dict(self.mtl_path)
             # get the landsat version
             self.landsat_version = int(self.mtl_file['SPACECRAFT_ID'][-1])
-            self.collection = int(self.mtl_file['COLLECTION_NUMBER'])
+            if 'COLLECTION_NUMBER' in self.mtl_file:
+                self.collection = int(self.mtl_file['COLLECTION_NUMBER'])
+            else:
+                self.collection = 1
             if 'PROCESSING_LEVEL' in self.mtl_file:
                 self.processing_level = self.mtl_file['PROCESSING_LEVEL'][0:2]
             else:
