@@ -524,9 +524,9 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             # check if exist SR C2 files
             exists_sr_files = \
                 [os.path.isfile(os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_SR_' + str(N)]))
-                 for N in self.reflectance_bands]
+                 for N in self.reflectance_bands if 'FILE_NAME_BAND_SR_' + str(N) in self.mtl_file]
 
-        if all(exists_sr_files):
+        if exists_sr_files and all(exists_sr_files):
             self.radioButton_ToSR_Bands.setEnabled(True)
             self.radioButton_ToSR_Bands.setChecked(True)
 
