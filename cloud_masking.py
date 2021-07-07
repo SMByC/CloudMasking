@@ -320,9 +320,14 @@ class CloudMasking:
         update_process_bar(self.dockwidget.bar_progressLoadStack, 40,
                            self.dockwidget.status_processLoadStack, self.tr("Loading stack..."))
         bands = []
-        bands.append(int(self.dockwidget.SelectBand_R.currentText()))
-        bands.append(int(self.dockwidget.SelectBand_G.currentText()))
-        bands.append(int(self.dockwidget.SelectBand_B.currentText()))
+        try:
+            bands.append(int(self.dockwidget.SelectBand_R.currentText()))
+            bands.append(int(self.dockwidget.SelectBand_G.currentText()))
+            bands.append(int(self.dockwidget.SelectBand_B.currentText()))
+        except:
+            update_process_bar(self.dockwidget.bar_progressLoadStack, 0,
+                               self.dockwidget.status_processLoadStack, self.tr("Error: first choose a color stack"))
+            return
 
         self.color_stack_scene = color_stack.ColorStack(self.dockwidget.mtl_path,
                                                         self.dockwidget.mtl_file,

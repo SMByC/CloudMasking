@@ -402,6 +402,9 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.SelectBand_R.addItems([str(b) for b in self.reflectance_bands])
         self.SelectBand_G.addItems([str(b) for b in self.reflectance_bands])
         self.SelectBand_B.addItems([str(b) for b in self.reflectance_bands])
+        self.SelectBand_R.setCurrentIndex(-1)
+        self.SelectBand_G.setCurrentIndex(-1)
+        self.SelectBand_B.setCurrentIndex(-1)
 
         #### blue Band adjusts UI limits
         if self.landsat_version in [4, 5, 7]:
