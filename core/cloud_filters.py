@@ -128,6 +128,9 @@ class CloudMaskingResult(object):
             update_process_bar(self.process_bar, 24, self.process_status,
                                self.tr("Clipping the reflective stack..."))
 
+        if os.path.isfile(out_clipped_file):
+            os.remove(out_clipped_file)
+
         if self.clipping_with_aoi:
             tmp_aoi = os.path.join(self.tmp_dir, "aoi_tmp_{}.gpkg".format(datetime.now().strftime("%y%m%d_%H%M%S")))
             QgsVectorFileWriter.writeAsVectorFormat(self.aoi_features, tmp_aoi, "System", self.aoi_features.crs(), "GPKG")

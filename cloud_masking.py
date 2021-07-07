@@ -937,7 +937,12 @@ class CloudMasking:
         if self.dockwidget.checkBox_PixelQA.isChecked():
             if os.path.isfile(self.masking_result.pixel_qa_clip_file):
                 os.remove(self.masking_result.pixel_qa_clip_file)
-
+        # from QA Band
+        if self.dockwidget.checkBox_QABandC1L457.isChecked() or \
+            self.dockwidget.checkBox_QABandC1L8.isChecked() or \
+            self.dockwidget.checkBox_QABandC2.isChecked():
+            if os.path.isfile(self.masking_result.qaband_clip_file):
+                os.remove(self.masking_result.qaband_clip_file)
         # from original blended files
         for cloud_masking_file in self.masking_result.cloud_masking_files:
             if cloud_masking_file != self.final_cloud_mask_file:
