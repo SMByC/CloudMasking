@@ -506,9 +506,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-2957</y>
              <width>887</width>
-             <height>3671</height>
+             <height>5419</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -530,6 +530,962 @@
                <bool>false</bool>
               </property>
               <layout class="QGridLayout" name="gridLayout_2">
+               <item row="7" column="1">
+                <widget class="QFrame" name="frame_QA_Band_C2">
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_11">
+                  <item row="1" column="0">
+                   <widget class="QWidget" name="widget_29" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_27">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QCheckBox" name="checkBox_QABandC2">
+                       <property name="font">
+                        <font>
+                         <weight>50</weight>
+                         <bold>false</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>QA Band (C2)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="QABandC2_FileStatus">
+                       <property name="text">
+                        <string>(file not found)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_14">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QWidget" name="widget_QABandC2" native="true">
+                    <layout class="QVBoxLayout" name="verticalLayout_36">
+                     <item>
+                      <widget class="QLabel" name="label_32">
+                       <property name="toolTip">
+                        <string>Each bit (item) masked all pixel that have this bit activated (all combination values)</string>
+                       </property>
+                       <property name="text">
+                        <string>Enable/disable QA Band bits:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QWidget" name="widget_QABandC2_bits" native="true">
+                       <layout class="QVBoxLayout" name="verticalLayout_37">
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QCheckBox" name="QABandC2_DilatedCloud">
+                          <property name="text">
+                           <string>Dilated Cloud (bit 1)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="QABandC2_Cirrus">
+                          <property name="text">
+                           <string>Cirrus (bit 2)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="QABandC2_Cloud">
+                          <property name="text">
+                           <string>Cloud (bit 3)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="QABandC2_CloudShadow">
+                          <property name="text">
+                           <string>Cloud Shadow (bit 4)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="QABandC2_Snow">
+                          <property name="text">
+                           <string>Snow (bit 5)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="QABandC2_Water">
+                          <property name="text">
+                           <string>Water (bit 7)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QGroupBox" name="groupBox_CloudConfidence_2">
+                          <property name="styleSheet">
+                           <string notr="true">font-weight:normal;</string>
+                          </property>
+                          <property name="title">
+                           <string>Cloud Confidence (bits 8-9)</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_38">
+                           <item>
+                            <widget class="QWidget" name="widget_CloudConfidence_2" native="true">
+                             <layout class="QGridLayout" name="gridLayout_16">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
+                               <number>0</number>
+                              </property>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QACloud_Medium_2">
+                                <property name="text">
+                                 <string>Medium</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QACloud_Low_2">
+                                <property name="text">
+                                 <string>Low</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="2">
+                               <widget class="QRadioButton" name="QACloud_High_2">
+                                <property name="text">
+                                 <string>High</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QGroupBox" name="groupBox_CloudShadowConfidence">
+                          <property name="styleSheet">
+                           <string notr="true">font-weight:normal;</string>
+                          </property>
+                          <property name="title">
+                           <string>Cloud Shadow Confidence (bits 10-11)</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_39">
+                           <item>
+                            <widget class="QWidget" name="widget_CloudShadowConfidence" native="true">
+                             <layout class="QGridLayout" name="gridLayout_17">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
+                               <number>0</number>
+                              </property>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QACloudShadow_High">
+                                <property name="text">
+                                 <string>High</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QACloudShadow_Low">
+                                <property name="text">
+                                 <string>Low</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QGroupBox" name="groupBox_SnowIceConfidence">
+                          <property name="styleSheet">
+                           <string notr="true">font-weight:normal;</string>
+                          </property>
+                          <property name="title">
+                           <string>Snow/Ice Confidence (bits 12-13)</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_40">
+                           <item>
+                            <widget class="QWidget" name="widget_SnowIceConfidence" native="true">
+                             <layout class="QGridLayout" name="gridLayout_18">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
+                               <number>0</number>
+                              </property>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QASnowIce_Low">
+                                <property name="text">
+                                 <string>Low</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QASnowIce_High">
+                                <property name="text">
+                                 <string>High</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_2">
+                          <property name="styleSheet">
+                           <string notr="true">font-weight:normal;</string>
+                          </property>
+                          <property name="title">
+                           <string>Cirrus Confidence (bits 14-15)</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_41">
+                           <item>
+                            <widget class="QWidget" name="widget_CirrusConfidence_2" native="true">
+                             <layout class="QGridLayout" name="gridLayout_12">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
+                               <number>0</number>
+                              </property>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QACirrus_Low_2">
+                                <property name="text">
+                                 <string>Low</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QACirrus_High_2">
+                                <property name="text">
+                                 <string>High</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QWidget" name="widget_30" native="true">
+                          <layout class="QHBoxLayout" name="horizontalLayout_29">
+                           <property name="leftMargin">
+                            <number>0</number>
+                           </property>
+                           <property name="topMargin">
+                            <number>0</number>
+                           </property>
+                           <property name="rightMargin">
+                            <number>0</number>
+                           </property>
+                           <property name="bottomMargin">
+                            <number>0</number>
+                           </property>
+                           <item>
+                            <widget class="QLabel" name="label_33">
+                             <property name="text">
+                              <string>Specific values:</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="QABandC2_svalues">
+                             <property name="toolTip">
+                              <string>Enter specific values for QA Band filters in decimal format. 
+You can add multiple values separated by comma</string>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QFrame" name="frame_CloudQA_L457">
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_20">
+                  <item>
+                   <widget class="QWidget" name="widget_16" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_13">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QCheckBox" name="checkBox_CloudQA">
+                       <property name="font">
+                        <font>
+                         <weight>50</weight>
+                         <bold>false</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Cloud QA (C1)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_CloudQA_FileStatus">
+                       <property name="toolTip">
+                        <string>File named ends with &quot;sr_cloud_qa&quot; not found</string>
+                       </property>
+                       <property name="text">
+                        <string>(file not found)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_6">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QWidget" name="widget_CloudQA_L457" native="true">
+                    <layout class="QVBoxLayout" name="verticalLayout_22">
+                     <item>
+                      <widget class="QLabel" name="label_6">
+                       <property name="toolTip">
+                        <string>Each bit (item) masked all pixel that have this bit activated (all combination values)</string>
+                       </property>
+                       <property name="text">
+                        <string>Enable/disable Cloud QA bits:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QWidget" name="widget_CloudQA_L457_bits" native="true">
+                       <layout class="QVBoxLayout" name="verticalLayout_23">
+                        <item>
+                         <widget class="QCheckBox" name="CloudQA_DDV_mask">
+                          <property name="text">
+                           <string>Dark Dense Vegetation (bit 0)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="CloudQA_Cloud_mask">
+                          <property name="text">
+                           <string>Cloud (bit 1)</string>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="CloudQA_CloudShadow_mask">
+                          <property name="text">
+                           <string>Cloud Shadow (bit 2)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="CloudQA_AdjacentCloud_mask">
+                          <property name="text">
+                           <string>Adjacent to cloud (bit 3)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="CloudQA_Snow_mask">
+                          <property name="text">
+                           <string>Snow (bit 4)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="CloudQA_Water_mask">
+                          <property name="text">
+                           <string>Water (bit 5)</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QWidget" name="widget_17" native="true">
+                       <layout class="QHBoxLayout" name="horizontalLayout_16">
+                        <property name="leftMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QLabel" name="label_19">
+                          <property name="text">
+                           <string>Specific values:</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QLineEdit" name="CloudQA_L457_svalues">
+                          <property name="toolTip">
+                           <string>Enter specific values for Cloud QA filters in decimal format. 
+You can add multiple values separated by comma</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QFrame" name="frame_PixelQA">
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_9">
+                  <item row="1" column="0">
+                   <widget class="QWidget" name="widget_18" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_17">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QCheckBox" name="checkBox_PixelQA">
+                       <property name="font">
+                        <font>
+                         <weight>50</weight>
+                         <bold>false</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>Pixel QA (C1)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="PixelQA_FileStatus">
+                       <property name="text">
+                        <string>(file not found)</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_7">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QWidget" name="widget_PixelQA" native="true">
+                    <layout class="QVBoxLayout" name="verticalLayout_3">
+                     <item>
+                      <widget class="QLabel" name="label_20">
+                       <property name="toolTip">
+                        <string>Each bit (item) masked all pixel that have this bit activated (all combination values)</string>
+                       </property>
+                       <property name="text">
+                        <string>Enable/disable Pixel QA bits:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QWidget" name="widget_PixelQA_bits" native="true">
+                       <layout class="QVBoxLayout" name="verticalLayout_29">
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QCheckBox" name="PixelQA_Water_mask">
+                          <property name="text">
+                           <string>Water (bit 2)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="PixelQA_CloudShadow_mask">
+                          <property name="text">
+                           <string>Cloud Shadow (bit 3)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="PixelQA_Snow_mask">
+                          <property name="text">
+                           <string>Snow (bit 4)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="PixelQA_Cloud_mask">
+                          <property name="text">
+                           <string>Cloud (bit 5)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QGroupBox" name="groupBox_CloudConfidence">
+                          <property name="styleSheet">
+                           <string notr="true">font-weight:normal;</string>
+                          </property>
+                          <property name="title">
+                           <string>Cloud Confidence (bits 6-&amp;7)</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_28">
+                           <item>
+                            <widget class="QWidget" name="widget_CloudConfidence" native="true">
+                             <layout class="QGridLayout" name="gridLayout_13">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
+                               <number>0</number>
+                              </property>
+                              <item row="1" column="1">
+                               <widget class="QRadioButton" name="QACloud_High">
+                                <property name="text">
+                                 <string>&amp;67-100% High</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QACloud_Medium">
+                                <property name="text">
+                                 <string>&amp;34-66% Medium</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QRadioButton" name="QACloud_Low">
+                                <property name="text">
+                                 <string>0-33% Low</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QACloud_None">
+                                <property name="text">
+                                 <string>&amp;0% None</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QGroupBox" name="groupBox_CirrusConfidence">
+                          <property name="styleSheet">
+                           <string notr="true">font-weight:normal;</string>
+                          </property>
+                          <property name="title">
+                           <string>Cirrus Confidence (bits &amp;8-9)</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_25">
+                           <item>
+                            <widget class="QWidget" name="widget_CirrusConfidence" native="true">
+                             <layout class="QGridLayout" name="gridLayout_10">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
+                               <number>0</number>
+                              </property>
+                              <item row="1" column="1">
+                               <widget class="QRadioButton" name="QACirrus_High">
+                                <property name="text">
+                                 <string>67-&amp;100% High</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QRadioButton" name="QACirrus_Low">
+                                <property name="text">
+                                 <string>0-33% Low</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QACirrus_Medium">
+                                <property name="text">
+                                 <string>34-66% &amp;Medium</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QACirrus_None">
+                                <property name="text">
+                                 <string>0% None</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="PixelQA_TerrainO_mask">
+                          <property name="text">
+                           <string>Terrain Occlusion (bit 10)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QWidget" name="widget_19" native="true">
+                          <layout class="QHBoxLayout" name="horizontalLayout_18">
+                           <property name="leftMargin">
+                            <number>0</number>
+                           </property>
+                           <property name="topMargin">
+                            <number>0</number>
+                           </property>
+                           <property name="rightMargin">
+                            <number>0</number>
+                           </property>
+                           <property name="bottomMargin">
+                            <number>0</number>
+                           </property>
+                           <item>
+                            <widget class="QLabel" name="label_21">
+                             <property name="text">
+                              <string>Specific values:</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QLineEdit" name="PixelQA_svalues">
+                             <property name="toolTip">
+                              <string>Enter specific values for QA Band filters in decimal format. 
+You can add multiple values separated by comma</string>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QFrame" name="frame__BlueBand">
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_7">
+                  <item row="0" column="0">
+                   <widget class="QCheckBox" name="checkBox_BlueBand">
+                    <property name="font">
+                     <font>
+                      <weight>50</weight>
+                      <bold>false</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Blue Band</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QWidget" name="widget_BlueBand" native="true">
+                    <layout class="QVBoxLayout" name="verticalLayout_4">
+                     <item>
+                      <widget class="QWidget" name="widget_BlueBand_01" native="true">
+                       <layout class="QHBoxLayout" name="horizontalLayout_5">
+                        <item>
+                         <widget class="QLabel" name="label_2">
+                          <property name="text">
+                           <string>Threshold</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QSlider" name="horizontalSlider_BB">
+                          <property name="maximum">
+                           <number>255</number>
+                          </property>
+                          <property name="pageStep">
+                           <number>5</number>
+                          </property>
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QDoubleSpinBox" name="doubleSpinBox_BB">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
+                          <property name="decimals">
+                           <number>0</number>
+                          </property>
+                          <property name="minimum">
+                           <double>0.000000000000000</double>
+                          </property>
+                          <property name="maximum">
+                           <double>255.000000000000000</double>
+                          </property>
+                          <property name="singleStep">
+                           <double>1.000000000000000</double>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
                <item row="0" column="1">
                 <widget class="QFrame" name="frame_FMask">
                  <property name="frameShape">
@@ -1087,18 +2043,18 @@
                  </layout>
                 </widget>
                </item>
-               <item row="4" column="1">
-                <widget class="QFrame" name="frame_PixelQA">
+               <item row="5" column="1">
+                <widget class="QFrame" name="frame_QA_Band_C1_L457">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_9">
+                 <layout class="QGridLayout" name="gridLayout_19">
                   <item row="1" column="0">
-                   <widget class="QWidget" name="widget_18" native="true">
-                    <layout class="QHBoxLayout" name="horizontalLayout_17">
+                   <widget class="QWidget" name="widget_32" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_31">
                      <property name="leftMargin">
                       <number>0</number>
                      </property>
@@ -1112,7 +2068,7 @@
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QCheckBox" name="checkBox_PixelQA">
+                      <widget class="QCheckBox" name="checkBox_QABandC1L457">
                        <property name="font">
                         <font>
                          <weight>50</weight>
@@ -1120,19 +2076,19 @@
                         </font>
                        </property>
                        <property name="text">
-                        <string>Pixel QA (C1)</string>
+                        <string>QA Band (C1) (L4-5-7)</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QLabel" name="PixelQA_FileStatus">
+                      <widget class="QLabel" name="QABandC1L457_FileStatus">
                        <property name="text">
                         <string>(file not found)</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <spacer name="horizontalSpacer_7">
+                      <spacer name="horizontalSpacer_17">
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
                        </property>
@@ -1148,21 +2104,21 @@
                    </widget>
                   </item>
                   <item row="2" column="0">
-                   <widget class="QWidget" name="widget_PixelQA" native="true">
-                    <layout class="QVBoxLayout" name="verticalLayout_3">
+                   <widget class="QWidget" name="widget_QABandC1L457" native="true">
+                    <layout class="QVBoxLayout" name="verticalLayout_42">
                      <item>
-                      <widget class="QLabel" name="label_20">
+                      <widget class="QLabel" name="label_34">
                        <property name="toolTip">
                         <string>Each bit (item) masked all pixel that have this bit activated (all combination values)</string>
                        </property>
                        <property name="text">
-                        <string>Enable/disable Pixel QA bits:</string>
+                        <string>Enable/disable QA Band bits:</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QWidget" name="widget_PixelQA_bits" native="true">
-                       <layout class="QVBoxLayout" name="verticalLayout_29">
+                      <widget class="QWidget" name="widget_QABandC1L457_bits" native="true">
+                       <layout class="QVBoxLayout" name="verticalLayout_43">
                         <property name="topMargin">
                          <number>0</number>
                         </property>
@@ -1170,40 +2126,19 @@
                          <number>0</number>
                         </property>
                         <item>
-                         <widget class="QCheckBox" name="PixelQA_Water_mask">
+                         <widget class="QCheckBox" name="QABandC1L457_DroppedPixel">
                           <property name="text">
-                           <string>Water (bit 2)</string>
+                           <string>Dropped Pixel (bit 1)</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QCheckBox" name="PixelQA_CloudShadow_mask">
-                          <property name="text">
-                           <string>Cloud Shadow (bit 3)</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QCheckBox" name="PixelQA_Snow_mask">
-                          <property name="text">
-                           <string>Snow (bit 4)</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QCheckBox" name="PixelQA_Cloud_mask">
-                          <property name="text">
-                           <string>Cloud (bit 5)</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QGroupBox" name="groupBox_CloudConfidence">
+                         <widget class="QGroupBox" name="groupBox_RadiometricSaturation">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
                           <property name="title">
-                           <string>Cloud Confidence (bits 6-&amp;7)</string>
+                           <string>Radiometric Saturation (bits 2-3)</string>
                           </property>
                           <property name="checkable">
                            <bool>true</bool>
@@ -1211,10 +2146,10 @@
                           <property name="checked">
                            <bool>false</bool>
                           </property>
-                          <layout class="QVBoxLayout" name="verticalLayout_28">
+                          <layout class="QVBoxLayout" name="verticalLayout_44">
                            <item>
-                            <widget class="QWidget" name="widget_CloudConfidence" native="true">
-                             <layout class="QGridLayout" name="gridLayout_13">
+                            <widget class="QWidget" name="widget_CloudConfidence_3" native="true">
+                             <layout class="QGridLayout" name="gridLayout_20">
                               <property name="leftMargin">
                                <number>0</number>
                               </property>
@@ -1228,7 +2163,90 @@
                                <number>0</number>
                               </property>
                               <item row="1" column="1">
-                               <widget class="QRadioButton" name="QACloud_High">
+                               <widget class="QRadioButton" name="QABandC1L457_Saturated_gt4">
+                                <property name="text">
+                                 <string>&gt; 4 bands saturated</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QABandC1L457_Saturated_3to4">
+                                <property name="text">
+                                 <string>3 to 4 bands saturated</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QRadioButton" name="QABandC1L457_Saturated_1to2">
+                                <property name="text">
+                                 <string>1 to 2 bands saturated</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QABandC1L457_Saturated_0">
+                                <property name="text">
+                                 <string>No bands saturated</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QCheckBox" name="QABandC1L457_Cloud">
+                          <property name="text">
+                           <string>Cloud (bit 4)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QGroupBox" name="groupBox_CloudConfidence_3">
+                          <property name="styleSheet">
+                           <string notr="true">font-weight:normal;</string>
+                          </property>
+                          <property name="title">
+                           <string>Cloud Confidence (bits 5-6)</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_45">
+                           <item>
+                            <widget class="QWidget" name="widget_CloudConfidence_4" native="true">
+                             <layout class="QGridLayout" name="gridLayout_21">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
+                               <number>0</number>
+                              </property>
+                              <item row="1" column="1">
+                               <widget class="QRadioButton" name="QACloud_High_3">
                                 <property name="text">
                                  <string>&amp;67-100% High</string>
                                 </property>
@@ -1238,7 +2256,7 @@
                                </widget>
                               </item>
                               <item row="0" column="1">
-                               <widget class="QRadioButton" name="QACloud_Medium">
+                               <widget class="QRadioButton" name="QACloud_Medium_3">
                                 <property name="text">
                                  <string>&amp;34-66% Medium</string>
                                 </property>
@@ -1248,7 +2266,7 @@
                                </widget>
                               </item>
                               <item row="1" column="0">
-                               <widget class="QRadioButton" name="QACloud_Low">
+                               <widget class="QRadioButton" name="QACloud_Low_3">
                                 <property name="text">
                                  <string>0-33% Low</string>
                                 </property>
@@ -1258,7 +2276,7 @@
                                </widget>
                               </item>
                               <item row="0" column="0">
-                               <widget class="QRadioButton" name="QACloud_None">
+                               <widget class="QRadioButton" name="QACloud_None_2">
                                 <property name="text">
                                  <string>&amp;0% None</string>
                                 </property>
@@ -1274,12 +2292,12 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CirrusConfidence">
+                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_3">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
                           <property name="title">
-                           <string>Cirrus Confidence (bits &amp;8-9)</string>
+                           <string>Cloud Shadow (bits 7-8)</string>
                           </property>
                           <property name="checkable">
                            <bool>true</bool>
@@ -1287,10 +2305,10 @@
                           <property name="checked">
                            <bool>false</bool>
                           </property>
-                          <layout class="QVBoxLayout" name="verticalLayout_25">
+                          <layout class="QVBoxLayout" name="verticalLayout_46">
                            <item>
-                            <widget class="QWidget" name="widget_CirrusConfidence" native="true">
-                             <layout class="QGridLayout" name="gridLayout_10">
+                            <widget class="QWidget" name="widget_CirrusConfidence_3" native="true">
+                             <layout class="QGridLayout" name="gridLayout_22">
                               <property name="leftMargin">
                                <number>0</number>
                               </property>
@@ -1304,7 +2322,7 @@
                                <number>0</number>
                               </property>
                               <item row="1" column="1">
-                               <widget class="QRadioButton" name="QACirrus_High">
+                               <widget class="QRadioButton" name="QACirrus_High_3">
                                 <property name="text">
                                  <string>67-&amp;100% High</string>
                                 </property>
@@ -1314,7 +2332,7 @@
                                </widget>
                               </item>
                               <item row="1" column="0">
-                               <widget class="QRadioButton" name="QACirrus_Low">
+                               <widget class="QRadioButton" name="QACirrus_Low_3">
                                 <property name="text">
                                  <string>0-33% Low</string>
                                 </property>
@@ -1324,7 +2342,7 @@
                                </widget>
                               </item>
                               <item row="0" column="1">
-                               <widget class="QRadioButton" name="QACirrus_Medium">
+                               <widget class="QRadioButton" name="QACirrus_Medium_2">
                                 <property name="text">
                                  <string>34-66% &amp;Medium</string>
                                 </property>
@@ -1334,7 +2352,7 @@
                                </widget>
                               </item>
                               <item row="0" column="0">
-                               <widget class="QRadioButton" name="QACirrus_None">
+                               <widget class="QRadioButton" name="QACirrus_None_2">
                                 <property name="text">
                                  <string>0% None</string>
                                 </property>
@@ -1350,15 +2368,84 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QCheckBox" name="PixelQA_TerrainO_mask">
-                          <property name="text">
-                           <string>Terrain Occlusion (bit 10)</string>
+                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_4">
+                          <property name="styleSheet">
+                           <string notr="true">font-weight:normal;</string>
                           </property>
+                          <property name="title">
+                           <string>Snow/Ice (bits 9-10)</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_47">
+                           <item>
+                            <widget class="QWidget" name="widget_CirrusConfidence_4" native="true">
+                             <layout class="QGridLayout" name="gridLayout_23">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
+                               <number>0</number>
+                              </property>
+                              <item row="1" column="1">
+                               <widget class="QRadioButton" name="QACirrus_High_4">
+                                <property name="text">
+                                 <string>67-&amp;100% High</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QRadioButton" name="QACirrus_Low_4">
+                                <property name="text">
+                                 <string>0-33% Low</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QACirrus_Medium_3">
+                                <property name="text">
+                                 <string>34-66% &amp;Medium</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QACirrus_None_3">
+                                <property name="text">
+                                 <string>0% None</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QWidget" name="widget_19" native="true">
-                          <layout class="QHBoxLayout" name="horizontalLayout_18">
+                         <widget class="QWidget" name="widget_33" native="true">
+                          <layout class="QHBoxLayout" name="horizontalLayout_32">
                            <property name="leftMargin">
                             <number>0</number>
                            </property>
@@ -1372,14 +2459,14 @@
                             <number>0</number>
                            </property>
                            <item>
-                            <widget class="QLabel" name="label_21">
+                            <widget class="QLabel" name="label_35">
                              <property name="text">
                               <string>Specific values:</string>
                              </property>
                             </widget>
                            </item>
                            <item>
-                            <widget class="QLineEdit" name="PixelQA_svalues">
+                            <widget class="QLineEdit" name="QABandC1L457_svalues">
                              <property name="toolTip">
                               <string>Enter specific values for QA Band filters in decimal format. 
 You can add multiple values separated by comma</string>
@@ -1387,172 +2474,6 @@ You can add multiple values separated by comma</string>
                             </widget>
                            </item>
                           </layout>
-                         </widget>
-                        </item>
-                       </layout>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QFrame" name="frame_CloudQA_L457">
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_20">
-                  <item>
-                   <widget class="QWidget" name="widget_16" native="true">
-                    <layout class="QHBoxLayout" name="horizontalLayout_13">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="QCheckBox" name="checkBox_CloudQA">
-                       <property name="font">
-                        <font>
-                         <weight>50</weight>
-                         <bold>false</bold>
-                        </font>
-                       </property>
-                       <property name="text">
-                        <string>Cloud QA (C1)</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_CloudQA_FileStatus">
-                       <property name="toolTip">
-                        <string>File named ends with &quot;sr_cloud_qa&quot; not found</string>
-                       </property>
-                       <property name="text">
-                        <string>(file not found)</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_6">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QWidget" name="widget_CloudQA_L457" native="true">
-                    <layout class="QVBoxLayout" name="verticalLayout_22">
-                     <item>
-                      <widget class="QLabel" name="label_6">
-                       <property name="toolTip">
-                        <string>Each bit (item) masked all pixel that have this bit activated (all combination values)</string>
-                       </property>
-                       <property name="text">
-                        <string>Enable/disable Cloud QA bits:</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QWidget" name="widget_CloudQA_L457_bits" native="true">
-                       <layout class="QVBoxLayout" name="verticalLayout_23">
-                        <item>
-                         <widget class="QCheckBox" name="CloudQA_DDV_mask">
-                          <property name="text">
-                           <string>Dark Dense Vegetation (bit 0)</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QCheckBox" name="CloudQA_Cloud_mask">
-                          <property name="text">
-                           <string>Cloud (bit 1)</string>
-                          </property>
-                          <property name="checked">
-                           <bool>false</bool>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QCheckBox" name="CloudQA_CloudShadow_mask">
-                          <property name="text">
-                           <string>Cloud Shadow (bit 2)</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QCheckBox" name="CloudQA_AdjacentCloud_mask">
-                          <property name="text">
-                           <string>Adjacent to cloud (bit 3)</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QCheckBox" name="CloudQA_Snow_mask">
-                          <property name="text">
-                           <string>Snow (bit 4)</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QCheckBox" name="CloudQA_Water_mask">
-                          <property name="text">
-                           <string>Water (bit 5)</string>
-                          </property>
-                         </widget>
-                        </item>
-                       </layout>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QWidget" name="widget_17" native="true">
-                       <layout class="QHBoxLayout" name="horizontalLayout_16">
-                        <property name="leftMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="topMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="rightMargin">
-                         <number>0</number>
-                        </property>
-                        <property name="bottomMargin">
-                         <number>0</number>
-                        </property>
-                        <item>
-                         <widget class="QLabel" name="label_19">
-                          <property name="text">
-                           <string>Specific values:</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLineEdit" name="CloudQA_L457_svalues">
-                          <property name="toolTip">
-                           <string>Enter specific values for Cloud QA filters in decimal format. 
-You can add multiple values separated by comma</string>
-                          </property>
                          </widget>
                         </item>
                        </layout>
@@ -1773,97 +2694,18 @@ You can add multiple values separated by comma</string>
                  </layout>
                 </widget>
                </item>
-               <item row="1" column="1">
-                <widget class="QFrame" name="frame__BlueBand">
+               <item row="6" column="1">
+                <widget class="QFrame" name="frame_QA_Band_C1_L8">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_7">
-                  <item row="0" column="0">
-                   <widget class="QCheckBox" name="checkBox_BlueBand">
-                    <property name="font">
-                     <font>
-                      <weight>50</weight>
-                      <bold>false</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Blue Band</string>
-                    </property>
-                   </widget>
-                  </item>
+                 <layout class="QGridLayout" name="gridLayout_24">
                   <item row="1" column="0">
-                   <widget class="QWidget" name="widget_BlueBand" native="true">
-                    <layout class="QVBoxLayout" name="verticalLayout_4">
-                     <item>
-                      <widget class="QWidget" name="widget_BlueBand_01" native="true">
-                       <layout class="QHBoxLayout" name="horizontalLayout_5">
-                        <item>
-                         <widget class="QLabel" name="label_2">
-                          <property name="text">
-                           <string>Threshold</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QSlider" name="horizontalSlider_BB">
-                          <property name="maximum">
-                           <number>255</number>
-                          </property>
-                          <property name="pageStep">
-                           <number>5</number>
-                          </property>
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QDoubleSpinBox" name="doubleSpinBox_BB">
-                          <property name="sizePolicy">
-                           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                           </sizepolicy>
-                          </property>
-                          <property name="decimals">
-                           <number>0</number>
-                          </property>
-                          <property name="minimum">
-                           <double>0.000000000000000</double>
-                          </property>
-                          <property name="maximum">
-                           <double>255.000000000000000</double>
-                          </property>
-                          <property name="singleStep">
-                           <double>1.000000000000000</double>
-                          </property>
-                         </widget>
-                        </item>
-                       </layout>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item row="5" column="1">
-                <widget class="QFrame" name="frame_QA_Band_C2">
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_11">
-                  <item row="1" column="0">
-                   <widget class="QWidget" name="widget_29" native="true">
-                    <layout class="QHBoxLayout" name="horizontalLayout_27">
+                   <widget class="QWidget" name="widget_34" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_33">
                      <property name="leftMargin">
                       <number>0</number>
                      </property>
@@ -1877,7 +2719,7 @@ You can add multiple values separated by comma</string>
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QCheckBox" name="checkBox_QABandC2">
+                      <widget class="QCheckBox" name="checkBox_QABandC1L8">
                        <property name="font">
                         <font>
                          <weight>50</weight>
@@ -1885,19 +2727,19 @@ You can add multiple values separated by comma</string>
                         </font>
                        </property>
                        <property name="text">
-                        <string>QA Band (C2)</string>
+                        <string>QA Band (C1) (L8)</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QLabel" name="QABandC2_FileStatus">
+                      <widget class="QLabel" name="QABandC1L8_FileStatus">
                        <property name="text">
                         <string>(file not found)</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <spacer name="horizontalSpacer_14">
+                      <spacer name="horizontalSpacer_18">
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
                        </property>
@@ -1913,10 +2755,10 @@ You can add multiple values separated by comma</string>
                    </widget>
                   </item>
                   <item row="2" column="0">
-                   <widget class="QWidget" name="widget_QABandC2" native="true">
-                    <layout class="QVBoxLayout" name="verticalLayout_36">
+                   <widget class="QWidget" name="widget_QABandC1L8" native="true">
+                    <layout class="QVBoxLayout" name="verticalLayout_48">
                      <item>
-                      <widget class="QLabel" name="label_32">
+                      <widget class="QLabel" name="label_36">
                        <property name="toolTip">
                         <string>Each bit (item) masked all pixel that have this bit activated (all combination values)</string>
                        </property>
@@ -1926,8 +2768,8 @@ You can add multiple values separated by comma</string>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QWidget" name="widget_QABandC2_bits" native="true">
-                       <layout class="QVBoxLayout" name="verticalLayout_37">
+                      <widget class="QWidget" name="widget_QABandC1L8_bits" native="true">
+                       <layout class="QVBoxLayout" name="verticalLayout_49">
                         <property name="topMargin">
                          <number>0</number>
                         </property>
@@ -1935,54 +2777,19 @@ You can add multiple values separated by comma</string>
                          <number>0</number>
                         </property>
                         <item>
-                         <widget class="QCheckBox" name="QABandC2_DilatedCloud">
+                         <widget class="QCheckBox" name="QABandC1L457_DroppedPixel_2">
                           <property name="text">
-                           <string>Dilated Cloud (bit 1)</string>
+                           <string>Terrain Occlusion (bit 1)</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QCheckBox" name="QABandC2_Cirrus">
-                          <property name="text">
-                           <string>Cirrus (bit 2)</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QCheckBox" name="QABandC2_Cloud">
-                          <property name="text">
-                           <string>Cloud (bit 3)</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QCheckBox" name="QABandC2_CloudShadow">
-                          <property name="text">
-                           <string>Cloud Shadow (bit 4)</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QCheckBox" name="QABandC2_Snow">
-                          <property name="text">
-                           <string>Snow (bit 5)</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QCheckBox" name="QABandC2_Water">
-                          <property name="text">
-                           <string>Water (bit 7)</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QGroupBox" name="groupBox_CloudConfidence_2">
+                         <widget class="QGroupBox" name="groupBox_RadiometricSaturation_2">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
                           <property name="title">
-                           <string>Cloud Confidence (bits 8-9)</string>
+                           <string>Radiometric Saturation (bits 2-3)</string>
                           </property>
                           <property name="checkable">
                            <bool>true</bool>
@@ -1990,10 +2797,10 @@ You can add multiple values separated by comma</string>
                           <property name="checked">
                            <bool>false</bool>
                           </property>
-                          <layout class="QVBoxLayout" name="verticalLayout_38">
+                          <layout class="QVBoxLayout" name="verticalLayout_50">
                            <item>
-                            <widget class="QWidget" name="widget_CloudConfidence_2" native="true">
-                             <layout class="QGridLayout" name="gridLayout_16">
+                            <widget class="QWidget" name="widget_CloudConfidence_5" native="true">
+                             <layout class="QGridLayout" name="gridLayout_25">
                               <property name="leftMargin">
                                <number>0</number>
                               </property>
@@ -2006,10 +2813,30 @@ You can add multiple values separated by comma</string>
                               <property name="bottomMargin">
                                <number>0</number>
                               </property>
-                              <item row="0" column="1">
-                               <widget class="QRadioButton" name="QACloud_Medium_2">
+                              <item row="1" column="1">
+                               <widget class="QRadioButton" name="QABandC1L457_Saturated_gt4_2">
                                 <property name="text">
-                                 <string>Medium</string>
+                                 <string>&gt; 4 bands saturated</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QABandC1L457_Saturated_3to4_2">
+                                <property name="text">
+                                 <string>3 to 4 bands saturated</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QRadioButton" name="QABandC1L457_Saturated_1to2_2">
+                                <property name="text">
+                                 <string>1 to 2 bands saturated</string>
                                 </property>
                                 <property name="autoExclusive">
                                  <bool>false</bool>
@@ -2017,19 +2844,9 @@ You can add multiple values separated by comma</string>
                                </widget>
                               </item>
                               <item row="0" column="0">
-                               <widget class="QRadioButton" name="QACloud_Low_2">
+                               <widget class="QRadioButton" name="QABandC1L457_Saturated_1">
                                 <property name="text">
-                                 <string>Low</string>
-                                </property>
-                                <property name="autoExclusive">
-                                 <bool>false</bool>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="0" column="2">
-                               <widget class="QRadioButton" name="QACloud_High_2">
-                                <property name="text">
-                                 <string>High</string>
+                                 <string>No bands saturated</string>
                                 </property>
                                 <property name="autoExclusive">
                                  <bool>false</bool>
@@ -2043,12 +2860,19 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CloudShadowConfidence">
+                         <widget class="QCheckBox" name="QABandC1L457_Cloud_2">
+                          <property name="text">
+                           <string>Cloud (bit 4)</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QGroupBox" name="groupBox_CloudConfidence_4">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
                           <property name="title">
-                           <string>Cloud Shadow Confidence (bits 10-11)</string>
+                           <string>Cloud Confidence (bits 5-6)</string>
                           </property>
                           <property name="checkable">
                            <bool>true</bool>
@@ -2056,10 +2880,10 @@ You can add multiple values separated by comma</string>
                           <property name="checked">
                            <bool>false</bool>
                           </property>
-                          <layout class="QVBoxLayout" name="verticalLayout_39">
+                          <layout class="QVBoxLayout" name="verticalLayout_51">
                            <item>
-                            <widget class="QWidget" name="widget_CloudShadowConfidence" native="true">
-                             <layout class="QGridLayout" name="gridLayout_17">
+                            <widget class="QWidget" name="widget_CloudConfidence_6" native="true">
+                             <layout class="QGridLayout" name="gridLayout_26">
                               <property name="leftMargin">
                                <number>0</number>
                               </property>
@@ -2072,10 +2896,30 @@ You can add multiple values separated by comma</string>
                               <property name="bottomMargin">
                                <number>0</number>
                               </property>
-                              <item row="0" column="1">
-                               <widget class="QRadioButton" name="QACloudShadow_High">
+                              <item row="1" column="1">
+                               <widget class="QRadioButton" name="QACloud_High_4">
                                 <property name="text">
-                                 <string>High</string>
+                                 <string>&amp;67-100% High</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QACloud_Medium_4">
+                                <property name="text">
+                                 <string>&amp;34-66% Medium</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QRadioButton" name="QACloud_Low_4">
+                                <property name="text">
+                                 <string>0-33% Low</string>
                                 </property>
                                 <property name="autoExclusive">
                                  <bool>false</bool>
@@ -2083,9 +2927,9 @@ You can add multiple values separated by comma</string>
                                </widget>
                               </item>
                               <item row="0" column="0">
-                               <widget class="QRadioButton" name="QACloudShadow_Low">
+                               <widget class="QRadioButton" name="QACloud_None_3">
                                 <property name="text">
-                                 <string>Low</string>
+                                 <string>&amp;0% None</string>
                                 </property>
                                 <property name="autoExclusive">
                                  <bool>false</bool>
@@ -2099,12 +2943,12 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_SnowIceConfidence">
+                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_5">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
                           <property name="title">
-                           <string>Snow/Ice Confidence (bits 12-13)</string>
+                           <string>Cloud Shadow (bits 7-8)</string>
                           </property>
                           <property name="checkable">
                            <bool>true</bool>
@@ -2112,10 +2956,10 @@ You can add multiple values separated by comma</string>
                           <property name="checked">
                            <bool>false</bool>
                           </property>
-                          <layout class="QVBoxLayout" name="verticalLayout_40">
+                          <layout class="QVBoxLayout" name="verticalLayout_52">
                            <item>
-                            <widget class="QWidget" name="widget_SnowIceConfidence" native="true">
-                             <layout class="QGridLayout" name="gridLayout_18">
+                            <widget class="QWidget" name="widget_CirrusConfidence_5" native="true">
+                             <layout class="QGridLayout" name="gridLayout_27">
                               <property name="leftMargin">
                                <number>0</number>
                               </property>
@@ -2128,10 +2972,20 @@ You can add multiple values separated by comma</string>
                               <property name="bottomMargin">
                                <number>0</number>
                               </property>
-                              <item row="0" column="0">
-                               <widget class="QRadioButton" name="QASnowIce_Low">
+                              <item row="1" column="1">
+                               <widget class="QRadioButton" name="QACirrus_High_5">
                                 <property name="text">
-                                 <string>Low</string>
+                                 <string>67-&amp;100% High</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QRadioButton" name="QACirrus_Low_5">
+                                <property name="text">
+                                 <string>0-33% Low</string>
                                 </property>
                                 <property name="autoExclusive">
                                  <bool>false</bool>
@@ -2139,9 +2993,19 @@ You can add multiple values separated by comma</string>
                                </widget>
                               </item>
                               <item row="0" column="1">
-                               <widget class="QRadioButton" name="QASnowIce_High">
+                               <widget class="QRadioButton" name="QACirrus_Medium_4">
                                 <property name="text">
-                                 <string>High</string>
+                                 <string>34-66% &amp;Medium</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QACirrus_None_4">
+                                <property name="text">
+                                 <string>0% None</string>
                                 </property>
                                 <property name="autoExclusive">
                                  <bool>false</bool>
@@ -2155,12 +3019,12 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_2">
+                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_6">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
                           <property name="title">
-                           <string>Cirrus Confidence (bits 14-15)</string>
+                           <string>Snow/Ice (bits 9-10)</string>
                           </property>
                           <property name="checkable">
                            <bool>true</bool>
@@ -2168,10 +3032,10 @@ You can add multiple values separated by comma</string>
                           <property name="checked">
                            <bool>false</bool>
                           </property>
-                          <layout class="QVBoxLayout" name="verticalLayout_41">
+                          <layout class="QVBoxLayout" name="verticalLayout_53">
                            <item>
-                            <widget class="QWidget" name="widget_CirrusConfidence_2" native="true">
-                             <layout class="QGridLayout" name="gridLayout_12">
+                            <widget class="QWidget" name="widget_CirrusConfidence_6" native="true">
+                             <layout class="QGridLayout" name="gridLayout_28">
                               <property name="leftMargin">
                                <number>0</number>
                               </property>
@@ -2184,10 +3048,20 @@ You can add multiple values separated by comma</string>
                               <property name="bottomMargin">
                                <number>0</number>
                               </property>
-                              <item row="0" column="0">
-                               <widget class="QRadioButton" name="QACirrus_Low_2">
+                              <item row="1" column="1">
+                               <widget class="QRadioButton" name="QACirrus_High_6">
                                 <property name="text">
-                                 <string>Low</string>
+                                 <string>67-&amp;100% High</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QRadioButton" name="QACirrus_Low_6">
+                                <property name="text">
+                                 <string>0-33% Low</string>
                                 </property>
                                 <property name="autoExclusive">
                                  <bool>false</bool>
@@ -2195,9 +3069,19 @@ You can add multiple values separated by comma</string>
                                </widget>
                               </item>
                               <item row="0" column="1">
-                               <widget class="QRadioButton" name="QACirrus_High_2">
+                               <widget class="QRadioButton" name="QACirrus_Medium_5">
                                 <property name="text">
-                                 <string>High</string>
+                                 <string>34-66% &amp;Medium</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QACirrus_None_5">
+                                <property name="text">
+                                 <string>0% None</string>
                                 </property>
                                 <property name="autoExclusive">
                                  <bool>false</bool>
@@ -2211,8 +3095,84 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QWidget" name="widget_30" native="true">
-                          <layout class="QHBoxLayout" name="horizontalLayout_29">
+                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_7">
+                          <property name="styleSheet">
+                           <string notr="true">font-weight:normal;</string>
+                          </property>
+                          <property name="title">
+                           <string>Cirrus Confidence (bits 11-12)</string>
+                          </property>
+                          <property name="checkable">
+                           <bool>true</bool>
+                          </property>
+                          <property name="checked">
+                           <bool>false</bool>
+                          </property>
+                          <layout class="QVBoxLayout" name="verticalLayout_54">
+                           <item>
+                            <widget class="QWidget" name="widget_CirrusConfidence_7" native="true">
+                             <layout class="QGridLayout" name="gridLayout_29">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
+                               <number>0</number>
+                              </property>
+                              <item row="1" column="1">
+                               <widget class="QRadioButton" name="QACirrus_High_7">
+                                <property name="text">
+                                 <string>67-&amp;100% High</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="1" column="0">
+                               <widget class="QRadioButton" name="QACirrus_Low_7">
+                                <property name="text">
+                                 <string>0-33% Low</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="1">
+                               <widget class="QRadioButton" name="QACirrus_Medium_6">
+                                <property name="text">
+                                 <string>34-66% &amp;Medium</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item row="0" column="0">
+                               <widget class="QRadioButton" name="QACirrus_None_6">
+                                <property name="text">
+                                 <string>0% None</string>
+                                </property>
+                                <property name="autoExclusive">
+                                 <bool>false</bool>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QWidget" name="widget_35" native="true">
+                          <layout class="QHBoxLayout" name="horizontalLayout_34">
                            <property name="leftMargin">
                             <number>0</number>
                            </property>
@@ -2226,14 +3186,14 @@ You can add multiple values separated by comma</string>
                             <number>0</number>
                            </property>
                            <item>
-                            <widget class="QLabel" name="label_33">
+                            <widget class="QLabel" name="label_37">
                              <property name="text">
                               <string>Specific values:</string>
                              </property>
                             </widget>
                            </item>
                            <item>
-                            <widget class="QLineEdit" name="QABandC2_svalues">
+                            <widget class="QLineEdit" name="QABandC1L8_svalues">
                              <property name="toolTip">
                               <string>Enter specific values for QA Band filters in decimal format. 
 You can add multiple values separated by comma</string>
@@ -3391,12 +4351,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>252</x>
-     <y>-1254</y>
+     <x>131</x>
+     <y>-2541</y>
     </hint>
     <hint type="destinationlabel">
-     <x>218</x>
-     <y>-948</y>
+     <x>238</x>
+     <y>-1896</y>
     </hint>
    </hints>
   </connection>
@@ -3407,12 +4367,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>318</x>
-     <y>-469</y>
+     <x>338</x>
+     <y>-1791</y>
     </hint>
     <hint type="destinationlabel">
-     <x>307</x>
-     <y>-393</y>
+     <x>327</x>
+     <y>-1749</y>
     </hint>
    </hints>
   </connection>
@@ -3423,12 +4383,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>150</x>
-     <y>527</y>
+     <x>170</x>
+     <y>-760</y>
     </hint>
     <hint type="destinationlabel">
-     <x>315</x>
-     <y>986</y>
+     <x>335</x>
+     <y>-168</y>
     </hint>
    </hints>
   </connection>
@@ -3440,11 +4400,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>508</x>
-     <y>664</y>
+     <y>792</y>
     </hint>
     <hint type="destinationlabel">
-     <x>180</x>
-     <y>758</y>
+     <x>198</x>
+     <y>898</y>
     </hint>
    </hints>
   </connection>
@@ -3455,12 +4415,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>419</x>
-     <y>910</y>
+     <x>451</x>
+     <y>-268</y>
     </hint>
     <hint type="destinationlabel">
-     <x>576</x>
-     <y>1011</y>
+     <x>616</x>
+     <y>-276</y>
     </hint>
    </hints>
   </connection>
@@ -3471,12 +4431,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>329</x>
-     <y>806</y>
+     <x>361</x>
+     <y>-408</y>
     </hint>
     <hint type="destinationlabel">
-     <x>434</x>
-     <y>798</y>
+     <x>474</x>
+     <y>-416</y>
     </hint>
    </hints>
   </connection>
@@ -3487,12 +4447,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>429</x>
-     <y>405</y>
+     <x>461</x>
+     <y>-882</y>
     </hint>
     <hint type="destinationlabel">
-     <x>485</x>
-     <y>397</y>
+     <x>525</x>
+     <y>-890</y>
     </hint>
    </hints>
   </connection>
@@ -3504,11 +4464,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>884</x>
-     <y>2162</y>
+     <y>2455</y>
     </hint>
     <hint type="destinationlabel">
      <x>457</x>
-     <y>2292</y>
+     <y>2633</y>
     </hint>
    </hints>
   </connection>
@@ -3519,12 +4479,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>137</x>
-     <y>2162</y>
+     <x>149</x>
+     <y>2455</y>
     </hint>
     <hint type="destinationlabel">
      <x>149</x>
-     <y>2204</y>
+     <y>2545</y>
     </hint>
    </hints>
   </connection>
@@ -3536,11 +4496,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>325</x>
-     <y>664</y>
+     <y>792</y>
     </hint>
     <hint type="destinationlabel">
-     <x>193</x>
-     <y>706</y>
+     <x>211</x>
+     <y>844</y>
     </hint>
    </hints>
   </connection>
@@ -3551,12 +4511,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>121</x>
-     <y>664</y>
+     <x>139</x>
+     <y>792</y>
     </hint>
     <hint type="destinationlabel">
-     <x>339</x>
-     <y>706</y>
+     <x>357</x>
+     <y>844</y>
     </hint>
    </hints>
   </connection>
@@ -3568,11 +4528,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>508</x>
-     <y>664</y>
+     <y>792</y>
     </hint>
     <hint type="destinationlabel">
-     <x>195</x>
-     <y>706</y>
+     <x>213</x>
+     <y>844</y>
     </hint>
    </hints>
   </connection>
@@ -3583,12 +4543,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>278</x>
-     <y>-768</y>
+     <x>310</x>
+     <y>-2076</y>
     </hint>
     <hint type="destinationlabel">
-     <x>288</x>
-     <y>-720</y>
+     <x>328</x>
+     <y>-2028</y>
     </hint>
    </hints>
   </connection>
@@ -3599,12 +4559,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>62</x>
-     <y>-335</y>
+     <x>82</x>
+     <y>-1657</y>
     </hint>
     <hint type="destinationlabel">
-     <x>57</x>
-     <y>-12</y>
+     <x>77</x>
+     <y>-1372</y>
     </hint>
    </hints>
   </connection>
@@ -3615,12 +4575,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>66</x>
-     <y>89</y>
+     <x>86</x>
+     <y>-1198</y>
     </hint>
     <hint type="destinationlabel">
-     <x>60</x>
-     <y>268</y>
+     <x>80</x>
+     <y>-937</y>
     </hint>
    </hints>
   </connection>
@@ -3631,12 +4591,44 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>61</x>
-     <y>1159</y>
+     <x>81</x>
+     <y>1638</y>
     </hint>
     <hint type="destinationlabel">
-     <x>68</x>
-     <y>1185</y>
+     <x>88</x>
+     <y>2043</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_QABandC1L457</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_QABandC1L457</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>93</x>
+     <y>-131</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>38</x>
+     <y>505</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_QABandC1L8</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_QABandC1L8</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>119</x>
+     <y>681</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>123</x>
+     <y>703</y>
     </hint>
    </hints>
   </connection>

@@ -209,12 +209,20 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.PixelQA_TerrainO_mask.setHidden(True)
         self.checkBox_PixelQA.setChecked(False)
 
+        # QA Band C1 L457 filter #########
+        # start hidden
+        self.QABandC1L457_FileStatus.setVisible(False)
+        self.checkBox_QABandC1L457.setChecked(False)
+        self.widget_QABandC1L457.setHidden(True)
+        self.QABandC1L8_FileStatus.setVisible(False)
+        self.checkBox_QABandC1L8.setChecked(False)
+        self.widget_QABandC1L8.setHidden(True)
+
         # QA Band C2 filter #########
         # start hidden
         self.QABandC2_FileStatus.setVisible(False)
         self.checkBox_QABandC2.setChecked(False)
         self.widget_QABandC2.setHidden(True)
-        self.checkBox_QABandC2.setChecked(False)
 
         # Generate the cloud mask #########
         # shape and selected area start hidden
@@ -472,6 +480,52 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
                 self.checkBox_PixelQA.setEnabled(False)
             if self.collection == 2:
                 self.frame_PixelQA.setHidden(True)
+
+        #### QA Band C1 L457
+        # hidden blocks and unchecked
+        self.QABandC1L457_FileStatus.setVisible(False)
+        self.checkBox_QABandC1L457.setChecked(False)
+        self.widget_QABandC1L457.setHidden(True)
+        self.qabandc1_file_l457 = ""
+        # check QA Band C1 file exists
+        if self.collection == 1 and self.processing_level == "L1" and self.landsat_version in [4, 5, 7]:
+            self.qabandc1_file_l457 = os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_QUALITY'])
+            if not os.path.isfile(self.qabandc1_file_l457):
+                self.qabandc1_file_l457 = self.qabandc1_file_l457.replace("BQA.TIF", "bqa.tif")
+
+            if os.path.isfile(self.qabandc1_file_l457):
+                self.checkBox_QABandC1L457.setEnabled(True)
+                self.frame_QA_Band_C1_L457.setVisible(True)
+            else:
+                self.frame_QA_Band_C1_L457.setVisible(True)
+                self.QABandC1L457_FileStatus.setVisible(True)
+                self.checkBox_QABandC1L457.setEnabled(False)
+                self.checkBox_QABandC1L457.setChecked(False)
+        else:
+            self.frame_QA_Band_C1_L457.setVisible(False)
+
+        #### QA Band C1 L8
+        # hidden blocks and unchecked
+        self.QABandC1L8_FileStatus.setVisible(False)
+        self.checkBox_QABandC1L8.setChecked(False)
+        self.widget_QABandC1L8.setHidden(True)
+        self.qabandc1_file_l8 = ""
+        # check QA Band C1 file exists
+        if self.collection == 1 and self.processing_level == "L1" and self.landsat_version in [8]:
+            self.qabandc1_file_l8 = os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_QUALITY'])
+            if not os.path.isfile(self.qabandc1_file_l8):
+                self.qabandc1_file_l8 = self.qabandc1_file_l8.replace("BQA.TIF", "bqa.tif")
+
+            if os.path.isfile(self.qabandc1_file_l8):
+                self.checkBox_QABandC1L8.setEnabled(True)
+                self.frame_QA_Band_C1_L8.setVisible(True)
+            else:
+                self.frame_QA_Band_C1_L8.setVisible(True)
+                self.QABandC1L8_FileStatus.setVisible(True)
+                self.checkBox_QABandC1L8.setEnabled(False)
+                self.checkBox_QABandC1L8.setChecked(False)
+        else:
+            self.frame_QA_Band_C1_L8.setVisible(False)
 
         #### QA Band C2 adjusts
         # hidden blocks and unchecked

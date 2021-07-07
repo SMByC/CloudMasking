@@ -647,13 +647,182 @@ class CloudMaskingResult(object):
         update_process_bar(self.process_bar, 100, self.process_status,
                            self.tr("DONE"))
 
+    def do_qaband_c1_l457(self, qabandc1_file, checked_items, specific_values=[]):
+        """
+        http://landsat.usgs.gov/qualityband.php
+        """
+        # tmp file for QA Band
+        self.qaband = os.path.join(self.tmp_dir, "qaband_c1{}.tif".format(datetime.now().strftime('%H%M%S')))
+        update_process_bar(self.process_bar, 50, self.process_status,
+                           self.tr("Making the QA Band filter..."))
+
+        ########################################
+        # clipping the QA Mask (only if is activated selected area or shape area)
+        self.qaband_clip_file = os.path.join(self.tmp_dir, "qaband_clip.tif")
+        self.qaband_for_process = self.clip(qabandc1_file, self.qaband_clip_file)
+
+        ########################################
+        # convert selected items to binary and decimal values
+        values_combinations = []
+        # bits not used or not fill
+        static_bits = [0, 11, 12, 13, 14, 15]
+
+        # generate the values combinations for one bit items selected
+        qaband_items_1b = {"Dropped Pixel (bit 1)": [1], "Cloud (bit 4)": [4]}
+
+        for item, bits in qaband_items_1b.items():
+            binary = [0] * 16
+            if checked_items[item]:
+                binary[(len(binary) - 1) - bits[0]] = 1
+                values_combinations += list(binary_combination(binary, static_bits + bits))
+
+        # generate the values combinations for two bits items selected
+        qaband_items_2b = {"Radiometric Saturation (bits 2-3)": [2, 3]}
+        levels = {"No bands saturated": [0, 0], "1 to 2 bands saturated": [0, 1],
+                  "3 to 4 bands saturated": [1, 0], "> 4 bands saturated": [1, 1]}
+        for item, bits in qaband_items_2b.items():
+            if item in checked_items.keys():
+                for level in checked_items[item]:
+                    binary = [0] * 16
+                    binary[bits[0]:bits[1] + 1] = (levels[level])[::-1]
+                    binary.reverse()
+                    values_combinations += list(binary_combination(binary, static_bits + bits))
+
+        # generate the values combinations for two bits items selected
+        qaband_items_2b = {"Cloud Confidence (bits 5-6)": [5, 6],
+                           "Cloud Shadow (bits 7-8)": [7, 8], "Snow/Ice (bits 9-10)": [9, 10]}
+        levels = {"0% None": [0, 0], "0-33% Low": [0, 1],
+                  "34-66% Medium": [1, 0], "67-100% High": [1, 1]}
+        for item, bits in qaband_items_2b.items():
+            if item in checked_items.keys():
+                for level in checked_items[item]:
+                    binary = [0] * 16
+                    binary[bits[0]:bits[1] + 1] = (levels[level])[::-1]
+                    binary.reverse()
+                    values_combinations += list(binary_combination(binary, static_bits + bits))
+
+        # add the specific values
+        if specific_values:
+            values_combinations += specific_values
+
+        # delete duplicates
+        values_combinations = list(set(values_combinations))
+
+        # only left the values inside the image
+        values_combinations = check_values_in_image(self.qaband_for_process, values_combinations)
+
+        filter_values = ",".join(["A==" + str(x) for x in values_combinations])
+        not_filter_values = ",".join(["A!=" + str(x) for x in values_combinations])
+
+        ########################################
+        # do QA Mask filter
+        tmp_pqa_file = os.path.join(self.tmp_dir, "qaband.tif")
+        gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 10*(numpy.any([{fv}], axis=0))".format(fv=filter_values,
+                                                                                                    nfv=not_filter_values),
+                       A=self.qaband_for_process, outfile=tmp_pqa_file, type="Byte", NoDataValue=1)
+        # unset the nodata, leave the 1 (valid fields)
+        gdal.Translate(self.qaband, tmp_pqa_file, noData="none")
+        # delete tmp files
+        os.remove(tmp_pqa_file)
+
+        # save final result of masking
+        self.cloud_masking_files.append(self.qaband)
+
+        ### ending process
+        update_process_bar(self.process_bar, 100, self.process_status,
+                           self.tr("DONE"))
+
+    def do_qaband_c1_l8(self, qabandc1_file, checked_items, specific_values=[]):
+        """
+        http://landsat.usgs.gov/qualityband.php
+        """
+        # tmp file for QA Band
+        self.qaband = os.path.join(self.tmp_dir, "qaband_c1{}.tif".format(datetime.now().strftime('%H%M%S')))
+        update_process_bar(self.process_bar, 50, self.process_status,
+                           self.tr("Making the QA Band filter..."))
+
+        ########################################
+        # clipping the QA Mask (only if is activated selected area or shape area)
+        self.qaband_clip_file = os.path.join(self.tmp_dir, "qaband_clip.tif")
+        self.qaband_for_process = self.clip(qabandc1_file, self.qaband_clip_file)
+
+        ########################################
+        # convert selected items to binary and decimal values
+        values_combinations = []
+        # bits not used or not fill
+        static_bits = [0, 13, 14, 15]
+
+        # generate the values combinations for one bit items selected
+        qaband_items_1b = {"Terrain Occlusion (bit 1)": [1], "Cloud (bit 4)": [4]}
+
+        for item, bits in qaband_items_1b.items():
+            binary = [0] * 16
+            if checked_items[item]:
+                binary[(len(binary) - 1) - bits[0]] = 1
+                values_combinations += list(binary_combination(binary, static_bits + bits))
+
+        # generate the values combinations for two bits items selected
+        qaband_items_2b = {"Radiometric Saturation (bits 2-3)": [2, 3]}
+        levels = {"No bands saturated": [0, 0], "1 to 2 bands saturated": [0, 1],
+                  "3 to 4 bands saturated": [1, 0], "> 4 bands saturated": [1, 1]}
+        for item, bits in qaband_items_2b.items():
+            if item in checked_items.keys():
+                for level in checked_items[item]:
+                    binary = [0] * 16
+                    binary[bits[0]:bits[1] + 1] = (levels[level])[::-1]
+                    binary.reverse()
+                    values_combinations += list(binary_combination(binary, static_bits + bits))
+
+        # generate the values combinations for two bits items selected
+        qaband_items_2b = {"Cloud Confidence (bits 5-6)": [5, 6], "Cloud Shadow (bits 7-8)": [7, 8],
+                           "Snow/Ice (bits 9-10)": [9, 10], "Cirrus Confidence (bits 11-12)": [11, 12]}
+        levels = {"0% None": [0, 0], "0-33% Low": [0, 1],
+                  "34-66% Medium": [1, 0], "67-100% High": [1, 1]}
+        for item, bits in qaband_items_2b.items():
+            if item in checked_items.keys():
+                for level in checked_items[item]:
+                    binary = [0] * 16
+                    binary[bits[0]:bits[1] + 1] = (levels[level])[::-1]
+                    binary.reverse()
+                    values_combinations += list(binary_combination(binary, static_bits + bits))
+
+        # add the specific values
+        if specific_values:
+            values_combinations += specific_values
+
+        # delete duplicates
+        values_combinations = list(set(values_combinations))
+
+        # only left the values inside the image
+        values_combinations = check_values_in_image(self.qaband_for_process, values_combinations)
+
+        filter_values = ",".join(["A==" + str(x) for x in values_combinations])
+        not_filter_values = ",".join(["A!=" + str(x) for x in values_combinations])
+
+        ########################################
+        # do QA Mask filter
+        tmp_pqa_file = os.path.join(self.tmp_dir, "qaband.tif")
+        gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 10*(numpy.any([{fv}], axis=0))".format(fv=filter_values,
+                                                                                                    nfv=not_filter_values),
+                       A=self.qaband_for_process, outfile=tmp_pqa_file, type="Byte", NoDataValue=1)
+        # unset the nodata, leave the 1 (valid fields)
+        gdal.Translate(self.qaband, tmp_pqa_file, noData="none")
+        # delete tmp files
+        os.remove(tmp_pqa_file)
+
+        # save final result of masking
+        self.cloud_masking_files.append(self.qaband)
+
+        ### ending process
+        update_process_bar(self.process_bar, 100, self.process_status,
+                           self.tr("DONE"))
 
     def do_qaband_c2(self, qabandc2_file, checked_items, specific_values=[]):
         """
         http://landsat.usgs.gov/qualityband.php
         """
         # tmp file for QA Band
-        self.qaband = os.path.join(self.tmp_dir, "qaband_{}.tif".format(datetime.now().strftime('%H%M%S')))
+        self.qaband = os.path.join(self.tmp_dir, "qaband_c2{}.tif".format(datetime.now().strftime('%H%M%S')))
         update_process_bar(self.process_bar, 50, self.process_status,
                            self.tr("Making the QA Band filter..."))
 
@@ -716,7 +885,7 @@ class CloudMaskingResult(object):
         ########################################
         # do QA Mask filter
         tmp_pqa_file = os.path.join(self.tmp_dir, "qaband.tif")
-        gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 9*(numpy.any([{fv}], axis=0))".format(fv=filter_values, nfv=not_filter_values),
+        gdal_calc.Calc(calc="1*(numpy.all([{nfv}], axis=0)) + 10*(numpy.any([{fv}], axis=0))".format(fv=filter_values, nfv=not_filter_values),
                        A=self.qaband_for_process, outfile=tmp_pqa_file, type="Byte", NoDataValue=1)
         # unset the nodata, leave the 1 (valid fields)
         gdal.Translate(self.qaband, tmp_pqa_file, noData="none")

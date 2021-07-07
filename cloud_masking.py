@@ -345,7 +345,7 @@ class CloudMasking:
         """Make the process
         """
         # initialize the symbology
-        enable_symbology = [False, False, False, False, False, False, False, False]
+        enable_symbology = [False, False, False, False, False, False, False, False, False]
 
         # check if any filters has been enabled before process
         if (not self.dockwidget.checkBox_FMask.isChecked() and
@@ -353,6 +353,8 @@ class CloudMasking:
                 not self.dockwidget.checkBox_CloudQA.isChecked() and
                 not self.dockwidget.checkBox_Aerosol.isChecked() and
                 not self.dockwidget.checkBox_PixelQA.isChecked() and
+                not self.dockwidget.checkBox_QABandC1L457.isChecked() and
+                not self.dockwidget.checkBox_QABandC1L8.isChecked() and
                 not self.dockwidget.checkBox_QABandC2.isChecked()):
             self.dockwidget.status_processMask.setText(
                 self.tr("Error: no filters enabled for apply"))
@@ -619,6 +621,140 @@ class CloudMasking:
             enable_symbology[7] = True
 
         ########################################
+        # QA Band C1 filter L457
+
+        if self.dockwidget.checkBox_QABandC1L457.isChecked():
+            if self.dockwidget.landsat_version in [4, 5, 7]:
+                checked_items = {}
+
+                # one bit items selected
+                qaband_items_1b = ["Dropped Pixel (bit 1)", "Cloud (bit 4)"]
+                for checkbox in self.dockwidget.widget_QABandC1L457_bits.findChildren(QCheckBox):
+                    item = checkbox.text().replace("&", "")
+                    if item in qaband_items_1b:
+                        checked_items[item] = checkbox.isChecked()
+
+                # two bits items selected
+                qaband_items_2b = ["Radiometric Saturation (bits 2-3)"]
+                levels = ["No bands saturated", "1 to 2 bands saturated", "3 to 4 bands saturated", "> 4 bands saturated"]
+
+                for groupbox in self.dockwidget.widget_QABandC1L457_bits.findChildren(QGroupBox):
+                    group_item = groupbox.title().replace("&", "")
+                    if group_item in qaband_items_2b and groupbox.isChecked():
+                        levels_selected = []
+                        for radiobutton in groupbox.findChildren(QRadioButton):
+                            check_item = radiobutton.text().replace("&", "")
+                            if check_item in levels and radiobutton.isChecked():
+                                levels_selected.append(check_item)
+                        if levels_selected:
+                            checked_items[group_item] = levels_selected
+
+                # two bits items selected
+                qaband_items_2b = ["Cloud Confidence (bits 5-6)", "Cloud Shadow (bits 7-8)",
+                                   "Snow/Ice (bits 9-10)"]
+                levels = ["0% None", "0-33% Low", "34-66% Medium", "67-100% High"]
+
+                for groupbox in self.dockwidget.widget_QABandC1L457_bits.findChildren(QGroupBox):
+                    group_item = groupbox.title().replace("&", "")
+                    if group_item in qaband_items_2b and groupbox.isChecked():
+                        levels_selected = []
+                        for radiobutton in groupbox.findChildren(QRadioButton):
+                            check_item = radiobutton.text().replace("&", "")
+                            if check_item in levels and radiobutton.isChecked():
+                                levels_selected.append(check_item)
+                        if levels_selected:
+                            checked_items[group_item] = levels_selected
+
+                # set and check the specific decimal values
+                try:
+                    qaband_svalues = self.dockwidget.QABandC1L457_svalues.text()
+                    if qaband_svalues:
+                        qaband_svalues = [int(sv) for sv in qaband_svalues.split(",")]
+                    else:
+                        qaband_svalues = []
+                except:
+                    self.dockwidget.status_processMask.setText(
+                        self.tr("Error: setting the specific values in QA Band"))
+                    return
+
+                # check is not selected any QA Band filter
+                if not any(checked_items.values()) and not qaband_svalues:
+                    self.dockwidget.status_processMask.setText(
+                        self.tr("Error: no filters selected in QA Band"))
+                    return
+
+                self.masking_result.do_qaband_c1_l457(self.dockwidget.qabandc1_file_l457, checked_items, qaband_svalues)
+
+            enable_symbology[8] = True
+
+        ########################################
+        # QA Band C1 filter L8
+
+        if self.dockwidget.checkBox_QABandC1L8.isChecked():
+            if self.dockwidget.landsat_version in [8]:
+                checked_items = {}
+
+                # one bit items selected
+                qaband_items_1b = ["Terrain Occlusion (bit 1)", "Cloud (bit 4)"]
+                for checkbox in self.dockwidget.widget_QABandC1L8_bits.findChildren(QCheckBox):
+                    item = checkbox.text().replace("&", "")
+                    if item in qaband_items_1b:
+                        checked_items[item] = checkbox.isChecked()
+
+                # two bits items selected
+                qaband_items_2b = ["Radiometric Saturation (bits 2-3)"]
+                levels = ["No bands saturated", "1 to 2 bands saturated", "3 to 4 bands saturated", "> 4 bands saturated"]
+
+                for groupbox in self.dockwidget.widget_QABandC1L8_bits.findChildren(QGroupBox):
+                    group_item = groupbox.title().replace("&", "")
+                    if group_item in qaband_items_2b and groupbox.isChecked():
+                        levels_selected = []
+                        for radiobutton in groupbox.findChildren(QRadioButton):
+                            check_item = radiobutton.text().replace("&", "")
+                            if check_item in levels and radiobutton.isChecked():
+                                levels_selected.append(check_item)
+                        if levels_selected:
+                            checked_items[group_item] = levels_selected
+
+                # two bits items selected
+                qaband_items_2b = ["Cloud Confidence (bits 5-6)", "Cloud Shadow (bits 7-8)",
+                                   "Snow/Ice (bits 9-10)", "Cirrus Confidence (bits 11-12)"]
+                levels = ["0% None", "0-33% Low", "34-66% Medium", "67-100% High"]
+
+                for groupbox in self.dockwidget.widget_QABandC1L8_bits.findChildren(QGroupBox):
+                    group_item = groupbox.title().replace("&", "")
+                    if group_item in qaband_items_2b and groupbox.isChecked():
+                        levels_selected = []
+                        for radiobutton in groupbox.findChildren(QRadioButton):
+                            check_item = radiobutton.text().replace("&", "")
+                            if check_item in levels and radiobutton.isChecked():
+                                levels_selected.append(check_item)
+                        if levels_selected:
+                            checked_items[group_item] = levels_selected
+
+                # set and check the specific decimal values
+                try:
+                    qaband_svalues = self.dockwidget.QABandC1L8_svalues.text()
+                    if qaband_svalues:
+                        qaband_svalues = [int(sv) for sv in qaband_svalues.split(",")]
+                    else:
+                        qaband_svalues = []
+                except:
+                    self.dockwidget.status_processMask.setText(
+                        self.tr("Error: setting the specific values in QA Band"))
+                    return
+
+                # check is not selected any QA Band filter
+                if not any(checked_items.values()) and not qaband_svalues:
+                    self.dockwidget.status_processMask.setText(
+                        self.tr("Error: no filters selected in QA Band"))
+                    return
+
+                self.masking_result.do_qaband_c1_l8(self.dockwidget.qabandc1_file_l8, checked_items, qaband_svalues)
+
+            enable_symbology[8] = True
+
+        ########################################
         # QA Band C2 filter
 
         if self.dockwidget.checkBox_QABandC2.isChecked():
@@ -669,7 +805,7 @@ class CloudMasking:
 
                 self.masking_result.do_qaband_c2(self.dockwidget.qabandc2_file, checked_items, qaband_svalues)
 
-            enable_symbology[7] = True
+            enable_symbology[8] = True
 
         ########################################
         # Blended cloud masking files
@@ -811,6 +947,7 @@ class CloudMasking:
             'Cloud QA': (255, 170, 0, 255),
             'Aerosol': (255, 170, 0, 255),
             'Pixel QA': (20, 180, 140, 255),
+            'QA Band': (170, 85, 255, 255),
         }
         # apply
         apply_symbology(self.cloud_mask_rlayer,
