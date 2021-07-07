@@ -840,6 +840,17 @@ class CloudMasking:
                            A=self.masking_result.cloud_masking_files[0], B=self.masking_result.cloud_masking_files[1],
                            C=self.masking_result.cloud_masking_files[2], D=self.masking_result.cloud_masking_files[3])
 
+        # five filters are activated
+        if len(self.masking_result.cloud_masking_files) == 5:
+            self.final_cloud_mask_file = os.path.join(self.dockwidget.tmp_dir,
+                                                      "cloud_blended_{}.tif".format(datetime.now().strftime('%H%M%S')))
+            gdal_calc.Calc(calc="A*(A>1)+B*logical_and(A==1,B>1)+C*logical_and(logical_and(A==1,B==1),C>1)"
+                                "+D*logical_and(logical_and(A==1,B==1,C==1),D>1)+E*logical_and(logical_and(A==1,B==1,C==1),D==1)",
+                           outfile=self.final_cloud_mask_file,
+                           A=self.masking_result.cloud_masking_files[0], B=self.masking_result.cloud_masking_files[1],
+                           C=self.masking_result.cloud_masking_files[2], D=self.masking_result.cloud_masking_files[3],
+                           E=self.masking_result.cloud_masking_files[4])
+
         ########################################
         # keep the data outside the shape area as valid data (=1), important for apply several mask
         if (self.dockwidget.checkBox_ShapeSelector.isChecked() and not self.dockwidget.shapeSelector_CutWithShape.isChecked()) or \
