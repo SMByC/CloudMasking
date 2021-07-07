@@ -974,6 +974,9 @@ class CloudMasking:
         layer_node = QgsProject.instance().layerTreeRoot().findLayer(self.cloud_mask_rlayer)
         self.iface.layerTreeView().layerTreeModel().refreshLayerLegend(layer_node)
 
+        # unselect AOI
+        self.dockwidget.checkBox_AOISelector.setChecked(False)
+
     @wait_process
     def fileDialog_exportSimpleMask(self):
         """Open QFileDialog for save mask file
