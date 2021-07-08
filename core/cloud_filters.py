@@ -126,7 +126,7 @@ class CloudMaskingResult(object):
 
         if process_bar:
             update_process_bar(self.process_bar, 24, self.process_status,
-                               self.tr("Clipping the reflective stack..."))
+                               self.tr("Clipping..."))
 
         if os.path.isfile(out_clipped_file):
             os.remove(out_clipped_file)
