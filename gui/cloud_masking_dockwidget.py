@@ -29,7 +29,7 @@ from qgis.core import QgsWkbTypes, QgsFeature, edit, QgsVectorLayer
 from qgis.gui import QgsMapTool, QgsRubberBand, QgsMapToolPan
 from qgis.PyQt.QtGui import QColor
 from qgis.utils import iface
-from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog, QDockWidget
+from qgis.PyQt.QtWidgets import QFileDialog, QDockWidget
 
 # from plugins
 from CloudMasking.core import cloud_masking_utils

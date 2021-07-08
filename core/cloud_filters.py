@@ -23,7 +23,6 @@ import os, sys
 import platform
 import tempfile
 from datetime import datetime
-from pathlib import Path
 from subprocess import call
 
 from osgeo import gdal
@@ -33,7 +32,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QFileInfo
 
 # from plugins
 from CloudMasking.core.utils import get_prefer_name, update_process_bar, binary_combination, check_values_in_image, \
-    get_extent, get_layer_by_name, get_file_path_of_layer, load_layer, unload_layer
+    get_extent, get_layer_by_name, load_layer, unload_layer
 from CloudMasking.libs import gdal_merge, gdal_calc
 
 # adding the libs plugin path

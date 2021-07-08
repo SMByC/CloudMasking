@@ -24,12 +24,11 @@ import shutil
 import tempfile
 from datetime import datetime
 from subprocess import call
-from time import sleep
 from osgeo import gdal
 
-from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot, QObject
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QFileDialog, QListWidgetItem, QSizePolicy
-from qgis.PyQt.QtGui import QIcon, QCursor
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QCheckBox, QGroupBox, QRadioButton
 from qgis.core import QgsProject, QgsRasterLayer, QgsMapLayer, QgsCoordinateTransform, \
     QgsMapLayerProxyModel, QgsVectorFileWriter, Qgis
@@ -75,8 +74,6 @@ class CloudMasking:
 
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
-
-        print("** INITIALIZING CloudMasking")
 
         self.menu_name_plugin = self.tr("&Cloud masking for Landsat products")
         self.pluginIsActive = False
@@ -128,7 +125,6 @@ class CloudMasking:
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed"""
 
-        print("** CLOSING CloudMasking")
         self.removes_temporary_files()
 
         # disconnects
@@ -156,7 +152,6 @@ class CloudMasking:
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
 
-        print("** UNLOAD CloudMasking")
         self.removes_temporary_files()
 
         # Remove the plugin menu item and icon
@@ -1296,7 +1291,6 @@ class CloudMasking:
             self.dockwidget.status_LoadedMTL.setText(self.tr("Cleaning temporal files ..."))
             self.dockwidget.status_LoadedMTL.repaint()
             QApplication.processEvents()
-            sleep(0.3)
 
         # unload MTL file and extent selector
         try:
