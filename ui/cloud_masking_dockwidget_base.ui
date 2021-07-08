@@ -15,6 +15,9 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
     <item row="0" column="1">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
@@ -66,7 +69,7 @@
              <x>0</x>
              <y>0</y>
              <width>908</width>
-             <height>1465</height>
+             <height>1471</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -506,8 +509,8 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-2957</y>
-             <width>887</width>
+             <y>0</y>
+             <width>632</width>
              <height>5419</height>
             </rect>
            </property>
@@ -3632,8 +3635,8 @@ You can add multiple values separated by comma</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>908</width>
-             <height>1465</height>
+             <width>596</width>
+             <height>867</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -4260,34 +4263,6 @@ You can add multiple values separated by comma</string>
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item>
-        <widget class="QPushButton" name="QPBtn_PluginDocs">
-         <property name="font">
-          <font>
-           <pointsize>9</pointsize>
-          </font>
-         </property>
-         <property name="cursor">
-          <cursorShape>WhatsThisCursor</cursorShape>
-         </property>
-         <property name="toolTip">
-          <string>Open the CloudMasking documentation</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">font-size: 9pt;</string>
-         </property>
-         <property name="text">
-          <string>Docs</string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>:/plugins/CloudMasking/icons/about.svg</normaloff>:/plugins/CloudMasking/icons/about.svg</iconset>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item>
         <spacer name="horizontalSpacer_10">
          <property name="orientation">

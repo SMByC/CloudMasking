@@ -91,8 +91,6 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.about_dialog = AboutDialog()
         self.QPBtn_PluginInfo.setText("v{}".format(VERSION))
         self.QPBtn_PluginInfo.clicked.connect(self.about_dialog.show)
-        self.QPBtn_PluginDocs.clicked.connect(
-            lambda: webbrowser.open("https://smbyc.github.io/CloudMasking"))
 
         # find MTL file #########
         self.button_FindMTL.clicked.connect(self.fileDialog_findMTL)
