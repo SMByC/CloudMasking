@@ -46,7 +46,8 @@ def mtl2dict(filename, to_float=True):
             value = key_value[1].strip('"')
 
             # not overwrite these variables
-            if key == "PROCESSING_LEVEL" and "PROCESSING_LEVEL" in mtl:
+            if (key == "PROCESSING_LEVEL" and "PROCESSING_LEVEL" in mtl) or \
+               (key == "FILE_NAME_QUALITY_L1_PIXEL" and "FILE_NAME_QUALITY_L1_PIXEL" in mtl):
                 continue
 
             # storage surface reflectance products (C2) in a different variables

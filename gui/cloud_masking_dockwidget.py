@@ -541,14 +541,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             self.frame_QA_Band_C2.setHidden(True)
         if self.collection == 2:
             self.frame_QA_Band_C2.setVisible(True)
-            if self.processing_level == "L1":
-                self.qabandc2_file = \
-                    get_prefer_name(os.path.join(os.path.dirname(self.mtl_path),
-                                                                 self.mtl_file['FILE_NAME_BAND_1'])).replace("B1.TIF", "QA_PIXEL.TIF")
-            if self.processing_level == "L2":
-                self.qabandc2_file = \
-                    get_prefer_name(os.path.join(os.path.dirname(self.mtl_path),
-                                                                 self.mtl_file['FILE_NAME_BAND_SR_1'])).replace("SR_B1.TIF", "QA_PIXEL.TIF")
+            self.qabandc2_file = os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_QUALITY_L1_PIXEL'])
             if os.path.isfile(self.qabandc2_file):
                 self.checkBox_QABandC2.setEnabled(True)
             else:
