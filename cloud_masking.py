@@ -362,7 +362,8 @@ class CloudMasking:
 
         # create the masking result instance if not exist
         if (not isinstance(self.masking_result, cloud_filters.CloudMaskingResult) or
-                not self.masking_result.landsat_scene == self.dockwidget.mtl_file['LANDSAT_SCENE_ID']):
+                not self.masking_result.landsat_scene == self.dockwidget.mtl_file['LANDSAT_SCENE_ID'] or
+                not self.masking_result.collection == int(self.dockwidget.mtl_file['COLLECTION_NUMBER'])):
             # create a new instance of cloud masking result
             self.masking_result = cloud_filters.CloudMaskingResult(self.dockwidget.mtl_path,
                                                                    self.dockwidget.mtl_file,
