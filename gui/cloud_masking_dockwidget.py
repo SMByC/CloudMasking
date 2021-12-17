@@ -284,7 +284,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         spinbox.setValue(value / float(multiplier))
 
     def update_slider(self, slider, value, multiplier):
-        slider.setValue(int(value * multiplier))
+        slider.setValue(int(round(value * multiplier, 0)))
 
     ### Extent selector widget
     def switchClippingMode(self):
