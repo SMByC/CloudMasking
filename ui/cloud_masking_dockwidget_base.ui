@@ -21,7 +21,7 @@
     <item row="0" column="1">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_OL">
        <attribute name="title">
@@ -69,7 +69,7 @@
              <x>0</x>
              <y>0</y>
              <width>908</width>
-             <height>1471</height>
+             <height>1487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -509,9 +509,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>632</width>
-             <height>5419</height>
+             <y>-3087</y>
+             <width>887</width>
+             <height>4857</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
@@ -658,7 +658,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CloudConfidence_2">
+                         <widget class="QGroupBox" name="groupBox_CloudConfidence_qabandc2">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -673,7 +673,7 @@
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_38">
                            <item>
-                            <widget class="QWidget" name="widget_CloudConfidence_2" native="true">
+                            <widget class="QWidget" name="widget_CloudConfidence_qabandc2" native="true">
                              <layout class="QGridLayout" name="gridLayout_16">
                               <property name="leftMargin">
                                <number>0</number>
@@ -724,7 +724,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CloudShadowConfidence">
+                         <widget class="QGroupBox" name="groupBox_CloudShadowConfidence_qabandc2">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -739,7 +739,7 @@
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_39">
                            <item>
-                            <widget class="QWidget" name="widget_CloudShadowConfidence" native="true">
+                            <widget class="QWidget" name="widget_CloudShadowConfidence_qabandc2" native="true">
                              <layout class="QGridLayout" name="gridLayout_17">
                               <property name="leftMargin">
                                <number>0</number>
@@ -780,7 +780,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_SnowIceConfidence">
+                         <widget class="QGroupBox" name="groupBox_SnowIceConfidence_qabandc2">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -795,7 +795,7 @@
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_40">
                            <item>
-                            <widget class="QWidget" name="widget_SnowIceConfidence" native="true">
+                            <widget class="QWidget" name="widget_SnowIceConfidence_qabandc2" native="true">
                              <layout class="QGridLayout" name="gridLayout_18">
                               <property name="leftMargin">
                                <number>0</number>
@@ -836,7 +836,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_2">
+                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_qabandc2">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -851,7 +851,7 @@
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_41">
                            <item>
-                            <widget class="QWidget" name="widget_CirrusConfidence_2" native="true">
+                            <widget class="QWidget" name="widget_CirrusConfidence_qabandc2" native="true">
                              <layout class="QGridLayout" name="gridLayout_12">
                               <property name="leftMargin">
                                <number>0</number>
@@ -2136,7 +2136,7 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_RadiometricSaturation">
+                         <widget class="QGroupBox" name="groupBox_RadiometricSaturation_qabandl457">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -2151,7 +2151,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_44">
                            <item>
-                            <widget class="QWidget" name="widget_CloudConfidence_3" native="true">
+                            <widget class="QWidget" name="widget_RadiometricSaturation" native="true">
                              <layout class="QGridLayout" name="gridLayout_20">
                               <property name="leftMargin">
                                <number>0</number>
@@ -2234,7 +2234,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_45">
                            <item>
-                            <widget class="QWidget" name="widget_CloudConfidence_4" native="true">
+                            <widget class="QWidget" name="widget_CloudConfidence_qabandl457" native="true">
                              <layout class="QGridLayout" name="gridLayout_21">
                               <property name="leftMargin">
                                <number>0</number>
@@ -2295,7 +2295,7 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_3">
+                         <widget class="QGroupBox" name="groupBox_CloudShadow_qabandl457">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -2310,7 +2310,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_46">
                            <item>
-                            <widget class="QWidget" name="widget_CirrusConfidence_3" native="true">
+                            <widget class="QWidget" name="widget_CloudShadow_qabandl457" native="true">
                              <layout class="QGridLayout" name="gridLayout_22">
                               <property name="leftMargin">
                                <number>0</number>
@@ -2371,7 +2371,7 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_4">
+                         <widget class="QGroupBox" name="groupBox_SnowIce_qabandl457">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -2386,7 +2386,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_47">
                            <item>
-                            <widget class="QWidget" name="widget_CirrusConfidence_4" native="true">
+                            <widget class="QWidget" name="widget_SnowIce_qabandl457" native="true">
                              <layout class="QGridLayout" name="gridLayout_23">
                               <property name="leftMargin">
                                <number>0</number>
@@ -2787,7 +2787,7 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_RadiometricSaturation_2">
+                         <widget class="QGroupBox" name="groupBox_RadiometricSaturation_qabandl8">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -2802,7 +2802,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_50">
                            <item>
-                            <widget class="QWidget" name="widget_CloudConfidence_5" native="true">
+                            <widget class="QWidget" name="widget_RadiometricSaturation_qabandl8" native="true">
                              <layout class="QGridLayout" name="gridLayout_25">
                               <property name="leftMargin">
                                <number>0</number>
@@ -2870,7 +2870,7 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CloudConfidence_4">
+                         <widget class="QGroupBox" name="groupBox_CloudConfidence_qabandl8">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -2885,7 +2885,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_51">
                            <item>
-                            <widget class="QWidget" name="widget_CloudConfidence_6" native="true">
+                            <widget class="QWidget" name="widget_CloudConfidence_qabandl8" native="true">
                              <layout class="QGridLayout" name="gridLayout_26">
                               <property name="leftMargin">
                                <number>0</number>
@@ -2946,7 +2946,7 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_5">
+                         <widget class="QGroupBox" name="groupBox_CloudShadow_qabandl8">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -2961,7 +2961,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_52">
                            <item>
-                            <widget class="QWidget" name="widget_CirrusConfidence_5" native="true">
+                            <widget class="QWidget" name="widget_CloudShadow_qabandl8" native="true">
                              <layout class="QGridLayout" name="gridLayout_27">
                               <property name="leftMargin">
                                <number>0</number>
@@ -3022,7 +3022,7 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_6">
+                         <widget class="QGroupBox" name="groupBox_SnowIce_qabandl8">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -3037,7 +3037,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_53">
                            <item>
-                            <widget class="QWidget" name="widget_CirrusConfidence_6" native="true">
+                            <widget class="QWidget" name="widget_SnowIce_qabandl8" native="true">
                              <layout class="QGridLayout" name="gridLayout_28">
                               <property name="leftMargin">
                                <number>0</number>
@@ -3098,7 +3098,7 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_7">
+                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_qabandl8">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -3113,7 +3113,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_54">
                            <item>
-                            <widget class="QWidget" name="widget_CirrusConfidence_7" native="true">
+                            <widget class="QWidget" name="widget_CirrusConfidence_qabandl8" native="true">
                              <layout class="QGridLayout" name="gridLayout_29">
                               <property name="leftMargin">
                                <number>0</number>
@@ -3635,8 +3635,8 @@ You can add multiple values separated by comma</string>
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>596</width>
-             <height>867</height>
+             <width>908</width>
+             <height>1487</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -4314,7 +4314,7 @@ You can add multiple values separated by comma</string>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgis.gui</header>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -4326,12 +4326,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>131</x>
-     <y>-2541</y>
+     <x>118</x>
+     <y>-2955</y>
     </hint>
     <hint type="destinationlabel">
-     <x>238</x>
-     <y>-1896</y>
+     <x>258</x>
+     <y>-2669</y>
     </hint>
    </hints>
   </connection>
@@ -4342,12 +4342,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>338</x>
-     <y>-1791</y>
+     <x>358</x>
+     <y>-2275</y>
     </hint>
     <hint type="destinationlabel">
-     <x>327</x>
-     <y>-1749</y>
+     <x>347</x>
+     <y>-2238</y>
     </hint>
    </hints>
   </connection>
@@ -4358,12 +4358,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>170</x>
-     <y>-760</y>
+     <x>174</x>
+     <y>-1379</y>
     </hint>
     <hint type="destinationlabel">
-     <x>335</x>
-     <y>-168</y>
+     <x>355</x>
+     <y>-1181</y>
     </hint>
    </hints>
   </connection>
@@ -4374,12 +4374,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>508</x>
-     <y>792</y>
+     <x>390</x>
+     <y>725</y>
     </hint>
     <hint type="destinationlabel">
-     <x>198</x>
-     <y>898</y>
+     <x>131</x>
+     <y>809</y>
     </hint>
    </hints>
   </connection>
@@ -4390,12 +4390,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>451</x>
-     <y>-268</y>
+     <x>483</x>
+     <y>-1030</y>
     </hint>
     <hint type="destinationlabel">
-     <x>616</x>
-     <y>-276</y>
+     <x>656</x>
+     <y>-987</y>
     </hint>
    </hints>
   </connection>
@@ -4406,12 +4406,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>361</x>
-     <y>-408</y>
+     <x>393</x>
+     <y>-1155</y>
     </hint>
     <hint type="destinationlabel">
-     <x>474</x>
-     <y>-416</y>
+     <x>514</x>
+     <y>-1112</y>
     </hint>
    </hints>
   </connection>
@@ -4422,12 +4422,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>461</x>
-     <y>-882</y>
+     <x>493</x>
+     <y>-1579</y>
     </hint>
     <hint type="destinationlabel">
-     <x>525</x>
-     <y>-890</y>
+     <x>565</x>
+     <y>-1536</y>
     </hint>
    </hints>
   </connection>
@@ -4439,11 +4439,11 @@ You can add multiple values separated by comma</string>
    <hints>
     <hint type="sourcelabel">
      <x>884</x>
-     <y>2455</y>
+     <y>1526</y>
     </hint>
     <hint type="destinationlabel">
-     <x>457</x>
-     <y>2633</y>
+     <x>469</x>
+     <y>1641</y>
     </hint>
    </hints>
   </connection>
@@ -4454,12 +4454,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>149</x>
-     <y>2455</y>
+     <x>161</x>
+     <y>1526</y>
     </hint>
     <hint type="destinationlabel">
-     <x>149</x>
-     <y>2545</y>
+     <x>161</x>
+     <y>1563</y>
     </hint>
    </hints>
   </connection>
@@ -4470,12 +4470,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>325</x>
-     <y>792</y>
+     <x>268</x>
+     <y>725</y>
     </hint>
     <hint type="destinationlabel">
-     <x>211</x>
-     <y>844</y>
+     <x>131</x>
+     <y>762</y>
     </hint>
    </hints>
   </connection>
@@ -4486,12 +4486,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>139</x>
-     <y>792</y>
+     <x>131</x>
+     <y>725</y>
     </hint>
     <hint type="destinationlabel">
-     <x>357</x>
-     <y>844</y>
+     <x>131</x>
+     <y>762</y>
     </hint>
    </hints>
   </connection>
@@ -4502,12 +4502,12 @@ You can add multiple values separated by comma</string>
    <slot>setHidden(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>508</x>
-     <y>792</y>
+     <x>390</x>
+     <y>725</y>
     </hint>
     <hint type="destinationlabel">
-     <x>213</x>
-     <y>844</y>
+     <x>131</x>
+     <y>762</y>
     </hint>
    </hints>
   </connection>
@@ -4518,12 +4518,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>310</x>
-     <y>-2076</y>
+     <x>342</x>
+     <y>-2592</y>
     </hint>
     <hint type="destinationlabel">
-     <x>328</x>
-     <y>-2028</y>
+     <x>368</x>
+     <y>-2549</y>
     </hint>
    </hints>
   </connection>
@@ -4534,12 +4534,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>82</x>
-     <y>-1657</y>
+     <x>102</x>
+     <y>-2151</y>
     </hint>
     <hint type="destinationlabel">
-     <x>77</x>
-     <y>-1372</y>
+     <x>97</x>
+     <y>-1953</y>
     </hint>
    </hints>
   </connection>
@@ -4550,12 +4550,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>86</x>
-     <y>-1198</y>
+     <x>106</x>
+     <y>-1772</y>
     </hint>
     <hint type="destinationlabel">
-     <x>80</x>
-     <y>-937</y>
+     <x>100</x>
+     <y>-1574</y>
     </hint>
    </hints>
   </connection>
@@ -4566,12 +4566,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>81</x>
-     <y>1638</y>
+     <x>101</x>
+     <y>794</y>
     </hint>
     <hint type="destinationlabel">
-     <x>88</x>
-     <y>2043</y>
+     <x>108</x>
+     <y>1111</y>
     </hint>
    </hints>
   </connection>
@@ -4582,12 +4582,12 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>93</x>
-     <y>-131</y>
+     <x>113</x>
+     <y>-799</y>
     </hint>
     <hint type="destinationlabel">
-     <x>38</x>
-     <y>505</y>
+     <x>58</x>
+     <y>-459</y>
     </hint>
    </hints>
   </connection>
@@ -4598,12 +4598,220 @@ You can add multiple values separated by comma</string>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>681</y>
+     <x>139</x>
+     <y>-50</y>
     </hint>
     <hint type="destinationlabel">
-     <x>123</x>
-     <y>703</y>
+     <x>143</x>
+     <y>675</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_RadiometricSaturation_qabandl457</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_RadiometricSaturation</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>333</x>
+     <y>-668</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>457</x>
+     <y>-633</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_CloudConfidence_3</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_CloudConfidence_qabandl457</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>361</x>
+     <y>-513</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>456</x>
+     <y>-476</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_CloudShadow_qabandl457</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_CloudShadow_qabandl457</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>348</x>
+     <y>-382</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>456</x>
+     <y>-349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_SnowIce_qabandl457</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_SnowIce_qabandl457</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>-262</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>457</x>
+     <y>-223</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_RadiometricSaturation_qabandl8</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_RadiometricSaturation_qabandl8</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>427</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>457</x>
+     <y>83</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_CloudConfidence_qabandl8</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_CloudConfidence_qabandl8</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>421</x>
+     <y>216</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>454</x>
+     <y>247</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_CloudShadow_qabandl8</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_CloudShadow_qabandl8</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>404</x>
+     <y>340</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>453</x>
+     <y>364</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_SnowIce_qabandl8</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_SnowIce_qabandl8</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>395</x>
+     <y>462</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>454</x>
+     <y>501</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_CirrusConfidence_qabandl8</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_CirrusConfidence_qabandl8</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>355</x>
+     <y>590</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>454</x>
+     <y>616</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_CloudConfidence_qabandc2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_CloudConfidence_qabandc2</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>408</x>
+     <y>1078</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>591</x>
+     <y>1106</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_CloudShadowConfidence_qabandc2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_CloudShadowConfidence_qabandc2</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>446</x>
+     <y>1167</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>454</x>
+     <y>1195</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_SnowIceConfidence_qabandc2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_SnowIceConfidence_qabandc2</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>376</x>
+     <y>1254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>453</x>
+     <y>1288</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_CirrusConfidence_qabandc2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget_CirrusConfidence_qabandc2</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>420</x>
+     <y>1343</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>453</x>
+     <y>1373</y>
     </hint>
    </hints>
   </connection>

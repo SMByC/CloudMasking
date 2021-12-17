@@ -215,12 +215,26 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.QABandC1L8_FileStatus.setVisible(False)
         self.checkBox_QABandC1L8.setChecked(False)
         self.widget_QABandC1L8.setHidden(True)
+        self.groupBox_RadiometricSaturation_qabandl457.setHidden(True)
+        self.widget_CloudConfidence_qabandl457.setHidden(True)
+        self.widget_CloudShadow_qabandl457.setHidden(True)
+        self.widget_SnowIce_qabandl457.setHidden(True)
+        # QA Band C1 L8 filter #########
+        self.widget_RadiometricSaturation_qabandl8.setHidden(True)
+        self.widget_CloudConfidence_qabandl8.setHidden(True)
+        self.widget_CloudShadow_qabandl8.setHidden(True)
+        self.widget_SnowIce_qabandl8.setHidden(True)
+        self.widget_CirrusConfidence_qabandl8.setHidden(True)
 
         # QA Band C2 filter #########
         # start hidden
         self.QABandC2_FileStatus.setVisible(False)
         self.checkBox_QABandC2.setChecked(False)
         self.widget_QABandC2.setHidden(True)
+        self.widget_CloudConfidence_qabandc2.setHidden(True)
+        self.widget_CloudShadowConfidence_qabandc2.setHidden(True)
+        self.widget_SnowIceConfidence_qabandc2.setHidden(True)
+        self.widget_CirrusConfidence_qabandc2.setHidden(True)
 
         # Generate the cloud mask #########
         # shape and selected area start hidden
@@ -270,7 +284,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         spinbox.setValue(value / float(multiplier))
 
     def update_slider(self, slider, value, multiplier):
-        slider.setValue(value * multiplier)
+        slider.setValue(int(value * multiplier))
 
     ### Extent selector widget
     def switchClippingMode(self):
