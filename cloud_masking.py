@@ -996,7 +996,7 @@ class CloudMasking:
             call(" ".join(cmd), shell=True)
 
             cmd = ['gdal_calc' if platform.system() == 'Windows' else 'gdal_calc.py', '--quiet', '--overwrite',
-                   '--calc "1*(A==1)+0*(A!=1)"', '-A {}'.format(mask_inpath), '--outfile "{}"'.format(mask_outpath),
+                   '--calc "1*(A==1)+0*(A!=1)"', '-A "{}"'.format(mask_inpath), '--outfile "{}"'.format(mask_outpath),
                    '--type="Byte"', '--co COMPRESS=PACKBITS']
             return_code = call(" ".join(cmd), shell=True)
             if return_code != 0:

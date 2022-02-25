@@ -201,7 +201,7 @@ class CloudMaskingResult(object):
         band_from_mask = self.clip(band_1, os.path.join(self.tmp_dir, "band_from_mask.tif"), process_bar=False)
 
         cmd = ['gdal_calc' if platform.system() == 'Windows' else 'gdal_calc.py', '--quiet', '--overwrite',
-               '--calc "A*(B>0)+255*logical_or(B==0,A==0)"', '-A {}'.format(img_to_mask), '-B {}'.format(band_from_mask),
+               '--calc "A*(B>0)+255*logical_or(B==0,A==0)"', '-A "{}"'.format(img_to_mask), '-B "{}"'.format(band_from_mask),
                '--outfile "{}"'.format(img_to_mask)]
         call(" ".join(cmd), shell=True)
 
@@ -430,7 +430,7 @@ class CloudMaskingResult(object):
         # do blue band filter
         cmd = ['gdal_calc' if platform.system() == 'Windows' else 'gdal_calc.py', '--quiet', '--overwrite',
                '--calc "1*(A<{threshold})+6*(A>={threshold})"'.format(threshold=bb_threshold),
-               '-A {}'.format(self.blue_band_for_process), '--outfile "{}"'.format(self.cloud_bb_file),
+               '-A "{}"'.format(self.blue_band_for_process), '--outfile "{}"'.format(self.cloud_bb_file),
                '--type="Byte"', '--co COMPRESS=PACKBITS']
         call(" ".join(cmd), shell=True)
 
