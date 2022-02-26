@@ -265,6 +265,7 @@ def doPotentialCloudFirstPass(fmaskFilenames, fmaskConfig, missingThermal):
     controls.setWindowYsize(RIOS_WINDOW_SIZE)
     controls.setReferenceImage(infiles.toaref)
     controls.setCalcStats(False)
+    controls.setOmitPyramids(True)
 
     otherargs.refBands = fmaskConfig.bands  
     otherargs.thermalInfo = fmaskConfig.thermalInfo
@@ -595,6 +596,7 @@ def doPotentialCloudSecondPass(fmaskFilenames, fmaskConfig, pass1file,
     controls.setWindowYsize(RIOS_WINDOW_SIZE)
     controls.setReferenceImage(fmaskFilenames.toaRef)
     controls.setCalcStats(False)
+    controls.setOmitPyramids(True)
     
     applier.apply(potentialCloudSecondPass, infiles, outfiles, otherargs, controls=controls)
     
@@ -713,6 +715,7 @@ def doCloudLayerFinalPass(fmaskFilenames, fmaskConfig, pass1file, pass2file,
     controls.setWindowYsize(RIOS_WINDOW_SIZE)
     controls.setReferenceImage(pass1file)
     controls.setCalcStats(False)
+    controls.setOmitPyramids(True)
     
     applier.apply(cloudFinalPass, infiles, outfiles, otherargs, controls=controls)
     
@@ -885,6 +888,7 @@ def make3Dclouds(fmaskFilenames, fmaskConfig, clumps, numClumps, missingThermal)
     controls.setWindowYsize(nRows)
     controls.setReferencePixgrid(referencePixgrid)
     controls.setCalcStats(False)
+    controls.setOmitPyramids(True)
     
     applier.apply(cloudShapeFunc, infiles, outfiles, otherargs, controls=controls)
     
@@ -1327,7 +1331,9 @@ def finalizeAll(fmaskFilenames, fmaskConfig, interimCloudmask, interimShadowmask
     controls.setWindowXsize(RIOS_WINDOW_SIZE)
     controls.setWindowYsize(RIOS_WINDOW_SIZE)
     controls.setOutputDriverName(fmaskConfig.gdalDriverName)
-    
+    controls.setCalcStats(False)
+    controls.setOmitPyramids(True)
+
     if fmaskConfig.cloudBufferSize > 0:
         otherargs.bufferkernel = makeBufferKernel(fmaskConfig.cloudBufferSize)
 

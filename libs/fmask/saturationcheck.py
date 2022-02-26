@@ -58,6 +58,9 @@ def makeSaturationMask(fmaskConfig, radiancefile, outMask):
     otherargs.radianceBands = fmaskConfig.bands
     
     controls = applier.ApplierControls()
+    controls.setCalcStats(False)
+    controls.setOmitPyramids(True)
+
     controls.progress = cuiprogress.GDALProgressBar()
     
     applier.apply(riosSaturationMask, inputs, outputs, 

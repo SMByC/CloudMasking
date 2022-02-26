@@ -16,12 +16,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 from __future__ import print_function, division
 
-import os
 import numpy
 
-# Fail slightly less drastically when running from ReadTheDocs
-if os.getenv('READTHEDOCS', default='False') != 'True':
-    from . import _valueindexes
+# load _valueindexes
+from CloudMasking.libs.fmask import _valueindexes
 
 
 class ValueIndexesError(Exception):

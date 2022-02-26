@@ -338,6 +338,8 @@ def makeAnglesImage(templateimg, outfile, nadirLine, extentSunAngles, satAzimuth
     otherargs.satAzimuth = satAzimuth
     otherargs.radianScale = 100        # Store pixel values as (radians * radianScale)
     controls.setStatsIgnore(500)
+    controls.setCalcStats(False)
+    controls.setOmitPyramids(True)
 
     applier.apply(makeAngles, infiles, outfiles, otherargs, controls=controls)
 

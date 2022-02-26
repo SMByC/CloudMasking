@@ -28,13 +28,11 @@ represent potential shadow objects.
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import os
 import numpy
 from scipy.ndimage import grey_dilation
 
-# Fail slightly less drastically when running from ReadTheDocs
-if os.getenv('READTHEDOCS', default='False') != 'True':
-    from . import _fillminima
+# load _fillminima
+from CloudMasking.libs.fmask import _fillminima
 
 
 def fillMinima(img, nullval, boundaryval):
