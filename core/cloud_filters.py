@@ -96,7 +96,7 @@ class CloudMaskingResult(object):
                 for N in [1, 2]]
 
         # set bands for reflective and thermal
-        if self.landsat_version == 8:
+        if self.landsat_version in [8, 9]:
             # get the reflective file names bands
             self.reflective_bands = [
                 os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_'+str(N)])
@@ -290,8 +290,8 @@ class CloudMaskingResult(object):
             sensor = config.FMASK_LANDSAT47
         elif self.landsat_version == 7:
             sensor = config.FMASK_LANDSAT47
-        elif self.landsat_version == 8:
-            sensor = config.FMASK_LANDSAT8
+        elif self.landsat_version in [8, 9]:
+            sensor = config.FMASK_LANDSATOLI
 
         # needed so the saturation function knows which
         # bands are visible etc.
@@ -338,8 +338,8 @@ class CloudMaskingResult(object):
             sensor = config.FMASK_LANDSAT47
         elif self.landsat_version == 7:
             sensor = config.FMASK_LANDSAT47
-        elif self.landsat_version == 8:
-            sensor = config.FMASK_LANDSAT8
+        elif self.landsat_version in [8, 9]:
+            sensor = config.FMASK_LANDSATOLI
 
         fmaskFilenames = config.FmaskFilenames()
         fmaskFilenames.setTOAReflectanceFile(self.toa_file)
@@ -413,7 +413,7 @@ class CloudMaskingResult(object):
             self.blue_band_file = get_prefer_name(self.blue_band_file)
             if not os.path.exists(self.blue_band_file):
                 self.blue_band_file = os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_SR_1'])
-        if self.landsat_version in [8]:
+        if self.landsat_version in [8, 9]:
             # get the reflective file names bands
             self.blue_band_file = os.path.join(self.input_dir, self.mtl_file['FILE_NAME_BAND_2'])
             # fix file name
@@ -497,7 +497,7 @@ class CloudMaskingResult(object):
         update_process_bar(self.process_bar, 100, self.process_status,
                            self.tr("DONE"))
 
-    def do_aerosol_l8(self, aerosol_file, checked_items, specific_values=[]):
+    def do_aerosol_l89(self, aerosol_file, checked_items, specific_values=[]):
         # tmp file for cloud
         self.aerosol = os.path.join(self.tmp_dir, "aerosol_{}.tif".format(datetime.now().strftime('%H%M%S')))
         update_process_bar(self.process_bar, 50, self.process_status,
@@ -588,13 +588,13 @@ class CloudMaskingResult(object):
         # bits not used or not fill
         if self.landsat_version in [4, 5, 7]:
             static_bits = [0, 1, 8, 9, 10, 11, 12, 13, 14, 15]
-        if self.landsat_version in [8]:
+        if self.landsat_version in [8, 9]:
             static_bits = [0, 1, 11, 12, 13, 14, 15]
 
         # generate the values combinations for one bit items selected
         pixel_qa_items_1b = {"Water (bit 2)": [2], "Cloud Shadow (bit 3)": [3],
                              "Snow (bit 4)": [4], "Cloud (bit 5)": [5]}
-        if self.landsat_version in [8]:  # add to L8
+        if self.landsat_version in [8, 9]:  # add to L89
             pixel_qa_items_1b["Terrain Occlusion (bit 10)"] = [10]
 
         for item, bits in pixel_qa_items_1b.items():
@@ -606,7 +606,7 @@ class CloudMaskingResult(object):
         # generate the values combinations for two bits items selected
         if self.landsat_version in [4, 5, 7]:
             pixel_qa_items_2b = {"Cloud Confidence (bits 6-7)": [6, 7]}
-        if self.landsat_version in [8]:
+        if self.landsat_version in [8, 9]:
             pixel_qa_items_2b = {"Cloud Confidence (bits 6-7)": [6, 7], "Cirrus Confidence (bits 8-9)": [8, 9]}
         levels = {"0% None": [0, 0], "0-33% Low": [0, 1],
                   "34-66% Medium": [1, 0], "67-100% High": [1, 1]}
@@ -734,7 +734,7 @@ class CloudMaskingResult(object):
         update_process_bar(self.process_bar, 100, self.process_status,
                            self.tr("DONE"))
 
-    def do_qaband_c1_l8(self, qabandc1_file, checked_items, specific_values=[]):
+    def do_qaband_c1_l89(self, qabandc1_file, checked_items, specific_values=[]):
         """
         http://landsat.usgs.gov/qualityband.php
         """

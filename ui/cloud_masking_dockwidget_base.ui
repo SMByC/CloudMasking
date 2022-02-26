@@ -2489,7 +2489,7 @@ You can add multiple values separated by comma</string>
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QFrame" name="frame_Aerosol_L8">
+                <widget class="QFrame" name="frame_Aerosol_L89">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
@@ -2543,7 +2543,7 @@ You can add multiple values separated by comma</string>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QWidget" name="widget_Aerosol_L8" native="true">
+                   <widget class="QWidget" name="widget_Aerosol_L89" native="true">
                     <layout class="QVBoxLayout" name="verticalLayout_21">
                      <item>
                       <widget class="QLabel" name="label_18">
@@ -2681,7 +2681,7 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="Aerosol_L8_svalues">
+                         <widget class="QLineEdit" name="Aerosol_L89_svalues">
                           <property name="toolTip">
                            <string>Enter specific values for Cloud QA filters in decimal format. 
 You can add multiple values separated by comma</string>
@@ -2698,7 +2698,7 @@ You can add multiple values separated by comma</string>
                 </widget>
                </item>
                <item row="6" column="1">
-                <widget class="QFrame" name="frame_QA_Band_C1_L8">
+                <widget class="QFrame" name="frame_QA_Band_C1_L89">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
@@ -2722,7 +2722,7 @@ You can add multiple values separated by comma</string>
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QCheckBox" name="checkBox_QABandC1L8">
+                      <widget class="QCheckBox" name="checkBox_QABandC1L89">
                        <property name="font">
                         <font>
                          <weight>50</weight>
@@ -2730,12 +2730,12 @@ You can add multiple values separated by comma</string>
                         </font>
                        </property>
                        <property name="text">
-                        <string>QA Band (C1) (L8)</string>
+                        <string>QA Band (C1) (L89)</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QLabel" name="QABandC1L8_FileStatus">
+                      <widget class="QLabel" name="QABandC1L89_FileStatus">
                        <property name="text">
                         <string>(file not found)</string>
                        </property>
@@ -2758,7 +2758,7 @@ You can add multiple values separated by comma</string>
                    </widget>
                   </item>
                   <item row="2" column="0">
-                   <widget class="QWidget" name="widget_QABandC1L8" native="true">
+                   <widget class="QWidget" name="widget_QABandC1L89" native="true">
                     <layout class="QVBoxLayout" name="verticalLayout_48">
                      <item>
                       <widget class="QLabel" name="label_36">
@@ -2771,7 +2771,7 @@ You can add multiple values separated by comma</string>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QWidget" name="widget_QABandC1L8_bits" native="true">
+                      <widget class="QWidget" name="widget_QABandC1L89_bits" native="true">
                        <layout class="QVBoxLayout" name="verticalLayout_49">
                         <property name="topMargin">
                          <number>0</number>
@@ -2787,7 +2787,7 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_RadiometricSaturation_qabandl8">
+                         <widget class="QGroupBox" name="groupBox_RadiometricSaturation_qabandl89">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -2802,7 +2802,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_50">
                            <item>
-                            <widget class="QWidget" name="widget_RadiometricSaturation_qabandl8" native="true">
+                            <widget class="QWidget" name="widget_RadiometricSaturation_qabandl89" native="true">
                              <layout class="QGridLayout" name="gridLayout_25">
                               <property name="leftMargin">
                                <number>0</number>
@@ -2870,7 +2870,7 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CloudConfidence_qabandl8">
+                         <widget class="QGroupBox" name="groupBox_CloudConfidence_qabandl89">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -2885,7 +2885,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_51">
                            <item>
-                            <widget class="QWidget" name="widget_CloudConfidence_qabandl8" native="true">
+                            <widget class="QWidget" name="widget_CloudConfidence_qabandl89" native="true">
                              <layout class="QGridLayout" name="gridLayout_26">
                               <property name="leftMargin">
                                <number>0</number>
@@ -2946,7 +2946,7 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CloudShadow_qabandl8">
+                         <widget class="QGroupBox" name="groupBox_CloudShadow_qabandl89">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -2961,7 +2961,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_52">
                            <item>
-                            <widget class="QWidget" name="widget_CloudShadow_qabandl8" native="true">
+                            <widget class="QWidget" name="widget_CloudShadow_qabandl89" native="true">
                              <layout class="QGridLayout" name="gridLayout_27">
                               <property name="leftMargin">
                                <number>0</number>
@@ -3022,7 +3022,7 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_SnowIce_qabandl8">
+                         <widget class="QGroupBox" name="groupBox_SnowIce_qabandl89">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -3037,7 +3037,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_53">
                            <item>
-                            <widget class="QWidget" name="widget_SnowIce_qabandl8" native="true">
+                            <widget class="QWidget" name="widget_SnowIce_qabandl89" native="true">
                              <layout class="QGridLayout" name="gridLayout_28">
                               <property name="leftMargin">
                                <number>0</number>
@@ -3098,7 +3098,7 @@ You can add multiple values separated by comma</string>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_qabandl8">
+                         <widget class="QGroupBox" name="groupBox_CirrusConfidence_qabandl89">
                           <property name="styleSheet">
                            <string notr="true">font-weight:normal;</string>
                           </property>
@@ -3113,7 +3113,7 @@ You can add multiple values separated by comma</string>
                           </property>
                           <layout class="QVBoxLayout" name="verticalLayout_54">
                            <item>
-                            <widget class="QWidget" name="widget_CirrusConfidence_qabandl8" native="true">
+                            <widget class="QWidget" name="widget_CirrusConfidence_qabandl89" native="true">
                              <layout class="QGridLayout" name="gridLayout_29">
                               <property name="leftMargin">
                                <number>0</number>
@@ -3196,7 +3196,7 @@ You can add multiple values separated by comma</string>
                             </widget>
                            </item>
                            <item>
-                            <widget class="QLineEdit" name="QABandC1L8_svalues">
+                            <widget class="QLineEdit" name="QABandC1L89_svalues">
                              <property name="toolTip">
                               <string>Enter specific values for QA Band filters in decimal format. 
 You can add multiple values separated by comma</string>
@@ -4546,7 +4546,7 @@ You can add multiple values separated by comma</string>
   <connection>
    <sender>checkBox_Aerosol</sender>
    <signal>clicked(bool)</signal>
-   <receiver>widget_Aerosol_L8</receiver>
+   <receiver>widget_Aerosol_L89</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -4592,9 +4592,9 @@ You can add multiple values separated by comma</string>
    </hints>
   </connection>
   <connection>
-   <sender>checkBox_QABandC1L8</sender>
+   <sender>checkBox_QABandC1L89</sender>
    <signal>clicked(bool)</signal>
-   <receiver>widget_QABandC1L8</receiver>
+   <receiver>widget_QABandC1L89</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -4672,9 +4672,9 @@ You can add multiple values separated by comma</string>
    </hints>
   </connection>
   <connection>
-   <sender>groupBox_RadiometricSaturation_qabandl8</sender>
+   <sender>groupBox_RadiometricSaturation_qabandl89</sender>
    <signal>clicked(bool)</signal>
-   <receiver>widget_RadiometricSaturation_qabandl8</receiver>
+   <receiver>widget_RadiometricSaturation_qabandl89</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -4688,9 +4688,9 @@ You can add multiple values separated by comma</string>
    </hints>
   </connection>
   <connection>
-   <sender>groupBox_CloudConfidence_qabandl8</sender>
+   <sender>groupBox_CloudConfidence_qabandl89</sender>
    <signal>clicked(bool)</signal>
-   <receiver>widget_CloudConfidence_qabandl8</receiver>
+   <receiver>widget_CloudConfidence_qabandl89</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -4704,9 +4704,9 @@ You can add multiple values separated by comma</string>
    </hints>
   </connection>
   <connection>
-   <sender>groupBox_CloudShadow_qabandl8</sender>
+   <sender>groupBox_CloudShadow_qabandl89</sender>
    <signal>clicked(bool)</signal>
-   <receiver>widget_CloudShadow_qabandl8</receiver>
+   <receiver>widget_CloudShadow_qabandl89</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -4720,9 +4720,9 @@ You can add multiple values separated by comma</string>
    </hints>
   </connection>
   <connection>
-   <sender>groupBox_SnowIce_qabandl8</sender>
+   <sender>groupBox_SnowIce_qabandl89</sender>
    <signal>clicked(bool)</signal>
-   <receiver>widget_SnowIce_qabandl8</receiver>
+   <receiver>widget_SnowIce_qabandl89</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -4736,9 +4736,9 @@ You can add multiple values separated by comma</string>
    </hints>
   </connection>
   <connection>
-   <sender>groupBox_CirrusConfidence_qabandl8</sender>
+   <sender>groupBox_CirrusConfidence_qabandl89</sender>
    <signal>clicked(bool)</signal>
-   <receiver>widget_CirrusConfidence_qabandl8</receiver>
+   <receiver>widget_CirrusConfidence_qabandl89</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">

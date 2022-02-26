@@ -298,7 +298,7 @@ class CloudMasking:
             if color_type == "infrareds":
                 bands = [4, 5, 7]
         # select the bands for color stack for Landsat 8
-        if self.dockwidget.landsat_version == 8:
+        if self.dockwidget.landsat_version in [8, 9]:
             if color_type == "natural_color":
                 bands = [4, 3, 2]
             if color_type == "false_color":
@@ -354,7 +354,7 @@ class CloudMasking:
                 not self.dockwidget.checkBox_Aerosol.isChecked() and
                 not self.dockwidget.checkBox_PixelQA.isChecked() and
                 not self.dockwidget.checkBox_QABandC1L457.isChecked() and
-                not self.dockwidget.checkBox_QABandC1L8.isChecked() and
+                not self.dockwidget.checkBox_QABandC1L89.isChecked() and
                 not self.dockwidget.checkBox_QABandC2.isChecked()):
             self.dockwidget.status_processMask.setText(
                 self.tr("Error: no filters enabled for apply"))
@@ -512,10 +512,10 @@ class CloudMasking:
             enable_symbology[5] = True
 
         ########################################
-        # Aerosol L8 filter
+        # Aerosol L89 filter
 
         if self.dockwidget.checkBox_Aerosol.isChecked():
-            if self.dockwidget.landsat_version in [8]:
+            if self.dockwidget.landsat_version in [8, 9]:
                 checked_items = {}
 
                 # one bit items selected
@@ -543,7 +543,7 @@ class CloudMasking:
 
                 # set and check the specific decimal values
                 try:
-                    aerosol_svalues = self.dockwidget.Aerosol_L8_svalues.text()
+                    aerosol_svalues = self.dockwidget.Aerosol_L89_svalues.text()
                     if aerosol_svalues:
                         aerosol_svalues = [int(sv) for sv in aerosol_svalues.split(",")]
                     else:
@@ -559,7 +559,7 @@ class CloudMasking:
                         self.tr("Error: no filters selected in Aerosol"))
                     return
 
-                self.masking_result.do_aerosol_l8(self.dockwidget.aerosol_file, checked_items, aerosol_svalues)
+                self.masking_result.do_aerosol_l89(self.dockwidget.aerosol_file, checked_items, aerosol_svalues)
 
             enable_symbology[6] = True
 
@@ -573,7 +573,7 @@ class CloudMasking:
             if self.dockwidget.landsat_version in [4, 5, 7]:
                 pixel_qa_items_1b = ["Fill-nodata (bit 0)", "Water (bit 2)", "Cloud Shadow (bit 3)",
                                      "Snow (bit 4)", "Cloud (bit 5)"]
-            if self.dockwidget.landsat_version in [8]:
+            if self.dockwidget.landsat_version in [8, 9]:
                 pixel_qa_items_1b = ["Fill-nodata (bit 0)", "Water (bit 2)", "Cloud Shadow (bit 3)",
                                      "Snow (bit 4)", "Cloud (bit 5)", "Terrain Occlusion (bit 10)"]
             for checkbox in self.dockwidget.widget_PixelQA_bits.findChildren(QCheckBox):
@@ -584,7 +584,7 @@ class CloudMasking:
             # two bits items selected
             if self.dockwidget.landsat_version in [4, 5, 7]:
                 pixel_qa_items_2b = ["Cloud Confidence (bits 6-7)"]
-            if self.dockwidget.landsat_version in [8]:
+            if self.dockwidget.landsat_version in [8, 9]:
                 pixel_qa_items_2b = ["Cloud Confidence (bits 6-7)", "Cirrus Confidence (bits 8-9)"]
             levels = ["0% None", "0-33% Low", "34-66% Medium", "67-100% High"]
 
@@ -689,15 +689,15 @@ class CloudMasking:
             enable_symbology[8] = True
 
         ########################################
-        # QA Band C1 filter L8
+        # QA Band C1 filter L89
 
-        if self.dockwidget.checkBox_QABandC1L8.isChecked():
-            if self.dockwidget.landsat_version in [8]:
+        if self.dockwidget.checkBox_QABandC1L89.isChecked():
+            if self.dockwidget.landsat_version in [8, 9]:
                 checked_items = {}
 
                 # one bit items selected
                 qaband_items_1b = ["Terrain Occlusion (bit 1)", "Cloud (bit 4)"]
-                for checkbox in self.dockwidget.widget_QABandC1L8_bits.findChildren(QCheckBox):
+                for checkbox in self.dockwidget.widget_QABandC1L89_bits.findChildren(QCheckBox):
                     item = checkbox.text().replace("&", "")
                     if item in qaband_items_1b:
                         checked_items[item] = checkbox.isChecked()
@@ -706,7 +706,7 @@ class CloudMasking:
                 qaband_items_2b = ["Radiometric Saturation (bits 2-3)"]
                 levels = ["No bands saturated", "1 to 2 bands saturated", "3 to 4 bands saturated", "> 4 bands saturated"]
 
-                for groupbox in self.dockwidget.widget_QABandC1L8_bits.findChildren(QGroupBox):
+                for groupbox in self.dockwidget.widget_QABandC1L89_bits.findChildren(QGroupBox):
                     group_item = groupbox.title().replace("&", "")
                     if group_item in qaband_items_2b and groupbox.isChecked():
                         levels_selected = []
@@ -722,7 +722,7 @@ class CloudMasking:
                                    "Snow/Ice (bits 9-10)", "Cirrus Confidence (bits 11-12)"]
                 levels = ["0% None", "0-33% Low", "34-66% Medium", "67-100% High"]
 
-                for groupbox in self.dockwidget.widget_QABandC1L8_bits.findChildren(QGroupBox):
+                for groupbox in self.dockwidget.widget_QABandC1L89_bits.findChildren(QGroupBox):
                     group_item = groupbox.title().replace("&", "")
                     if group_item in qaband_items_2b and groupbox.isChecked():
                         levels_selected = []
@@ -735,7 +735,7 @@ class CloudMasking:
 
                 # set and check the specific decimal values
                 try:
-                    qaband_svalues = self.dockwidget.QABandC1L8_svalues.text()
+                    qaband_svalues = self.dockwidget.QABandC1L89_svalues.text()
                     if qaband_svalues:
                         qaband_svalues = [int(sv) for sv in qaband_svalues.split(",")]
                     else:
@@ -751,7 +751,7 @@ class CloudMasking:
                         self.tr("Error: no filters selected in QA Band"))
                     return
 
-                self.masking_result.do_qaband_c1_l8(self.dockwidget.qabandc1_file_l8, checked_items, qaband_svalues)
+                self.masking_result.do_qaband_c1_l89(self.dockwidget.qabandc1_file_l89, checked_items, qaband_svalues)
 
             enable_symbology[8] = True
 
@@ -759,7 +759,7 @@ class CloudMasking:
         # QA Band C2 filter
 
         if self.dockwidget.checkBox_QABandC2.isChecked():
-            if self.dockwidget.landsat_version in [4, 5, 7, 8]:
+            if self.dockwidget.landsat_version in [4, 5, 7, 8, 9]:
                 checked_items = {}
 
                 # one bit items selected
@@ -935,7 +935,7 @@ class CloudMasking:
                 os.remove(self.masking_result.pixel_qa_clip_file)
         # from QA Band
         if self.dockwidget.checkBox_QABandC1L457.isChecked() or \
-            self.dockwidget.checkBox_QABandC1L8.isChecked() or \
+            self.dockwidget.checkBox_QABandC1L89.isChecked() or \
             self.dockwidget.checkBox_QABandC2.isChecked():
             if os.path.isfile(self.masking_result.qaband_clip_file):
                 os.remove(self.masking_result.qaband_clip_file)

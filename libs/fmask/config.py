@@ -504,7 +504,7 @@ LANDSAT_TH_BAND_NUM_DICT = {'LANDSAT_4' : '6',
                         
 
 # for some reason L4, 5, and 7 don't
-# have these numbers in the mtl file, but L8 does
+# have these numbers in the mtl file, but L89 does
 # from http://www.yale.edu/ceo/Documentation/Landsat_DN_to_Kelvin.pdf
 LANDSAT_K1_DICT = {'TM' : 607.76, 'ETM' : 666.09, 'ETM+':666.09}
 LANDSAT_K2_DICT = {'TM' : 1260.56, 'ETM' : 1282.71, 'ETM+':1282.71}

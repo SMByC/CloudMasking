@@ -61,7 +61,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
     green_snow_thresh = 0.1
     # Blue Band by default
     bb_threshold_L457 = 110  # for L4, L5 and L7
-    bb_threshold_L8 = 14000  # for L8
+    bb_threshold_L89 = 14000  # for L89
 
     closingPlugin = pyqtSignal()
 
@@ -188,11 +188,11 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.widget_CloudQA_L457.setHidden(True)
         self.checkBox_CloudQA.setChecked(False)
 
-        # Aerosol L8 filter #########
+        # Aerosol L89 filter #########
         # start hidden
-        self.frame_Aerosol_L8.setHidden(True)
+        self.frame_Aerosol_L89.setHidden(True)
         self.label_Aerosol_FileStatus.setHidden(True)
-        self.widget_Aerosol_L8.setHidden(True)
+        self.widget_Aerosol_L89.setHidden(True)
         self.widget_Aerosol_Content.setHidden(True)
         self.checkBox_Aerosol.setChecked(False)
 
@@ -212,19 +212,19 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.QABandC1L457_FileStatus.setVisible(False)
         self.checkBox_QABandC1L457.setChecked(False)
         self.widget_QABandC1L457.setHidden(True)
-        self.QABandC1L8_FileStatus.setVisible(False)
-        self.checkBox_QABandC1L8.setChecked(False)
-        self.widget_QABandC1L8.setHidden(True)
+        self.QABandC1L89_FileStatus.setVisible(False)
+        self.checkBox_QABandC1L89.setChecked(False)
+        self.widget_QABandC1L89.setHidden(True)
         self.groupBox_RadiometricSaturation_qabandl457.setHidden(True)
         self.widget_CloudConfidence_qabandl457.setHidden(True)
         self.widget_CloudShadow_qabandl457.setHidden(True)
         self.widget_SnowIce_qabandl457.setHidden(True)
-        # QA Band C1 L8 filter #########
-        self.widget_RadiometricSaturation_qabandl8.setHidden(True)
-        self.widget_CloudConfidence_qabandl8.setHidden(True)
-        self.widget_CloudShadow_qabandl8.setHidden(True)
-        self.widget_SnowIce_qabandl8.setHidden(True)
-        self.widget_CirrusConfidence_qabandl8.setHidden(True)
+        # QA Band C1 L89 filter #########
+        self.widget_RadiometricSaturation_qabandl89.setHidden(True)
+        self.widget_CloudConfidence_qabandl89.setHidden(True)
+        self.widget_CloudShadow_qabandl89.setHidden(True)
+        self.widget_SnowIce_qabandl89.setHidden(True)
+        self.widget_CirrusConfidence_qabandl89.setHidden(True)
 
         # QA Band C2 filter #########
         # start hidden
@@ -359,7 +359,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             reflective_and_thermal_bands += [
                 os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_6_VCID_' + str(N)])
                 for N in [1, 2]]
-        if self.landsat_version in [8]:
+        if self.landsat_version in [8, 9]:
             # get the reflective file names bands
             reflective_and_thermal_bands = [
                 os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_' + str(N)])
@@ -406,7 +406,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         #### set reflectance bands
         if self.landsat_version in [4, 5, 7]:
             self.reflectance_bands = [1, 2, 3, 4, 5, 7]
-        if self.landsat_version in [8]:
+        if self.landsat_version in [8, 9]:
             self.reflectance_bands = [2, 3, 4, 5, 6, 7]
 
         #### set items to RGB combobox
@@ -424,11 +424,11 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             self.horizontalSlider_BB.setValue(self.bb_threshold_L457)
             self.doubleSpinBox_BB.setMaximum(255)
             self.doubleSpinBox_BB.setValue(self.bb_threshold_L457)
-        if self.landsat_version in [8]:
+        if self.landsat_version in [8, 9]:
             self.horizontalSlider_BB.setMaximum(40000)
-            self.horizontalSlider_BB.setValue(self.bb_threshold_L8)
+            self.horizontalSlider_BB.setValue(self.bb_threshold_L89)
             self.doubleSpinBox_BB.setMaximum(40000)
-            self.doubleSpinBox_BB.setValue(self.bb_threshold_L8)
+            self.doubleSpinBox_BB.setValue(self.bb_threshold_L89)
 
         #### Cloud QA L457 adjusts
         # hidden blocks and unchecked
@@ -450,13 +450,13 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
                 self.checkBox_CloudQA.setEnabled(False)
                 self.label_CloudQA_FileStatus.setVisible(True)
 
-        #### Aerosol L8 adjusts
-        self.widget_Aerosol_L8.setHidden(True)
-        self.frame_Aerosol_L8.setHidden(True)
+        #### Aerosol L89 adjusts
+        self.widget_Aerosol_L89.setHidden(True)
+        self.frame_Aerosol_L89.setHidden(True)
         self.checkBox_Aerosol.setChecked(False)
         self.label_Aerosol_FileStatus.setVisible(False)
-        if self.landsat_version in [8] and self.collection == 1:
-            self.frame_Aerosol_L8.setVisible(True)
+        if self.landsat_version in [8, 9] and self.collection == 1:
+            self.frame_Aerosol_L89.setVisible(True)
             self.aerosol_file = os.path.join(os.path.dirname(self.mtl_path),
                                              self.mtl_file['FILE_NAME_BAND_1'].replace(
                                                  self.mtl_file['FILE_NAME_BAND_1'].split("_")[-1],
@@ -486,7 +486,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         if os.path.isfile(self.pixel_qa_file):
             self.checkBox_PixelQA.setEnabled(True)
             # only for landsat 8
-            if self.landsat_version in [8]:
+            if self.landsat_version in [8, 9]:
                 self.groupBox_CirrusConfidence.setVisible(True)
                 self.PixelQA_TerrainO_mask.setVisible(True)
         else:
@@ -519,28 +519,28 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         else:
             self.frame_QA_Band_C1_L457.setVisible(False)
 
-        #### QA Band C1 L8
+        #### QA Band C1 L89
         # hidden blocks and unchecked
-        self.QABandC1L8_FileStatus.setVisible(False)
-        self.checkBox_QABandC1L8.setChecked(False)
-        self.widget_QABandC1L8.setHidden(True)
-        self.qabandc1_file_l8 = ""
+        self.QABandC1L89_FileStatus.setVisible(False)
+        self.checkBox_QABandC1L89.setChecked(False)
+        self.widget_QABandC1L89.setHidden(True)
+        self.qabandc1_file_l89 = ""
         # check QA Band C1 file exists
-        if self.collection == 1 and self.processing_level == "L1" and self.landsat_version in [8]:
-            self.qabandc1_file_l8 = os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_QUALITY'])
-            if not os.path.isfile(self.qabandc1_file_l8):
-                self.qabandc1_file_l8 = self.qabandc1_file_l8.replace("BQA.TIF", "bqa.tif")
+        if self.collection == 1 and self.processing_level == "L1" and self.landsat_version in [8, 9]:
+            self.qabandc1_file_l89 = os.path.join(os.path.dirname(self.mtl_path), self.mtl_file['FILE_NAME_BAND_QUALITY'])
+            if not os.path.isfile(self.qabandc1_file_l89):
+                self.qabandc1_file_l89 = self.qabandc1_file_l89.replace("BQA.TIF", "bqa.tif")
 
-            if os.path.isfile(self.qabandc1_file_l8):
-                self.checkBox_QABandC1L8.setEnabled(True)
-                self.frame_QA_Band_C1_L8.setVisible(True)
+            if os.path.isfile(self.qabandc1_file_l89):
+                self.checkBox_QABandC1L89.setEnabled(True)
+                self.frame_QA_Band_C1_L89.setVisible(True)
             else:
-                self.frame_QA_Band_C1_L8.setVisible(True)
-                self.QABandC1L8_FileStatus.setVisible(True)
-                self.checkBox_QABandC1L8.setEnabled(False)
-                self.checkBox_QABandC1L8.setChecked(False)
+                self.frame_QA_Band_C1_L89.setVisible(True)
+                self.QABandC1L89_FileStatus.setVisible(True)
+                self.checkBox_QABandC1L89.setEnabled(False)
+                self.checkBox_QABandC1L89.setChecked(False)
         else:
-            self.frame_QA_Band_C1_L8.setVisible(False)
+            self.frame_QA_Band_C1_L89.setVisible(False)
 
         #### QA Band C2 adjusts
         # hidden blocks and unchecked
@@ -572,9 +572,9 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
             self.radioButton_ToRaw_Bands.setEnabled(False)
             if self.collection == 2:
                 self.horizontalSlider_BB.setMaximum(40000)
-                self.horizontalSlider_BB.setValue(self.bb_threshold_L8)
+                self.horizontalSlider_BB.setValue(self.bb_threshold_L89)
                 self.doubleSpinBox_BB.setMaximum(40000)
-                self.doubleSpinBox_BB.setValue(self.bb_threshold_L8)
+                self.doubleSpinBox_BB.setValue(self.bb_threshold_L89)
 
         #### Enable apply to SR reflectance stack if they are available
         exists_sr_files = \
@@ -595,7 +595,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         #### Set the stack bands by default in stack to apply
         if self.landsat_version in [4, 5, 7]:
             reflectance_bands = [1, 2, 3, 4, 5, 7]
-        if self.landsat_version in [8]:
+        if self.landsat_version in [8, 9]:
             reflectance_bands = [2, 3, 4, 5, 6, 7]
         self.lineEdit_StackBands.setText(','.join([str(x) for x in reflectance_bands]))
 
