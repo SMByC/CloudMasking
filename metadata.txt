@@ -1,9 +1,9 @@
 [general]
 name=Cloud Masking
-description=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7 and 8) products using different process and filters such as Fmask, Blue Band, Cloud QA, Aerosol and Pixel QA.
-about=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7 and 8) products using different process and filters such as Fmask, Blue Band, Cloud QA, Aerosol and Pixel QA.
+description=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7, 8, 9) products using different process and filters such as Fmask, Blue Band, Cloud QA, Aerosol and Pixel QA.
+about=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7, 8, 9) products using different process and filters such as Fmask, Blue Band, Cloud QA, Aerosol and Pixel QA.
 
-version=21.7.15
+version=22.2.25
 qgisMinimumVersion=3.0
 qgisMaximumVersion=3.99
 
@@ -15,16 +15,14 @@ tracker=https://github.com/SMByC/CloudMasking/issues
 repository=https://github.com/SMByC/CloudMasking
 
 changelog=
-    21.7.15:
-    - Added fmask binary libs for python 3.8 and 3.9, issue #9
-    21.7.8:
-    - Support Collection 2 level 1 and level 2 (but without fmask if there aren't the raw bands)
-    - Implemente the QA band filter for Colection 1
-    - New button to show or hide the AOI drawn
-    - Fixed wait process calls for some functions
-    - Add wait process decorator to export mask functions
-    - Fixed building the fmask lib from source at start-up as a second try to import
-    - Not remove AOI drawn after masking generation
+    22.2.25:
+    - Support Landsat 9
+    - Updated fmask and rios libs
+    - Fixing paths in command lines processes in blue band and others gdal uses
+    - Fix slider converting the value with rounded int
+    - Fixed some connections for the groupBoxes for cloud masking filters
+    - Other minor issues
+
 
 tags=cloud,masking,landsat,raster,remote sensing
 
