@@ -22,11 +22,10 @@ radiance file, not the TOA reflectance.
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 from __future__ import print_function, division
 
-import multiprocessing
 import numpy
-import platform
 from rios import applier, cuiprogress
 from . import config
+
 
 def makeSaturationMask(fmaskConfig, radiancefile, outMask):
     """
@@ -59,13 +58,12 @@ def makeSaturationMask(fmaskConfig, radiancefile, outMask):
     otherargs.radianceBands = fmaskConfig.bands
     
     controls = applier.ApplierControls()
-    controls.setCalcStats(False)
-
     controls.progress = cuiprogress.GDALProgressBar()
     
     applier.apply(riosSaturationMask, inputs, outputs, 
                 otherargs, controls=controls)
-    
+
+
 def riosSaturationMask(info, inputs, outputs, otherargs):
     """
     Called from RIOS. Does the actual saturation test. Currently assumes that

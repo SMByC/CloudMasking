@@ -22,7 +22,6 @@ information in via the otherargs parameter.
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
-import os
 
 import numpy
 from osgeo import gdal
@@ -71,11 +70,6 @@ class ImageInfo(object):
 
     """
     def __init__(self, filename, omitPerBand=False):
-        is_HDF_EOS_subdataset = (filename.startswith("HDF4_EOS:") or 
-                filename.startswith("HDF5_EOS:"))
-        if not is_HDF_EOS_subdataset and not os.path.exists(filename):
-            raise rioserrors.FileOpenError("Unable to open file %s"%filename)
-            
         ds = gdal.Open(str(filename), gdal.GA_ReadOnly)
         if ds is None:
             raise rioserrors.FileOpenError("Unable to open file %s"%filename)

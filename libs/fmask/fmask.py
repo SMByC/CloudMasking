@@ -45,17 +45,11 @@ as fmask.fmask.OUTCODE_*
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 from __future__ import print_function, division
 
-import sys
 import os
-import subprocess
 import tempfile
-import platform
 
-import multiprocessing
 import numpy
-numpy.seterr(all='raise')
 from osgeo import gdal
-gdal.UseExceptions()
 from scipy.ndimage import uniform_filter, maximum_filter, label
 import scipy.stats
 
@@ -76,6 +70,9 @@ from . import fmaskerrors
 # so we can check if thermal all zeroes
 from . import zerocheck
 
+numpy.seterr(all='raise')
+gdal.UseExceptions()
+
 # Bands in the saturation mask, if supplied
 SATURATION_BLUE = 0
 SATURATION_GREEN = 1
@@ -94,7 +91,8 @@ OUTCODE_SHADOW = 3
 OUTCODE_SNOW = 4
 #: Output pixel value for water
 OUTCODE_WATER = 5
-    
+
+
 def doFmask(fmaskFilenames, fmaskConfig):
     """
     Main routine for whole Fmask algorithm. Calls all other routines in sequence. 
@@ -119,7 +117,8 @@ def doFmask(fmaskFilenames, fmaskConfig):
         # check that it is not all zeros
         if zerocheck.isBandAllZeroes(fmaskFilenames.thermal, 
                 fmaskConfig.thermalInfo.thermalBand1040um):
-            if fmaskConfig.verbose: print('Ignoring thermal data since file is empty')
+            if fmaskConfig.verbose:
+                print('Ignoring thermal data since file is empty')
             missingThermal = True
 
     # do some basic checking of inputs
@@ -130,51 +129,76 @@ def doFmask(fmaskFilenames, fmaskConfig):
     if fmaskConfig.anglesInfo is None:
         msg = 'Must provide Angles information via fmaskConfig.setAnglesInfo'
         raise fmaskerrors.FmaskParameterError(msg)
-        
+
     if fmaskFilenames.outputMask is None:
         msg = 'Output filename must be provided via fmaskFilenames parameter'
         raise fmaskerrors.FmaskParameterError(msg)
+
+    if ((fmaskConfig.sensor == config.FMASK_SENTINEL2) and 
+            (fmaskConfig.TOARefDNoffsetDict is None)):
+        msg = """
+            When using Fmask with Sentinel-2, it is now a requirement that
+            reflectance offsets be explicitly set. This is due to ESA's 
+            breaking changes in their processing version 04.00 (Nov 2021),
+            which added offsets to the imagery. 
+            See fmask.config.setTOARefOffsetDict() for more details. 
+            Also, sen2meta.Sen2ZipfileMeta can read the necessary XML file,
+            and fmask.cmdline.sentinel2Stacked.makeRefOffsetDict for further
+            sample code. 
+        """
+        raise fmaskerrors.Sen2MetaError(msg)
         
     if fmaskConfig.strictFmask:
         # change these values back to match the paper
         fmaskConfig.setCloudBufferSize(0)
         fmaskConfig.setShadowBufferSize(3)
     
-    if fmaskConfig.verbose: print("Cloud layer, pass 1")
+    if fmaskConfig.verbose:
+        print("Cloud layer, pass 1")
     (pass1file, Twater, Tlow, Thigh, NIR_17, nonNullCount) = doPotentialCloudFirstPass(
         fmaskFilenames, fmaskConfig, missingThermal)
-    if fmaskConfig.verbose: print("  Twater=", Twater, "Tlow=", Tlow, "Thigh=", Thigh, "NIR_17=", 
-        NIR_17, "nonNullCount=", nonNullCount)
+    if fmaskConfig.verbose:
+        print("  Twater=", Twater, "Tlow=", Tlow, "Thigh=", Thigh, "NIR_17=", 
+            NIR_17, "nonNullCount=", nonNullCount)
     
-    if fmaskConfig.verbose: print("Cloud layer, pass 2")
+    if fmaskConfig.verbose:
+        print("Cloud layer, pass 2")
     (pass2file, landThreshold) = doPotentialCloudSecondPass(fmaskFilenames, 
         fmaskConfig, pass1file, Twater, Tlow, Thigh, missingThermal, nonNullCount)
-    if fmaskConfig.verbose: print("  landThreshold=", landThreshold)
+    if fmaskConfig.verbose:
+        print("  landThreshold=", landThreshold)
 
-    if fmaskConfig.verbose: print("Cloud layer, pass 3")
+    if fmaskConfig.verbose:
+        print("Cloud layer, pass 3")
     interimCloudmask = doCloudLayerFinalPass(fmaskFilenames, fmaskConfig, 
         pass1file, pass2file, landThreshold, Tlow, missingThermal)
         
-    if fmaskConfig.verbose: print("Potential shadows")
+    if fmaskConfig.verbose:
+        print("Potential shadows")
     potentialShadowsFile = doPotentialShadows(fmaskFilenames, fmaskConfig, NIR_17)
     
-    if fmaskConfig.verbose: print("Clumping clouds")
+    if fmaskConfig.verbose:
+        print("Clumping clouds")
     (clumps, numClumps) = clumpClouds(interimCloudmask)
     
-    if fmaskConfig.verbose: print("Making 3d clouds")
+    if fmaskConfig.verbose:
+        print("Making 3d clouds")
     (cloudShape, cloudBaseTemp, cloudClumpNdx) = make3Dclouds(fmaskFilenames, 
         fmaskConfig, clumps, numClumps, missingThermal)
     
-    if fmaskConfig.verbose: print("Making cloud shadow shapes")
+    if fmaskConfig.verbose:
+        print("Making cloud shadow shapes")
     shadowShapesDict = makeCloudShadowShapes(fmaskFilenames, fmaskConfig,
         cloudShape, cloudClumpNdx)
     
-    if fmaskConfig.verbose: print("Matching shadows")
+    if fmaskConfig.verbose:
+        print("Matching shadows")
     interimShadowmask = matchShadows(fmaskConfig, interimCloudmask, 
         potentialShadowsFile, shadowShapesDict, cloudBaseTemp, Tlow, Thigh, 
         pass1file)
     
-    if fmaskConfig.verbose: print("Doing final tidy up")
+    if fmaskConfig.verbose:
+        print("Doing final tidy up")
     finalizeAll(fmaskFilenames, fmaskConfig, interimCloudmask, interimShadowmask, 
         pass1file)
     
@@ -186,14 +210,16 @@ def doFmask(fmaskFilenames, fmaskConfig):
             os.remove(filename)
     else:
         # create a dictionary with the intermediate filenames so we can return them.
-        retVal = {'pass1' : pass1file, 'pass2' : pass2file, 
-            'interimCloud' : interimCloudmask, 
-            'potentialShadows' : potentialShadowsFile, 
-            'interimShadow' : interimShadowmask}
+        retVal = {'pass1': pass1file, 'pass2': pass2file, 
+            'interimCloud': interimCloudmask, 
+            'potentialShadows': potentialShadowsFile, 
+            'interimShadow': interimShadowmask}
 
-    if fmaskConfig.verbose: print('finished fmask')
+    if fmaskConfig.verbose:
+        print('finished fmask')
     
     return retVal
+
 
 #: An offset so we can scale brightness temperature (BT, in deg C) to the range 0-255, for use in histograms.
 BT_OFFSET = 176    
@@ -207,6 +233,7 @@ B4_SCALE = 500.0
 #: Global RIOS window size
 RIOS_WINDOW_SIZE = 512
 
+
 def doPotentialCloudFirstPass(fmaskFilenames, fmaskConfig, missingThermal):
     """
     Run the first pass of the potential cloud layer. Also
@@ -218,7 +245,7 @@ def doPotentialCloudFirstPass(fmaskFilenames, fmaskConfig, missingThermal):
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-
+    
     infiles.toaref = fmaskFilenames.toaRef
     if not missingThermal:
         infiles.thermal = fmaskFilenames.thermal
@@ -264,7 +291,7 @@ def doPotentialCloudFirstPass(fmaskFilenames, fmaskConfig, missingThermal):
         nullBandNdx = [config.BAND_BLUE, config.BAND_GREEN, config.BAND_RED, config.BAND_NIR, 
             config.BAND_SWIR1, config.BAND_SWIR2]
 
-    elif fmaskConfig.sensor == config.FMASK_LANDSAT8:
+    elif fmaskConfig.sensor in (config.FMASK_LANDSAT8, config.FMASK_LANDSATOLI):
         nullBandNdx = [config.BAND_BLUE, config.BAND_GREEN, config.BAND_RED, config.BAND_NIR, 
             config.BAND_SWIR1, config.BAND_SWIR2, config.BAND_CIRRUS]
 
@@ -304,7 +331,7 @@ def potentialCloudFirstPass(info, inputs, outputs, otherargs):
     """
     fmaskConfig = otherargs.fmaskConfig
 
-    ref = inputs.toaref.astype(numpy.float) / fmaskConfig.TOARefScaling
+    ref = refDNtoUnits(inputs.toaref, fmaskConfig)
     # Clamp off any reflectance <= 0
     ref[ref<=0] = 0.00001
 
@@ -472,6 +499,50 @@ def scoreatpcnt(counts, pcnt):
     return n
 
 
+def refDNtoUnits(refDN, fmaskConfig):
+    """
+    Convert the given reflectance pixel value array to physical units,
+    using parameters given in fmaskConfig. 
+
+    Scaling is ref = (dn+offset)/scaleVal
+
+    """
+    scaleVal = float(fmaskConfig.TOARefScaling)
+
+    bandNdxLookup = {}
+    for idNum in fmaskConfig.bands:
+        ndx = fmaskConfig.bands[idNum]
+        bandNdxLookup[ndx] = idNum
+
+    refUnits = numpy.zeros(refDN.shape, dtype=numpy.float32)
+    numBands = refDN.shape[0]
+    for bandNdx in range(numBands):
+        offset = 0
+        # Convert the band index number into the ID number
+        # we use as key for the offset dictionary
+        bandIdNum = None
+        if bandNdx in bandNdxLookup:
+            bandIdNum = bandNdxLookup[bandNdx]
+
+        if bandIdNum is not None and fmaskConfig.TOARefDNoffsetDict is not None:
+            offset = fmaskConfig.TOARefDNoffsetDict[bandIdNum]
+
+        refUnits[bandNdx] = singleRefDNtoUnits(refDN[bandNdx], scaleVal, offset)
+    return refUnits
+
+
+def singleRefDNtoUnits(refDN, scaleVal, offset):
+    """
+    Apply the given scale and offset to transform a single band
+    of reflectance from digital number (DN) to reflectance units.
+
+    Calculation is
+        ref = (refDN + offset) / scaleVal
+    """
+    ref = (numpy.float32(refDN) + offset) / scaleVal
+    return ref
+
+
 def calcBTthresholds(otherargs):
     """
     Calculate some global thresholds based on the results of the first pass
@@ -489,8 +560,10 @@ def calcBTthresholds(otherargs):
         Thigh = Thigh - BT_OFFSET
     return (Twater, Tlow, Thigh)
 
+
 #: For scaling probability values so I can store them in 8 bits
 PROB_SCALE = 100.0
+
 
 def doPotentialCloudSecondPass(fmaskFilenames, fmaskConfig, pass1file, 
                 Twater, Tlow, Thigh, missingThermal, nonNullCount):
@@ -501,7 +574,7 @@ def doPotentialCloudSecondPass(fmaskFilenames, fmaskConfig, pass1file,
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-
+    
     infiles.pass1 = pass1file
     infiles.toaref = fmaskFilenames.toaRef
     if not missingThermal:
@@ -548,7 +621,7 @@ def potentialCloudSecondPass(info, inputs, outputs, otherargs):
     """
     fmaskConfig = otherargs.fmaskConfig
     
-    ref = inputs.toaref.astype(numpy.float) / fmaskConfig.TOARefScaling
+    ref = refDNtoUnits(inputs.toaref, fmaskConfig)
     # Clamp off any reflectance <= 0
     ref[ref<=0] = 0.00001
     
@@ -616,7 +689,7 @@ def doCloudLayerFinalPass(fmaskFilenames, fmaskConfig, pass1file, pass2file,
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-
+    
     infiles.pass1 = pass1file
     infiles.pass2 = pass2file
     if not missingThermal:
@@ -676,7 +749,7 @@ def cloudFinalPass(info, inputs, outputs, otherargs):
     else:
         cloudmask3 = (lCloud_prob > 0.99) & notWater
     if Tlow is not None:
-        cloudmask4 = (bt < (Tlow-35))
+        cloudmask4 = (bt < (Tlow - 35))
     else:
         # Not enough land for final test. Also come here when missing thermal.
         cloudmask4 = numpy.zeros(cloudmask1.shape, dtype=numpy.bool)
@@ -696,7 +769,7 @@ def cloudFinalPass(info, inputs, outputs, otherargs):
     # Apply the prescribed 3x3 buffer. According to Zhu&Woodcock (page 87, end of section 3.1.2) 
     # they set a pixel to cloud if 5 or more of its 3x3 neighbours is cloud. 
     # This little incantation will do exactly the same. 
-    bufferedCloudmask = (uniform_filter(cloudmask*2.0, size=3) >= 1.0)
+    bufferedCloudmask = (uniform_filter(cloudmask * 2.0, size=3) >= 1.0)
 
     bufferedCloudmask[nullmask] = 0
     
@@ -722,12 +795,18 @@ def doPotentialShadows(fmaskFilenames, fmaskConfig, NIR_17):
         nullval = 0
     # Sentinel2 is uint16 which causes problems...
     scaledNIR = band.ReadAsArray().astype(numpy.int16)
-    NIR_17_dn = NIR_17 * fmaskConfig.TOARefScaling
+    # Check for ESA's stoopid offset, for NIR band only
+    NIRoffset = 0
+    if (fmaskConfig.TOARefDNoffsetDict is not None and 
+            config.BAND_NIR in fmaskConfig.TOARefDNoffsetDict):
+        NIRoffset = fmaskConfig.TOARefDNoffsetDict[config.BAND_NIR]
+    scaleVal = fmaskConfig.TOARefScaling
+    NIR_17_dn = NIR_17 * scaleVal - NIRoffset
     
     scaledNIR_filled = fillminima.fillMinima(scaledNIR, nullval, NIR_17_dn)
 
-    NIR = scaledNIR.astype(numpy.float) / fmaskConfig.TOARefScaling
-    NIR_filled = scaledNIR_filled.astype(numpy.float) / fmaskConfig.TOARefScaling
+    NIR = singleRefDNtoUnits(scaledNIR, scaleVal, NIRoffset)
+    NIR_filled = singleRefDNtoUnits(scaledNIR_filled, scaleVal, NIRoffset)
     del scaledNIR, scaledNIR_filled
     
     # Equation 19
@@ -758,12 +837,14 @@ def clumpClouds(cloudmaskfile):
     band = ds.GetRasterBand(1)
     cloudmask = band.ReadAsArray()
     
-    (clumps, numClumps) = label(cloudmask, structure=numpy.ones((3,3)))
-    
+    (clumps, numClumps) = label(cloudmask, structure=numpy.ones((3, 3)))
+
     return (clumps, numClumps)
 
 
 CLOUD_HEIGHT_SCALE = 10
+
+
 def make3Dclouds(fmaskFilenames, fmaskConfig, clumps, numClumps, missingThermal):
     """
     Create 3-dimensional cloud objects from the cloud mask, and the thermal 
@@ -785,7 +866,7 @@ def make3Dclouds(fmaskFilenames, fmaskConfig, clumps, numClumps, missingThermal)
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-
+    
     # if we have thermal, run against that 
     # otherwise we are just 
     if not missingThermal:
@@ -839,9 +920,9 @@ def cloudShapeFunc(info, inputs, outputs, otherargs):
             numPixInCloud = len(cloudNdx[0])
         
             # Equation 22, in several pieces
-            R = numpy.sqrt(numPixInCloud/(2*numpy.pi))
+            R = numpy.sqrt(numPixInCloud / (2 * numpy.pi))
             if R >= 8:
-                percentile = 100.0 * (R-8.0)**2 / (R**2)
+                percentile = 100.0 * (R - 8.0)**2 / (R**2)
                 Tcloudbase = scipy.stats.scoreatpercentile(btCloud, percentile)
             else:
                 Tcloudbase = btCloud.min()
@@ -867,9 +948,11 @@ def cloudShapeFunc(info, inputs, outputs, otherargs):
     otherargs.cloudShape = cloudShape
     otherargs.cloudBaseTemp = cloudBaseTemp
 
+
 METRES_PER_KM = 1000.0
 BYTES_PER_VOXEL = 4
-SOLIDCLOUD_MAXMEM = float(1024*1024*1024)
+SOLIDCLOUD_MAXMEM = float(1024 * 1024 * 1024)
+
 
 def makeCloudShadowShapes(fmaskFilenames, fmaskConfig,
         cloudShape, cloudClumpNdx):
@@ -893,7 +976,6 @@ def makeCloudShadowShapes(fmaskFilenames, fmaskConfig,
     cloudIDlist = cloudClumpNdx.values
     for cloudID in cloudIDlist:
         cloudNdx = cloudClumpNdx.getIndexes(cloudID)
-        numPix = len(cloudNdx[0])
         
         sunAz = fmaskConfig.anglesInfo.getSolarAzimuthAngle(cloudNdx)
         sunZen = fmaskConfig.anglesInfo.getSolarZenithAngle(cloudNdx)
@@ -948,8 +1030,8 @@ def makeCloudShadowShapes(fmaskFilenames, fmaskConfig,
         del d, x, y
         
         # Turn these back into row/col coordinates
-        rows = (yDash / yRes).astype(numpy.uint32).clip(0, nrows-1)
-        cols = (xDash / xRes).astype(numpy.uint32).clip(0, ncols-1)
+        rows = (yDash / yRes).astype(numpy.uint32).clip(0, nrows - 1)
+        cols = (xDash / xRes).astype(numpy.uint32).clip(0, ncols - 1)
         
         # Make the row/col arrays have the right shape, and store as a single tuple
         shadowNdx = (rows.flatten(), cols.flatten())
@@ -963,9 +1045,9 @@ def makeCloudShadowShapes(fmaskFilenames, fmaskConfig,
         # Sadly, I have had to comment this bit out, as it makes the whole
         # thing take several times as long. Obviously I need a better method of removing
         # the duplicates. Sigh.....
-        #blankImg[shadowNdx] = True
-        #shadowNdx = numpy.where(blankImg)
-        #blankImg[shadowNdx] = False
+        # blankImg[shadowNdx] = True
+        # shadowNdx = numpy.where(blankImg)
+        # blankImg[shadowNdx] = False
         
         # Stash these shapes in a dictionary, along with the corresponding sun and satellite angles
         shadowShapesDict[cloudID] = (shadowNdx, satAz, satZen, sunAz, sunZen)
@@ -998,6 +1080,7 @@ def getIntersectionCoords(filelist):
         tlDict[filename] = (int(tl.x), int(tl.y))
     return (tlDict, intersectionPixgrid)
 
+
 def makeBufferKernel(buffsize):
     """
     Make a 2-d array for buffering. It represents a circle of 
@@ -1007,9 +1090,10 @@ def makeBufferKernel(buffsize):
     if buffsize > 0:
         n = 2 * buffsize + 1
         (r, c) = numpy.mgrid[:n, :n]
-        radius = numpy.sqrt((r-buffsize)**2 + (c-buffsize)**2)
+        radius = numpy.sqrt((r - buffsize)**2 + (c - buffsize)**2)
         bufferkernel = (radius <= buffsize).astype(numpy.uint8)
     return bufferkernel
+
 
 def matchShadows(fmaskConfig, interimCloudmask, potentialShadowsFile, 
         shadowShapesDict, cloudBaseTemp, Tlow, Thigh, pass1file):
@@ -1115,7 +1199,7 @@ def matchOneShadow(cloudmask, shadowEntry, potentialShadow, Tcloudbase, Tlow, Th
         Thigh = 10.0
     
     # Equation 21. Convert these to metres instead of kilometres
-    Hcloudbase_min = max(0.2, (Tlow - 4 - Tcloudbase)/9.8) * METRES_PER_KM
+    Hcloudbase_min = max(0.2, (Tlow - 4 - Tcloudbase) / 9.8) * METRES_PER_KM
     Hcloudbase_max = min(12, (Thigh + 4 - Tcloudbase)) * METRES_PER_KM
     
     # Entry for this cloud shadow object
@@ -1151,9 +1235,9 @@ def matchOneShadow(cloudmask, shadowEntry, potentialShadow, Tcloudbase, Tlow, Th
     rowN = shapeNdx[0].max()
     col0 = shapeNdx[1].min()
     colN = shapeNdx[1].max()
-    (nrows, ncols) = ((rowN-row0+1), (colN-col0+1))
+    (nrows, ncols) = ((rowN - row0 + 1), (colN - col0 + 1))
     shadowTemplate = numpy.zeros((nrows, ncols), dtype=numpy.bool)
-    shadowTemplate[shapeNdx[0]-row0, shapeNdx[1]-col0] = True
+    shadowTemplate[shapeNdx[0] - row0, shapeNdx[1] - col0] = True
     
     # Step this template across the potential shadows until we match. 
     i = 0
@@ -1180,10 +1264,10 @@ def matchOneShadow(cloudmask, shadowEntry, potentialShadow, Tcloudbase, Tlow, Th
         # the full images
         r = row0 - rowOff
         c = col0 - colOff
-        if r >= 0 and r+nrows <= imgNrows and c >= 0 and c+ncols <= imgNcols:
-            cloud = cloudmask[r:r+nrows, c:c+ncols]
-            potShadow = potentialShadow[r:r+nrows, c:c+ncols]
-            null = nullmask[r:r+nrows, c:c+ncols]
+        if r >= 0 and r + nrows <= imgNrows and c >= 0 and c + ncols <= imgNcols:
+            cloud = cloudmask[r:r + nrows, c:c + ncols]
+            potShadow = potentialShadow[r:r + nrows, c:c + ncols]
+            null = nullmask[r:r + nrows, c:c + ncols]
             # mask the potential shadow layer, so we don't include anything we think is cloud
             potShadow[cloud] = 0
             # Similarly with the areas which are null in the imagery
@@ -1202,7 +1286,6 @@ def matchOneShadow(cloudmask, shadowEntry, potentialShadow, Tcloudbase, Tlow, Th
             shadowArea = shadowTemplateMasked.sum()
             if shadowArea > 0:
                 similarity = float(overlapArea) / shadowArea
-
 
             # We don't use the Zhu & Woodcock termination condition, as this
             # very often results in stopping search too soon. We just check the whole
@@ -1233,7 +1316,7 @@ def finalizeAll(fmaskFilenames, fmaskConfig, interimCloudmask, interimShadowmask
     outfiles = applier.FilenameAssociations()
     otherargs = applier.OtherInputs()
     controls = applier.ApplierControls()
-
+    
     infiles.cloud = interimCloudmask
     infiles.shadow = interimShadowmask
     infiles.pass1 = pass1file
@@ -1244,8 +1327,7 @@ def finalizeAll(fmaskFilenames, fmaskConfig, interimCloudmask, interimShadowmask
     controls.setWindowXsize(RIOS_WINDOW_SIZE)
     controls.setWindowYsize(RIOS_WINDOW_SIZE)
     controls.setOutputDriverName(fmaskConfig.gdalDriverName)
-    controls.setCalcStats(False)
-
+    
     if fmaskConfig.cloudBufferSize > 0:
         otherargs.bufferkernel = makeBufferKernel(fmaskConfig.cloudBufferSize)
 
@@ -1264,6 +1346,7 @@ def finalizeAll(fmaskFilenames, fmaskConfig, interimCloudmask, interimShadowmask
         # Just ignore it silently
         pass
 
+
 def maskAndBuffer(info, inputs, outputs, otherargs):
     """
     Called from RIOS
@@ -1279,8 +1362,6 @@ def maskAndBuffer(info, inputs, outputs, otherargs):
     """
     snow = inputs.pass1[5].astype(numpy.bool)
     nullmask = inputs.pass1[4].astype(numpy.bool)
-    refNullmask = inputs.pass1[6].astype(numpy.bool)
-    thermNullmask = inputs.pass1[7].astype(numpy.bool)
     resetNullmask = nullmask
 
     cloud = inputs.cloud[0].astype(numpy.bool)

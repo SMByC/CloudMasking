@@ -246,11 +246,13 @@ class RatApplierState(object):
     argument to the user function. 
     
     Attributes:
-        blockNdx                Index number of current block (first block is zero, second block is 1, ...)
-        startrow                RAT row number of first row of current block (first row is zero)
-        blockLen                Number of rows in current block
-        inputRowNumbers         Row numbers in whole input RAT(s) corresponding to current block
-        rowCount                The total number of rows in the input RAT(s)
+    
+        * blockNdx                Index number of current block (first block is zero, second block is 1, ...)
+        * startrow                RAT row number of first row of current block (first row is zero)
+        * blockLen                Number of rows in current block
+        * inputRowNumbers         Row numbers in whole input RAT(s) corresponding to current block
+        * rowCount                The total number of rows in the input RAT(s)
+        
     """
     def __init__(self, rowCount):
         # The start row number of the current block

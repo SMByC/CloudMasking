@@ -22,8 +22,5 @@ classes, respectively.
 
 """
 
-from distutils.version import LooseVersion
-
-RIOS_VERSION = '1.4.11'
-RIOS_VERSION_OBJ = LooseVersion(RIOS_VERSION)
+RIOS_VERSION = '1.4.12'
 __version__ = RIOS_VERSION

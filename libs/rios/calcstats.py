@@ -25,7 +25,6 @@ import warnings
 import numpy
 from osgeo import gdal
 gdal.UseExceptions()
-from distutils.version import LooseVersion
 from . import cuiprogress
 from .rioserrors import ProcessCancelledError
 

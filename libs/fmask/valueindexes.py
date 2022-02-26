@@ -16,19 +16,25 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 from __future__ import print_function, division
 
-import sys
+import os
 import numpy
 
-# load _valueindexes
-from CloudMasking.libs.fmask import _valueindexes
+# Fail slightly less drastically when running from ReadTheDocs
+if os.getenv('READTHEDOCS', default='False') != 'True':
+    from . import _valueindexes
 
 
 class ValueIndexesError(Exception):
     pass
+
+
 class NonIntTypeError(ValueIndexesError):
     pass
+
+
 class RangeError(ValueIndexesError):
     pass
+
 
 class ValueIndexes(object):
     """
@@ -107,8 +113,8 @@ class ValueIndexes(object):
         # Get counts of all values in a
         minval = a.min()
         maxval = a.max()
-        (counts, binEdges) = numpy.histogram(a, range=(minval, maxval+1), 
-            bins=(maxval-minval+1))
+        (counts, binEdges) = numpy.histogram(a, range=(minval, maxval + 1), 
+            bins=(maxval - minval + 1))
             
         # Mask counts for any requested null values. 
         maskedCounts = counts.copy()

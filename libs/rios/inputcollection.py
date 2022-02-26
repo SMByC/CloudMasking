@@ -24,7 +24,6 @@ of the inputs it has and deal with resampling.
 import os
 import sys
 import subprocess
-from distutils.version import LooseVersion
 
 from . import imageio
 from . import rioserrors

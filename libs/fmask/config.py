@@ -25,9 +25,10 @@ import numpy
 import scipy.constants
 
 from osgeo import gdal
-gdal.UseExceptions()
 from rios import applier
 from . import fmaskerrors
+
+gdal.UseExceptions()
 
 FMASK_LANDSAT47 = 0
 "Landsat 4 to 7"
@@ -35,6 +36,8 @@ FMASK_LANDSAT8 = 1
 "Landsat 8"
 FMASK_SENTINEL2 = 2
 "Sentinel 2"
+FMASK_LANDSATOLI = 3
+"Landsat OLI"
 
 """
 Some constants for the various reflective bands used in fmask.
@@ -48,7 +51,7 @@ BAND_RED = 2
 #: ~780nm
 BAND_NIR = 3
 #: ~1360nm
-BAND_CIRRUS = 4 # Sentinel2 + Landsat8 only
+BAND_CIRRUS = 4    # Sentinel2 + Landsat8 only
 #: ~1610nm
 BAND_SWIR1 = 5
 #: ~2200nm
@@ -63,6 +66,7 @@ BAND_S2CDI_NIR7 = 8
 
 BAND_WATERVAPOUR = 9
 
+
 class FmaskConfig(object):
     """
     Class that contains the configuration parameters of the fmask
@@ -76,6 +80,7 @@ class FmaskConfig(object):
     strictFmask = False
     tempDir = '.'
     TOARefScaling = 10000.0
+    TOARefDNoffsetDict = None
     # Minimum number of pixels in a single cloud (before buffering). A non-zero value
     # would allow filtering of very small clouds. 
     minCloudSize_pixels = 0
@@ -116,16 +121,16 @@ class FmaskConfig(object):
         # Assumed that panchromatic + thermal bands stored in separate files.
         # zero based indexing
         if sensor == FMASK_LANDSAT47:
-            self.bands = {BAND_BLUE:0, BAND_GREEN:1, BAND_RED:2, BAND_NIR:3,
-                        BAND_SWIR1:4, BAND_SWIR2:5}
-        elif sensor == FMASK_LANDSAT8:
-            self.bands = {BAND_BLUE:1, BAND_GREEN:2, BAND_RED:3, BAND_NIR:4,
-                BAND_SWIR1:5, BAND_SWIR2:6, BAND_CIRRUS:7}
+            self.bands = {BAND_BLUE: 0, BAND_GREEN: 1, BAND_RED: 2, BAND_NIR: 3,
+                BAND_SWIR1: 4, BAND_SWIR2: 5}
+        elif sensor in (FMASK_LANDSAT8, FMASK_LANDSATOLI):
+            self.bands = {BAND_BLUE: 1, BAND_GREEN: 2, BAND_RED: 3, BAND_NIR: 4,
+                BAND_SWIR1: 5, BAND_SWIR2: 6, BAND_CIRRUS: 7}
         elif sensor == FMASK_SENTINEL2:
             # Assumes the input stack has ALL bands, in their numeric order (with 8A after 8)
-            self.bands = {BAND_BLUE:1, BAND_GREEN:2, BAND_RED:3, BAND_NIR:7,
-                    BAND_SWIR1:11, BAND_SWIR2:12, BAND_WATERVAPOUR:9, BAND_CIRRUS:10,
-                    BAND_S2CDI_NIR7:6, BAND_S2CDI_NIR8A:8}
+            self.bands = {BAND_BLUE: 1, BAND_GREEN: 2, BAND_RED: 3, BAND_NIR: 7,
+                    BAND_SWIR1: 11, BAND_SWIR2: 12, BAND_WATERVAPOUR: 9, BAND_CIRRUS: 10,
+                    BAND_S2CDI_NIR7: 6, BAND_S2CDI_NIR8A: 8}
         else:
             msg = 'unrecognised sensor'
             raise fmaskerrors.FmaskParameterError(msg)
@@ -188,11 +193,42 @@ class FmaskConfig(object):
     def setTOARefScaling(self, scaling):
         """
         Set the scaling used in the Top of Atmosphere reflectance
-        image. DN's are divided by this number to get reflectance.
-        This defaults to 1000.0
-        
+        image. The calculation is done as
+
+        ref = (dn + dnOffset) / scaling
+
+        and so is used in conjunction with the offset values 
+        (see setTOARefOffsets). 
+
+        The dnOffset was added in 2021 to cope with ESA's absurd 
+        decision to suddenly introduce an offset in their Sentinel-2 
+        TOA reflectance imagery. For Landsat, there is no need for 
+        it ever to be non-zero. 
+
         """
         self.TOARefScaling = scaling
+
+    def setTOARefOffsetDict(self, offsetDict):
+        """
+        Set the reflectance offsets to the given list. 
+        This should contain an offset value for each band used with
+        the Fmask code. The keys are the named constants in the 
+        config module, BAND_*. 
+
+        The offset is added to the corresponding band pixel values
+        before dividing by the scaling value. 
+
+        This facility is made available largely for use with Sentinel-2,
+        after ESA unilaterally starting using non-zero offsets in their
+        Level-1C imagery (Nov 2021). However, it can be used 
+        with Landsat if required. 
+
+        """
+        if len(offsetDict) != len(self.bands):
+            msg = "Must supply offsets for all bands being used"
+            raise fmaskerrors.FmaskParameterError(msg)
+
+        self.TOARefDNoffsetDict = offsetDict
 
     def setKeepIntermediates(self, keepIntermediates):
         """
@@ -476,13 +512,14 @@ class ThermalFileInfo(object):
         """
         KELVIN_ZERO_DEGC = scipy.constants.zero_Celsius
         rad = (scaledBT[self.thermalBand1040um].astype(float) * 
-                    self.thermalGain1040um + self.thermalOffset1040um)
+            self.thermalGain1040um + self.thermalOffset1040um)
         # see http://www.yale.edu/ceo/Documentation/Landsat_DN_to_Kelvin.pdf
         # and https://landsat.usgs.gov/Landsat8_Using_Product.php
-        rad[rad <= 0] = 0.00001 # to stop errors below
+        rad[rad <= 0] = 0.00001  # to stop errors below
         temp = self.thermalK2_1040um / numpy.log(self.thermalK1_1040um / rad + 1.0)
         bt = temp - KELVIN_ZERO_DEGC
         return bt
+
 
 # Keys within a .mtl file for each band
 LANDSAT_RADIANCE_MULT = 'RADIANCE_MULT_BAND_%s'
@@ -497,18 +534,20 @@ LANDSAT_QCALMAX_KEY = 'QCALMAX_BAND%s'
 LANDSAT_QCALMIN_KEY = 'QCALMIN_BAND%s'
 
 # band numbers in mtl file for gain and offset for thermal
-LANDSAT_TH_BAND_NUM_DICT = {'LANDSAT_4' : '6', 
-        'LANDSAT_5' : '6',
-        'LANDSAT_7' : '6_VCID_1',
-        'LANDSAT_8' : '10'}
+LANDSAT_TH_BAND_NUM_DICT = {'LANDSAT_4': '6', 
+        'LANDSAT_5': '6',
+        'LANDSAT_7': '6_VCID_1',
+        'LANDSAT_8': '10',
+        'LANDSAT_9': '10'}
                         
 
 # for some reason L4, 5, and 7 don't
-# have these numbers in the mtl file, but L89 does
+# have these numbers in the mtl file, but L8 does
 # from http://www.yale.edu/ceo/Documentation/Landsat_DN_to_Kelvin.pdf
-LANDSAT_K1_DICT = {'TM' : 607.76, 'ETM' : 666.09, 'ETM+':666.09}
-LANDSAT_K2_DICT = {'TM' : 1260.56, 'ETM' : 1282.71, 'ETM+':1282.71}
-        
+LANDSAT_K1_DICT = {'TM': 607.76, 'ETM': 666.09, 'ETM+': 666.09}
+LANDSAT_K2_DICT = {'TM': 1260.56, 'ETM': 1282.71, 'ETM+': 1282.71}
+
+
 def readThermalInfoFromLandsatMTL(mtlfile, thermalBand1040um=0):
     """
     Returns an instance of ThermalFileInfo given a path to the mtl
@@ -569,7 +608,8 @@ def readThermalInfoFromLandsatMTL(mtlfile, thermalBand1040um=0):
         raise fmaskerrors.FmaskFileError(msg)
         
     return thermalInfo
-            
+
+
 class AnglesInfo(object):
     """
     Abstract base class that Contains view and solar angle 
@@ -619,7 +659,8 @@ class AnglesInfo(object):
         """
         Set scaling factor to get radians from angles image values. 
         """
-    
+
+
 class AnglesFileInfo(AnglesInfo):
     """
     An implementation of AnglesInfo that reads the information from
@@ -710,13 +751,14 @@ class AnglesFileInfo(AnglesInfo):
         """
         self.scaleToRadians = scale
 
+
 class AngleConstantInfo(AnglesInfo):
     """
     An implementation of AnglesInfo that uses constant
     angles accross the scene. 
     """
     def __init__(self, solarZenithAngle, solarAzimuthAngle, viewZenithAngle,
-                    viewAzimuthAngle):
+            viewAzimuthAngle):
         self.solarZenithAngle = solarZenithAngle
         self.solarAzimuthAngle = solarAzimuthAngle
         self.viewZenithAngle = viewZenithAngle
@@ -745,6 +787,7 @@ class AngleConstantInfo(AnglesInfo):
         Return the view azimuth angle
         """
         return self.viewAzimuthAngle
+
 
 def readMTLFile(mtl):
     """
