@@ -36,6 +36,7 @@ import sys
 import time
 
 from osgeo import gdal
+from osgeo_utils.auxiliary.util import GetOutputDriverFor
 
 progress = gdal.TermProgress_nocb
 
@@ -54,43 +55,6 @@ def GetExtension(filename):
     if ext.startswith('.'):
         ext = ext[1:]
     return ext
-
-
-def GetOutputDriversFor(filename):
-    drv_list = []
-    ext = GetExtension(filename)
-    for i in range(gdal.GetDriverCount()):
-        drv = gdal.GetDriver(i)
-        if (drv.GetMetadataItem(gdal.DCAP_CREATE) is not None or
-            drv.GetMetadataItem(gdal.DCAP_CREATECOPY) is not None) and \
-           drv.GetMetadataItem(gdal.DCAP_RASTER) is not None:
-            if len(ext) > 0 and DoesDriverHandleExtension(drv, ext):
-                drv_list.append(drv.ShortName)
-            else:
-                prefix = drv.GetMetadataItem(gdal.DMD_CONNECTION_PREFIX)
-                if prefix is not None and filename.lower().startswith(prefix.lower()):
-                    drv_list.append(drv.ShortName)
-
-    # GMT is registered before netCDF for opening reasons, but we want
-    # netCDF to be used by default for output.
-    if ext.lower() == 'nc' and len(drv_list) == 0 and \
-       drv_list[0].upper() == 'GMT' and drv_list[1].upper() == 'NETCDF':
-        drv_list = ['NETCDF', 'GMT']
-
-    return drv_list
-
-
-def GetOutputDriverFor(filename):
-    drv_list = GetOutputDriversFor(filename)
-    if len(drv_list) == 0:
-        ext = GetExtension(filename)
-        if len(ext) == 0:
-            return 'GTiff'
-        else:
-            raise Exception("Cannot guess driver for %s" % filename)
-    elif len(drv_list) > 1:
-        print("Several drivers matching %s extension. Using %s" % (ext, drv_list[0]))
-    return drv_list[0]
 
 
 # =============================================================================
