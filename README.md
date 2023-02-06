@@ -16,9 +16,9 @@ If you want masking in a bulk process I recommend use [python-fmask](www.pythonf
 
 ## Installation
 
-The plugin can be installed using the QGIS Plugin Manager, go into Qgis to `Plugins` menu and `Manage and install plugins`, in `All` section search for `CloudMasking`.
+The plugin can be installed using the QGIS Plugin Manager.
 
-The plugin will be available in the `Plugins` menu and `Plugins toolbar`.
+   > the latest version of this plugin does not support old versions of Qgis
 
 ## Source code
 
