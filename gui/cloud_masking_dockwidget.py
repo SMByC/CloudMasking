@@ -116,11 +116,11 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.update_slider(self.horizontalSlider_CPT, self.cloud_prob_thresh, 1000)  # initial value
         # cloud_buffer
         self.horizontalSlider_CB.sliderMoved.connect(self.doubleSpinBox_CB.setValue)
-        self.doubleSpinBox_CB.valueChanged.connect(self.horizontalSlider_CB.setValue)
+        self.doubleSpinBox_CB.valueChanged.connect(lambda value: self.horizontalSlider_CB.setValue(int(value)))
         self.doubleSpinBox_CB.setValue(self.cloud_buffer)  # initial value
         # shadow_buffer
         self.horizontalSlider_SB.sliderMoved.connect(self.doubleSpinBox_SB.setValue)
-        self.doubleSpinBox_SB.valueChanged.connect(self.horizontalSlider_SB.setValue)
+        self.doubleSpinBox_SB.valueChanged.connect(lambda value: self.horizontalSlider_SB.setValue(int(value)))
         self.doubleSpinBox_SB.setValue(self.shadow_buffer)  # initial value
         # cirrus_prob_ratio (float values)
         self.horizontalSlider_CPR.valueChanged.connect(
@@ -178,7 +178,7 @@ class CloudMaskingDockWidget(QDockWidget, FORM_CLASS):
         self.checkBox_BlueBand.setChecked(False)
         # Synchronize the slider with the spin box
         self.horizontalSlider_BB.sliderMoved.connect(self.doubleSpinBox_BB.setValue)
-        self.doubleSpinBox_BB.valueChanged.connect(self.horizontalSlider_BB.setValue)
+        self.doubleSpinBox_BB.valueChanged.connect(lambda value: self.horizontalSlider_BB.setValue(int(value)))
         self.doubleSpinBox_BB.setValue(self.bb_threshold_L457)  # initial value
 
         # Cloud QA L457 filter #########
