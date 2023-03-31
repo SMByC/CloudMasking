@@ -32,7 +32,7 @@ from .rioserrors import ProcessCancelledError
 # is controlled by these
 dfltOverviewLvls = os.getenv('RIOS_DFLT_OVERVIEWLEVELS')
 if dfltOverviewLvls is None:
-    DEFAULT_OVERVIEWLEVELS = [ 4, 8, 16, 32, 64, 128, 256, 512 ]
+    DEFAULT_OVERVIEWLEVELS = [4, 8, 16, 32, 64, 128, 256, 512]
 else:
     DEFAULT_OVERVIEWLEVELS = [int(i) for i in dfltOverviewLvls.split(',')]
 DEFAULT_MINOVERVIEWDIM = int(os.getenv('RIOS_DFLT_MINOVERLEVELDIM', default=33))
@@ -40,9 +40,7 @@ DEFAULT_OVERVIEWAGGREGRATIONTYPE = os.getenv('RIOS_DFLT_OVERVIEWAGGTYPE',
     default="AVERAGE")
 
 
-
-
-def progressFunc(value,string,userdata):
+def progressFunc(value, string, userdata):
     """
     Progress callback for BuildOverviews
     """
@@ -51,10 +49,12 @@ def progressFunc(value,string,userdata):
     if value == 1.0:
         userdata.curroffset = userdata.curroffset + 100.0 / userdata.nbands
     return not userdata.progress.wasCancelled()
-  
+
+
 # make userdata object with progress and num bands
 class ProgressUserData(object):
     pass
+
 
 def addPyramid(ds, progress, 
         minoverviewdim=DEFAULT_MINOVERVIEWDIM, 
@@ -79,7 +79,7 @@ def addPyramid(ds, progress,
     
     nOverviews = 0
     for i in levels:
-        if (mindim // i ) > minoverviewdim:
+        if (mindim // i) > minoverviewdim:
             nOverviews = nOverviews + 1
 
     # Need to find out if we are thematic or continuous. 
@@ -97,14 +97,15 @@ def addPyramid(ds, progress,
     userdata.progress = progress
     userdata.nbands = ds.RasterCount
     userdata.curroffset = 0
-   
-    ds.BuildOverviews(aggregationType, levels[:nOverviews], progressFunc, userdata )
+
+    ds.BuildOverviews(aggregationType, levels[:nOverviews], progressFunc, userdata)
   
     if progress.wasCancelled():
         raise ProcessCancelledError()
 
     # make sure it goes to 100%
     progress.setProgress(100)
+
 
 def findOrCreateColumn(ratObj, usage, name, dtype):
     """
@@ -124,9 +125,17 @@ def findOrCreateColumn(ratObj, usage, name, dtype):
     # new one will be last col
     return ncols, True
 
+
 gdalLargeIntTypes = set([gdal.GDT_Int16, gdal.GDT_UInt16, gdal.GDT_Int32, gdal.GDT_UInt32])
+# hack for GDAL 3.5 and later which suppport 64 bit ints
+if hasattr(gdal, 'GDT_Int64'):
+    gdalLargeIntTypes.add(gdal.GDT_Int64)
+    gdalLargeIntTypes.add(gdal.GDT_UInt64)
+
 gdalFloatTypes = set([gdal.GDT_Float32, gdal.GDT_Float64])
-def addStatistics(ds,progress,ignore=None, approx_ok=False):
+
+
+def addStatistics(ds, progress, ignore=None, approx_ok=False):
     """
     Calculates statistics and adds them to the image
     
@@ -143,13 +152,20 @@ def addStatistics(ds,progress,ignore=None, approx_ok=False):
     progress.setLabelText("Computing Statistics...")
     progress.setProgress(0)
     percent = 0
-    percentstep = 100.0 / (ds.RasterCount * 2) # 2 steps for each layer
+    percentstep = 100.0 / (ds.RasterCount * 2)  # 2 steps for each layer
 
     # flush the cache. The ensures that any unwritten data is 
     # written to file so we get the right stats. It also 
     # makes sure any metdata is written on HFA. This means
     # the LAYER_TYPE setting will be picked up by rat.SetLinearBinning()
     ds.FlushCache()
+
+    # The GDAL HFA driver has a bug in its SetLinearBinning function,
+    # which was introduced as part of the RFC40 changes. Until
+    # this is fixed and widely distributed, we should disable the use
+    # of RFC40-style techniques for HFA files.
+    driverName = ds.GetDriver().ShortName
+    disableRFC40 = (driverName == 'HFA')
   
     for bandnum in range(ds.RasterCount):
         band = ds.GetRasterBand(bandnum + 1)
@@ -160,16 +176,16 @@ def addStatistics(ds,progress,ignore=None, approx_ok=False):
         if ignore is not None:
             # tell QGIS that the ignore value was ignored
             band.SetNoDataValue(ignore)
-            tmpmeta["STATISTICS_EXCLUDEDVALUES"] = repr(ignore) # doesn't seem to do anything
+            tmpmeta["STATISTICS_EXCLUDEDVALUES"] = repr(ignore)  # doesn't seem to do anything
       
         # get GDAL to calculate statistics - force recalculation. Trap errors 
-        useExceptions = gdal.GetUseExceptions()
+        usingExceptions = gdal.GetUseExceptions()
         gdal.UseExceptions()
         try:
             if approx_ok and "LAYER_TYPE" in tmpmeta and tmpmeta["LAYER_TYPE"] == "thematic": 
                 warnings.warn('WARNING: approx_ok specified for stats but image is thematic (this could be a bad idea)')
 
-            (minval,maxval,meanval,stddevval) = band.ComputeStatistics(approx_ok)
+            (minval, maxval, meanval, stddevval) = band.ComputeStatistics(approx_ok)
         except RuntimeError as e:
             if str(e).endswith('Failed to compute statistics, no valid pixels found in sampling.'):
                 minval = ignore
@@ -178,16 +194,17 @@ def addStatistics(ds,progress,ignore=None, approx_ok=False):
                 stddevval = 0
             else:
                 raise e
-        if not useExceptions:
-            gdal.DontUseExceptions()
+        finally:
+            if not usingExceptions:
+                gdal.DontUseExceptions()
 
         percent = percent + percentstep
         progress.setProgress(percent)
     
         tmpmeta["STATISTICS_MINIMUM"] = repr(minval)
         tmpmeta["STATISTICS_MAXIMUM"] = repr(maxval)
-        tmpmeta["STATISTICS_MEAN"]    = repr(meanval)
-        tmpmeta["STATISTICS_STDDEV"]  = repr(stddevval)
+        tmpmeta["STATISTICS_MEAN"] = repr(meanval)
+        tmpmeta["STATISTICS_STDDEV"] = repr(stddevval)
         # because we did at full res - these are the default anyway
 
         if approx_ok:
@@ -195,7 +212,6 @@ def addStatistics(ds,progress,ignore=None, approx_ok=False):
         else:
             tmpmeta["STATISTICS_SKIPFACTORX"] = "1"
             tmpmeta["STATISTICS_SKIPFACTORY"] = "1"
-        
 
         # create a histogram so we can do the mode and median
         if band.DataType == gdal.GDT_Byte:
@@ -246,8 +262,9 @@ def addStatistics(ds,progress,ignore=None, approx_ok=False):
         userdata.nbands = ds.RasterCount * 2
         userdata.curroffset = percent
       
-        # get histogram and force GDAL to recalculate it
-        hist = band.GetHistogram(histCalcMin, histCalcMax, histnbins, False, 
+        # Get histogram and force GDAL to recalculate it. Note that we use include_out_of_range=True,
+        # which is safe because we have calculated the histCalcMin/Max from the data. 
+        hist = band.GetHistogram(histCalcMin, histCalcMax, histnbins, True,
                         approx_ok, progressFunc, userdata)
         
         # Check if GDAL's histogram code overflowed. This is not a fool-proof test,
@@ -276,7 +293,7 @@ def addStatistics(ds,progress,ignore=None, approx_ok=False):
             else:
                 tmpmeta["STATISTICS_MODE"] = repr(int(round(modeval)))
 
-            if ratObj is not None:
+            if ratObj is not None and not disableRFC40:
                 histIndx, histNew = findOrCreateColumn(ratObj, gdal.GFU_PixelCount, 
                                         "Histogram", gdal.GFT_Real)
                 # write the hist in a single go
@@ -291,13 +308,13 @@ def addStatistics(ds,progress,ignore=None, approx_ok=False):
                 if "STATISTICS_HISTOBINVALUES" in tmpmeta:
                     del tmpmeta["STATISTICS_HISTOBINVALUES"]
             else:
-                # old method
-                tmpmeta["STATISTICS_HISTOBINVALUES"] = '|'.join(map(repr,hist)) + '|'
+                # Use GDAL's original metadata interface, for drivers which
+                # don't support the more modern approach
+                tmpmeta["STATISTICS_HISTOBINVALUES"] = '|'.join(map(repr, hist)) + '|'
 
                 tmpmeta["STATISTICS_HISTOMIN"] = repr(histmin)
                 tmpmeta["STATISTICS_HISTOMAX"] = repr(histmax)
                 tmpmeta["STATISTICS_HISTONUMBINS"] = repr(histnbins)
-
 
             # estimate the median - bin with the middle number
             middlenum = hist.sum() / 2
@@ -305,9 +322,9 @@ def addStatistics(ds,progress,ignore=None, approx_ok=False):
             medianbin = gtmiddle.nonzero()[0][0]
             medianval = medianbin * histstep + histmin
             if band.DataType == gdal.GDT_Float32 or band.DataType == gdal.GDT_Float64:
-                tmpmeta["STATISTICS_MEDIAN"]  = repr(medianval)
+                tmpmeta["STATISTICS_MEDIAN"] = repr(medianval)
             else:
-                tmpmeta["STATISTICS_MEDIAN"]  = repr(int(round(medianval)))
+                tmpmeta["STATISTICS_MEDIAN"] = repr(int(round(medianval)))
     
         # set the data
         band.SetMetadata(tmpmeta)
@@ -325,10 +342,10 @@ def addStatistics(ds,progress,ignore=None, approx_ok=False):
     progress.setProgress(100)
     
     
-def calcStats(ds,progress=None,ignore=None,
+def calcStats(ds, progress=None, ignore=None,
         minoverviewdim=DEFAULT_MINOVERVIEWDIM, 
         levels=DEFAULT_OVERVIEWLEVELS,
-        aggregationType=None,approx_ok=False):
+        aggregationType=None, approx_ok=False):
     """
     Does both the stats and pyramid layers. Calls addPyramid()
     and addStatistics() functions. See their docstrings for details. 
@@ -343,7 +360,7 @@ def calcStats(ds,progress=None,ignore=None,
     addPyramid(ds, progress, minoverviewdim=minoverviewdim, levels=levels, 
         aggregationType=aggregationType)
 
-    addStatistics(ds,progress,ignore,approx_ok=approx_ok)
+    addStatistics(ds, progress, ignore, approx_ok=approx_ok)
 
 
 def setNullValue(ds, nullValue):
@@ -351,5 +368,5 @@ def setNullValue(ds, nullValue):
     Set the given null value on all bands of the given Dataset
     """
     for i in range(ds.RasterCount):
-        band = ds.GetRasterBand(i+1)
-        band.SetNoDataValue(float(nullValue))
+        band = ds.GetRasterBand(i + 1)
+        band.SetNoDataValue(nullValue)

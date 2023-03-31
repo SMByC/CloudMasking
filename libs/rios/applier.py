@@ -80,6 +80,7 @@ if sys.version_info[0] > 2:
     # we just use basestring
     basestring = str
 
+
 class FilenameAssociations(object): 
     """
     Class for associating external image filenames with internal
@@ -97,6 +98,7 @@ class FilenameAssociations(object):
         "Number of names defined on this instance (a list counts as only one name)"
         return len(self.__dict__.keys())
 
+
 class BlockAssociations(object): 
     """
     Generic object to store the image blocks used within
@@ -106,7 +108,8 @@ class BlockAssociations(object):
     filenames were used, lists of image blocks are used here. 
     """
     pass
-    
+
+
 class OtherInputs(object): 
     """
     Generic object to store any extra inputs and outputs used 
@@ -116,6 +119,7 @@ class OtherInputs(object):
     iterations of the block loop. 
     """
     pass
+
 
 class ApplierControls(object):
     """
@@ -210,8 +214,7 @@ class ApplierControls(object):
         self.vectordatatype = numpy.uint8
         self.vectorlayer = 0
         self.layerselection = None
-        
-        
+
         # Options specific to a named image. This was added on later, and is 
         # only valid for some of the attributes, so it looks a bit out-of-place.
         # Instead of the options being attributes of self, they are keys in a
@@ -228,7 +231,7 @@ class ApplierControls(object):
         if imagename is None:
             setattr(self, option, value)
         else:
-            if not option in self.optionsByImage:
+            if option not in self.optionsByImage:
                 self.optionsByImage[option] = {}
             self.optionsByImage[option][imagename] = value
             
@@ -596,135 +599,135 @@ class ApplierControls(object):
 
 
 def apply(userFunction, infiles, outfiles, otherArgs=None, controls=None):
-        """
-        Apply the given 'userFunction' to the given
-        input and output files. 
-        
-        infiles and outfiles are :class:`rios.applier.FilenameAssociations` objects to 
-        define associations between internal variable names and
-        external filenames, for the raster file inputs and outputs. 
-        
-        otherArgs is an object of extra arguments to be passed to the 
-        userFunction, each with a sensible name on the object. These 
-        can be either input or output arguments, entirely at the discretion
-        of userFunction(). otherArgs should be in instance of :class:`rios.applier.OtherInputs`
-        
-        The userFunction has the following call sequence::
+    """
+    Apply the given 'userFunction' to the given
+    input and output files. 
 
-            userFunction(info, inputs, outputs)
+    infiles and outfiles are :class:`rios.applier.FilenameAssociations` objects to 
+    define associations between internal variable names and
+    external filenames, for the raster file inputs and outputs. 
 
-        or::
+    otherArgs is an object of extra arguments to be passed to the 
+    userFunction, each with a sensible name on the object. These 
+    can be either input or output arguments, entirely at the discretion
+    of userFunction(). otherArgs should be in instance of :class:`rios.applier.OtherInputs`
 
-            userFunction(info, inputs, outputs, otherArgs)
+    The userFunction has the following call sequence::
 
-        if otherArgs is not None. 
-        inputs and outputs are objects in which there are named attributes 
-        with the same names as those given in the infiles and outfiles 
-        objects. In the inputs and outputs objects, available inside 
-        userFunction, these attributes contain numpy arrays of data read 
-        from/written to the corresponding image file. 
-        
-        If the attributes given in the infiles or outfiles objects are 
-        lists of filenames, the the corresponding attributes of the 
-        inputs and outputs objects inside the applied function will be 
-        lists of image data blocks instead of single blocks. 
-        
-        The numpy arrays are always 3-d arrays, with shape::
+        userFunction(info, inputs, outputs)
 
-            (numBands, numRows, numCols)
+    or::
 
-        The datatype of the output image(s) is determined directly
-        from the datatype of the numpy arrays in the outputs object. 
-        
-        The info object contains many useful details about the processing, 
-        and will always be passed to the userFunction. It can, of course, 
-        be ignored. It is an instance of the :class:`rios.readerinfo.ReaderInfo` class. 
-        
-        The controls argument, if given, is an instance of the 
-        :class:`rios.applier.ApplierControls` class, which allows control of various 
-        aspects of the reading and writing of images. See the class 
-        documentation for further details. 
+        userFunction(info, inputs, outputs, otherArgs)
 
-        There is a page dedicated to :doc:`applierexamples`.
+    if otherArgs is not None. 
+    inputs and outputs are objects in which there are named attributes 
+    with the same names as those given in the infiles and outfiles 
+    objects. In the inputs and outputs objects, available inside 
+    userFunction, these attributes contain numpy arrays of data read 
+    from/written to the corresponding image file. 
 
-        """
-        # Get default controls object if none given. 
-        if controls is None:
-            controls = ApplierControls()
-        
-        (imagefiles, vectorfiles) = separateVectors(infiles)
-        inputImageLayerSelection = makeInputImageLayerSelection(imagefiles, controls)
-        reader = imagereader.ImageReader(imagefiles.__dict__, 
-            controls.footprint, controls.windowxsize, controls.windowysize, 
-            controls.overlap, controls.statscache, loggingstream=controls.loggingstream,
-            layerselection=inputImageLayerSelection)
+    If the attributes given in the infiles or outfiles objects are 
+    lists of filenames, the the corresponding attributes of the 
+    inputs and outputs objects inside the applied function will be 
+    lists of image data blocks instead of single blocks. 
 
-        vecreader = None
-        if len(vectorfiles) > 0:
-            vectordict = makeVectorObjects(vectorfiles, controls)
-            vecreader = vectorreader.VectorReader(vectordict, progress=controls.progress)
-        
-        handleInputResampling(imagefiles, controls, reader)
+    The numpy arrays are always 3-d arrays, with shape::
 
-        writerdict = {}
-        
-        if controls.progress is not None:
-            controls.progress.setTotalSteps(100)
-            controls.progress.setProgress(0)
-        lastpercent = 0
-        
-        # Set up for parallel processing, if requested. 
-        jobmgr = None
-        if controls.numThreads > 1:
-            jobmgr = jobmanager.getJobMgrObject(controls)
+        (numBands, numRows, numCols)
 
-        done = False
-        iterator = reader.__iter__()
-        while not done:
-            # list of RIOSJobInfo
-            jobInputs = []
+    The datatype of the output image(s) is determined directly
+    from the datatype of the numpy arrays in the outputs object. 
 
-            for n in range(controls.numThreads):
-                try:
-                    info, blockdict = iterator.__next__()
-                except StopIteration:
-                    done = True
-                    break
+    The info object contains many useful details about the processing, 
+    and will always be passed to the userFunction. It can, of course, 
+    be ignored. It is an instance of the :class:`rios.readerinfo.ReaderInfo` class. 
 
-                inputBlocks = BlockAssociations()
-                inputBlocks.__dict__.update(blockdict)
-                if vecreader is not None:
-                    vecblocks = vecreader.rasterize(info)
-                    inputBlocks.__dict__.update(vecblocks)
+    The controls argument, if given, is an instance of the 
+    :class:`rios.applier.ApplierControls` class, which allows control of various 
+    aspects of the reading and writing of images. See the class 
+    documentation for further details. 
 
-                # build a RIOSJobInfo with the params
-                jobInfo = RIOSJobInfo(info, inputBlocks, otherArgs)
-                jobInputs.append(jobInfo)
+    There is a page dedicated to :doc:`applierexamples`.
 
-            if len(jobInputs) == 0:
+    """
+    # Get default controls object if none given. 
+    if controls is None:
+        controls = ApplierControls()
+
+    (imagefiles, vectorfiles) = separateVectors(infiles)
+    inputImageLayerSelection = makeInputImageLayerSelection(imagefiles, controls)
+    reader = imagereader.ImageReader(imagefiles.__dict__, 
+        controls.footprint, controls.windowxsize, controls.windowysize, 
+        controls.overlap, controls.statscache, loggingstream=controls.loggingstream,
+        layerselection=inputImageLayerSelection)
+
+    vecreader = None
+    if len(vectorfiles) > 0:
+        vectordict = makeVectorObjects(vectorfiles, controls)
+        vecreader = vectorreader.VectorReader(vectordict, progress=controls.progress)
+
+    handleInputResampling(imagefiles, controls, reader)
+
+    writerdict = {}
+
+    if controls.progress is not None:
+        controls.progress.setTotalSteps(100)
+        controls.progress.setProgress(0)
+    lastpercent = 0
+
+    # Set up for parallel processing, if requested. 
+    jobmgr = None
+    if controls.numThreads > 1:
+        jobmgr = jobmanager.getJobMgrObject(controls)
+
+    done = False
+    iterator = reader.__iter__()
+    while not done:
+        # list of RIOSJobInfo
+        jobInputs = []
+
+        for n in range(controls.numThreads):
+            try:
+                info, blockdict = iterator.__next__()
+            except StopIteration:
+                done = True
                 break
-            
-            # Now call the function with those args
-            if jobmgr is None:
-                # single threaded - just call it
-                params = jobInfo.getFunctionParams()
-                userFunction(*params)
-                outputBlocks = jobInfo.getFunctionResult(params)
-                writeOutputBlocks(writerdict, outfiles, outputBlocks, 
-                                controls, info)
-            else:
-                # multi threaded - get the job manager to run jobs
-                outBlocksList = jobmgr.runSubJobs(userFunction, jobInputs)
-                for outputBlocks in outBlocksList:
-                    writeOutputBlocks(writerdict, outfiles, outputBlocks, 
-                                controls, info)
-            
-            lastpercent = updateProgress(controls, info, lastpercent)
-                
-        if controls.progress is not None:
-            controls.progress.setProgress(100)
 
-        closeOutputImages(writerdict, outfiles, controls)
+            inputBlocks = BlockAssociations()
+            inputBlocks.__dict__.update(blockdict)
+            if vecreader is not None:
+                vecblocks = vecreader.rasterize(info)
+                inputBlocks.__dict__.update(vecblocks)
+
+            # build a RIOSJobInfo with the params
+            jobInfo = RIOSJobInfo(info, inputBlocks, otherArgs)
+            jobInputs.append(jobInfo)
+
+        if len(jobInputs) == 0:
+            break
+
+        # Now call the function with those args
+        if jobmgr is None:
+            # single threaded - just call it
+            params = jobInfo.getFunctionParams()
+            userFunction(*params)
+            outputBlocks = jobInfo.getFunctionResult(params)
+            writeOutputBlocks(writerdict, outfiles, outputBlocks, 
+                            controls, info)
+        else:
+            # multi threaded - get the job manager to run jobs
+            outBlocksList = jobmgr.runSubJobs(userFunction, jobInputs)
+            for outputBlocks in outBlocksList:
+                writeOutputBlocks(writerdict, outfiles, outputBlocks, 
+                            controls, info)
+
+        lastpercent = updateProgress(controls, info, lastpercent)
+
+    if controls.progress is not None:
+        controls.progress.setProgress(100)
+
+    closeOutputImages(writerdict, outfiles, controls)
 
 
 def closeOutputImages(writerdict, outfiles, controls):
@@ -886,18 +889,17 @@ def opensAsRaster(filename):
     """
     Return True if filename opens as a GDAL raster, False otherwise
     """
-    usingExceptions = False
-    if hasattr(gdal, 'GetUseExceptions'):
-        usingExceptions = gdal.GetUseExceptions()
+    usingExceptions = gdal.GetUseExceptions()
     gdal.UseExceptions()
     try:
         ds = gdal.Open(filename)
     except Exception:
         ds = None
+    finally:
+        if not usingExceptions:
+            gdal.DontUseExceptions()
+
     opensOK = (ds is not None)
-    
-    if not usingExceptions:
-        gdal.DontUseExceptions()
     return opensOK
 
 
@@ -969,6 +971,7 @@ def makeInputImageLayerSelection(imagefiles, controls):
     for name in imagefiles.__dict__.keys():
         layerselection[name] = controls.getOptionForImagename('layerselection', name)
     return layerselection
+
 
 class RIOSJobInfo(jobmanager.JobInfo):
     """

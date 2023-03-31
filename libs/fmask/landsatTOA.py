@@ -121,7 +121,7 @@ def riosTOA(info, inputs, outputs, otherinputs):
     """
     nbands = inputs.infile.shape[0]
 
-    infile = inputs.infile.astype(numpy.float)
+    infile = inputs.infile.astype(numpy.float32)
     inIgnore = otherinputs.inNull
     if inIgnore is None:
         inIgnore = 0
@@ -198,7 +198,7 @@ def makeTOAReflectance(infile, mtlFile, anglesfile, outfile):
     controls.setStatsIgnore(otherinputs.outNull)
     controls.setCalcStats(False)
     controls.setOmitPyramids(True)
-    
+
     applier.apply(riosTOA, inputs, outputs, otherinputs, controls=controls)
     
     # Explicitly set the null value in the output

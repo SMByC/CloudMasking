@@ -31,6 +31,7 @@ try:
 except ImportError:
     import pickle
 
+
 def runJob(inf, outf, inFileName=None):
     """
     Run one job reading the pickle from inf

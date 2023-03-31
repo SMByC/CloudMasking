@@ -52,9 +52,9 @@ from . import rioserrors
 # Some constants relating to how we control the length of the output RAT (RCM = Row Count Method)
 RCM_EQUALS_INPUT = 0
 "Same as input"
-RCM_FIXED        = 1
+RCM_FIXED = 1
 "Fixed size"
-RCM_INCREMENT    = 2
+RCM_INCREMENT = 2
 "Incremented as required"
 
 
@@ -179,6 +179,7 @@ def apply(userFunc, inRats, outRats, otherargs=None, controls=None):
     if controls.progress is not None:
         controls.progress.setProgress(100)
 
+
 def copyRAT(input, output, progress=None):
     """
     Given an input and output filenames copies the RAT from 
@@ -199,6 +200,7 @@ def copyRAT(input, output, progress=None):
     if len(otherArgs.colNames) > 0:
         apply(internalCopyRAT, inRats, outRats, otherArgs, controls)
 
+
 def internalCopyRAT(info, inputs, outputs, otherArgs):
     """
     Called from copyRAT. Copies the RAT
@@ -209,6 +211,7 @@ def internalCopyRAT(info, inputs, outputs, otherArgs):
 
         usage = inputs.inclass.getUsage(columnName)
         outputs.outclass.setUsage(columnName, usage)
+
 
 class RatHandle(object):
     """
@@ -271,9 +274,9 @@ class RatApplierState(object):
         self.blockNdx = i
         self.startrow = i * requestedBlockLen
         endrow = self.startrow + requestedBlockLen - 1
-        endrow = min(endrow, self.rowCount-1)
+        endrow = min(endrow, self.rowCount - 1)
         self.blockLen = endrow - self.startrow + 1
-        self.inputRowNumbers = numpy.arange(self.startrow, self.startrow+self.blockLen)
+        self.inputRowNumbers = numpy.arange(self.startrow, self.startrow + self.blockLen)
 
 
 class RatApplierControls(object):
@@ -342,6 +345,7 @@ class RatApplierControls(object):
         """
         self.progress = progress
 
+
 class OtherArguments(object):
     """
     Simple empty class which can be used to pass arbitrary arguments in and 
@@ -393,8 +397,7 @@ class BlockCollection(object):
         for ratHandleName in outputRatHandleNameList:
             ratBlockAssoc = getattr(self, ratHandleName)
             ratBlockAssoc.finaliseRowCount()
-        
-            
+
 
 class RatBlockAssociation(object):
     """
@@ -527,7 +530,7 @@ class RatBlockAssociation(object):
             # Write the block of data into the RAT column
             columnNdx = self.Z__gdalHandles.columnNdxByName[columnName]
             if len(dataBlock) > 0:
-                if gdalRat.GetRowCount() < self.Z__outputRowCount+rowsToWrite:
+                if gdalRat.GetRowCount() < (self.Z__outputRowCount + rowsToWrite):
                     newOutputRowCount = self.guessNewRowCount(rowsToWrite, controls, state)
                     gdalRat.SetRowCount(newOutputRowCount)
 

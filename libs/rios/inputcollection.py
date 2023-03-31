@@ -23,18 +23,13 @@ of the inputs it has and deal with resampling.
 
 import os
 import sys
-import subprocess
+import tempfile
 
 from . import imageio
 from . import rioserrors
 from . import pixelgrid
-from .parallel.jobmanager import find_executable
 from osgeo import gdal
 
-if sys.platform == 'win32':
-    GDALWARP = 'gdalwarp.exe'
-else:
-    GDALWARP = 'gdalwarp'
 
 class InputIterator(object):
     """
@@ -52,10 +47,10 @@ class InputIterator(object):
     for each iteration
     
     """
-    def __init__(self,collection):
+    def __init__(self, collection):
         # collection = an InputCollection instance
         self.collection = collection
-        self.index = 0 # start at first one
+        self.index = 0  # start at first one
         
     def __iter__(self):
         # For iteration support - just return self.
@@ -99,7 +94,7 @@ class InputCollection(object):
     Use checkAllMatch() to see if resampling is necessary.
     
     """
-    def __init__(self,imageList,loggingstream=sys.stdout):
+    def __init__(self, imageList, loggingstream=sys.stdout):
         """
         Constructor. imageList is a list of file names that 
         need to be opened. An ImageOpenException() is raised
@@ -115,9 +110,9 @@ class InputCollection(object):
         self.imageList = []
         self.datasetList = []
         self.pixgridList = []
-        self.nullValList = [] # NB: a list of lists
-        self.dataTypeList = [] # numpy types
-        self.filestoremove = [] # any temp resampled files
+        self.nullValList = []  # NB: a list of lists
+        self.dataTypeList = []  # numpy types
+        self.filestoremove = []  # any temp resampled files
     
         # go thru each image
         for image in imageList:
@@ -134,7 +129,7 @@ class InputCollection(object):
             # Stash the null values for each band
             dsNullValList = []
             for i in range(ds.RasterCount):
-                nullVal = ds.GetRasterBand(i+1).GetNoDataValue()
+                nullVal = ds.GetRasterBand(i + 1).GetNoDataValue()
                 dsNullValList.append(nullVal)
                 
             # get the datatype of band 1
@@ -168,8 +163,7 @@ class InputCollection(object):
             del ds
         self.datasetList = []
         self.cleanup()
-        
-        
+
     def cleanup(self):
         """
         Removes any temp files. To be called from destructor?
@@ -195,7 +189,7 @@ class InputCollection(object):
         # see http://docs.python.org/reference/datamodel.html#emulating-container-types
         return len(self.datasetList)
         
-    def __getitem__(self,key):
+    def __getitem__(self, key):
         # see http://docs.python.org/reference/datamodel.html#emulating-container-types
         # for indexing, returns:
         # imagename, dataset, pixgrid,nullValList, datatype 
@@ -206,7 +200,7 @@ class InputCollection(object):
         pixgrid = self.pixgridList[key]
         nullValList = self.nullValList[key]
         datatype = self.dataTypeList[key]
-        return (image,ds,pixgrid,nullValList,datatype)
+        return (image, ds, pixgrid, nullValList, datatype)
         
     def __iter__(self):
         # see http://docs.python.org/reference/datamodel.html#emulating-container-types
@@ -251,7 +245,6 @@ class InputCollection(object):
         else:
             msg = 'Must pass either refpath or refPixgrid or all the other params'
             raise rioserrors.ParameterError(msg)
-            
 
     def resampleToReference(self, ds, nullValList, workingRegion, resamplemethod, 
             tempdir='.', useVRT=False, allowOverviewsGdalwarp=False):
@@ -270,32 +263,13 @@ class InputCollection(object):
         
         """
     
-        # get the name of the input file
-        infile = ds.GetDescription()
-
-        # create temporary .prf files with the source
-        # and destination WKT strings.
-        import tempfile
-        # the src prf file
-        (fileh,src_prf) = tempfile.mkstemp('.prf',dir=tempdir)
-        fileobj = os.fdopen(fileh,'w')
-        srcproj = self.specialProjFixes(ds.GetProjection())
-        fileobj.write(srcproj)
-        fileobj.close()
-        
-        # the dest prf file
-        (fileh,dest_prf) = tempfile.mkstemp('.prf',dir=tempdir)
-        fileobj = os.fdopen(fileh,'w')
-        fileobj.write( self.referencePixGrid.projection)
-        fileobj.close()
-
         if useVRT:
             ext = '.vrt'
         else:
             # get the driver from the input dataset
             # so we know the default extension, and type
             # for the temporary file.
-            driver = gdal.IdentifyDriver(infile)
+            driver = ds.GetDriver()
             drivermeta = driver.GetMetadata()
         
             # temp image file name - based on driver extension
@@ -303,106 +277,49 @@ class InputCollection(object):
             if gdal.DMD_EXTENSION in drivermeta:
                 ext = '.' + drivermeta[gdal.DMD_EXTENSION]
 
-        (fileh,temp_image) = tempfile.mkstemp(ext,dir=tempdir)
+        (fileh, temp_image) = tempfile.mkstemp(ext, dir=tempdir)
         os.close(fileh)
-          
-        # see if gdalwarp actually exists on the system so we can 
-        # provide a separate error if we can't find it vs there was an error
-        # running it.
-        gdalwarp_path = find_executable(GDALWARP)
-        if gdalwarp_path is None:
-            msg = 'Unable to find %s executable on the system' % GDALWARP
-            raise rioserrors.GdalWarpNotFoundError(msg)
 
-        # build the command line for gdalwarp
-        # as a list for subprocess - also a bit easier to read
-        cmdList = [gdalwarp_path]
-        
-        if not allowOverviewsGdalwarp:
-            cmdList.extend(['-ovr', 'NONE'])
-        
-        # source projection prf file
-        cmdList.append('-s_srs')
-        cmdList.append(src_prf)
-        
-        # destination projection prf file
-        cmdList.append('-t_srs')
-        cmdList.append(dest_prf)
-        
-        # extent. Note the use of repr() to avoid loss of precision. 
-        cmdList.append('-te')
-        for x in [workingRegion.xMin, workingRegion.yMin, workingRegion.xMax, workingRegion.yMax]:
-            cmdList.append(repr(x))
-        
-        # resolution. Note the use of repr() to avoid loss of precision. 
-        cmdList.append('-tr')
-        for x in [workingRegion.xRes, workingRegion.yRes]:
-            cmdList.append(repr(x))
-        
-        # output format
-        cmdList.append('-of')
+        overviewLevel = 'NONE'
+        if allowOverviewsGdalwarp:
+            overviewLevel = 'AUTO'
+            
         if useVRT:
             driverName = 'VRT'
         else:
             driverName = driver.ShortName
-        cmdList.append(driverName)
-        
-        
-        # resample method
-        cmdList.append('-r')
-        cmdList.append(resamplemethod)
-        
-        # null values
-        nullOptions = self.makeWarpNullOptions(nullValList)
-        if nullOptions is not None:
-            cmdList.extend(nullOptions)
-        
-        # don't have creation options for output like PyModeller did
-        # (after all we are just a reader) so don't specify any 
-        # creation options. Not sure if this will cause problems...
-        
-        # input and output files
-        cmdList.append(infile)
-        cmdList.append(temp_image)
-       
+            
+        nullValues = self.makeWarpNullOptions(nullValList)
+            
+        warpOptions = gdal.WarpOptions(overviewLevel=overviewLevel,
+            srcSRS=self.specialProjFixes(ds.GetProjection()),
+            dstSRS=self.referencePixGrid.projection,
+            outputBounds=[workingRegion.xMin, workingRegion.yMin, 
+                        workingRegion.xMax, workingRegion.yMax],
+            xRes=workingRegion.xRes, yRes=workingRegion.yRes,
+            format=driverName, resampleAlg=resamplemethod,
+            srcNodata=nullValues, dstNodata=nullValues)
+
         # delete later - add before the system call as if Ctrl-C is hit 
         # control does not always return
         self.filestoremove.append(temp_image)
-        self.filestoremove.append(src_prf)
-        self.filestoremove.append(dest_prf)
 
-        # run the command using subprocess
-        # send any output to our self.loggingstream
-        # - this is the main advantage over os.system()
-        returncode = subprocess.call(cmdList,
-                stdout=self.loggingstream,
-                stderr=self.loggingstream)
+        usingExceptions = gdal.GetUseExceptions()
+        gdal.UseExceptions()
+        try:
+            newds = gdal.Warp(temp_image, ds, options=warpOptions)
+        except Exception as e:
+            msg = ("Error while running gdal.Warp(): {}. Try setting the " +
+                "RIOS_NO_VRT_FOR_RESAMPLING environment variable " +
+                "to '1'").format(str(e))
+            raise rioserrors.GdalWarpError(msg)
+        finally:
+            if not usingExceptions:
+                gdal.DontUseExceptions()
 
-        if returncode != 0:
-            if returncode < 0:
-                # From the subprocess.call help:
-                # A negative value -N indicates that the child was 
-                # terminated by signal N (POSIX only).
-                msg = ("%s was terminated by signal %d. Try setting the "
-                    + "RIOS_NO_VRT_FOR_RESAMPLING environment variable "
-                    + "to '1'") % (GDALWARP, abs(returncode))
-                raise rioserrors.GdalWarpError(msg)
-            else:
-                msg = ("Error while running %s. Try setting the "
-                    + "RIOS_NO_VRT_FOR_RESAMPLING environment variable "
-                    + "to '1'") % GDALWARP
-                raise rioserrors.GdalWarpError(msg)
-          
-        # open the new temp file
-        newds = gdal.Open(temp_image)
-        if newds is None:
-            msg = 'Unable to Open %s' % temp_image
-            raise rioserrors.ImageOpenError(msg)
-        
         # return the new dataset
         return newds
-        
-            
+
     def resampleAllToReference(self, footprint, resamplemethodlist, tempdir='.', useVRT=False,
             allowOverviewsGdalwarp=False):
         """
@@ -429,7 +346,7 @@ class InputCollection(object):
                 (self.referencePixGrid.xRes, pixGrid.xRes, self.referencePixGrid.yRes, pixGrid.yRes))
                 allEqual = False
             elif not self.referencePixGrid.equalProjection(pixGrid):
-                self.loggingstream.write("Coordinate systems don't match %s %s\n"  % 
+                self.loggingstream.write("Coordinate systems don't match %s %s\n" % 
                 (self.referencePixGrid.projection, pixGrid.projection))
                 allEqual = False
             elif not self.referencePixGrid.alignedWith(pixGrid):
@@ -457,8 +374,7 @@ class InputCollection(object):
                 # close the original dataset - just using temp 
                 # resampled one from now.
                 del ds
-        
-    
+
     def checkAllMatch(self):
         """
         Returns whether any resampling necessary to match
@@ -491,11 +407,9 @@ class InputCollection(object):
         in the list is None, then we can't do it because the null 
         value is not set on the file, so the return value is None. 
     
-        Normally returns a list of arguments, formatted 
-        with -srcnodata and -dstnodata
+        Returns a list that can be passed to as srcNodata and
+        dstNodata params to gdal.Warp().
         
-        Note since this is to be passed to gdalwarp directly,
-        ie not thru a shell, we don't need to quote the nulls string.
     
         """
         haveNone = False
@@ -503,12 +417,11 @@ class InputCollection(object):
             if nullVal is None:
                 haveNone = True
         if haveNone:
-            optionList = None
+            allNulls = None
         else:
             nullValStrList = [str(n) for n in nullValList]
             allNulls = ' '.join(nullValStrList)
-            optionList = ['-srcnodata',allNulls,'-dstnodata',allNulls]
-        return optionList
+        return allNulls
 
     @staticmethod
     def specialProjFixes(projwkt):

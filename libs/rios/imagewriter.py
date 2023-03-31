@@ -33,6 +33,7 @@ from . import rat
 from . import calcstats
 from . import fileinfo
 
+
 def setDefaultDriver():
     """
     Sets some default values into global variables, defining
@@ -75,7 +76,7 @@ def setDefaultDriver():
         # To cope with the old behaviour, set something sensible for HFA, but not
         # otherwise
         if DEFAULTDRIVERNAME == "HFA":
-            DEFAULTCREATIONOPTIONS = ['COMPRESSED=TRUE','IGNOREUTM=TRUE']
+            DEFAULTCREATIONOPTIONS = ['COMPRESSED=TRUE', 'IGNOREUTM=TRUE']
         else:
             DEFAULTCREATIONOPTIONS = []
     
@@ -100,6 +101,7 @@ def setDefaultDriver():
             else:
                 dfltDriverOptions[drvrName] = optionsStr.split()
 
+
 setDefaultDriver()
     
 
@@ -109,11 +111,13 @@ def allnotNone(items):
             return False
     return True
     
+
 def anynotNone(items):
     for i in items:
         if i is not None:
             return True
     return False
+
 
 class ImageWriter(object):
     """
@@ -151,10 +155,9 @@ class ImageWriter(object):
     
     """
     def __init__(self, filename, drivername=DEFAULTDRIVERNAME, creationoptions=None,
-                    nbands=None, gdaldatatype=None, firstblock=None, 
-                    info=None, 
-                    xsize=None, ysize=None, transform=None, projection=None,
-                        windowxsize=None, windowysize=None, overlap=None):
+            nbands=None, gdaldatatype=None, firstblock=None, 
+            info=None, xsize=None, ysize=None, transform=None, projection=None,
+            windowxsize=None, windowysize=None, overlap=None):
         """
         filename is the output file to be created. Set driver to name of
         GDAL driver, default it HFA. creationoptions will also need to be
@@ -172,7 +175,8 @@ class ImageWriter(object):
         
         """
         self.filename = filename
-        noninfoitems = [xsize,ysize,transform,projection,windowxsize,windowysize,overlap]
+        noninfoitems = [xsize, ysize, transform, projection, windowxsize,
+            windowysize, overlap]
         if info is None:
             # check we have the other args
             if not allnotNone(noninfoitems):
@@ -192,30 +196,30 @@ class ImageWriter(object):
                 raise rioserrors.ParameterError(msg)
                     
             # grab what we need from the info object
-            (xsize,ysize) = info.getTotalSize()
+            (xsize, ysize) = info.getTotalSize()
             transform = info.getTransform()
             projection = info.getProjection()
-            (self.windowxsize,self.windowysize) = info.getWindowSize()
+            (self.windowxsize, self.windowysize) = info.getWindowSize()
             self.overlap = info.getOverlapSize()
-            (self.xtotalblocks,self.ytotalblocks) = info.getTotalBlocks()
+            (self.xtotalblocks, self.ytotalblocks) = info.getTotalBlocks()
 
-        if firstblock is None and not allnotNone([nbands,gdaldatatype]):
+        if firstblock is None and not allnotNone([nbands, gdaldatatype]):
             msg = 'if not passing firstblock, must pass nbands and gdaltype'
             raise rioserrors.ParameterError(msg)
                         
-        elif firstblock is not None and anynotNone([nbands,gdaldatatype]):
+        elif firstblock is not None and anynotNone([nbands, gdaldatatype]):
             msg = 'Must pass one either firstblock or nbands and gdaltype, not all of them'
             raise rioserrors.ParameterError(msg)
                         
         if firstblock is not None:
-        	# RIOS only works with 3-d image arrays, where the first dimension is 
+            # RIOS only works with 3-d image arrays, where the first dimension is 
             # the number of bands. Check that this is what the user gave us to write. 
             if len(firstblock.shape) != 3:
                 raise rioserrors.ArrayShapeError(
                     "Shape of array to write must be 3-d. Shape is actually %s"%repr(firstblock.shape))
 
             # get the number of bands out of the block
-            (nbands,y,x) = firstblock.shape
+            (nbands, y, x) = firstblock.shape
             # and the datatype
             gdaldatatype = imageio.NumpyTypeToGDALType(firstblock.dtype)
 
@@ -265,6 +269,10 @@ class ImageWriter(object):
                 ds = gdal.Open(str(filename))
             except RuntimeError:
                 ds = None
+            finally:
+                # Restore exception-use state
+                if not usingExceptions:
+                    gdal.DontUseExceptions()
 
             if ds is not None:
                 # It is apparently a valid GDAL file, so get the driver appropriate for it.
@@ -277,10 +285,6 @@ class ImageWriter(object):
                 # directly. 
                 os.remove(filename)
 
-            # Restore exception-use state
-            if not usingExceptions:
-                gdal.DontUseExceptions()
-            
     def getGDALDataset(self):
         """
         Returns the underlying GDAL dataset object
@@ -298,9 +302,9 @@ class ImageWriter(object):
         Sets the output file to thematic. If file is multi-layer,
         then all bands are set to thematic. 
         """
-        for i in range(1, self.ds.RasterCount+1):
+        for i in range(1, self.ds.RasterCount + 1):
             band = self.ds.GetRasterBand(i)
-            band.SetMetadataItem('LAYER_TYPE','thematic')
+            band.SetMetadataItem('LAYER_TYPE', 'thematic')
                         
     def setColorTable(self, colortable, band=1):
         """
@@ -311,7 +315,7 @@ class ImageWriter(object):
         colorTableArray = numpy.array(colortable)
         rat.setColorTable(self.ds, colorTableArray, layernum=band)
         
-    def setLayerNames(self,names):
+    def setLayerNames(self, names):
         """
         Sets the output layer names. Pass a list
         of layer names, one for each output band
@@ -347,8 +351,8 @@ class ImageWriter(object):
         in the file
         """
         # check they asked for block is valid
-        brxcoord = xcoord + block.shape[-1] - self.overlap*2
-        brycoord = ycoord + block.shape[-2] - self.overlap*2
+        brxcoord = xcoord + block.shape[-1] - self.overlap * 2
+        brycoord = ycoord + block.shape[-2] - self.overlap * 2
         if brxcoord > self.ds.RasterXSize or brycoord > self.ds.RasterYSize:
             raise rioserrors.OutsideImageBoundsError()
             
@@ -433,7 +437,7 @@ class ImageWriter(object):
             for i in range(imgInfo.rasterCount):
                 numEntries = int(imgStats[i].max + 1)
                 clrTbl = rat.genColorTable(numEntries, autoColorTableType)
-                band = ds.GetRasterBand(i+1)
+                band = ds.GetRasterBand(i + 1)
                 ratObj = band.GetDefaultRAT()
                 redIdx, redNew = calcstats.findOrCreateColumn(ratObj, gdal.GFU_Red, "Red", gdal.GFT_Integer)
                 greenIdx, greenNew = calcstats.findOrCreateColumn(ratObj, gdal.GFU_Green, "Green", gdal.GFT_Integer)
@@ -504,7 +508,8 @@ class ImageWriter(object):
                 raise rioserrors.ImageOpenError(msg)
 
             # The GDAL GTiff driver will complain if GTiff block sizes are not powers of 2
-            def isPowerOf2(n): return (((n-1) & n) == 0)
+            def isPowerOf2(n):
+                return (((n - 1) & n) == 0)
             if not (isPowerOf2(tiffBlockX) and isPowerOf2(tiffBlockY)):
                 msg = "GTiff block sizes are {}. Must be powers of 2. ".format((tiffBlockX, tiffBlockY))
                 if resettingTiffBlocksize:

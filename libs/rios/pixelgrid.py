@@ -30,6 +30,7 @@ from . import fileinfo
 from osgeo import osr
 from osgeo import gdal
 
+
 class PixelGridDefn(object):
     """
     Definition of a pixel grid, including
@@ -130,8 +131,7 @@ class PixelGridDefn(object):
             aligned = False
 
         return aligned
-        
-        
+
     def intersection(self, other):
         """
         Returns a new instance which is the intersection 
@@ -171,8 +171,7 @@ class PixelGridDefn(object):
         newPixelGrid = PixelGridDefn(xMin=xMin, xMax=xMax, yMin=yMin, yMax=yMax, 
             xRes=self.xRes, yRes=self.yRes, projection=self.projection)
         return newPixelGrid
-        
-    
+
     def isComparable(self, other):
         """
         Checks whether self is comparable with other. Returns
@@ -188,7 +187,7 @@ class PixelGridDefn(object):
         if not self.equalProjection(other):
             comparable = False
         return comparable
-    
+
     def equalPixSize(self, other):
         """
         Returns True if pixel size of self is equal to that of other. 
@@ -230,16 +229,16 @@ class PixelGridDefn(object):
         ytol = pixtolerance * self.yRes
         
         points = []
-        points.append((self.xMin,self.yMax)) # upper left
-        points.append((self.xMax,self.yMax)) # upper right
-        points.append((self.xMax,self.yMin)) # bottom right
-        points.append((self.xMin,self.yMin)) # bottom left
+        points.append((self.xMin, self.yMax))  # upper left
+        points.append((self.xMax, self.yMax))  # upper right
+        points.append((self.xMax, self.yMin))  # bottom right
+        points.append((self.xMin, self.yMin))  # bottom left
         points.append((self.xMin + ((self.xMax - self.xMin) / 2), 
-                        self.yMin + ((self.yMax - self.yMin) / 2)))  # middle
+            self.yMin + ((self.yMax - self.yMin) / 2)))  # middle
 
         equal = True
-        for (x,y) in points:
-            otherx,othery,z = transform.TransformPoint(x,y)
+        for (x, y) in points:
+            (otherx, othery, z) = transform.TransformPoint(x, y)
             if abs(x - otherx) > xtol or abs(y - othery) > ytol:
                 equal = False
                 break
@@ -268,9 +267,9 @@ class PixelGridDefn(object):
         t = osr.CoordinateTransformation(srSelf, srTarget)
         
         (tl_x, tl_y, z) = t.TransformPoint(self.xMin, self.yMax)
-        (bl_x, bl_y, z) = t.TransformPoint(self.xMin ,self.yMin)
+        (bl_x, bl_y, z) = t.TransformPoint(self.xMin, self.yMin)
         (tr_x, tr_y, z) = t.TransformPoint(self.xMax, self.yMax)
-        (br_x, br_y, z) = t.TransformPoint(self.xMax ,self.yMin)
+        (br_x, br_y, z) = t.TransformPoint(self.xMax, self.yMin)
         
         xMin = min(tl_x, bl_x)
         xMax = max(tr_x, br_x)
@@ -337,7 +336,6 @@ class PixelGridDefn(object):
         numWholePix = PixelGridDefn.roundAway(numPix)
         snappedVal = valOnGrid + numWholePix * res
         return snappedVal
-
 
 
 def findCommonRegion(gridList, refGrid, combine=imageio.INTERSECTION):

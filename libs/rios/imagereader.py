@@ -41,6 +41,7 @@ DEFAULTWINDOWYSIZE = int(os.getenv('RIOS_DFLT_BLOCKYSIZE', default=256))
 DEFAULTOVERLAP = int(os.getenv('RIOS_DFLT_OVERLAP', default=0))
 DEFAULTLOGGINGSTREAM = sys.stdout
 
+
 class ImageIterator(object):
     """
     Class to allow iteration across an ImageReader instance.
@@ -57,10 +58,10 @@ class ImageIterator(object):
     array for each iteration
     
     """
-    def __init__(self,reader):
+    def __init__(self, reader):
         # reader = an ImageReader instance
         self.reader = reader
-        self.nblock = 0 # start at first block
+        self.nblock = 0  # start at first block
         
     def __iter__(self):
         # For iteration support - just return self.
@@ -87,6 +88,7 @@ class ImageIterator(object):
         
         return returnTuple
 
+
 class ImageReader(object):
     """
     Class that reads a single file, a list or dictionary of files and 
@@ -105,10 +107,10 @@ class ImageReader(object):
 
     """
     def __init__(self, imageContainer,
-				footprint=DEFAULTFOOTPRINT,
-				windowxsize=DEFAULTWINDOWXSIZE, windowysize=DEFAULTWINDOWYSIZE,
-				overlap=DEFAULTOVERLAP, statscache=None,
-                loggingstream=sys.stdout, layerselection=None):
+            footprint=DEFAULTFOOTPRINT,
+            windowxsize=DEFAULTWINDOWXSIZE, windowysize=DEFAULTWINDOWYSIZE,
+            overlap=DEFAULTOVERLAP, statscache=None,
+            loggingstream=sys.stdout, layerselection=None):
         """
         imageContainer is a filename or list or dictionary that contains
         the filenames of the images to be read.
@@ -150,7 +152,7 @@ class ImageReader(object):
         # type of container they passed in
         self.imageContainer = imageContainer
       
-        if isinstance(imageContainer,dict):
+        if isinstance(imageContainer, dict):
             # Convert the given imageContainer into a list suitable for
             # the standard InputCollection. 
             imageList = []
@@ -180,8 +182,7 @@ class ImageReader(object):
                 else:
                     self.layerselectionList.append(thisLayerSelection)
 
-        
-        elif isinstance(imageContainer,basestring):
+        elif isinstance(imageContainer, basestring):
             # they passed a string, just make a list out of it
             imageList = [imageContainer]
             if layerselection is not None:
@@ -197,7 +198,7 @@ class ImageReader(object):
                 self.layerselectionList = [None for fn in imageList]
         
         # create an InputCollection with our inputs
-        self.inputs = inputcollection.InputCollection(imageList,loggingstream=loggingstream)
+        self.inputs = inputcollection.InputCollection(imageList, loggingstream=loggingstream)
         
         # save the other vars
         self.footprint = footprint
@@ -225,12 +226,12 @@ class ImageReader(object):
             self.prepare()
 
         # get the total number of blocks for image            
-        (xtotalblocks,ytotalblocks) = self.info.getTotalBlocks()
+        (xtotalblocks, ytotalblocks) = self.info.getTotalBlocks()
         
         # return the total number of blocks as our len()
         return xtotalblocks * ytotalblocks
         
-    def __getitem__(self,key):
+    def __getitem__(self, key):
         # see http://docs.python.org/reference/datamodel.html#emulating-container-types
         # for indexing, returns tuple from readBlock()
 
@@ -242,7 +243,7 @@ class ImageReader(object):
         # back from the end           
         if key < 0:
             # get total number of blocks
-            (xtotalblocks,ytotalblocks) = self.info.getTotalBlocks()
+            (xtotalblocks, ytotalblocks) = self.info.getTotalBlocks()
             # add the key (remember, its negative)
             key = (xtotalblocks * ytotalblocks) + key
             if key < 0:
@@ -259,7 +260,6 @@ class ImageReader(object):
             raise KeyError()
             
         return returnTuple
-            
 
     def __iter__(self):
         # see http://docs.python.org/reference/datamodel.html#emulating-container-types
@@ -377,7 +377,7 @@ class ImageReader(object):
         self.info = readerinfo.ReaderInfo(self.workingGrid, self.statscache, self.ratcache,
                         self.windowxsize, self.windowysize, self.overlap, self.loggingstream)
         
-    def readBlock(self,nblock):
+    def readBlock(self, nblock):
         """
         Read a block. This is normally called from the
         __getitem__ method when this class is indexed, 
@@ -410,10 +410,10 @@ class ImageReader(object):
         info = copy.copy(self.info)
         
         # get the size of the are we are to read
-        (xsize,ysize) = info.getTotalSize()
+        (xsize, ysize) = info.getTotalSize()
         
         # get the number of blocks are to read
-        (xtotalblocks,ytotalblocks) = info.getTotalBlocks()
+        (xtotalblocks, ytotalblocks) = info.getTotalBlocks()
         
         # check they asked for block is valid
         if nblock >= (xtotalblocks * ytotalblocks):
@@ -424,38 +424,38 @@ class ImageReader(object):
         xblock = nblock % xtotalblocks
         
         # set this back to our copy of the info object
-        info.setBlockCount(xblock,yblock)
+        info.setBlockCount(xblock, yblock)
     
         # calculate the coords of this block in pixels
         xcoord = xblock * self.windowxsize
         ycoord = yblock * self.windowysize
         
         # convert this to world coords
-        blocktl = imageio.pix2wld( info.getTransform(), xcoord, ycoord )
+        blocktl = imageio.pix2wld(info.getTransform(), xcoord, ycoord)
 
         # work out the bottom right coord for this block
-        nBlockBottomX = (( xblock + 1 ) * self.windowxsize)
-        nBlockBottomY = (( yblock + 1 ) * self.windowysize)
+        nBlockBottomX = ((xblock + 1) * self.windowxsize)
+        nBlockBottomY = ((yblock + 1) * self.windowysize)
         
         # make adjuctment if we are at the edge of the image
         # and there are smaller blocks
         if nBlockBottomX > xsize:
-          nBlockBottomX = xsize
+            nBlockBottomX = xsize
         if nBlockBottomY > ysize:
-          nBlockBottomY = ysize
+            nBlockBottomY = ysize
 
         # work out the world coords for the bottom right
-        blockbr = imageio.pix2wld( info.getTransform(), nBlockBottomX, nBlockBottomY )
+        blockbr = imageio.pix2wld(info.getTransform(), nBlockBottomX, nBlockBottomY)
         
         # set this back to our copy of the info object
-        info.setBlockBounds(blocktl,blockbr)
+        info.setBlockBounds(blocktl, blockbr)
 
         # work out number of pixels of this block
         blockwidth = nBlockBottomX - xcoord
         blockheight = nBlockBottomY - ycoord
         
         # set this back to our copy of the info object
-        info.setBlockSize(blockwidth,blockheight)
+        info.setBlockSize(blockwidth, blockheight)
         
         # start creating our tuple. Start with an empty list
         # and append the blocks.
@@ -465,16 +465,17 @@ class ImageReader(object):
             i = 0
             
             # read all the files using our iterable InputCollection
-            for (image,ds,pixgrid,nullValList,datatype) in self.inputs:
+            for (image, ds, pixgrid, nullValList, datatype) in self.inputs:
             
                 # get the pixel coords for this block for this file
-                tl = imageio.wld2pix(pixgrid.makeGeoTransform(),blocktl.x,blocktl.y)
+                tl = imageio.wld2pix(pixgrid.makeGeoTransform(), blocktl.x, blocktl.y)
             
                 # just read in the dataset (will return how many layers it has)
                 # will just use the datatype of the image
-                block = self.readBlockWithMargin(ds,int(round(tl.x)),int(round(tl.y)),blockwidth,blockheight,
-                             datatype, margin=self.overlap, nullValList=nullValList,
-                             layerselection=self.layerselectionList[i])
+                block = self.readBlockWithMargin(ds, int(round(tl.x)), int(round(tl.y)),
+                    blockwidth, blockheight, datatype, margin=self.overlap, 
+                    nullValList=nullValList, 
+                    layerselection=self.layerselectionList[i])
 
                 # add this block to our list
                 blockList.append(block)
@@ -491,9 +492,8 @@ class ImageReader(object):
             # sure temporary resampled files are deleted.
             # doesn't seem the destructor is called in this case.
             self.inputs.cleanup()
-        
-        
-        if isinstance(self.imageContainer,dict):
+
+        if isinstance(self.imageContainer, dict):
             # we need to use the original keys passed in
             # to the constructor and return a dictionary
             blockDict = {}
@@ -513,7 +513,7 @@ class ImageReader(object):
             # blockContainer is a dictionary
             blockContainer = blockDict
          
-        elif isinstance(self.imageContainer,basestring):
+        elif isinstance(self.imageContainer, basestring):
             # blockContainer is just a single block
             blockContainer = blockList[0]
 
@@ -524,8 +524,7 @@ class ImageReader(object):
         # return a tuple with the info object and
         # our blockContainer
         return (info, blockContainer)
-        
-        
+
     @staticmethod
     def readBlockWithMargin(ds, xoff, yoff, xsize, ysize, datatype, margin=0, nullValList=None,
             layerselection=None):
@@ -547,7 +546,7 @@ class ImageReader(object):
         
         """
         if layerselection is None:
-            layerselection = [i+1 for i in range(ds.RasterCount)]
+            layerselection = [i + 1 for i in range(ds.RasterCount)]
         nLayers = len(layerselection)
         
         # Create the final array, with margin, but filled with the null value. 
@@ -570,11 +569,10 @@ class ImageReader(object):
                 block_margin.fill(fillValList[0])
             else:
                 for i in range(nLayers):
-                    block_margin[i].fill(fillValList[layerselection[i]-1])
+                    block_margin[i].fill(fillValList[layerselection[i] - 1])
 #                for (i, fillVal) in enumerate(fillValList):
 #                    block_margin[i].fill(fillVal)
-        
-        
+
         # Calculate the bounds of the block which we will actually read from the file,
         # based on what we have been asked for, what margin size, and how close we
         # are to the edge of the file. 

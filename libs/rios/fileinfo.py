@@ -31,12 +31,6 @@ from osgeo import osr
 from . import rioserrors
 from . import rat
 
-# List of datatype names corresponding to GDAL datatype numbers. 
-# The index of this list corresponds to the gdal datatype number. Not sure if this 
-# is a bit obscure and cryptic.....
-GDALdatatypeNames = ['Unknown', 'UnsignedByte', 'UnsignedInt16', 'SignedInt16', 
-    'UnsignedInt32', 'SignedInt32', 'Float32', 'Float64', 'ComplexInt16', 'ComplexInt32', 
-    'ComplexFloat32', 'ComplexFloat64']
 
 class ImageInfo(object):
     """
@@ -108,11 +102,10 @@ class ImageInfo(object):
         
         # Pixel datatype, stored as a GDAL enum value. 
         self.dataType = ds.GetRasterBand(1).DataType
-        self.dataTypeName = GDALdatatypeNames[self.dataType]
+        self.dataTypeName = gdal.GetDataTypeName(self.dataType)
         
         del ds
-    
-    
+
     def __str__(self):
         """
         Print a readable version of the object
@@ -125,8 +118,7 @@ class ImageInfo(object):
             lines.append("%-20s%s" % (attribute, value))
         result = '\n'.join(lines)
         return result
-    
-    
+
     def layerNumberFromName(self, layerName):
         """
         Return the layer number corresponding to the given layer name.
@@ -140,8 +132,7 @@ class ImageInfo(object):
             ndx = -1
         layerNumber = ndx + 1
         return layerNumber
-    
-    
+
     def layerNameFromNumber(self, layerNumber):
         """
         Return the layer name corresponding to the given layer number. 
@@ -287,7 +278,7 @@ class ImageFileStats(object):
         ds = gdal.Open(filename)
         self.statsList = []
         for i in range(ds.RasterCount):
-            bandObj = ds.GetRasterBand(i+1)
+            bandObj = ds.GetRasterBand(i + 1)
             self.statsList.append(ImageLayerStats(bandObj))
         del ds
     
@@ -324,10 +315,12 @@ class VectorFileInfo(object):
 
 
 geometryTypeStringDict = {
-    1:'Point',
-    2:'Line',
-    3:'Polygon'
+    1: 'Point',
+    2: 'Line',
+    3: 'Polygon'
 }
+
+
 class VectorLayerInfo(object):
     """
     Hold useful general information about a single vector layer. 
@@ -437,13 +430,13 @@ class ColumnStats(object):
         # Loop over all blocks of data
         for i in range(numBlocks):
             startrow = i * blocklen
-            endrow = min(startrow + blocklen - 1, numRows-1)
-            datablock = gdalRat.ReadAsArray(columnNdx, start=startrow, length=(endrow-startrow+1))
-            histoblock = gdalRat.ReadAsArray(histoColumnNdx, start=startrow, length=(endrow-startrow+1))
+            endrow = min(startrow + blocklen - 1, numRows - 1)
+            datablock = gdalRat.ReadAsArray(columnNdx, start=startrow, length=(endrow - startrow + 1))
+            histoblock = gdalRat.ReadAsArray(histoColumnNdx, start=startrow, length=(endrow - startrow + 1))
         
             imgNullVal = band.GetNoDataValue()
             if not includeImageNull and imgNullVal is not None:
-                pixelvals = numpy.arange(startrow, endrow+1, dtype=numpy.uint32)
+                pixelvals = numpy.arange(startrow, (endrow + 1), dtype=numpy.uint32)
                 nonNullMask = (pixelvals != imgNullVal)
                 datablock = datablock[nonNullMask]
                 histoblock = histoblock[nonNullMask]
@@ -497,8 +490,7 @@ class ColumnStats(object):
             if gdalRat.GetNameOfCol(i) == columnName:
                 columnNdx = i
         return columnNdx
-    
-    
+
     def __str__(self):
         "Readable string representation of stats"
         fmt = "Count: %s, Mean: %s, Stddev: %s, Min: %s, Max: %s, Median: %s, Mode: %s"

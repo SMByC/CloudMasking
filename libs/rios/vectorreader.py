@@ -37,16 +37,17 @@ import numpy
 
 DEFAULTBURNVALUE = 1
 
+
 class Vector(object):
     """
     Class that holds information about a vector dataset and how it
     should be rasterized. Used for passing to VectorReader.
     """
     def __init__(self, filename, inputlayer=0, burnvalue=DEFAULTBURNVALUE,
-                    attribute=None, filter=None, alltouched=False, datatype=numpy.uint8, 
-                    tempdir='.', driver=DEFAULTDRIVERNAME, 
-                    driveroptions=DEFAULTCREATIONOPTIONS,
-                    nullval=0):
+            attribute=None, filter=None, alltouched=False, datatype=numpy.uint8, 
+            tempdir='.', driver=DEFAULTDRIVERNAME, 
+            driveroptions=DEFAULTCREATIONOPTIONS,
+            nullval=0):
         """
         Constructs a Vector object. filename should be a path to an OGR readable
         dataset. 
@@ -100,7 +101,7 @@ class Vector(object):
         self.driveroptions = driveroptions
 
         self.tempdir = tempdir
-        (fileh,self.temp_image) = tempfile.mkstemp(ext,dir=tempdir)
+        (fileh, self.temp_image) = tempfile.mkstemp(ext, dir=tempdir)
         # close the file so we can get GDAL to clobber it
         # probably a security hole - not sure
         os.close(fileh)
@@ -176,7 +177,7 @@ class Vector(object):
         else:
             projWKT = proj
         
-        (fd, tmpVectorfile) = tempfile.mkstemp(prefix='tmp', suffix='.shp',dir=self.tempdir)
+        (fd, tmpVectorfile) = tempfile.mkstemp(prefix='tmp', suffix='.shp', dir=self.tempdir)
         os.close(fd)
         # This is naughty, but otherwise ogr2ogr won't work
         os.remove(tmpVectorfile)
@@ -188,7 +189,7 @@ class Vector(object):
         # sometimes warnings etc printed to stderr so we can't
         # rely on that for testing success. Use returncode instead.
         if proc.returncode != 0:
-            msg = "Trouble reprojecting vector\n\n"+stdoutStr+'\n'+stderrStr
+            msg = "Trouble reprojecting vector\n\n" + stdoutStr + '\n' + stderrStr
             raise rioserrors.VectorProjectionError(msg)
         
         self.reprojectedFile = tmpVectorfile
@@ -208,6 +209,7 @@ def rasterizeProgressFunc(value, string, progressObj):
     """
     percent = int(value * 100)
     progressObj.setProgress(percent)
+
 
 class VectorReader(object):
     """
@@ -266,7 +268,7 @@ class VectorReader(object):
                 outds.SetProjection(projection)
                 # Fill raster with vector null value
                 for i in range(numLayers):
-                    band = outds.GetRasterBand(i+1)
+                    band = outds.GetRasterBand(i + 1)
                     # Must be passed a float due to way SWIG bindings work
                     band.Fill(float(vector.nullval))
 

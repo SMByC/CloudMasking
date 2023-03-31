@@ -28,6 +28,7 @@ import numpy
 from . import imageio
 from . import rat
 
+
 class StatisticsCache(object):
     """
     Allows global statistics for all the files used to be cached
@@ -38,29 +39,30 @@ class StatisticsCache(object):
     def __init__(self):
         self.stats = {}
 
-    def getStats(self,fname,band,ignore):
+    def getStats(self, fname, band, ignore):
         """
         Returns tuple with (min,max,mean,stddev) if 
         previously cached, None otherwise.
         """
         if ignore is None:
-            key = '%s %d' % (fname,band)
+            key = '%s %d' % (fname, band)
         else:
-            key = '%s %d %f' % (fname,band,ignore)
+            key = '%s %d %f' % (fname, band, ignore)
         if key in self.stats:
             return self.stats[key]
         else:
             return None
 
-    def setStats(self,fname,band,ignore,stats):
+    def setStats(self, fname, band, ignore, stats):
         """
         Sets tuple with (min,max,mean,stddev) in cache
         """
         if ignore is None:
-            key = '%s %d' % (fname,band)
+            key = '%s %d' % (fname, band)
         else:
-            key = '%s %d %f' % (fname,band,ignore)
+            key = '%s %d %f' % (fname, band, ignore)
         self.stats[key] = stats
+
 
 class AttributeTableCache(object):
     """
@@ -99,8 +101,7 @@ class ReaderInfo(object):
     
     """
     def __init__(self, workingGrid, statscache, ratcache, 
-                    windowxsize, windowysize,
-                    overlap, loggingstream):
+            windowxsize, windowysize, overlap, loggingstream):
                     
         self.loggingstream = loggingstream
         # grab the working grid
@@ -144,7 +145,7 @@ class ReaderInfo(object):
         # that corresponds to it, and the original filename
         self.blocklookup = {}
         
-    def setBlockDataset(self,block,dataset,filename):
+    def setBlockDataset(self, block, dataset, filename):
         """
         Saves a match between the numpy block read
         and it's GDAL dataset. So we can look up the
@@ -154,7 +155,7 @@ class ReaderInfo(object):
         context is not sensible. 
         
         """
-        self.blocklookup[id(block)] = (dataset,filename)
+        self.blocklookup[id(block)] = (dataset, filename)
         
     def getWindowSize(self):
         """
@@ -177,7 +178,7 @@ class ReaderInfo(object):
         Returns the total size (in pixels) of the dataset
         being processed
         """
-        return (self.xsize,self.ysize)
+        return (self.xsize, self.ysize)
         
     def getTransform(self):
         """
@@ -198,9 +199,9 @@ class ReaderInfo(object):
         Returns the total number of blocks the dataset
         has been split up into for processing
         """
-        return (self.xtotalblocks,self.ytotalblocks)
+        return (self.xtotalblocks, self.ytotalblocks)
 
-    def setBlockSize(self,blockwidth,blockheight):
+    def setBlockSize(self, blockwidth, blockheight):
         """
         Sets the size of the current block
 
@@ -220,9 +221,9 @@ class ReaderInfo(object):
         for the current block. Mostly the same as the window size, 
         except on the edge of the raster. 
         """
-        return (self.blockwidth,self.blockheight)
+        return (self.blockwidth, self.blockheight)
 
-    def setBlockBounds(self,blocktl,blockbr):
+    def setBlockBounds(self, blocktl, blockbr):
         """
         Sets the coordinate bounds of the current block
 
@@ -249,17 +250,17 @@ class ReaderInfo(object):
         be what one wants. 
         
         """
-        (tl, br) = (self.blocktl, self.blockbr)
+        (tl, _) = (self.blocktl, self.blockbr)
         (nCols, nRows) = self.getBlockSize()
-        nCols += 2*self.overlap
-        nRows += 2*self.overlap
+        nCols += 2 * self.overlap
+        nRows += 2 * self.overlap
         (xRes, yRes) = self.getPixelSize()
         (rowNdx, colNdx) = numpy.mgrid[0:nRows, 0:nCols]
-        xBlock = tl.x - self.overlap*xRes + xRes/2.0 + colNdx * xRes
-        yBlock = tl.y + self.overlap*yRes - yRes/2.0 - rowNdx * yRes
+        xBlock = tl.x - self.overlap * xRes + xRes / 2.0 + colNdx * xRes
+        yBlock = tl.y + self.overlap * yRes - yRes / 2.0 - rowNdx * yRes
         return (xBlock, yBlock)
         
-    def setBlockCount(self,xblock,yblock):
+    def setBlockCount(self, xblock, yblock):
         """
         Sets the count of the current block
 
@@ -274,13 +275,13 @@ class ReaderInfo(object):
         """
         Gets the count of the current block
         """
-        return (self.xblock,self.yblock)
+        return (self.xblock, self.yblock)
     
     def getPixelSize(self):
         """
         Gets the current pixel size and returns it as a tuple (x and y)
         """
-        return (self.workingGrid.xRes,self.workingGrid.yRes)
+        return (self.workingGrid.xRes, self.workingGrid.yRes)
     
     def getPixRowColBlock(self, x, y):
         """
@@ -315,7 +316,7 @@ class ReaderInfo(object):
         
         return (blockRow, blockCol)
     
-    def getPixColRow(self,x,y):
+    def getPixColRow(self, x, y):
         """
         This function is for internal use only. The user should
         be looking at getBlockCoordArrays() or getPixRowColBlock()
@@ -339,7 +340,7 @@ class ReaderInfo(object):
         """
         col = self.xblock * self.windowxsize + x
         row = self.yblock * self.windowysize + y
-        return (col,row)
+        return (col, row)
 
     def isFirstBlock(self):
         """
@@ -355,30 +356,29 @@ class ReaderInfo(object):
         ytotalblocksminus1 = self.ytotalblocks - 1
         return self.xblock == xtotalblocksminus1 and self.yblock == ytotalblocksminus1
 
-    def getFilenameFor(self,block):
+    def getFilenameFor(self, block):
         """
         Get the input filename of a dataset
         """
         # can't use ds.GetDescription() as may have been resampled
-        (ds,fname) = self.blocklookup[id(block)]
+        (ds, fname) = self.blocklookup[id(block)]
         return fname
 
-
-    def getGDALDatasetFor(self,block):
+    def getGDALDatasetFor(self, block):
         """
         Get the underlying GDAL handle of a dataset
         """
-        (ds,fname) = self.blocklookup[id(block)]
+        (ds, fname) = self.blocklookup[id(block)]
         return ds
 
-    def getGDALBandFor(self,block,band):
+    def getGDALBandFor(self, block, band):
         """
         Get the underlying GDAL handle for a band of a dataset
         """
         ds = self.getGDALDatasetFor(block)
         return ds.GetRasterBand(band)
 
-    def getNoDataValueFor(self,block,band=1):
+    def getNoDataValueFor(self, block, band=1):
         """
         Returns the 'no data' value for the dataset
         underlying the block. This should be the
@@ -412,7 +412,7 @@ class ReaderInfo(object):
         Gets the attribute for the given block and column name
         Caches columns so only first call actually extracts data
         """
-        (ds,fname) = self.blocklookup[id(block)]
+        (ds, fname) = self.blocklookup[id(block)]
 
         column = self.ratcache.getColumn(fname, band, colName)
         if column is None:
@@ -421,18 +421,18 @@ class ReaderInfo(object):
         
         return column
         
-    def global_stats(self,block,band=1,ignore=None):
+    def global_stats(self, block, band=1, ignore=None):
         """
         Returns the (min,max,mean,stddev) for the whole band
         """
         fname = self.getFilenameFor(block)
         
         # see if we have the stats in our cache
-        values = self.statscache.getStats(fname,band,ignore)
+        values = self.statscache.getStats(fname, band, ignore)
         
         if values is None:
             # no, get the gdal band
-            bandhandle = self.getGDALBandFor(block,band)
+            bandhandle = self.getGDALBandFor(block, band)
             
             # set ignore value if specified so that 
             # GDAL ignores it when calculating stats
@@ -442,33 +442,33 @@ class ReaderInfo(object):
             self.loggingstream.write("Calculating global statistics...\n")
                 
             # get GDAL to calc the stats
-            values = bandhandle.GetStatistics(False,True)
+            values = bandhandle.GetStatistics(False, True)
             
             # set it back in our cache for next time
-            self.statscache.setStats(fname,band,ignore,values)
+            self.statscache.setStats(fname, band, ignore, values)
             
         return values
 
-    def global_min(self,block,band=1,ignore=None):
+    def global_min(self, block, band=1, ignore=None):
         """
         Returns the min for the whole band
         """
-        return self.global_stats(block,band,ignore)[0]
+        return self.global_stats(block, band, ignore)[0]
 
-    def global_max(self,block,band=1,ignore=None):
+    def global_max(self, block, band=1, ignore=None):
         """
         Returns the max for the whole band
         """
-        return self.global_stats(block,band,ignore)[1]
+        return self.global_stats(block, band, ignore)[1]
 
-    def global_mean(self,block,band=1,ignore=None):
+    def global_mean(self, block, band=1, ignore=None):
         """
         Returns the mean for the whole band
         """
-        return self.global_stats(block,band,ignore)[2]
+        return self.global_stats(block, band, ignore)[2]
 
-    def global_stddev(self,block,band=1,ignore=None):
+    def global_stddev(self, block, band=1, ignore=None):
         """
         Returns the stddev for the whole band
         """
-        return self.global_stats(block,band,ignore)[3]
+        return self.global_stats(block, band, ignore)[3]

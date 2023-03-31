@@ -44,11 +44,13 @@ DEFAULT_AUTOCOLORTABLETYPE = os.getenv('RIOS_DFLT_AUTOCOLORTABLETYPE', default=N
 # longer tables than this we point user to rios.colortable
 MAX_RECOMMENDED_COLOR_TABLE = 256
 
+
 def isColorColFromUsage(usage):
     "Tells if usage is one of the color column types"
     colorCol = (usage == gdal.GFU_Red or usage == gdal.GFU_Green or
                 usage == gdal.GFU_Blue or usage == gdal.GFU_Alpha)
     return colorCol
+
 
 def readColumnFromBand(gdalBand, colName):
     """
@@ -62,7 +64,6 @@ def readColumnFromBand(gdalBand, colName):
 
     # get the size of the RAT  
     numCols = rat.GetColumnCount()
-    numRows = rat.GetRowCount()
   
     # if this is still None at the end
     # we didn't find the column
@@ -94,6 +95,7 @@ def readColumnFromBand(gdalBand, colName):
     # return the lookup array to the caller
     return colArray
 
+
 def readColumn(imgFile, colName, bandNumber=1):
     """
     Given either an open gdal dataset, or a filename,
@@ -109,6 +111,7 @@ def readColumn(imgFile, colName, bandNumber=1):
     gdalBand = ds.GetRasterBand(bandNumber) 
 
     return readColumnFromBand(gdalBand, colName)
+
 
 def getColumnNamesFromBand(gdalBand):
     """
@@ -126,6 +129,7 @@ def getColumnNamesFromBand(gdalBand):
         colNames.append(name)
 
     return colNames
+
 
 def getColumnNames(imgFile, bandNumber=1):
     """
@@ -147,11 +151,11 @@ def inferColumnType(sequence):
     """
     Infer from the type of the first element in the sequence
     """
-    if isinstance(sequence[0],int) or isinstance(sequence[0],numpy.integer):
+    if isinstance(sequence[0], int) or isinstance(sequence[0], numpy.integer):
         colType = gdal.GFT_Integer
-    elif isinstance(sequence[0],float) or isinstance(sequence[0],numpy.floating):
+    elif isinstance(sequence[0], float) or isinstance(sequence[0], numpy.floating):
         colType = gdal.GFT_Real
-    elif isinstance(sequence[0],basestring) or isinstance(sequence[0],bytes):
+    elif isinstance(sequence[0], basestring) or isinstance(sequence[0], bytes):
         colType = gdal.GFT_String
     else:
         colType = None
@@ -176,7 +180,7 @@ def writeColumnToBand(gdalBand, colName, sequence, colType=None,
         raise rioserrors.AttributeTableTypeError(msg)
 
     # check it is acually a valid type
-    elif colType not in (gdal.GFT_Integer,gdal.GFT_Real,gdal.GFT_String):
+    elif colType not in (gdal.GFT_Integer, gdal.GFT_Real, gdal.GFT_String):
         msg = "coltype must be a valid gdal column type"
         raise rioserrors.AttributeTableTypeError(msg)
 
@@ -236,8 +240,9 @@ def writeColumnToBand(gdalBand, colName, sequence, colType=None,
             gdalBand.SetDefaultRAT(attrTbl)
         except Exception:
             pass
-        if not usingExceptions:
-            gdal.DontUseExceptions()
+        finally:
+            if not usingExceptions:
+                gdal.DontUseExceptions()
 
 
 def writeColumn(imgFile, colName, sequence, colType=None, bandNumber=1, 
@@ -258,6 +263,7 @@ def writeColumn(imgFile, colName, sequence, colType=None, bandNumber=1,
 
     writeColumnToBand(gdalBand, colName, sequence, colType, colUsage) 
 
+
 def getUsageOfColumnFromBand(gdalBand, colName):
     """
     Given a gdalBand returns the usage of the named column
@@ -275,6 +281,7 @@ def getUsageOfColumnFromBand(gdalBand, colName):
     
     msg = "Unable to find column named '%s'" % colName
     raise rioserrors.AttributeTableColumnError(msg)
+
 
 def getUsageOfColumn(imgFile, colName, bandNumber=1):
     """
@@ -314,7 +321,7 @@ def getColorTable(imgFile, bandNumber=1):
 
     count = colorTable.GetCount()
     # count could be any size so we have to go with int
-    colorArray = numpy.zeros((count, 5), dtype=numpy.int)
+    colorArray = numpy.zeros((count, 5), dtype=int)
     for index in range(count):
         colorEntry = colorTable.GetColorEntry(index)
         arrayEntry = [index] + list(colorEntry)
@@ -393,8 +400,8 @@ def setColorTable(imgfile, colorTblArray, layernum=1):
         # confused if we don't
         tblMaxVal = 255
         
-    for pixVal in range(tblMaxVal+1):
-        while  i < numRows and pixVals[i] < pixVal:
+    for pixVal in range(tblMaxVal + 1):
+        while i < numRows and pixVals[i] < pixVal:
             i += 1
         if i < numRows:
             tblPixVal = pixVals[i]
@@ -466,11 +473,11 @@ def genColorTable_rainbow(numEntries):
     # RGB entries. Start at red, blend through to green, then through to blue, in linear steps
     midNdx = numEntries // 2
     # Red to green
-    colorTable[0:midNdx, 0] = numpy.mgrid[255:0:midNdx*1j].astype(numpy.uint8)
-    colorTable[0:midNdx, 1] = numpy.mgrid[0:255:midNdx*1j].astype(numpy.uint8)
+    colorTable[0:midNdx, 0] = numpy.mgrid[255:0:midNdx * 1j].astype(numpy.uint8)
+    colorTable[0:midNdx, 1] = numpy.mgrid[0:255:midNdx * 1j].astype(numpy.uint8)
     # Green to blue
-    colorTable[midNdx:, 1] = numpy.mgrid[255:0:(numEntries-midNdx)*1j].astype(numpy.uint8)
-    colorTable[midNdx:, 2] = numpy.mgrid[0:255:(numEntries-midNdx)*1j].astype(numpy.uint8)
+    colorTable[midNdx:, 1] = numpy.mgrid[255:0:(numEntries - midNdx) * 1j].astype(numpy.uint8)
+    colorTable[midNdx:, 2] = numpy.mgrid[0:255:(numEntries - midNdx) * 1j].astype(numpy.uint8)
     # Opacity
     colorTable[:, 3] = 255
     
@@ -488,7 +495,7 @@ def genColorTable_gray(numEntries):
     """
     colorTable = numpy.zeros((numEntries, 4), dtype=numpy.uint8)
     # RGB entries. Start at black, blend through to white, in linear steps
-    colorTable[:, 0] = numpy.mgrid[0:255:numEntries*1j].astype(numpy.uint8)
+    colorTable[:, 0] = numpy.mgrid[0:255:numEntries * 1j].astype(numpy.uint8)
     colorTable[:, 1] = colorTable[:, 0]
     colorTable[:, 2] = colorTable[:, 0]
     # Opacity

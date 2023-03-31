@@ -43,7 +43,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from __future__ import print_function
 
 import dis
-from functools import partial
 import io
 import itertools
 import logging
@@ -53,7 +52,6 @@ import pickle
 import platform
 import struct
 import sys
-import traceback
 import types
 import weakref
 import uuid
@@ -123,11 +121,13 @@ def _lookup_class_or_track(class_tracker_id, class_def):
             _DYNAMIC_CLASS_TRACKER_BY_CLASS[class_def] = class_tracker_id
     return class_def
 
+
 if sys.version_info[:2] >= (3, 5):
     from pickle import _getattribute
 elif sys.version_info[:2] >= (3, 4):
     from pickle import _getattribute as _py34_getattribute
     #  pickle._getattribute does not return the parent under Python 3.4
+
     def _getattribute(obj, name):
         return _py34_getattribute(obj, name), None
 else:
@@ -862,7 +862,7 @@ class CloudPickler(Pickler):
         The name of this method is somewhat misleading: all types get
         dispatched here.
         """
-        if obj is type(None):
+        if obj is type(None):       # noqa
             return self.save_reduce(type, (None,), obj=obj)
         elif obj is type(Ellipsis):
             return self.save_reduce(type, (Ellipsis,), obj=obj)
@@ -975,6 +975,7 @@ class CloudPickler(Pickler):
             def __init__(self, attrs, index=None):
                 self.attrs = attrs
                 self.index = index
+
             def __getattribute__(self, item):
                 attrs = object.__getattribute__(self, "attrs")
                 index = object.__getattribute__(self, "index")
@@ -1225,7 +1226,7 @@ def _fill_function(*args):
     if 'annotations' in state:
         func.__annotations__ = state['annotations']
     if 'doc' in state:
-        func.__doc__  = state['doc']
+        func.__doc__ = state['doc']
     if 'name' in state:
         func.__name__ = state['name']
     if 'module' in state:
