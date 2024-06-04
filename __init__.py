@@ -34,6 +34,45 @@ def fmask_libs():
         import sys, platform
         is_64bits = sys.maxsize > 2 ** 32
         if is_64bits:
+            if sys.version_info[0:2] == (3, 12):  # py312
+                if platform.system() == "Darwin":
+                    from CloudMasking.libs.fmask.ios64_py312 import _fillminima, _valueindexes
+                    copy(os.path.join(fmask_path, 'ios64_py312', '_fillminima.so'), fmask_path)
+                    copy(os.path.join(fmask_path, 'ios64_py312', '_valueindexes.so'), fmask_path)
+                if platform.system() == "Windows":
+                    from CloudMasking.libs.fmask.win64_py312 import _fillminima, _valueindexes
+                    copy(os.path.join(fmask_path, 'win64_py312', '_fillminima.pyd'), fmask_path)
+                    copy(os.path.join(fmask_path, 'win64_py312', '_valueindexes.pyd'), fmask_path)
+                if platform.system() == "Linux":
+                    from CloudMasking.libs.fmask.lin64_py312 import _fillminima, _valueindexes
+                    copy(os.path.join(fmask_path, 'lin64_py312', '_fillminima.so'), fmask_path)
+                    copy(os.path.join(fmask_path, 'lin64_py312', '_valueindexes.so'), fmask_path)
+            if sys.version_info[0:2] == (3, 11):  # py311
+                if platform.system() == "Darwin":
+                    from CloudMasking.libs.fmask.ios64_py311 import _fillminima, _valueindexes
+                    copy(os.path.join(fmask_path, 'ios64_py311', '_fillminima.so'), fmask_path)
+                    copy(os.path.join(fmask_path, 'ios64_py311', '_valueindexes.so'), fmask_path)
+                if platform.system() == "Windows":
+                    from CloudMasking.libs.fmask.win64_py311 import _fillminima, _valueindexes
+                    copy(os.path.join(fmask_path, 'win64_py311', '_fillminima.pyd'), fmask_path)
+                    copy(os.path.join(fmask_path, 'win64_py311', '_valueindexes.pyd'), fmask_path)
+                if platform.system() == "Linux":
+                    from CloudMasking.libs.fmask.lin64_py311 import _fillminima, _valueindexes
+                    copy(os.path.join(fmask_path, 'lin64_py311', '_fillminima.so'), fmask_path)
+                    copy(os.path.join(fmask_path, 'lin64_py311', '_valueindexes.so'), fmask_path)
+            if sys.version_info[0:2] == (3, 10):  # py310
+                if platform.system() == "Darwin":
+                    from CloudMasking.libs.fmask.ios64_py310 import _fillminima, _valueindexes
+                    copy(os.path.join(fmask_path, 'ios64_py310', '_fillminima.so'), fmask_path)
+                    copy(os.path.join(fmask_path, 'ios64_py310', '_valueindexes.so'), fmask_path)
+                if platform.system() == "Windows":
+                    from CloudMasking.libs.fmask.win64_py310 import _fillminima, _valueindexes
+                    copy(os.path.join(fmask_path, 'win64_py310', '_fillminima.pyd'), fmask_path)
+                    copy(os.path.join(fmask_path, 'win64_py310', '_valueindexes.pyd'), fmask_path)
+                if platform.system() == "Linux":
+                    from CloudMasking.libs.fmask.lin64_py310 import _fillminima, _valueindexes
+                    copy(os.path.join(fmask_path, 'lin64_py310', '_fillminima.so'), fmask_path)
+                    copy(os.path.join(fmask_path, 'lin64_py310', '_valueindexes.so'), fmask_path)
             if sys.version_info[0:2] == (3, 9):  # py39
                 if platform.system() == "Darwin":
                     from CloudMasking.libs.fmask.ios64_py39 import _fillminima, _valueindexes
