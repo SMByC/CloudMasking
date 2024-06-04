@@ -3,7 +3,7 @@ name=Cloud Masking
 description=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7, 8, 9) products using different process and filters such as Fmask, Blue Band, Cloud QA, Aerosol and Pixel QA.
 about=CloudMasking is a Qgis plugin for make the masking of clouds, cloud shadow, cirrus, aerosols, ice/snow and water for Landsat (4, 5, 7, 8, 9) products using different process and filters such as Fmask, Blue Band, Cloud QA, Aerosol and Pixel QA.
 
-version=23.3.30
+version=24.6
 qgisMinimumVersion=3.0
 qgisMaximumVersion=3.99
 
@@ -15,9 +15,10 @@ tracker=https://github.com/SMByC/CloudMasking/issues
 repository=https://github.com/SMByC/CloudMasking
 
 changelog=
-    23.3.30:
-    - Update Fmask and Rio libraries
-    - Fixes some connections between spin boxes and sliders
+    24.6:
+    - Added support for Python 3.10, 3.11, and 3.12, fix #16
+    - Updated Fmask
+    - Other minor fixes
 
 
 tags=cloud,masking,landsat,raster,remote sensing
