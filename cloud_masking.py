@@ -26,7 +26,7 @@ from datetime import datetime
 from subprocess import call
 from osgeo import gdal
 
-from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot, QLocale
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QFileDialog, QListWidgetItem, QSizePolicy
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QCheckBox, QGroupBox, QRadioButton
@@ -62,7 +62,7 @@ class CloudMasking:
         self.plugin_dir = os.path.dirname(__file__)
 
         # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
+        locale = QSettings().value('locale/userLocale', QLocale().name())[0:2]
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
