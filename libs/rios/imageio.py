@@ -1,9 +1,16 @@
-#!/usr/bin/env python
-
 """
-This file contains definitions that are
-common to all the image reading and 
-writing modules
+The only things of value left in this module are the original definitions of
+UNION, INTERSECTION and BOUNDS_FROM_REFERENCE.
+
+There are also two functions wld2pix and pix2wld, and the Coord class they use.
+These should also be deprecated, in favour of GDAL's ApplyGeoTransform
+and InvGeoTransform (which they now use internally anyway).
+However, they are used in public-facing ways in the ReaderInfo object,
+so removing them would, in principle, be a breaking change.
+They are harmless enough, so they have been left here.
+
+In general, this module should be ignored.
+
 """
 # This file is part of RIOS - Raster I/O Simplification
 # Copyright (C) 2012  Sam Gillingham, Neil Flood
@@ -21,11 +28,10 @@ writing modules
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import numpy
-from osgeo import gdalconst
 from osgeo import gdal
+from osgeo import gdal_array
 
-from . import rioserrors
+from .rioserrors import deprecationWarning
 
 INTERSECTION = 0
 UNION = 1
@@ -52,49 +58,36 @@ def pix2wld(transform, x, y):
     return Coord(geox, geoy)
 
 
-# Mappings between numpy datatypes and GDAL datatypes.
-# Note that ambiguities are resolved by the order - the first one found 
-# is the one chosen. 
-dataTypeMapping = [
-    (numpy.uint8, gdalconst.GDT_Byte),
-    (bool, gdalconst.GDT_Byte),
-    (numpy.int16, gdalconst.GDT_Int16),
-    (numpy.uint16, gdalconst.GDT_UInt16),
-    (numpy.int32, gdalconst.GDT_Int32),
-    (numpy.uint32, gdalconst.GDT_UInt32),
-    (numpy.float32, gdalconst.GDT_Float32),
-    (numpy.float64, gdalconst.GDT_Float64)
-]
-
-# hack for GDAL 3.5 and later which suppport 64 bit ints
-if hasattr(gdalconst, 'GDT_Int64'):
-    dataTypeMapping.append((numpy.int64, gdalconst.GDT_Int64))
-    dataTypeMapping.append((numpy.uint64, gdalconst.GDT_UInt64))
-
-# With GDAL 3.7, there is a plan to introduce GDT_Int8, so try to cope with it.
-# Hopefully OK, because we did not previously have anything to cope with arrays
-# of type numpy.int8.
-if hasattr(gdalconst, 'GDT_Int8'):
-    dataTypeMapping.append((numpy.int8, gdalconst.GDT_Int8))
+# WARNING
+# WARNING
+# WARNING
+# WARNING
+# WARNING       All code below this point is deprecated (v2.0.0)
+# WARNING
+# WARNING
+# WARNING
+# WARNING
 
 
 def GDALTypeToNumpyType(gdaltype):
     """
-    Given a gdal data type returns the matching
-    numpy data type
+    This function is deprecated.
+    Use gdal_array.GDALTypeCodeToNumericTypeCode instead.
+
+    Given a gdal data type returns the matching numpy data type
     """
-    for (numpy_type, test_gdal_type) in dataTypeMapping:
-        if test_gdal_type == gdaltype:
-            return numpy_type
-    raise rioserrors.TypeConversionError("Unknown GDAL datatype: %s"%gdaltype)
+    deprecationWarning("Future versions of RIOS may remove this function. " +
+        "Use gdal_array.GDALTypeCodeToNumericTypeCode instead")
+    return gdal_array.GDALTypeCodeToNumericTypeCode(gdaltype)
 
 
 def NumpyTypeToGDALType(numpytype):
     """
-    For a given numpy data type returns the matching
-    GDAL data type
+    This function is deprecated.
+    Use gdal_array.NumericTypeCodeToGDALTypeCode instead.
+
+    For a given numpy data type returns the matching GDAL data type
     """
-    for (test_numpy_type, gdaltype) in dataTypeMapping:
-        if test_numpy_type == numpytype:
-            return gdaltype
-    raise rioserrors.TypeConversionError("Unknown numpy datatype: %s"%numpytype)
+    deprecationWarning("Future versions of RIOS may remove this function. " +
+        "Use gdal_array.NumericTypeCodeToGDALTypeCode instead")
+    return gdal_array.NumericTypeCodeToGDALTypeCode(numpytype)

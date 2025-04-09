@@ -4,8 +4,8 @@ This module contains routines for reading and writing Raster
 Attribute Tables (RATs). These are designed to be able to 
 be called from outside of RIOS.
 
-Within RIOS, these are called from the :class:`rios.readerinfo.ReaderInfo` 
-and :class:`rios.imagewriter.ImageWriter` classes.
+Within RIOS, these are called from the :class:`rios.imagewriter.ImageWriter 
+and :class:`rios.fileinfo.ImageInfo` classes.
 
 **Note:** It is recommended that the newer :mod:`rios.ratapplier` module be used instead of this
 interface for large tables where possible.
@@ -303,7 +303,7 @@ def getColorTable(imgFile, bandNumber=1):
     """
     Given either an open gdal dataset, or a filename,
     reads the color table as an array that can be passed
-    to ImageWriter.setColorTable() or rat.setColorTable()
+    to rat.setColorTable()
     
     The returned colour table is a numpy array, described in detail
     in the docstring for rat.setColorTable(). 

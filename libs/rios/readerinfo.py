@@ -25,73 +25,70 @@ import math
 
 import numpy
 
-from . import imageio
-from . import rat
+from . import imageio, fileinfo
 
 
-class StatisticsCache(object):
+def makeReaderInfo(workinggrid, blockDefn, controls, infiles, inputs, allInfo):
     """
-    Allows global statistics for all the files used to be cached
-    Statistics are stored here associated with the filename
-    so if there are multiple calls to global_stats for one
-    file the statistics will only get calculated once. 
+    Construct a ReaderInfo object for the current block.
+
+    In earlier versions of RIOS, this was constructed more organically
+    during the block iteration process (although it was rather obscure,
+    even then). In newer versions, we are putting it together from
+    other information, to maintain full compatibility when this is passed
+    to the user function. It is not used for any other purpose within RIOS.
+
     """
-    def __init__(self):
-        self.stats = {}
+    info = ReaderInfo(workinggrid, controls.windowxsize,
+            controls.windowysize, controls.overlap, controls.loggingstream)
+    info.setBlockSize(blockDefn.ncols, blockDefn.nrows)
+    transform = workinggrid.makeGeoTransform()
+    (top, left) = (blockDefn.top, blockDefn.left)
+    blocktl = imageio.pix2wld(transform, left, top)
+    (right, bottom) = (left + blockDefn.ncols, top + blockDefn.nrows)
+    blockbr = imageio.pix2wld(transform, right, bottom)
+    info.setBlockBounds(blocktl, blockbr)
+    xblock = int(round(left / controls.windowxsize))
+    yblock = int(round(top / controls.windowysize))
+    info.setBlockCount(xblock, yblock)
 
-    def getStats(self, fname, band, ignore):
-        """
-        Returns tuple with (min,max,mean,stddev) if 
-        previously cached, None otherwise.
-        """
-        if ignore is None:
-            key = '%s %d' % (fname, band)
-        else:
-            key = '%s %d %f' % (fname, band, ignore)
-        if key in self.stats:
-            return self.stats[key]
-        else:
-            return None
+    # Make the lookups keyed by array id() value, to service getNoDataValueFor
+    # and getFilenameFor
+    info.filenameLookup = {}
+    info.nullvalLookup = {}
+    for (symbolicName, seqNum, filename) in infiles:
+        key = (symbolicName, seqNum)
+        arr = inputs[key]
+        arrID = id(arr)
+        info.filenameLookup[arrID] = filename
+        imgInfo = allInfo[key]
 
-    def setStats(self, fname, band, ignore, stats):
-        """
-        Sets tuple with (min,max,mean,stddev) in cache
-        """
-        if ignore is None:
-            key = '%s %d' % (fname, band)
-        else:
-            key = '%s %d %f' % (fname, band, ignore)
-        self.stats[key] = stats
+        if isinstance(imgInfo, fileinfo.ImageInfo):
+            # Store all null values for the (possibly reduced) set of bands.
+            # See getNoDataValueFor() for details on how this interacts with
+            # controls.selectInputImageLayers().
+            layerselection = controls.getOptionForImagename(
+                'layerselection', symbolicName)
+            if layerselection is None:
+                layerselection = numpy.arange(1, imgInfo.rasterCount + 1)
 
+            # Work out what null value(s) to use, honouring anything set
+            # with controls.setInputNoDataValue().
+            nullvalList = controls.getOptionForImagename('inputnodata',
+                    symbolicName)
+            if nullvalList is not None and not isinstance(nullvalList, list):
+                # Turn a scalar into a list, one for each band in the file
+                nullvalList = [nullvalList] * len(layerselection)
 
-class AttributeTableCache(object):
-    """
-    Allows attribute columns to be cached. This means
-    that an attribute column can be requested for each
-    block through the image, but the actual column data
-    will only be read the first time and cached for 
-    subsequent calls.
-    """
-    def __init__(self):
-        self.rats = {}
+            # If we have None from controls, then use whatever is
+            # specified on imgInfo, while also honouring layerselection
+            if nullvalList is None:
+                nullvalList = [imgInfo.nodataval[bandNum - 1]
+                    for bandNum in layerselection]
 
-    def getColumn(self, fname, band, colName):
-        """
-        Returns the column if previously cached, otherwise
-        None.
-        """
-        key = '%s %d %s' % (fname, band, colName)
-        if key in self.rats:
-            return self.rats[key]
-        else:
-            return None
+            info.nullvalLookup[arrID] = nullvalList
 
-    def setColumn(self, fname, band, colName, column):
-        """
-        Puts the column into the cache
-        """
-        key = '%s %d %s' % (fname, band, colName)
-        self.rats[key] = column
+    return info
 
 
 class ReaderInfo(object):
@@ -100,7 +97,7 @@ class ReaderInfo(object):
     read and info on the current block
     
     """
-    def __init__(self, workingGrid, statscache, ratcache, 
+    def __init__(self, workingGrid, 
             windowxsize, windowysize, overlap, loggingstream):
                     
         self.loggingstream = loggingstream
@@ -122,15 +119,9 @@ class ReaderInfo(object):
         self.xtotalblocks = int(math.ceil(float(self.xsize) / self.windowxsize))
         self.ytotalblocks = int(math.ceil(float(self.ysize) / self.windowysize))
         
-        # save the statistics cache. 
-        self.statscache = statscache
-
-        # save the RAT cache
-        self.ratcache = ratcache
-        
-        # The feilds below apply to a particular block
+        # The fields below apply to a particular block
         # and are filled in after this object is copied 
-        # to make it specific fir each block
+        # to make it specific for each block
         self.blockwidth = None
         self.blockheight = None
         
@@ -154,8 +145,10 @@ class ReaderInfo(object):
         This routine is for internal use by RIOS. Its use in any other
         context is not sensible. 
         
+        This is no longer implemented, and raises an exception if called.
         """
-        self.blocklookup[id(block)] = (dataset, filename)
+        msg = "setBlockDataset is obsolete, and no longer implemented"
+        raise NotImplementedError(msg)
         
     def getWindowSize(self):
         """
@@ -359,45 +352,53 @@ class ReaderInfo(object):
     def getFilenameFor(self, block):
         """
         Get the input filename of a dataset
+
         """
-        # can't use ds.GetDescription() as may have been resampled
-        (ds, fname) = self.blocklookup[id(block)]
-        return fname
+        return self.filenameLookup[id(block)]
 
     def getGDALDatasetFor(self, block):
         """
         Get the underlying GDAL handle of a dataset
+
+        This is no longer implemented, and raises an exception if called.
         """
-        (ds, fname) = self.blocklookup[id(block)]
-        return ds
+        msg = "getGDALDatasetFor is obsolete, and no longer implemented"
+        raise NotImplementedError(msg)
 
     def getGDALBandFor(self, block, band):
         """
         Get the underlying GDAL handle for a band of a dataset
+
+        This is no longer implemented, and raises an exception if called.
         """
-        ds = self.getGDALDatasetFor(block)
-        return ds.GetRasterBand(band)
+        msg = "getGDALBandFor is obsolete, and no longer implemented"
+        raise NotImplementedError(msg)
 
     def getNoDataValueFor(self, block, band=1):
         """
-        Returns the 'no data' value for the dataset
-        underlying the block. This should be the
-        same as what was set for the stats ignore value
-        when that dataset was created. 
-        The value is cast to the same data type as the 
-        dataset.
+        Returns the 'no data' value for the dataset underlying the block.
+        This should be the same as what was set for the stats ignore value
+        when that dataset was created. The value is cast to the same data
+        type as the dataset.
+
+        The band number starts at 1, following GDAL's convention.
+
+        Note, however, that if controls.selectInputImageLayers() was used to
+        read a reduced set of input layers from the file, then these numbers
+        are of the reduced set. For example, 1 will refer to the first of the
+        selected layers, which may not be the first in the file.
+
+        This is not the preferred method for the user function to access
+        the null value for an input file. A more transparent approach is to
+        make such values available on the otherArgs object. This function is
+        maintained for backward compatibility.
+
         """
-        ds = self.getGDALDatasetFor(block)
-        band = ds.GetRasterBand(band)
-        novalue = band.GetNoDataValue()
-
-        # if there is a valid novalue, cast it to the type
-        # of the dataset. Note this creates a numpy 0-d array
-        if novalue is not None:
-            numpytype = imageio.GDALTypeToNumpyType(band.DataType)
-            novalue = numpy.cast[numpytype](novalue)
-
-        return novalue
+        nullvalList = self.nullvalLookup[id(block)]
+        nullval = nullvalList[band - 1]
+        if nullval is not None:
+            nullval = numpy.asarray(nullval, dtype=block.dtype)
+        return nullval
         
     def getPercent(self):
         """
@@ -407,68 +408,3 @@ class ReaderInfo(object):
                     float(self.xtotalblocks * self.ytotalblocks) * 100)
         return percent
 
-    def getAttributeColumn(self, block, colName, band=1):
-        """
-        Gets the attribute for the given block and column name
-        Caches columns so only first call actually extracts data
-        """
-        (ds, fname) = self.blocklookup[id(block)]
-
-        column = self.ratcache.getColumn(fname, band, colName)
-        if column is None:
-            column = rat.readColumn(ds, colName, band)
-            self.ratcache.setColumn(fname, band, colName, column)
-        
-        return column
-        
-    def global_stats(self, block, band=1, ignore=None):
-        """
-        Returns the (min,max,mean,stddev) for the whole band
-        """
-        fname = self.getFilenameFor(block)
-        
-        # see if we have the stats in our cache
-        values = self.statscache.getStats(fname, band, ignore)
-        
-        if values is None:
-            # no, get the gdal band
-            bandhandle = self.getGDALBandFor(block, band)
-            
-            # set ignore value if specified so that 
-            # GDAL ignores it when calculating stats
-            if ignore is not None:
-                bandhandle.SetNoDataValue(ignore)
-                
-            self.loggingstream.write("Calculating global statistics...\n")
-                
-            # get GDAL to calc the stats
-            values = bandhandle.GetStatistics(False, True)
-            
-            # set it back in our cache for next time
-            self.statscache.setStats(fname, band, ignore, values)
-            
-        return values
-
-    def global_min(self, block, band=1, ignore=None):
-        """
-        Returns the min for the whole band
-        """
-        return self.global_stats(block, band, ignore)[0]
-
-    def global_max(self, block, band=1, ignore=None):
-        """
-        Returns the max for the whole band
-        """
-        return self.global_stats(block, band, ignore)[1]
-
-    def global_mean(self, block, band=1, ignore=None):
-        """
-        Returns the mean for the whole band
-        """
-        return self.global_stats(block, band, ignore)[2]
-
-    def global_stddev(self, block, band=1, ignore=None):
-        """
-        Returns the stddev for the whole band
-        """
-        return self.global_stats(block, band, ignore)[3]

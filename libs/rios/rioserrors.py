@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 All exceptions used within rios. 
 
@@ -18,6 +17,9 @@ All exceptions used within rios.
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import sys
+import inspect
 
 
 class RiosError(Exception):
@@ -132,3 +134,53 @@ class ColorTableGenerationError(RiosError):
 
 class PermissionError(RiosError):
     "Error due to permissions on temp files"
+
+
+class TimeoutError(RiosError):
+    "Something timed out"
+
+
+class UnavailableError(RiosError):
+    "A dependency is unavailable"
+
+
+class WorkerExceptionError(RiosError):
+    "A worker thread or process has raised an exception"
+
+
+class SinglePassActionsError(RiosError):
+    "An error in processing single-pass actions"
+
+
+deprecationAlreadyWarned = set()
+
+
+def deprecationWarning(msg, stacklevel=2):
+    """
+    Print a deprecation warning to stderr. Includes the filename
+    and line number of the call to the function which called this.
+    The stacklevel argument controls how many stack levels above this
+    gives the line number.
+
+    Implemented in mimcry of warnings.warn(), which seems very flaky.
+    Sometimes it prints, and sometimes not, unless PYTHONWARNINGS is set
+    (or -W is used). This function at least seems to work consistently.
+
+    """
+    frame = inspect.currentframe()
+    for i in range(stacklevel):
+        if frame is not None:
+            frame = frame.f_back
+
+    if frame is None:
+        filename = "sys"
+        lineno = 1
+    else:
+        filename = frame.f_code.co_filename
+        lineno = frame.f_lineno
+
+    key = (filename, lineno)
+    if key not in deprecationAlreadyWarned:
+        print("{} (line {}):\n    WARNING: {}".format(filename, lineno, msg),
+            file=sys.stderr)
+        deprecationAlreadyWarned.add(key)

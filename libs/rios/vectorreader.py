@@ -5,6 +5,9 @@ class that perform on-the-fly rasterization of
 vectors into raster blocks to fit in with
 ImageReader and ImageWriter classes.
 
+As of version 2.0.0, everything in this module is deprecated. Vector reading
+is now handled much more neatly within the imagereader module.
+
 """
 # This file is part of RIOS - Raster I/O Simplification
 # Copyright (C) 2012  Sam Gillingham, Neil Flood
@@ -29,10 +32,10 @@ from .imagewriter import DEFAULTCREATIONOPTIONS
 from . import rioserrors
 from . import cuiprogress
 from .imagereader import ImageReader
-from .imageio import NumpyTypeToGDALType
 from osgeo import ogr
 from osgeo import gdal
 from osgeo import osr
+from osgeo import gdal_array
 import numpy
 
 DEFAULTBURNVALUE = 1
@@ -66,6 +69,9 @@ class Vector(object):
         for the temporary rasterised file.
 
         """
+        msg = "The Vector class is now deprecated (v2.0.0)"
+        rioserrors.deprecationWarning(msg)
+
         # open the file and get the requested layer
         self.filename = filename
         self.layerid = inputlayer
@@ -228,6 +234,9 @@ class VectorReader(object):
         progress is an instance of a Progress class, if none 
         an instance of cuiprogress.CUIProgress is created an used
         """
+        msg = "The VectorReader class is now deprecated (v2.0.0)"
+        rioserrors.deprecationWarning(msg)
+
         self.vectorContainer = vectorContainer
         if progress is None:
             self.progress = cuiprogress.SilentProgress()
@@ -259,7 +268,7 @@ class VectorReader(object):
                 # Haven't yet rasterized, so do this for the whole workingGrid
                 (nrows, ncols) = info.workingGrid.getDimensions()
                 numLayers = 1
-                gdaldatatype = NumpyTypeToGDALType(vector.datatype)
+                gdaldatatype = gdal_array.NumericTypeCodeToGDALTypeCode(vector.datatype)
                 outds = vector.driver.Create(vector.temp_image, ncols, nrows, numLayers, 
                     gdaldatatype, vector.driveroptions)
                 if outds is None:

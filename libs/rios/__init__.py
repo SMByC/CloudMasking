@@ -15,16 +15,13 @@ Rios is built on top of GDAL, and handles, among other things:
     - Stepping through the rasters in small blocks, to avoid 
       large memory usage
 
-Most common entry point is the apply function in the applier 
-module. For more subtle and complex work the imagereader and 
-imagewriter modules provide the ImageReader and ImageWriter 
-classes, respectively. 
+The main starting point is the rios.applier.apply function.
 
 """
 # Used to fill in the rest of the comparison methods
 from functools import total_ordering
 
-RIOS_VERSION = '1.4.15'
+RIOS_VERSION = '2.0.6'
 __version__ = RIOS_VERSION
 
 

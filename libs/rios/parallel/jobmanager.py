@@ -1,4 +1,6 @@
 """
+This file is entirely deprecated, as of version 2.0.0.
+
 Base class and sub-classes for managing parallel processing in RIOS. 
 
 It should be emphasised at the start that it is only worth using
@@ -107,20 +109,15 @@ import abc
 import subprocess
 import tempfile
 import time
+import pickle
 try:
-    import cPickle as pickle        # For Python 2.x
+    import cloudpickle
 except ImportError:
-    import pickle
+    # If we don't have cloudpickle, then we can't do any jobmanager stuff,
+    # but continue as a dummy anyway, to avoid impacting anything else
+    cloudpickle = None
 
 from .. import rioserrors
-# Import a pickler which can pickle functions, with their dependencies, as well
-# as data. Either use the version installed with cloudpickle
-# (https://github.com/cloudpipe/cloudpickle) or the bundled versin
-try:
-    from cloudpickle import cloudpickle
-except ImportError:
-    # Import from our own local copy. This is what will usually happen. 
-    from . import cloudpickle
 
 
 class BlockAssociations(object):
@@ -186,6 +183,7 @@ class JobManager(object):
         """
         numSubJobs is the number of sub-jobs
         """
+        rioserrors.deprecationWarning("The JobManager class is deprecated (v2.0.0)")
         self.numSubJobs = numSubJobs
         self.tempdir = '.'
     
@@ -273,6 +271,11 @@ class JobManager(object):
         String representation
         """
         return "jobMgrType=%s, numSubJobs=%s" % (self.jobMgrType, self.numSubJobs)
+        
+    def finalise(self):
+        """
+        Do any tidy up at completion of image
+        """
 
 
 class SubprocJobManager(JobManager):
@@ -299,6 +302,12 @@ class SubprocJobManager(JobManager):
         outputs object. 
         
         """
+        # If we don't have cloudpickle, we can't do anything anyway
+        if cloudpickle is None:
+            msg = "Jobmanager '{}' requires cloudpickle, which is unavailable"
+            msg = msg.format(self.jobMgrType)
+            raise rioserrors.JobMgrError(msg)
+
         jobInfo = jobInfo.prepareForPickling()
 
         allInputs = (userFunc, jobInfo)
@@ -360,6 +369,12 @@ class PbsJobManager(JobManager):
         defaulted by PBS. 
         
         """
+        # If we don't have cloudpickle, we can't do anything anyway
+        if cloudpickle is None:
+            msg = "Jobmanager '{}' requires cloudpickle, which is unavailable"
+            msg = msg.format(self.jobMgrType)
+            raise rioserrors.JobMgrError(msg)
+
         jobInfo = jobInfo.prepareForPickling()
 
         allInputs = (userFunc, jobInfo)
@@ -499,6 +514,12 @@ class SlurmJobManager(JobManager):
         defaulted by SLURM. 
         
         """
+        # If we don't have cloudpickle, we can't do anything anyway
+        if cloudpickle is None:
+            msg = "Jobmanager '{}' requires cloudpickle, which is unavailable"
+            msg = msg.format(self.jobMgrType)
+            raise rioserrors.JobMgrError(msg)
+
         jobInfo = jobInfo.prepareForPickling()
 
         allInputs = (userFunc, jobInfo)
@@ -654,6 +675,8 @@ class MpiJobManager(JobManager):
     dest = 0
 
     def __init__(self, numSubJobs):
+        rioserrors.deprecationWarning("The JobManager class is deprecated (v2.0.0)")
+
         from mpi4py import MPI
 
         # find the path to rios_subproc_mpi.py
@@ -686,6 +709,12 @@ class MpiJobManager(JobManager):
         we do our own here so that the function etc gets pickled.
 
         """
+        # If we don't have cloudpickle, we can't do anything anyway
+        if cloudpickle is None:
+            msg = "Jobmanager '{}' requires cloudpickle, which is unavailable"
+            msg = msg.format(self.jobMgrType)
+            raise rioserrors.JobMgrError(msg)
+
         jobInfo = jobInfo.prepareForPickling()
 
         allInputs = (userFunc, jobInfo)
@@ -765,6 +794,8 @@ class MultiJobManager(JobManager):
     pool = None
 
     def __init__(self, numSubJobs):
+        rioserrors.deprecationWarning("The JobManager class is deprecated (v2.0.0)")
+
         from multiprocessing import Pool
 
         # base class does one job in current process so we don't
@@ -835,6 +866,8 @@ def getJobManagerClassByType(jobMgrType):
     given jobMgrType string. 
         
     """
+    rioserrors.deprecationWarning("The JobManager class is deprecated (v2.0.0)")
+
     jobMgr = None
     subClasses = JobManager.__subclasses__()
     for c in subClasses:
@@ -848,6 +881,8 @@ def getAvailableJobManagerTypes():
     Return a list of currently known job manager types
     
     """
+    rioserrors.deprecationWarning("The JobManager class is deprecated (v2.0.0)")
+
     subClasses = JobManager.__subclasses__()
     typeList = [c.jobMgrType for c in subClasses]
     return typeList
@@ -860,6 +895,8 @@ def getJobMgrObject(controls):
     If none is required, or none is available, then return None
     
     """
+    rioserrors.deprecationWarning("The JobManager class is deprecated (v2.0.0)")
+
     jobmgr = None
     if controls.numThreads > 1:
         if controls.jobManagerType is None:

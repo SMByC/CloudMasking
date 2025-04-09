@@ -6,6 +6,9 @@ Normally called from rios_subproc.py, but some parallel
 methods (MPI, multiprocessing etc) manage their own forking
 of the Python process so we must have this available as an 
 importable function.
+
+This file is entirely deprecated (as of version 2.0.0).
+
 """
 
 # This file is part of RIOS - Raster I/O Simplification

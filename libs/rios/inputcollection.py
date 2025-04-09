@@ -1,5 +1,7 @@
 
 """
+All code in this module is now deprecated (version 2.0.0)
+
 This module contains the InputCollection and InputIterator
 classes. These classes are for ImageReader to keep track
 of the inputs it has and deal with resampling.
@@ -25,10 +27,10 @@ import os
 import sys
 import tempfile
 
-from . import imageio
 from . import rioserrors
 from . import pixelgrid
 from osgeo import gdal
+from osgeo import gdal_array
 
 
 class InputIterator(object):
@@ -105,6 +107,9 @@ class InputCollection(object):
         rather than stdout.
         
         """
+        msg = "The InputCollection class is now deprecated (v2.0.0)"
+        rioserrors.deprecationWarning(msg)
+
         self.loggingstream = loggingstream
         # initialise our lists
         self.imageList = []
@@ -134,7 +139,7 @@ class InputCollection(object):
                 
             # get the datatype of band 1
             gdaldatatype = ds.GetRasterBand(1).DataType
-            numpytype = imageio.GDALTypeToNumpyType(gdaldatatype)
+            numpytype = gdal_array.GDALTypeCodeToNumericTypeCode(gdaldatatype)
         
             # store the values in our lists
             self.imageList.append(image)
