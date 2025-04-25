@@ -26,13 +26,14 @@ from datetime import datetime
 from subprocess import call
 from osgeo import gdal
 
-from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, pyqtSlot, QLocale
+from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt, pyqtSlot, QLocale
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QFileDialog, QListWidgetItem, QSizePolicy
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QCheckBox, QGroupBox, QRadioButton
 from qgis.core import QgsProject, QgsRasterLayer, QgsMapLayer, QgsCoordinateTransform, \
     QgsMapLayerProxyModel, QgsVectorFileWriter, Qgis
 from qgis.utils import iface
+
 # Initialize Qt resources from file resources.py
 from . import resources
 
@@ -62,18 +63,16 @@ class CloudMasking:
         self.plugin_dir = os.path.dirname(__file__)
 
         # initialize locale
-        locale = QSettings().value('locale/userLocale', QLocale().name())[0:2]
-        locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'CloudMasking_{}.qm'.format(locale))
+        try:
+            locale = QSettings().value('locale/userLocale', QLocale().name(), type=str)[0:2]
+        except:
+            locale = 'en'
+        locale_path = os.path.join(self.plugin_dir, 'i18n', 'CloudMasking_{}.qm'.format(locale))
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
             self.translator.load(locale_path)
-
-            if qVersion() > '4.3.3':
-                QCoreApplication.installTranslator(self.translator)
+            QCoreApplication.installTranslator(self.translator)
 
         self.menu_name_plugin = self.tr("&Cloud masking for Landsat products")
         self.pluginIsActive = False
